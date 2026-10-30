@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light" data-font-size="medium">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Chuyên đề Linux &amp; Nội bộ Hệ điều hành: Từ dòng lệnh cơ bản, quản trị hệ thống, tối ưu bảo mật, Nginx/Docker/Ansible tới giải phẫu kiến trúc nhân Linux, VFS, eBPF và phương pháp chẩn đoán USE." />
+  <title>Linux Thực Chiến &amp; Nội bộ Hệ điều hành | Lập trình Python</title>
+  <link rel="icon" type="image/png" href="assets/icon-192.png" />
+  <link rel="stylesheet" href="./css/variables.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+  <link rel="stylesheet" href="./css/components.css" />
+  <link rel="stylesheet" href="./css/widgets.css" />
+  <link rel="stylesheet" href="./css/responsive.css" />
+  <link rel="stylesheet" href="./css/linux.css" />
+</head>
+<body class="lx-page">
+  <a href="#main-content" class="skip-link">Chuyển thẳng tới nội dung chính</a>
+
+  <!-- Thanh điều hướng trên cùng (Top Header) -->
+  <header class="top-header" role="banner">
+    <div class="header-left">
+      <button
+        type="button"
+        id="menu-toggle-btn"
+        class="menu-toggle-btn"
+        aria-label="Mở hoặc đóng danh mục bài học Linux"
+      >
+        ☰
+      </button>
+      <a href="#overview" id="brand-home-link" class="brand-link" title="Về tổng quan lộ trình Linux Thực chiến">
+        <span class="brand-logo" aria-hidden="true" style="background: linear-gradient(135deg, #d97706 0%, #b45309 60%, #ea580c 100%);">🐧</span>
+        <span class="brand-subtitle">Linux Thực chiến</span>
+        <span class="brand-badge" style="background: rgba(245, 158, 11, 0.15); color: #b45309; border-color: rgba(245, 158, 11, 0.4);">4 Cấp độ</span>
+      </a>
+    </div>
+
+    <nav class="header-center" aria-label="Điều hướng chuyên đề">
+      <div class="header-nav-tabs">
+        <a href="./index.html" class="header-nav-tab" id="top-nav-python" data-page="python" title="Khóa học Lập trình Python (209 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🐍</span>
+          <span class="nav-tab-label">Python</span>
+        </a>
+        <a href="./github.html" class="header-nav-tab" id="top-nav-github" data-page="github" title="Chuyên đề Git &amp; GitHub Thực chiến (18 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🐙</span>
+          <span class="nav-tab-label">Github</span>
+        </a>
+        <a href="./linux.html" class="header-nav-tab active" id="top-nav-linux" data-page="linux" aria-current="page" title="Chuyên đề Linux Thực chiến &amp; Nội bộ Hệ điều hành (41 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🐧</span>
+          <span class="nav-tab-label">Linux</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="header-right">
+      <div class="font-size-controls" role="group" aria-label="Chỉnh cỡ chữ">
+        <button type="button" class="font-btn" data-size="small" title="Chữ nhỏ" aria-label="Cỡ chữ nhỏ">A-</button>
+        <button type="button" class="font-btn active" data-size="medium" title="Chữ vừa" aria-label="Cỡ chữ vừa">A</button>
+        <button type="button" class="font-btn" data-size="large" title="Chữ lớn" aria-label="Cỡ chữ lớn">A+</button>
+      </div>
+      <button
+        type="button"
+        id="theme-toggle-btn"
+        class="icon-btn"
+        aria-label="Chuyển đổi giao diện Sáng hoặc Tối"
+      >
+        <span>🌙</span> <span class="btn-label">Tối</span>
+      </button>
+    </div>
+
+    <!-- Thanh tiến độ đọc toàn bài -->
+    <div class="reading-progress-track" aria-hidden="true">
+      <div id="reading-progress-fill" class="reading-progress-fill"></div>
+    </div>
+  </header>
+
+  <!-- Lớp nền mờ cho ngăn kéo trên thiết bị di động -->
+  <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+  <!-- Khung bố cục 3 cột (Desktop) / 1 cột (Mobile) -->
+  <div class="app-shell">
+    <!-- Cột 1: Cây mục lục chuyên đề Linux -->
+    <aside id="sidebar-left" class="sidebar-left" aria-label="Mục lục chuyên đề Linux">
+      <button
+        type="button"
+        id="sidebar-close-btn"
+        class="sidebar-close-btn"
+        aria-label="Đóng danh mục bài học"
+      >
+        ✕
+      </button>
+      <div class="progress-card" aria-live="polite">
+        <div class="progress-header">
+          <span>Tiến độ chuyên đề</span>
+          <span id="sidebar-progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+          <div id="sidebar-progress-fill" class="progress-bar-fill" style="width: 0%; background: linear-gradient(90deg, #d97706, #10b981);"></div>
+        </div>
+        <div id="sidebar-progress-stats" class="progress-stats">
+          <span>Đã hoàn thành: <strong>0/0</strong> bài</span>
+        </div>
+      </div>
+
+      <!-- Bộ lọc Cấp độ trong Sidebar -->
+      <div class="sidebar-course-tabs" id="sidebar-course-tabs" role="tablist" aria-label="Lọc cấp độ hiển thị">
+        <button type="button" class="course-tab-btn active" data-course-filter="all">Tất cả</button>
+        <button type="button" class="course-tab-btn" data-course-filter="part-lx-1">🌱 Cấp 1</button>
+        <button type="button" class="course-tab-btn" data-course-filter="part-lx-2">🌿 Cấp 2</button>
+        <button type="button" class="course-tab-btn" data-course-filter="part-lx-3">🛡️ Cấp 3</button>
+        <button type="button" class="course-tab-btn" data-course-filter="part-lx-4">🔬 Cấp 4</button>
+      </div>
+
+      <nav id="curriculum-tree" class="curriculum-tree" aria-label="Danh sách bài học Linux"></nav>
+    </aside>
+
+    <!-- Cột 2: Nội dung bài học chính -->
+    <div class="main-content-wrapper">
+      <main id="main-content" class="main-content" tabindex="-1"></main>
+    </div>
+
+    <!-- Cột 3: Mục lục 'Trong bài này' -->
+    <aside class="sidebar-right" aria-label="Mục lục trong bài học hiện tại">
+      <nav id="toc-container" class="toc-container"></nav>
+    </aside>
+  </div>
+
+  <!-- Nạp dữ liệu các cấp độ và Controller chuyên đề (hoạt động độc lập cả qua HTTP lẫn file://) -->
+  <script src="./data/linux/level1.js"></script>
+  <script src="./data/linux/level2.js"></script>
+  <script src="./data/linux/level3.js"></script>
+  <script src="./data/linux/level4.js"></script>
+  <script src="./js/topic-engine.js"></script>
+  <script src="./js/linux-app.js"></script>
+  <button type="button" id="back-to-top-btn" class="back-to-top-btn" aria-label="Cuộn lên đầu trang" title="Lên đầu trang">
+    <span aria-hidden="true">↑</span>
+  </button>
+</body>
+</html>

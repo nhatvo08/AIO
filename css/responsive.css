@@ -1,0 +1,360 @@
+/* ==========================================================================
+   Responsive Stylesheet — Mobile, Tablet & Adaptive Enhancements
+   Tuân thủ nguyên tắc: Không thay đổi Desktop, chỉ áp dụng cho màn hình nhỏ
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Đa phương tiện & Reset an toàn (Bảo đảm không tràn khung)
+   -------------------------------------------------------------------------- */
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Chống cuộn nền khi mở Drawer trên Mobile */
+body.scroll-lock {
+  overflow: hidden;
+}
+
+/* Nút đóng Sidebar Drawer: Mặc định ẩn trên Desktop */
+.sidebar-close-btn {
+  display: none;
+}
+
+/* Đảm bảo công thức toán inline không gây vỡ dòng hoặc tràn màn hình siêu nhỏ */
+.math-inline {
+  max-width: 100%;
+  overflow-x: auto;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   2. Breakpoint: Laptop nhỏ & Tablet xoay ngang (<= 1200px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  /* Cột TOC phải đã được ẩn trong layout gốc; bổ sung bảo vệ tràn ngang */
+  .main-content {
+    max-width: 100%;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Breakpoint: Máy tính bảng dọc & Màn hình gập (<= 900px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  /* Touch target tối thiểu 44x44px cho nút Menu Hamburger */
+  .menu-toggle-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.25rem;
+  }
+
+  /* Nút đóng ngăn kéo Sidebar trên Mobile */
+  .sidebar-close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface-alt);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 210;
+    transition: background-color 0.15s, color 0.15s;
+  }
+
+  .sidebar-close-btn:hover,
+  .sidebar-close-btn:active {
+    background: var(--bg-surface-hover);
+    color: var(--danger);
+  }
+
+  /* Tạo khoảng trống phía trên cho Sidebar Drawer để không bị nút đóng che */
+  .sidebar-left {
+    padding-top: 16px;
+    position: fixed;
+  }
+
+  .sidebar-left .progress-card {
+    margin-right: 48px; /* Không bị nút X che khuất */
+  }
+
+  /* Tối ưu vùng chạm các đề mục bài học trong Sidebar */
+  .lesson-nav-btn {
+    padding: 10px 10px;
+    min-height: 42px;
+  }
+
+  .course-tab-btn {
+    padding: 8px 12px;
+    min-height: 38px;
+  }
+
+  .part-group-header {
+    padding: 12px 14px;
+    min-height: 44px;
+  }
+
+  /* Tiêu đề bài học bẻ chữ an toàn nếu gặp thuật ngữ dài */
+  .lesson-article h1,
+  .lesson-article h2,
+  .lesson-article h3 {
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Breakpoint: Phablet & Mobile xoay ngang (<= 768px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  /* Triệt tiêu cuộn ngang: Co giãn lưới lộ trình khóa học */
+  .roadmap-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 14px;
+  }
+
+  /* Triệt tiêu cuộn ngang: Kính hiển vi IEEE 754 và Unicode */
+  .ieee-analysis-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  }
+
+  /* Giảm padding của hộp widget tương tác để tăng không gian hiển thị nội dung */
+  .widget-box {
+    padding: 16px;
+    margin: 20px 0;
+  }
+
+  /* Header của Code Block cho phép wrap nút Copy nếu tiêu đề dài */
+  .code-card-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .code-header-left {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .copy-code-btn {
+    padding: 6px 12px;
+    min-height: 36px;
+  }
+
+  /* Tối ưu hiển thị bảng dữ liệu */
+  .lesson-table th,
+  .lesson-table td,
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Breakpoint: Smartphone tiêu chuẩn (<= 560px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 560px) {
+  /* Vùng chạm tối thiểu 44x44px cho Theme button */
+  .icon-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 10px;
+    justify-content: center;
+  }
+
+  /* Chuẩn hóa cỡ chữ nội dung chính trên mobile (không nhỏ hơn ~16px) */
+  .lesson-article p,
+  .callout-body,
+  .exercise-problem,
+  .quiz-question,
+  .summary-box p,
+  .intuition-metaphor {
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+
+  /* Vùng chạm cho các lựa chọn câu hỏi Quiz */
+  .quiz-option-btn {
+    padding: 12px 14px;
+    min-height: 44px;
+    font-size: 0.95rem;
+  }
+
+  /* Vùng chạm nút Hoàn thành bài học & Hành động Hero */
+  .btn-complete-toggle {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .btn-primary,
+  .hero-actions .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  /* Nút giải pháp bài tập */
+  .solution-summary {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Breakpoint: Smartphone màn hình hẹp (<= 400px bao gồm 320px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 400px) {
+  /* Ẩn cụm chỉnh cỡ chữ A-/A/A+ trên thanh Header hẹp để ô tìm kiếm không bị ép bẹp */
+  .font-size-controls {
+    display: none;
+  }
+
+  /* Thu gọn padding Header cho màn hình 320px - 360px */
+  .top-header {
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  .header-left {
+    gap: 6px;
+  }
+
+  /* Thu gọn nhãn nút trên Header khi màn hình quá hẹp */
+  @media (max-width: 380px) {
+    .header-nav-tab .nav-tab-label {
+      display: none;
+    }
+  }
+
+  .main-content-wrapper {
+    padding: 14px 10px 48px;
+  }
+
+  /* Triệt tiêu 100% nguy cơ cuộn ngang trên màn hình 320px */
+  .roadmap-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .part-card {
+    padding: 14px;
+  }
+
+  .hero-banner {
+    padding: 14px;
+  }
+
+  .hero-title {
+    font-size: 1.35rem;
+  }
+
+  .hero-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .ieee-analysis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .methods-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .widget-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .widget-box {
+    padding: 12px;
+    border-radius: var(--radius-md);
+  }
+
+  .lesson-article h1 {
+    font-size: 1.4rem;
+  }
+
+  .course-title-lg {
+    font-size: 1.18rem;
+  }
+
+  .course-section-header-lg {
+    padding: 14px;
+  }
+
+  /* Chống tràn cho thanh bit IEEE 754 và Unicode */
+  .ieee-bitfield-card {
+    padding: 10px;
+  }
+
+  .ieee-bits-stream {
+    padding: 6px;
+  }
+}
+
+/* ==========================================================================
+   Print Stylesheet — In ấn bài học sạch sẽ (PDF / Giấy)
+   ========================================================================== */
+@media print {
+  .top-header,
+  .sidebar-left,
+  .sidebar-right,
+  .back-to-top-btn,
+  .reading-progress-track,
+  .complete-lesson-bar,
+  .lesson-prev-next {
+    display: none !important;
+  }
+  .app-shell {
+    display: block !important;
+    max-width: 100% !important;
+  }
+  .main-content-wrapper {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+  .code-example-card {
+    border: 1px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    color: #0f172a !important;
+    page-break-inside: avoid;
+  }
+  .code-card-header {
+    background: #f1f5f9 !important;
+    color: #334155 !important;
+    border-bottom: 1px solid #cbd5e1 !important;
+  }
+  .copy-code-btn {
+    display: none !important;
+  }
+  .code-pre,
+  .code-pre code {
+    color: #0f172a !important;
+  }
+}

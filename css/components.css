@@ -1,0 +1,1373 @@
+/* ==========================================================================
+   UI Components — Home, Lesson Sections, Code Blocks, Callouts, Quiz, Modal
+   ========================================================================== */
+
+/* Typography trong nội dung bài học */
+.lesson-article h1 {
+  font-size: 1.95rem;
+  line-height: 1.28;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+
+.lesson-article h2 {
+  font-size: 1.4rem;
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 36px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.lesson-article h3 {
+  font-size: 1.15rem;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 22px 0 10px;
+}
+
+.lesson-article h4 {
+  font-size: 1.02rem;
+  line-height: 1.45;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 18px 0 8px;
+}
+
+.lesson-article p {
+  margin-bottom: 14px;
+  color: var(--text-secondary);
+}
+
+.lesson-article ul,
+.lesson-article ol {
+  margin: 0 0 16px 22px;
+  color: var(--text-secondary);
+}
+
+.lesson-article li {
+  margin-bottom: 6px;
+}
+
+.lesson-article strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Inline code */
+code:not(pre code) {
+  font-family: var(--font-mono);
+  font-size: 0.87em;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background-color: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  color: var(--accent-text);
+  word-break: break-word;
+}
+
+/* Bảng dữ liệu trong bài học */
+.table-responsive {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 16px 0 22px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+}
+
+.lesson-article table {
+  max-width: 100%;
+}
+
+.section-prose > table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 16px 0 22px;
+  border-collapse: collapse;
+}
+
+/* Định dạng công thức toán học inline $...$ và KaTeX */
+.math-inline {
+  font-family: 'Cambria Math', 'Latin Modern Math', 'Times New Roman', serif;
+  font-style: italic;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  padding: 1px 6px;
+  border-radius: var(--radius-xs);
+  font-size: 0.95em;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.math-inline sup,
+.math-inline sub {
+  font-style: normal;
+  font-size: 0.75em;
+}
+
+/* Xử lý hiển thị và chống tràn khung cho công thức khối KaTeX */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 6px 0;
+  margin: 12px 0;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.lesson-table,
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.lesson-table th,
+.data-table th {
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+
+.lesson-table td,
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.lesson-table tr:last-child td,
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.lesson-table tr:hover td,
+.data-table tr:hover td {
+  background: var(--bg-surface-alt);
+}
+
+/* ==========================================================================
+   Trang chủ (Home View)
+   ========================================================================== */
+.hero-banner {
+  background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-surface-alt) 100%);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--py-gold-bg);
+  color: var(--py-gold);
+  border: 1px solid var(--py-gold-border);
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-size: 2.15rem;
+  line-height: 1.22;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 68ch;
+  margin-bottom: 22px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  background: var(--gradient-primary);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  filter: brightness(1.05);
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: var(--accent-primary-hover);
+  text-decoration: none;
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+  background: var(--accent-primary-hover);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.92rem;
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-surface-alt);
+}
+
+.btn-secondary:active {
+  transform: translateY(1px);
+  background: var(--bg-surface-hover);
+}
+
+.btn-sm {
+  padding: 5px 12px;
+  font-size: 0.8rem;
+}
+
+.hero-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+}
+
+.stat-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Phân tách 2 Học phần Riêng biệt (Course Blocks & Headers)
+   ========================================================================== */
+.course-home-section {
+  margin-bottom: 44px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.course-home-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 24px;
+}
+
+.course-section-header-lg {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(37, 99, 235, 0.01) 100%);
+  border: 1px solid var(--accent-soft-border);
+  border-left: 5px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.course-section-header-lg.numbers-theme {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.02) 100%);
+  border-color: var(--success-border);
+  border-left: 5px solid var(--success);
+}
+
+.course-section-header-lg.lp-theme {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(124, 58, 237, 0.02) 100%);
+  border-color: var(--deep-border);
+  border-left: 5px solid var(--lp-purple);
+}
+
+.course-header-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.course-number-badge {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--accent-primary);
+  color: #ffffff;
+  padding: 3px 9px;
+  border-radius: var(--radius-xs);
+}
+
+.course-number-badge.numbers-badge {
+  background: var(--success);
+  color: #ffffff;
+}
+
+.course-number-badge.lp-badge {
+  background: var(--lp-purple);
+  color: #ffffff;
+}
+
+.course-tag-badge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  padding: 3px 9px;
+  border-radius: var(--radius-xs);
+}
+
+.numbers-theme .course-tag-badge {
+  color: var(--success-text);
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+}
+
+.lp-theme .course-tag-badge {
+  color: var(--deep-text);
+  background: var(--deep-bg);
+  border: 1px solid var(--deep-border);
+}
+
+.course-meta-badge {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.course-title-lg {
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.course-desc-lg {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 14px 0;
+}
+
+.course-progress-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.83rem;
+  color: var(--text-muted);
+}
+
+.course-prog-bar {
+  flex: 1;
+  max-width: 240px;
+  height: 7px;
+  background: var(--border-subtle);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.course-prog-fill {
+  height: 100%;
+  background: var(--accent-primary);
+  border-radius: var(--radius-pill);
+  transition: width 0.3s ease;
+}
+
+.course-prog-fill.numbers-fill {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.course-prog-fill.lp-fill {
+  background: linear-gradient(90deg, var(--lp-purple) 0%, var(--lp-purple-hover) 100%);
+}
+
+/* Breadcrumb trong Bài học */
+.breadcrumb-course-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  border: 1px solid var(--accent-soft-border);
+  margin-right: 6px;
+}
+
+.breadcrumb-course-badge.course-python,
+.breadcrumb-course-badge.course-numbers {
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-border);
+}
+
+.breadcrumb-course-badge.course-learning-python,
+.breadcrumb-course-badge.course-learning-python-part3 {
+  background: var(--deep-bg);
+  color: var(--deep-text);
+  border-color: var(--deep-border);
+}
+
+.sr-course-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  margin-right: 4px;
+}
+
+.sr-course-badge.course-numbers {
+  background: var(--py-gold-bg);
+  color: var(--warning-text);
+}
+
+/* Lộ trình dạng Thẻ (Roadmap Cards) */
+.roadmap-section-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+  margin-bottom: 36px;
+}
+
+.part-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-xs);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.part-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-soft-border);
+  box-shadow: var(--shadow-hover);
+}
+
+.part-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
+.part-number-pill {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.part-card-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.part-card-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.part-card-lessons {
+  list-style: none;
+  margin: 0 0 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 12px;
+}
+
+.part-card-lesson-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.84rem;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+}
+
+.part-card-lesson-btn:hover {
+  background: var(--bg-surface-alt);
+  color: var(--accent-primary);
+}
+
+/* ==========================================================================
+   Header Bài học & Huy hiệu (Badges)
+   ========================================================================== */
+.lesson-header {
+  margin-bottom: 26px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.lesson-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.part-breadcrumb {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.level-basic { background: var(--level-basic-bg); color: var(--level-basic-text); }
+.level-inter { background: var(--level-inter-bg); color: var(--level-inter-text); }
+.level-adv   { background: var(--level-adv-bg);   color: var(--level-adv-text); }
+.level-expert{ background: var(--level-expert-bg);color: var(--level-expert-text); }
+
+.badge-new-314 {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--py-gold-bg);
+  color: var(--py-gold);
+  border: 1px solid var(--py-gold-border);
+}
+
+.lesson-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  margin-bottom: 0;
+}
+
+/* 1. Mục tiêu bài học (Objectives Box) */
+.objectives-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-xs);
+}
+
+.objectives-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.objectives-list,
+.lesson-article .objectives-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.objectives-list li,
+.lesson-article .objectives-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.93rem;
+}
+
+.obj-check {
+  color: var(--accent-primary);
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* 2. Hộp Trực giác (Intuition Box) */
+.intuition-box {
+  background: linear-gradient(135deg, var(--info-bg), var(--bg-surface));
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  margin-bottom: 28px;
+}
+
+.intuition-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--info-text);
+  margin-bottom: 8px;
+}
+
+.intuition-metaphor,
+.lesson-article .intuition-metaphor {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.intuition-visual {
+  margin-top: 12px;
+  padding: 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+}
+
+/* ==========================================================================
+   4. Ví dụ Code (Code Block + Copy + Output riêng + Chú thích từng dòng)
+   ========================================================================== */
+.code-example-card {
+  margin: 20px 0 26px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-code);
+  box-shadow: var(--shadow-sm);
+}
+
+.code-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 14px;
+  background: var(--bg-code-header);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.code-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+}
+
+.copy-code-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f1f5f9;
+  font-size: 0.76rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.copy-code-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.copy-code-btn.copied {
+  background: var(--success);
+  border-color: var(--success-border);
+  color: #ffffff;
+}
+
+.code-pre {
+  margin: 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--code-font-size);
+  line-height: var(--line-height-code);
+  color: #e6edf3;
+  tab-size: 4;
+}
+
+.lesson-article pre:not(.code-example-card pre),
+.code-block {
+  margin: 16px 0;
+  padding: 14px 16px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: var(--code-font-size);
+  line-height: var(--line-height-code);
+  background: var(--bg-code);
+  color: #e6edf3;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  tab-size: 4;
+}
+
+.code-line {
+  display: table-row;
+}
+
+.line-num {
+  display: table-cell;
+  user-select: none;
+  padding-right: 16px;
+  text-align: right;
+  color: #6e7681;
+  font-size: 0.78rem;
+  min-width: 28px;
+}
+
+.line-content {
+  display: table-cell;
+  white-space: pre;
+}
+
+/* Syntax Highlighting Tokens */
+.tok-kw     { color: var(--syn-keyword); font-weight: 600; }
+.tok-bi     { color: var(--syn-builtin); }
+.tok-str    { color: var(--syn-string); }
+.tok-pfx    { color: var(--syn-prefix); font-weight: 700; }
+.tok-tstr   { color: var(--syn-tstring); }
+.tok-num    { color: var(--syn-number); }
+.tok-cmt    { color: var(--syn-comment); font-style: italic; }
+.tok-dec    { color: var(--syn-decorator); }
+.tok-op     { color: var(--syn-operator); }
+.tok-interp { color: var(--syn-interp); }
+
+/* Khối Output riêng biệt */
+.code-output-block {
+  background: var(--bg-output);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px 16px 12px;
+}
+
+.output-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #38bdf8;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.output-pre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #a7f3d0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Chú thích từng dòng quan trọng */
+.code-annotations {
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  padding: 12px 16px;
+}
+
+.annotations-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.annotation-list,
+.lesson-article .annotation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.annotation-item,
+.lesson-article .annotation-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.ann-line-badge {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: var(--radius-xs);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   5. Hộp Callouts: Lỗi thường gặp (⚠), Ghi nhớ (💡), Chuyên sâu (🔍), Mới 3.14 (✨)
+   ========================================================================== */
+.callout-box {
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin: 18px 0;
+  border: 1px solid transparent;
+}
+
+.callout-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.callout-body {
+  font-size: 0.92rem;
+  color: var(--text-primary);
+}
+
+.callout-body p:last-child {
+  margin-bottom: 0;
+}
+
+.callout-pitfall,
+.callout-warning,
+.callout {
+  background: var(--warning-bg);
+  border-color: var(--warning-border);
+  border-left: 4px solid var(--warning);
+}
+
+.callout-tip {
+  background: var(--success-bg);
+  border-color: var(--success-border);
+  border-left: 4px solid var(--success);
+}
+.callout-tip .callout-header {
+  color: var(--success-text);
+}
+.callout-pitfall .callout-header,
+.callout-warning .callout-header,
+.callout .callout-header {
+  color: var(--warning-text);
+}
+
+.callout-danger {
+  background: var(--danger-bg);
+  border-color: var(--danger-border);
+}
+.callout-danger .callout-header {
+  color: var(--danger-text);
+}
+
+.callout-note {
+  background: var(--bg-surface-alt);
+  border-color: var(--border-subtle);
+  border-left: 4px solid var(--accent-primary);
+  margin-bottom: 20px;
+}
+.callout-note .callout-header {
+  color: var(--accent-primary);
+}
+
+.callout-tip {
+  background: var(--success-bg);
+  border-color: var(--success-border);
+}
+.callout-tip .callout-header {
+  color: var(--success-text);
+}
+
+.callout-314 {
+  background: var(--py-gold-bg);
+  border-color: var(--py-gold-border);
+}
+.callout-314 .callout-header {
+  color: var(--py-gold);
+}
+
+/* Hộp Chuyên sâu thu gọn được (<details>) */
+.deep-dive-details {
+  background: var(--deep-bg);
+  border: 1px solid var(--deep-border);
+  border-radius: var(--radius-md);
+  margin: 18px 0;
+  overflow: hidden;
+}
+
+.deep-dive-summary {
+  padding: 14px 18px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--deep-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  user-select: none;
+}
+
+.deep-dive-summary::-webkit-details-marker {
+  display: none;
+}
+
+.deep-dive-toggle-hint {
+  font-size: 0.78rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.deep-dive-content {
+  padding: 0 18px 16px;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  border-top: 1px solid var(--deep-border);
+  padding-top: 14px;
+}
+
+/* ==========================================================================
+   6. Bài tập 3 mức (Dễ / Vừa / Khó)
+   ========================================================================== */
+.exercises-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 16px 0 28px;
+}
+
+.exercise-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-xs);
+}
+
+.exercise-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ex-level-badge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+}
+
+.ex-easy   { background: var(--level-basic-bg); color: var(--level-basic-text); }
+.ex-medium { background: var(--level-inter-bg); color: var(--level-inter-text); }
+.ex-hard   { background: var(--level-adv-bg);   color: var(--level-adv-text); }
+
+.exercise-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.exercise-problem {
+  font-size: 0.93rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.exercise-hint {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: var(--bg-surface-alt);
+  padding: 8px 12px;
+  border-radius: var(--radius-xs);
+  margin-bottom: 12px;
+}
+
+.solution-details {
+  border-top: 1px dashed var(--border-strong);
+  padding-top: 10px;
+}
+
+.solution-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  background: var(--accent-soft);
+  user-select: none;
+}
+
+.solution-body {
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   7. Quiz Trắc nghiệm Tương tác (3–5 câu)
+   ========================================================================== */
+.quiz-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 16px 0 28px;
+}
+
+.quiz-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-xs);
+}
+
+.quiz-question {
+  font-weight: 700;
+  font-size: 0.96rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quiz-option-btn {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.quiz-option-btn:hover:not(:disabled) {
+  border-color: var(--accent-primary);
+  background: var(--bg-surface);
+}
+
+.quiz-option-letter {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quiz-option-btn.correct {
+  background: var(--success-bg);
+  border-color: var(--success);
+  color: var(--success-text);
+  font-weight: 600;
+}
+
+.quiz-option-btn.wrong {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger-text);
+}
+
+.quiz-explanation {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  display: none;
+}
+
+.quiz-explanation.visible {
+  display: block;
+}
+
+.quiz-explanation.is-correct {
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  color: var(--text-primary);
+}
+
+.quiz-explanation.is-wrong {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   8. Tóm tắt & Điều hướng Bài trước / Bài sau
+   ========================================================================== */
+.summary-box {
+  background: var(--bg-surface);
+  border: 2px solid var(--accent-soft-border);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  margin: 28px 0;
+}
+
+.summary-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent-text);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.complete-lesson-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 24px;
+}
+
+.btn-complete-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-complete-toggle.completed {
+  background: var(--success);
+  border-color: var(--success);
+  color: #ffffff;
+}
+
+.lesson-prev-next {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.prev-next-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.prev-next-card:hover {
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+.prev-next-card.next {
+  text-align: right;
+}
+
+.pn-direction {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.prev-next-card.next .pn-direction {
+  justify-content: flex-end;
+}
+
+.kbd-hint {
+  display: inline-block;
+  padding: 1px 5px;
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  color: var(--text-muted);
+  box-shadow: 0 1px 0 var(--border-subtle);
+  line-height: 1.2;
+  text-transform: none;
+}
+
+.pn-title {
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+@media (max-width: 560px) {
+  .lesson-prev-next {
+    grid-template-columns: 1fr;
+  }
+  .hero-banner {
+    padding: 20px;
+  }
+  .hero-title {
+    font-size: 1.65rem;
+  }
+}

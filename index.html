@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light" data-font-size="medium">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Chương trình 3 Học phần: Nền tảng Python, Làm chủ Chuỗi (str) &amp; Learning Python trong Python 3.14.8." />
+  <title>Python</title>
+  <link rel="icon" type="image/png" href="assets/icon-192.png">
+  <link rel="stylesheet" href="./css/variables.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+  <link rel="stylesheet" href="./css/components.css" />
+  <link rel="stylesheet" href="./css/widgets.css" />
+  <link rel="stylesheet" href="./css/responsive.css" />
+  <link rel="stylesheet" href="./css/github.css" />
+  <link rel="stylesheet" href="./css/linux.css" />
+  <!-- KaTeX CSS (pinned version 0.16.11) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous" />
+  <!-- KaTeX JS & Auto-render extension (pinned version 0.16.11) -->
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Chuyển thẳng tới nội dung chính</a>
+
+  <!-- Thanh điều hướng trên cùng (Top Header) -->
+  <header class="top-header" role="banner">
+    <div class="header-left">
+      <button
+        type="button"
+        id="menu-toggle-btn"
+        class="menu-toggle-btn"
+        aria-label="Mở hoặc đóng danh mục bài học"
+      >
+        ☰
+      </button>
+      <a href="#home" id="brand-home-link" class="brand-link">
+        <span class="brand-logo" aria-hidden="true">py</span>
+        <span class="brand-subtitle">Python</span>
+        <span class="brand-badge">Python 3.14.8</span>
+      </a>
+    </div>
+
+    <nav class="header-center" aria-label="Điều hướng chuyên đề">
+      <div class="header-nav-tabs">
+        <a href="./index.html" class="header-nav-tab active" id="top-nav-python" data-page="python" aria-current="page" title="Khóa học Lập trình Python (209 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🐍</span>
+          <span class="nav-tab-label">Python</span>
+        </a>
+        <a href="./github.html" class="header-nav-tab" id="top-nav-github" data-page="github" title="Chuyên đề Git &amp; GitHub Thực chiến (18 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🐙</span>
+          <span class="nav-tab-label">Github</span>
+        </a>
+        <a href="./linux.html" class="header-nav-tab" id="top-nav-linux" data-page="linux" title="Chuyên đề Linux Thực chiến &amp; Nội bộ Hệ điều hành (41 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🐧</span>
+          <span class="nav-tab-label">Linux</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="header-right">
+      <div class="font-size-controls" role="group" aria-label="Chỉnh cỡ chữ">
+        <button type="button" class="font-btn" data-size="small" title="Chữ nhỏ" aria-label="Cỡ chữ nhỏ">A-</button>
+        <button type="button" class="font-btn active" data-size="medium" title="Chữ vừa" aria-label="Cỡ chữ vừa">A</button>
+        <button type="button" class="font-btn" data-size="large" title="Chữ lớn" aria-label="Cỡ chữ lớn">A+</button>
+      </div>
+      <button
+        type="button"
+        id="theme-toggle-btn"
+        class="icon-btn"
+        aria-label="Chuyển đổi giao diện Sáng hoặc Tối"
+      >
+        <span>🌙</span> <span class="btn-label">Tối</span>
+      </button>
+    </div>
+
+    <!-- Thanh tiến độ đọc toàn bài -->
+    <div class="reading-progress-track" aria-hidden="true">
+      <div id="reading-progress-fill" class="reading-progress-fill"></div>
+    </div>
+  </header>
+
+  <!-- Lớp nền mờ cho ngăn kéo trên thiết bị di động -->
+  <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+  <!-- Khung bố cục 3 cột (Desktop) / 1 cột (Mobile) -->
+  <div class="app-shell">
+    <!-- Cột 1: Cây mục lục khóa học và Thanh tiến độ -->
+    <aside id="sidebar-left" class="sidebar-left" aria-label="Mục lục khóa học">
+      <button
+        type="button"
+        id="sidebar-close-btn"
+        class="sidebar-close-btn"
+        aria-label="Đóng danh mục bài học"
+      >
+        ✕
+      </button>
+      <div class="progress-card" aria-live="polite">
+        <div class="progress-header">
+          <span>Tiến độ tổng thể</span>
+          <span id="sidebar-progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+          <div id="sidebar-progress-fill" class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+        <div id="sidebar-progress-stats" class="progress-stats">
+          <span>Đã hoàn thành: <strong>0/209</strong> bài</span>
+        </div>
+      </div>
+
+      <!-- Bộ lọc Học phần trong Sidebar -->
+      <div class="sidebar-course-tabs" id="sidebar-course-tabs" role="tablist" aria-label="Lọc học phần hiển thị">
+        <button type="button" class="course-tab-btn active" data-course-filter="all">Tất cả</button>
+        <button type="button" class="course-tab-btn" data-course-filter="course-python">🐍 Python</button>
+        <button type="button" class="course-tab-btn" data-course-filter="course-str">🔤 Chuỗi (str)</button>
+        <button type="button" class="course-tab-btn" data-course-filter="course-learning-python">📖 Learning Python — Part 2</button>
+        <button type="button" class="course-tab-btn" data-course-filter="course-learning-python-part3">📜 Learning Python — Part 3</button>
+      </div>
+
+      <nav id="curriculum-tree" class="curriculum-tree" aria-label="Danh sách học phần và 209 bài học"></nav>
+    </aside>
+
+    <!-- Cột 2: Nội dung bài học chính -->
+    <div class="main-content-wrapper">
+      <main id="main-content" class="main-content" tabindex="-1"></main>
+    </div>
+
+    <!-- Cột 3: Mục lục "Trong bài này" -->
+    <aside class="sidebar-right" aria-label="Mục lục trong bài học hiện tại">
+      <nav id="toc-container" class="toc-container"></nav>
+    </aside>
+  </div>
+
+  <!-- Khởi chạy ứng dụng: dùng ES Modules chuẩn trên HTTP/HTTPS và tự động dùng bản fallback nếu mở trực tiếp qua file:// -->
+  <script>
+    (function () {
+      if (window.location.protocol === 'file:') {
+        var fallbackScript = document.createElement('script');
+        fallbackScript.src = './js/file-fallback.js';
+        document.body.appendChild(fallbackScript);
+      } else {
+        var modScript = document.createElement('script');
+        modScript.type = 'module';
+        modScript.src = './js/app.js';
+        document.body.appendChild(modScript);
+      }
+    })();
+  </script>
+  <button type="button" id="back-to-top-btn" class="back-to-top-btn" aria-label="Cuộn lên đầu trang" title="Lên đầu trang">
+    <span aria-hidden="true">↑</span>
+  </button>
+</body>
+</html>

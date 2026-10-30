@@ -1,0 +1,251 @@
+/* ==========================================================================
+   Design System Tokens — Nền tảng Thiết kế Giao diện Khóa học
+   Hỗ trợ đa chủ đề (Python, GitHub, Linux), WCAG AA contrast, Dark/Light modes
+   ========================================================================== */
+
+:root {
+  /* Font families — Hỗ trợ đầy đủ dấu Tiếng Việt & Monospace cho code */
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', 'Noto Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+
+  /* Cỡ chữ cơ sở (có thể điều chỉnh bởi người học: small / medium / large) */
+  --base-font-size: 16px;
+  --code-font-size: 0.88rem;
+  --line-height-body: 1.72;
+  --line-height-code: 1.6;
+
+  /* Khoảng cách chữ (Letter spacing) */
+  --tracking-tight: -0.018em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+
+  /* Bảng màu Sáng (Light Mode - Mặc định) — Tương phản đạt chuẩn WCAG AA */
+  --bg-app: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-alt: #f1f5f9;
+  --bg-surface-hover: #e2e8f0;
+  --bg-elevated: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.86);
+  --bg-code: #0f172a;
+  --bg-code-header: #1e293b;
+  --bg-output: #090d16;
+  --bg-backdrop: rgba(15, 23, 42, 0.55);
+
+  /* Văn bản */
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-inverse: #f8fafc;
+
+  /* Màu nhấn chủ đạo (Python Indigo / Royal Blue) */
+  --accent-primary: #2563eb;
+  --accent-primary-hover: #1d4ed8;
+  --accent-soft: #dbeafe;
+  --accent-soft-border: #93c5fd;
+  --accent-text: #1e40af;
+
+  /* Màu nhận diện chuyên đề (Topic Branding) */
+  --topic-python: #2563eb;
+  --topic-python-soft: #dbeafe;
+  --topic-github: #8b5cf6;
+  --topic-github-soft: #ede9fe;
+  --topic-linux: #d97706;
+  --topic-linux-soft: #fef3c7;
+  --topic-linux-bg: rgba(245, 158, 11, 0.14);
+  --topic-linux-border: rgba(245, 158, 11, 0.35);
+
+  /* Màu điểm nhấn Python vàng/xanh cho huy hiệu 3.14 */
+  --py-gold: #d97706;
+  --py-gold-bg: #fef3c7;
+  --py-gold-border: #fcd34d;
+
+  /* Dải gradient thương hiệu */
+  --gradient-primary: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --gradient-python: linear-gradient(135deg, #2563eb 0%, #059669 100%);
+  --gradient-github: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  --gradient-linux: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+
+  /* Màu ngữ nghĩa (Semantic Colors) */
+  --success: #059669;
+  --success-bg: #ecfdf5;
+  --success-border: #6ee7b7;
+  --success-text: #065f46;
+
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
+  --warning-border: #fcd34d;
+  --warning-text: #92400e;
+
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --danger-border: #fca5a5;
+  --danger-text: #991b1b;
+
+  --info: #0284c7;
+  --info-bg: #f0f9ff;
+  --info-border: #7dd3fc;
+  --info-text: #075985;
+
+  --deep-bg: #f5f3ff;
+  --deep-border: #c4b5fd;
+  --deep-text: #5b21b6;
+  --lp-purple: #8b5cf6;
+  --lp-purple-hover: #7c3aed;
+
+  /* Huy hiệu cấp độ bài học */
+  --level-basic-bg: #dcfce7;
+  --level-basic-text: #166534;
+  --level-inter-bg: #dbeafe;
+  --level-inter-text: #1e40af;
+  --level-adv-bg: #fef3c7;
+  --level-adv-text: #92400e;
+  --level-expert-bg: #f3e8ff;
+  --level-expert-text: #6b21a8;
+
+  /* Viền & Bóng đổ */
+  --border-subtle: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.35);
+
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-sm: 0 2px 6px -1px rgba(15, 23, 42, 0.07), 0 1px 3px -1px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 8px 20px -4px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 18px 32px -8px rgba(15, 23, 42, 0.12);
+  --shadow-hover: 0 12px 28px -4px rgba(15, 23, 42, 0.12), 0 4px 8px -2px rgba(15, 23, 42, 0.06);
+
+  /* Kích thước bố cục */
+  --header-height: 62px;
+  --sidebar-width: 310px;
+  --toc-width: 250px;
+  --content-max-width: 78ch;
+
+  /* Bo góc */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 9999px;
+
+  /* Tô màu cú pháp Python (Syntax Highlighting trên nền tối code block) */
+  --syn-keyword: #ff7b72;
+  --syn-builtin: #d2a8ff;
+  --syn-string: #a5d6ff;
+  --syn-prefix: #ffa657;
+  --syn-tstring: #56d364;
+  --syn-number: #79c0ff;
+  --syn-comment: #8b949e;
+  --syn-decorator: #ffa657;
+  --syn-operator: #ff7b72;
+  --syn-interp: #ffd33d;
+}
+
+/* ==========================================================================
+   Bảng màu Tối (Dark Mode) — Tự động hoặc bật qua nút Sáng/Tối
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg-app: #0b0f19;
+  --bg-surface: #111827;
+  --bg-surface-alt: #1e293b;
+  --bg-surface-hover: #334155;
+  --bg-elevated: #1e293b;
+  --bg-glass: rgba(17, 24, 39, 0.88);
+  --bg-code: #090d16;
+  --bg-code-header: #161f33;
+  --bg-output: #050811;
+  --bg-backdrop: rgba(2, 6, 23, 0.75);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-inverse: #0f172a;
+
+  --accent-primary: #3b82f6;
+  --accent-primary-hover: #60a5fa;
+  --accent-soft: rgba(59, 130, 246, 0.16);
+  --accent-soft-border: rgba(96, 165, 250, 0.4);
+  --accent-text: #93c5fd;
+
+  --topic-python: #3b82f6;
+  --topic-python-soft: rgba(59, 130, 246, 0.16);
+  --topic-github: #a78bfa;
+  --topic-github-soft: rgba(167, 139, 250, 0.16);
+  --topic-linux: #f59e0b;
+  --topic-linux-soft: rgba(245, 158, 11, 0.16);
+  --topic-linux-bg: rgba(245, 158, 11, 0.14);
+  --topic-linux-border: rgba(245, 158, 11, 0.35);
+
+  --py-gold: #fbbf24;
+  --py-gold-bg: rgba(245, 158, 11, 0.15);
+  --py-gold-border: rgba(251, 191, 36, 0.4);
+
+  --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --gradient-python: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
+  --gradient-github: linear-gradient(135deg, #a78bfa 0%, #818cf8 100%);
+  --gradient-linux: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.12);
+  --success-border: rgba(52, 211, 153, 0.35);
+  --success-text: #6ee7b7;
+
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --warning-border: rgba(251, 191, 36, 0.35);
+  --warning-text: #fde68a;
+
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.12);
+  --danger-border: rgba(248, 113, 113, 0.35);
+  --danger-text: #fca5a5;
+
+  --info: #38bdf8;
+  --info-bg: rgba(56, 189, 248, 0.12);
+  --info-border: rgba(125, 211, 252, 0.35);
+  --info-text: #bae6fd;
+
+  --deep-bg: rgba(139, 92, 246, 0.13);
+  --deep-border: rgba(167, 139, 250, 0.35);
+  --deep-text: #ddd6fe;
+  --lp-purple: #a78bfa;
+  --lp-purple-hover: #c4b5fd;
+
+  --level-basic-bg: rgba(34, 197, 94, 0.18);
+  --level-basic-text: #86efac;
+  --level-inter-bg: rgba(59, 130, 246, 0.18);
+  --level-inter-text: #93c5fd;
+  --level-adv-bg: rgba(245, 158, 11, 0.18);
+  --level-adv-text: #fde047;
+  --level-expert-bg: rgba(168, 85, 247, 0.18);
+  --level-expert-text: #d8b4fe;
+
+  --border-subtle: #1e293b;
+  --border-strong: #334155;
+  --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.45);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 20px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 36px rgba(0, 0, 0, 0.65);
+  --shadow-hover: 0 12px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* Tùy chọn kích cỡ chữ của người học */
+html[data-font-size="small"] {
+  --base-font-size: 14.5px;
+}
+html[data-font-size="medium"] {
+  --base-font-size: 16px;
+}
+html[data-font-size="large"] {
+  --base-font-size: 18px;
+}
+
+/* Tôn trọng prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
