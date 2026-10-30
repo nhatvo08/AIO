@@ -1371,3 +1371,64 @@ code:not(pre code) {
     font-size: 1.65rem;
   }
 }
+
+/* ==========================================================================
+   Biến thể Logo & Huy hiệu Thương hiệu các chuyên đề (Brand Styling Tokens)
+   ========================================================================== */
+.brand-logo-python {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 60%, #10b981 100%);
+}
+
+.brand-logo-github {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 60%, #4f46e5 100%);
+}
+
+.brand-logo-linux {
+  background: linear-gradient(135deg, #d97706 0%, #b45309 60%, #ea580c 100%);
+}
+
+.brand-logo-network {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 60%, #06b6d4 100%);
+}
+
+.brand-badge-python {
+  background-color: var(--py-gold-bg);
+  color: var(--py-gold);
+  border: 1px solid var(--py-gold-border);
+}
+
+.brand-badge-github {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: #7c3aed;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+}
+
+[data-theme="dark"] .brand-badge-github {
+  color: #c4b5fd;
+  background-color: rgba(139, 92, 246, 0.22);
+  border-color: rgba(167, 139, 250, 0.45);
+}
+
+.brand-badge-linux {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+[data-theme="dark"] .brand-badge-linux {
+  color: #fbbf24;
+  background-color: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.brand-badge-network {
+  background-color: rgba(2, 132, 199, 0.15);
+  color: #0284c7;
+  border: 1px solid rgba(2, 132, 199, 0.4);
+}
+
+[data-theme="dark"] .brand-badge-network {
+  color: #38bdf8;
+  background-color: rgba(56, 189, 248, 0.2);
+  border-color: rgba(56, 189, 248, 0.45);
+}

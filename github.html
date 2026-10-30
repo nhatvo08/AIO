@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Chuyên đề Git &amp; GitHub thực chiến: Từ nền tảng quản lý phiên bản tới CI/CD GitHub Actions &amp; bảo mật, gắn liền với các dự án mã nguồn Python." />
-  <title>Git &amp; GitHub Mastery | Lập trình Python</title>
+  <meta name="description" content="Chuyên đề Git &amp; GitHub thực chiến: Từ nền tảng quản lý phiên bản tới CI/CD GitHub Actions &amp; bảo mật (20 bài)." />
+  <title>Git &amp; GitHub Thực Chiến &amp; CI/CD | Hệ Thống Học Tập Lập Trình</title>
   <link rel="icon" type="image/png" href="assets/icon-192.png" />
   <link rel="stylesheet" href="./css/variables.css" />
   <link rel="stylesheet" href="./css/layout.css" />
@@ -12,9 +12,13 @@
   <link rel="stylesheet" href="./css/widgets.css" />
   <link rel="stylesheet" href="./css/responsive.css" />
   <link rel="stylesheet" href="./css/github.css" />
-  <link rel="stylesheet" href="./css/linux.css" />
+  <!-- KaTeX CSS (pinned version 0.16.11) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous" />
+  <!-- KaTeX JS & Auto-render extension (pinned version 0.16.11) -->
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="gh-page">
   <a href="#main-content" class="skip-link">Chuyển thẳng tới nội dung chính</a>
 
   <!-- Thanh điều hướng trên cùng (Top Header) -->
@@ -29,25 +33,29 @@
         ☰
       </button>
       <a href="#overview" id="brand-home-link" class="brand-link" title="Về tổng quan lộ trình Git &amp; GitHub">
-        <span class="brand-logo" aria-hidden="true">🐙</span>
+        <span class="brand-logo brand-logo-github" aria-hidden="true">🐙</span>
         <span class="brand-subtitle">Git &amp; GitHub</span>
-        <span class="brand-badge">Chuyên đề</span>
+        <span class="brand-badge brand-badge-github">20 Bài</span>
       </a>
     </div>
 
     <nav class="header-center" aria-label="Điều hướng chuyên đề">
       <div class="header-nav-tabs">
-        <a href="./index.html" class="header-nav-tab" id="top-nav-python" data-page="python" title="Khóa học Lập trình Python (209 bài)">
+        <a href="./index.html" class="header-nav-tab" id="top-nav-python" data-page="python" title="Khóa học Lập trình Python (219 bài)">
           <span class="nav-tab-icon" aria-hidden="true">🐍</span>
           <span class="nav-tab-label">Python</span>
         </a>
-        <a href="./github.html" class="header-nav-tab active" id="top-nav-github" data-page="github" aria-current="page" title="Chuyên đề Git &amp; GitHub Thực chiến (18 bài)">
+        <a href="./github.html" class="header-nav-tab active" id="top-nav-github" data-page="github" aria-current="page" title="Chuyên đề Git &amp; GitHub Thực chiến (20 bài)">
           <span class="nav-tab-icon" aria-hidden="true">🐙</span>
           <span class="nav-tab-label">Github</span>
         </a>
         <a href="./linux.html" class="header-nav-tab" id="top-nav-linux" data-page="linux" title="Chuyên đề Linux Thực chiến &amp; Nội bộ Hệ điều hành (41 bài)">
           <span class="nav-tab-icon" aria-hidden="true">🐧</span>
           <span class="nav-tab-label">Linux</span>
+        </a>
+        <a href="./network.html" class="header-nav-tab" id="top-nav-network" data-page="network" title="Chuyên đề Networking Chuyên Sâu trên Linux (54 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🌐</span>
+          <span class="nav-tab-label">Mạng Linux</span>
         </a>
       </div>
     </nav>
@@ -98,7 +106,7 @@
           <div id="sidebar-progress-fill" class="progress-bar-fill" style="width: 0%"></div>
         </div>
         <div id="sidebar-progress-stats" class="progress-stats">
-          <span>Đã hoàn thành: <strong>0/18</strong> bài</span>
+          <span>Đã hoàn thành: <strong>0/20</strong> bài</span>
         </div>
       </div>
 

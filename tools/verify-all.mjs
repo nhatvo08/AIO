@@ -118,6 +118,29 @@ await check('Dữ liệu Linux', () => {
   return `${parts.length} cấp / ${ids.length} bài`;
 });
 
+await check('Dữ liệu Networking', () => {
+  const files = fs
+    .readdirSync(abs('data/network'))
+    .filter((file) => /^phase[\da-z]+\.js$/.test(file))
+    .sort((a, b) => {
+      const getOrder = (f) => {
+        const m = f.match(/phase(\d+)([a-z]?)\.js/);
+        return parseInt(m[1]) * 10 + (m[2] ? m[2].charCodeAt(0) - 96 : 0);
+      };
+      return getOrder(a) - getOrder(b);
+    });
+  assert(files.length > 0, 'Không có file phase*.js trong data/network');
+  const parts = files.map((file) => {
+    const key = file.replace(/^phase|\.js$/g, '').toUpperCase();
+    const data = loadGlobalScript(`data/network/${file}`, `NET_PHASE${key}_DATA`);
+    assert(data && Array.isArray(data.lessons), `data/network/${file} thiếu mảng lessons`);
+    return { file, part: data };
+  });
+  const ids = parts.flatMap(({ part }) => part.lessons.map((lesson) => lesson.id));
+  assert(new Set(ids).size === ids.length, 'Có id bài Networking bị trùng');
+  return `${parts.length} giai đoạn / ${ids.length} bài`;
+});
+
 // 4. Đường dẫn nội bộ
 const brokenRefs = [];
 let refCount = 0;
@@ -128,7 +151,8 @@ function checkRef(fromFile, target) {
   if (!fs.existsSync(resolved)) brokenRefs.push(`${fromFile} → ${target}`);
 }
 
-for (const file of fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'))) {
+const htmlFiles = fs.readdirSync(ROOT).filter((f) => f.endsWith('.html'));
+for (const file of htmlFiles) {
   const html = read(file);
   for (const match of html.matchAll(/(?:href|src)="(\.\/[^"#?]+)"/g)) {
     checkRef(file, match[1]);
@@ -154,7 +178,7 @@ for (const file of scriptFiles) {
 
 await check('Đường dẫn nội bộ', () => {
   assert(brokenRefs.length === 0, `Hỏng ${brokenRefs.length} tham chiếu: ${brokenRefs.slice(0, 5).join(' | ')}`);
-  return `${refCount} tham chiếu trong ${scriptFiles.length} file JS + 3 file HTML`;
+  return `${refCount} tham chiếu trong ${scriptFiles.length} file JS + ${htmlFiles.length} file HTML`;
 });
 
 // 5. Bundle cho chế độ file://

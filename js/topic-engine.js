@@ -581,6 +581,42 @@
         return '<li>' + formatInlineCode(line) + '</li>';
       }).join('');
 
+      // Thử thách bản chất (Reflection Challenge)
+      var reflectionHtml = '';
+      if (lesson.reflectionQuestion) {
+        reflectionHtml = '' +
+          '<section id="sec-reflection" class="net-reflection-box">' +
+            '<div class="net-reflection-header">' +
+              '<span class="net-reflection-icon" aria-hidden="true">🧠</span>' +
+              '<span class="net-reflection-title">Thử thách bản chất — Giải thích bằng lời của bạn</span>' +
+            '</div>' +
+            '<div class="net-reflection-prompt">' +
+              '<p><strong>Câu hỏi:</strong> ' + formatMultilineHtml(lesson.reflectionQuestion) + '</p>' +
+            '</div>' +
+            (lesson.reflectionHint ? (
+              '<details class="net-reflection-details">' +
+                '<summary class="net-reflection-summary">🔍 Xem gợi ý suy ngẫm từ giảng viên</summary>' +
+                '<div class="net-reflection-hint-content">' +
+                  formatMultilineHtml(lesson.reflectionHint) +
+                '</div>' +
+              '</details>'
+            ) : '') +
+          '</section>';
+      }
+
+      // Thẻ cầu nối bài tiếp theo (Spiral Learning Bridge)
+      var nextBridgeHtml = '';
+      if (lesson.nextLessonPreview) {
+        nextBridgeHtml = '' +
+          '<div class="net-next-bridge-card">' +
+            '<div class="net-next-bridge-header">' +
+              '<span class="net-next-bridge-badge">MẮT XÍCH TIẾP THEO</span>' +
+              '<span class="net-next-bridge-title">Bước đệm kiến thức xoắn ốc</span>' +
+            '</div>' +
+            '<p class="net-next-bridge-text">' + formatInlineCode(lesson.nextLessonPreview) + '</p>' +
+          '</div>';
+      }
+
       var intuitionHtml = '';
       if (lesson.intuition) {
         intuitionHtml = '' +
@@ -640,6 +676,8 @@
             '</section>'
           ) : '') +
 
+          reflectionHtml +
+
           '<div class="complete-lesson-bar">' +
             '<div>' +
               '<strong>Tiến độ bài học:</strong> ' +
@@ -649,6 +687,8 @@
               '<span>' + (isDone ? '✓ Đã hoàn thành bài học' : '○ Đánh dấu hoàn thành') + '</span>' +
             '</button>' +
           '</div>' +
+
+          nextBridgeHtml +
 
           '<nav class="lesson-prev-next" aria-label="Điều hướng bài trước và bài sau">' +
             (prevItem ? (
@@ -735,7 +775,8 @@
           ...(lesson.sections || []).map(function (s) { return { id: s.id, label: s.title }; }),
           ...(pitfallsHtml || tipsHtml ? [{ id: 'sec-callouts', label: 'Lưu ý & Cạm bẫy' }] : []),
           ...(exercisesHtml ? [{ id: 'sec-exercises', label: 'Bài tập thực hành' }] : []),
-          ...(summaryHtml ? [{ id: 'sec-summary', label: 'Tóm tắt bài học' }] : [])
+          ...(summaryHtml ? [{ id: 'sec-summary', label: 'Tóm tắt bài học' }] : []),
+          ...(lesson.reflectionQuestion ? [{ id: 'sec-reflection', label: 'Thử thách bản chất' }] : [])
         ];
 
         tocEl.innerHTML = '' +
@@ -772,6 +813,21 @@
             if (el) tocObserver.observe(el);
           });
         }
+      }
+
+      if (typeof window !== 'undefined' && typeof window.renderMathInElement === 'function') {
+        try {
+          window.renderMathInElement(mainEl, {
+            delimiters: [
+              { left: '$$', right: '$$', display: true },
+              { left: '$', right: '$', display: false },
+              { left: '\\(', right: '\\)', display: false },
+              { left: '\\[', right: '\\]', display: true }
+            ],
+            ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            throwOnError: false
+          });
+        } catch (_mathErr) {}
       }
 
       window.scrollTo({ top: 0, behavior: 'auto' });

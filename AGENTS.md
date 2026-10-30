@@ -25,25 +25,26 @@ Kiểm tra thủ công sau khi sửa UI: mở 3 trang, sidebar phải có **209 
 | Đường dẫn | Vai trò | Ghi chú |
 |---|---|---|
 | `index.html` | Trang khóa Python | Điểm vào, **không di chuyển** |
-| `github.html`, `linux.html` | 2 chuyên đề | Điểm vào, **không di chuyển** |
-| `css/` | `variables` → `layout` → `components` → `widgets` → `responsive`, cộng `github.css`, `linux.css` | Thứ tự nạp quan trọng: biến phải trước |
+| `github.html`, `linux.html`, `network.html` | 3 chuyên đề | Điểm vào, **không di chuyển** |
+| `css/` | `variables` → `layout` → `components` → `widgets` → `responsive`, cộng `github.css`, `linux.css`, `network.css` | Thứ tự nạp quan trọng: biến phải trước |
 | `js/app.js` | Controller + renderer khóa Python (ESM) | Nạp bài bằng `import(\`../data/lessons/${id}.js\`)` |
 | `js/topic-engine.js` | Engine lõi dùng chung cho các chuyên đề | IIFE, cung cấp renderer, sidebar accordion, TOC, quiz, theme sync |
-| `js/github-app.js`, `js/linux-app.js` | Cấu hình chuyên đề Git & Linux | IIFE cấu hình mỏng gọi `window.TopicEngine.createApp`, chạy mượt trên `file://` |
+| `js/github-app.js`, `js/linux-app.js`, `js/network-app.js` | Cấu hình chuyên đề Git, Linux & Networking | IIFE cấu hình mỏng gọi `window.TopicEngine.createApp`, chạy mượt trên `file://` |
 | `js/widgets.js`, `storage.js`, `highlighter.js` | Widget bài học, localStorage, tô sáng mã | Dùng chung cho khóa Python |
-| `js/file-fallback.js` | **Sinh tự động** — bundle 209 bài cho chế độ `file://` | Không sửa tay; sinh lại bằng `node tools/build-fallback.mjs` |
-| `data/curriculum.js` | Mục lục 209 bài Python: học phần → phần → bài | Nguồn sự thật về `id` bài học |
+| `js/file-fallback.js` | **Sinh tự động** — bundle 219 bài cho chế độ `file://` | Không sửa tay; sinh lại bằng `node tools/build-fallback.mjs` |
+| `data/curriculum.js` | Mục lục 219 bài Python: học phần → phần → bài | Nguồn sự thật về `id` bài học |
 | `data/lessons/<id>.js` | Nội dung từng bài (`export default {...}`) | **Tên file = id**, không đổi tên tùy ý |
 | `data/methods.js` | 47 phương thức `str` | Dùng cho widget tương tác |
 | `data/github/level1..3.js` | Dữ liệu chuyên đề GitHub | Gán `window.GH_LEVELn_DATA`; level3 còn có `GH_REFERENCE_DATA` |
 | `data/linux/level1..4.js` | Dữ liệu chuyên đề Linux | Gán `window.LX_LEVELn_DATA` |
+| `data/network/phase*.js` | Dữ liệu chuyên đề Networking Linux | Gán `window.NET_PHASEn_DATA` (13 giai đoạn / 70 bài) |
 | `tools/verify-all.mjs` | Kiểm tra toàn vẹn, không cần thư viện | Chạy sau mọi thay đổi |
 | `tools/build-fallback.mjs` | Sinh lại `js/file-fallback.js` (Node.js) | Đa nền tảng, không phụ thuộc PowerShell |
 | `tools/build_fallback_all.ps1` | Script sinh fallback bằng PowerShell | Script phụ trợ cho môi trường Windows |
 | `tools/calc_sri.mjs` | Tính hash SRI khi nâng phiên bản KaTeX | Dùng một lần khi đổi CDN |
 | `_refactor/changelog.md` | Nhật ký các đợt tối ưu cấu trúc | Chỉ ghi thêm, không sửa lịch sử |
 
-Số lượng hiện tại: 209 bài Python, 18 bài GitHub + 2 tra cứu, 41 bài Linux.
+Số lượng hiện tại: 219 bài Python, 18 bài GitHub + 2 tra cứu, 41 bài Linux, 70 bài Networking trên Linux.
 
 ## 3. Bất biến — không được vi phạm
 

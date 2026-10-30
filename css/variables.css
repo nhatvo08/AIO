@@ -53,6 +53,10 @@
   --topic-linux-soft: #fef3c7;
   --topic-linux-bg: rgba(245, 158, 11, 0.14);
   --topic-linux-border: rgba(245, 158, 11, 0.35);
+  --topic-network: #0284c7;
+  --topic-network-soft: #e0f2fe;
+  --topic-network-bg: rgba(2, 132, 199, 0.14);
+  --topic-network-border: rgba(2, 132, 199, 0.35);
 
   /* Màu điểm nhấn Python vàng/xanh cho huy hiệu 3.14 */
   --py-gold: #d97706;
@@ -64,6 +68,7 @@
   --gradient-python: linear-gradient(135deg, #2563eb 0%, #059669 100%);
   --gradient-github: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
   --gradient-linux: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
+  --gradient-network: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
 
   /* Màu ngữ nghĩa (Semantic Colors) */
   --success: #059669;
@@ -173,6 +178,10 @@
   --topic-linux-soft: rgba(245, 158, 11, 0.16);
   --topic-linux-bg: rgba(245, 158, 11, 0.14);
   --topic-linux-border: rgba(245, 158, 11, 0.35);
+  --topic-network: #38bdf8;
+  --topic-network-soft: rgba(56, 189, 248, 0.16);
+  --topic-network-bg: rgba(56, 189, 248, 0.18);
+  --topic-network-border: rgba(56, 189, 248, 0.4);
 
   --py-gold: #fbbf24;
   --py-gold-bg: rgba(245, 158, 11, 0.15);
@@ -182,6 +191,7 @@
   --gradient-python: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
   --gradient-github: linear-gradient(135deg, #a78bfa 0%, #818cf8 100%);
   --gradient-linux: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  --gradient-network: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
 
   --success: #10b981;
   --success-bg: rgba(16, 185, 129, 0.12);
