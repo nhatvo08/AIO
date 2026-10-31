@@ -93,6 +93,6 @@ export default {
 [ ] Field mới chỉ là tùy chọn, renderer cũ vẫn chạy nếu thiếu
 [ ] CSS theo đúng thứ tự nạp, dùng biến có sẵn
 [ ] node tools/verify-all.mjs → 6/6, exit 0
-[ ] 3 trang: 209 / 20 / 41 mục, bấm 1 bài render, Console 0 lỗi
+[ ] 3 trang chính: 219 / 20 / 41 mục (hoặc 229 theo curriculum), bấm 1 bài render, Console 0 lỗi
 [ ] Nếu sửa data/lessons: đã sinh lại js/file-fallback.js bằng node tools/build-fallback.mjs
 ```

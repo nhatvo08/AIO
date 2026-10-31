@@ -51,7 +51,7 @@ lessons[]:   { id, number, title, level, duration, isNew314, keywords[] }   ← 
 `getFlatLessons()` làm phẳng và bổ sung: `courseId, courseNumber, courseTitle, courseShortTitle,
 courseIcon, courseBadge, courseAccent, partId, partNumber, partTitle, fullBreadcrumb`.
 
-Hiện trạng: 3 học phần / 17 phần / 209 bài (`course-python` 3, `course-str` 8, `course-learning-python` 6).
+Hiện trạng: 4 học phần / 18 phần / 219 bài (`course-python` 3, `course-str` 8, `course-learning-python` 6, `course-learning-python-part3` 1).
 
 ## 2.5 `data/lessons/<id>.js`
 
@@ -97,7 +97,7 @@ Thêm widget mới = thêm hàm render + thêm `case` + cập nhật tài liệu
 ## 2.9 Nạp script theo protocol (`index.html`)
 
 ```
-protocol === 'file:'  → <script src="./js/file-fallback.js">   (bundle 4,15 MB chứa sẵn 209 bài)
+protocol === 'file:'  → <script src="./js/file-fallback.js">   (bundle 4,16 MB chứa sẵn 219 bài)
 ngược lại             → <script type="module" src="./js/app.js">
 ```
 

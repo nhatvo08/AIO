@@ -11,7 +11,7 @@
 Bạn có thể sử dụng theo một trong hai cách cực kỳ đơn giản:
 
 * **Cách 1 — Mở trực tiếp (Ngoại tuyến / `file://`)**: 
-  Nhấp đúp chuột trực tiếp vào bất kỳ file nào (`index.html`, `github.html`, `linux.html`, `network.html`) để học ngay mà không cần cài đặt bất kỳ công cụ nào.
+  Nhấp đúp chuột trực tiếp vào bất kỳ file nào (`index.html`, `github.html`, `linux.html`) để học ngay mà không cần cài đặt bất kỳ công cụ nào.
 * **Cách 2 — Khởi chạy qua Local HTTP Server (Khuyến nghị)**: 
   Chạy lệnh sau tại thư mục dự án để trình duyệt nạp native ES Modules nhanh nhất:
   ```bash
@@ -22,7 +22,7 @@ Bạn có thể sử dụng theo một trong hai cách cực kỳ đơn giản:
 
 ---
 
-### 2. Bản đồ 4 Phân hệ Học tập
+### 2. Bản đồ 3 Phân hệ Học tập
 
 Truy cập nhanh thông qua thanh Header điều hướng trên cùng hoặc mở file tương ứng:
 
@@ -31,7 +31,6 @@ Truy cập nhanh thông qua thanh Header điều hướng trên cùng hoặc m�
 | **🐍 Python Chuyên Sâu** | [`index.html`](index.html) | 219 bài | Nền tảng, tư duy thuật toán, bản chất kiểu số/chuỗi, OOP và nội bộ CPython (Mark Lutz). |
 | **🐙 Git & GitHub** | [`github.html`](github.html) | 20 bài | Chu trình 3 trạng thái, phân nhánh, rebase, giải quyết conflict, CI/CD và Git Cheat Sheet. |
 | **🐧 Linux Thực Chiến** | [`linux.html`](linux.html) | 41 bài | Dòng lệnh CLI, quản trị tiến trình & systemd, Docker, Nginx đến kiến trúc Nhân (Kernel). |
-| **🌐 Linux Networking** | [`network.html`](network.html) | 70 bài | Mô hình OSI/TCP-IP, định tuyến, firewall (iptables/nftables), socket, phân tích gói tin. |
 
 ---
 
@@ -83,11 +82,11 @@ Học lập trình là quá trình **xây dựng mô hình tư duy và phản x�
 * **Lộ trình 2: Đào sâu bản chất & Tối ưu hiệu năng (Deep Dive)**
   * Python Phần 1 (Kiểu số & IEEE 754) ➔ Chuỗi & Bộ nhớ Unicode PEP 393.
   * Nghiên cứu sâu Học phần III & IV (Chuyển thể từ tác phẩm *Learning Python* của Mark Lutz).
-  * Khám phá Linux Level 4 (Kernel & System Calls) và Linux Networking.
+  * Khám phá Linux Level 4 (Kernel & System Calls).
 * **Lộ trình 3: Hướng nghiệp Backend & DevOps**
   * Làm chủ toàn diện Cấu trúc dữ liệu & Xử lý ngoại lệ trong Python.
   * Git Level 2 & 3 (Quy trình PR, Git Rebase, CI/CD GitHub Actions).
-  * Linux Level 2, 3 (Systemd, Nginx, Docker) kết hợp 70 bài Linux Networking thực chiến.
+  * Linux Level 2, 3 (Systemd, Nginx, Docker).
 
 ---
 

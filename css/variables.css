@@ -11,13 +11,28 @@
   /* Cỡ chữ cơ sở (có thể điều chỉnh bởi người học: small / medium / large) */
   --base-font-size: 16px;
   --code-font-size: 0.88rem;
-  --line-height-body: 1.72;
+  --line-height-body: 1.7;
   --line-height-code: 1.6;
 
   /* Khoảng cách chữ (Letter spacing) */
   --tracking-tight: -0.018em;
-  --tracking-normal: 0em;
+  --tracking-normal: 0.01em;
   --tracking-wide: 0.025em;
+
+  /* Thang khoảng cách thống nhất 4px/8px (Spacing Tokens) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Khoảng cách & Padding cho bộ thẻ card */
+  --gap-cards: 22px;
+  --card-padding: 24px;
 
   /* Bảng màu Sáng (Light Mode - Mặc định) — Tương phản đạt chuẩn WCAG AA */
   --bg-app: #f8fafc;
@@ -26,15 +41,16 @@
   --bg-surface-hover: #e2e8f0;
   --bg-elevated: #ffffff;
   --bg-glass: rgba(255, 255, 255, 0.86);
+  --border-glass: rgba(226, 232, 240, 0.85);
   --bg-code: #0f172a;
   --bg-code-header: #1e293b;
   --bg-output: #090d16;
   --bg-backdrop: rgba(15, 23, 42, 0.55);
 
-  /* Văn bản */
+  /* Văn bản — Chuẩn tương phản WCAG AA >= 4.5:1 với cả nền surface và surface-alt */
   --text-primary: #0f172a;
   --text-secondary: #334155;
-  --text-muted: #64748b;
+  --text-muted: #475569;
   --text-inverse: #f8fafc;
 
   /* Màu nhấn chủ đạo (Python Indigo / Royal Blue) */
@@ -53,10 +69,6 @@
   --topic-linux-soft: #fef3c7;
   --topic-linux-bg: rgba(245, 158, 11, 0.14);
   --topic-linux-border: rgba(245, 158, 11, 0.35);
-  --topic-network: #0284c7;
-  --topic-network-soft: #e0f2fe;
-  --topic-network-bg: rgba(2, 132, 199, 0.14);
-  --topic-network-border: rgba(2, 132, 199, 0.35);
 
   /* Màu điểm nhấn Python vàng/xanh cho huy hiệu 3.14 */
   --py-gold: #d97706;
@@ -68,7 +80,6 @@
   --gradient-python: linear-gradient(135deg, #2563eb 0%, #059669 100%);
   --gradient-github: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
   --gradient-linux: linear-gradient(135deg, #d97706 0%, #ea580c 100%);
-  --gradient-network: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
 
   /* Màu ngữ nghĩa (Semantic Colors) */
   --success: #059669;
@@ -122,7 +133,7 @@
   --header-height: 62px;
   --sidebar-width: 310px;
   --toc-width: 250px;
-  --content-max-width: 78ch;
+  --content-max-width: 72ch;
 
   /* Bo góc */
   --radius-xs: 4px;
@@ -154,6 +165,7 @@
   --bg-surface-hover: #334155;
   --bg-elevated: #1e293b;
   --bg-glass: rgba(17, 24, 39, 0.88);
+  --border-glass: rgba(255, 255, 255, 0.12);
   --bg-code: #090d16;
   --bg-code-header: #161f33;
   --bg-output: #050811;
@@ -178,10 +190,6 @@
   --topic-linux-soft: rgba(245, 158, 11, 0.16);
   --topic-linux-bg: rgba(245, 158, 11, 0.14);
   --topic-linux-border: rgba(245, 158, 11, 0.35);
-  --topic-network: #38bdf8;
-  --topic-network-soft: rgba(56, 189, 248, 0.16);
-  --topic-network-bg: rgba(56, 189, 248, 0.18);
-  --topic-network-border: rgba(56, 189, 248, 0.4);
 
   --py-gold: #fbbf24;
   --py-gold-bg: rgba(245, 158, 11, 0.15);
@@ -191,7 +199,6 @@
   --gradient-python: linear-gradient(135deg, #3b82f6 0%, #10b981 100%);
   --gradient-github: linear-gradient(135deg, #a78bfa 0%, #818cf8 100%);
   --gradient-linux: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-  --gradient-network: linear-gradient(135deg, #38bdf8 0%, #06b6d4 100%);
 
   --success: #10b981;
   --success-bg: rgba(16, 185, 129, 0.12);

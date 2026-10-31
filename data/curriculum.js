@@ -1,8 +1,10 @@
 /**
  * Cấu trúc Chương trình Đào tạo Chuyên sâu Python 3.14.8
- * Tách biệt rõ ràng 2 Học phần Độc lập:
- * - HỌC PHẦN I: Làm chủ Chuỗi (str) — Cấu trúc thống nhất 8 Phần, 28 Bài học, 47 Methods, 5 Widgets
- * - HỌC PHẦN II: Chuyên sâu Các Kiểu Số (numbers) — 6 Chuyên đề Số học Máy tính, Chuẩn IEEE 754 & PEP 3141
+ * Hệ thống 4 Học phần Toàn diện (219 bài học, 18 phần):
+ * - HỌC PHẦN I: Python Nền tảng & Số học Máy tính (3 Phần, 43 Bài học)
+ * - HỌC PHẦN II: Làm chủ Chuỗi (str) & Unicode CPython (8 Phần, 28 Bài học, 47 Methods, 5 Widgets)
+ * - HỌC PHẦN III: Learning Python — Cú pháp & Kiểu Dữ liệu (6 Phần, 138 Bài học)
+ * - HỌC PHẦN IV: Learning Python — Câu lệnh Nâng cao & Thực thi (1 Phần, 10 Bài học)
  */
 
 export const COURSE_META = {
@@ -10,8 +12,8 @@ export const COURSE_META = {
   version: 'Python 3.14.8',
   subtitle: 'Hệ thống học tập chuyên sâu: Nền tảng cốt lõi, Kiến trúc Chuỗi (Unicode, 47 methods, f/t-strings PEP 750, CPython PEP 393) & Số học Máy tính (IEEE 754, int vô hạn, Decimal & Fraction).',
   totalCourses: 4,
-  totalParts: 18,
-  totalLessons: 219,
+  totalParts: 19,
+  totalLessons: 229,
   totalMethods: 47
 };
 
@@ -2133,8 +2135,8 @@ export const COURSES = [
     accentColor: '#ec4899',
     tagline: 'Câu lệnh và Cú pháp (Statements and Syntax) — Điều khiển Luồng và Cấu trúc Mã nguồn',
     description: 'Khám phá toàn diện Phần III trong giáo trình kinh điển của Mark Lutz: từ mô hình cú pháp dựa trên thụt lề độc đáo, các câu lệnh điều khiển luồng (if, while, for) đến kỹ thuật xử lý ngoại lệ và bài tập thực chiến.',
-    totalParts: 1,
-    totalLessons: 10,
+    totalParts: 2,
+    totalLessons: 20,
     totalMethods: 0,
     widgetsCount: 0,
     parts: [
@@ -2239,6 +2241,108 @@ export const COURSES = [
             keywords: ['tóm tắt Chương 10', '8 câu hỏi ôn tập', 'đáp án chi tiết', 'Mark Lutz', 'chuyển tiếp Chương 11', 'câu lệnh thủ tục']
           }
         ]
+      },
+      {
+        id: 'part-lp-c11',
+        number: 'Chương 11',
+        chapterNumber: 'Chương 11',
+        chapterTitle: 'Phép gán, Biểu thức và Lệnh print',
+        title: 'Phép gán, Biểu thức và Lệnh print',
+        fullTitle: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+        level: 'Cơ bản đến Nâng cao',
+        description: 'Bản chất phép gán đối tượng, 8 dạng cú pháp gán, giải nén mở rộng với *X, phép gán tăng cường và tối ưu in-place, toán tử walrus :=, quy tắc đặt tên và từ khóa, câu lệnh biểu thức, cùng kỹ thuật in ấn và chuyển hướng luồng I/O.',
+        lessons: [
+          {
+            id: 'lp-c11-00',
+            number: 'C11.0',
+            title: 'Mở đầu Chương 11 & Bảng 11-1 — Bản chất Phép gán và Kỹ thuật Giải nén (Unpacking)',
+            level: 'Cơ bản',
+            duration: '30 phút',
+            isNew314: false,
+            keywords: ['phép gán', 'assignment', 'tham chiếu đối tượng', 'con trỏ', 'Bảng 11-1', 'unpacking', 'hoán đổi biến', 'type hinting']
+          },
+          {
+            id: 'lp-c11-01',
+            number: 'C11.1',
+            title: 'Khuôn mẫu Gán Dãy tuần tự Nâng cao — Dãy lồng nhau, Mô phỏng Enum và Vòng lặp while',
+            level: 'Trung cấp',
+            duration: '30 phút',
+            isNew314: false,
+            keywords: ['dãy tuần tự lồng nhau', 'ValueError', 'cắt lát', 'slicing', 'enum', 'range', 'vòng lặp while', 'stack', 'pop']
+          },
+          {
+            id: 'lp-c11-02',
+            number: 'C11.2',
+            title: 'Phép gán Giải nén Mở rộng với Dấu sao (*X) & Chuyên đề Các vì sao muôn màu',
+            level: 'Trung cấp đến Nâng cao',
+            duration: '40 phút',
+            isNew314: false,
+            keywords: ['giải nén mở rộng', 'extended unpacking', 'dấu sao *', 'PEP 3132', 'trường hợp biên', 'vòng lặp for', 'các vì sao muôn màu', 'PEP 448']
+          },
+          {
+            id: 'lp-c11-03',
+            number: 'C11.3',
+            title: 'Phép gán Đa mục tiêu — Cơ chế Hoạt động & Cạm bẫy Tham chiếu Chia sẻ',
+            level: 'Cơ bản đến Trung cấp',
+            duration: '25 phút',
+            isNew314: false,
+            keywords: ['phép gán đa mục tiêu', 'multiple-target', 'tham chiếu chia sẻ', 'shared reference', 'mutable', 'immutable', 'cạm bẫy danh sách']
+          },
+          {
+            id: 'lp-c11-04',
+            number: 'C11.4',
+            title: 'Phép gán Tăng cường (Augmented Assignment) — Bảng 11-2 & Tối ưu hóa Tại chỗ',
+            level: 'Trung cấp',
+            duration: '35 phút',
+            isNew314: false,
+            keywords: ['phép gán tăng cường', 'augmented assignment', 'Bảng 11-2', '+=', 'in-place', 'extend', 'tối ưu hóa bộ nhớ', 'tham chiếu chia sẻ']
+          },
+          {
+            id: 'lp-c11-05',
+            number: 'C11.5',
+            title: 'Biểu thức Gán có tên (Toán tử Walrus :=) — Cú pháp, Ứng dụng và Thực hành Tối ưu',
+            level: 'Trung cấp',
+            duration: '35 phút',
+            isNew314: false,
+            keywords: ['biểu thức gán có tên', 'named assignment', 'walrus operator', ':=', 'PEP 572', 'vòng lặp while', 'đọc file', 'f-string']
+          },
+          {
+            id: 'lp-c11-06',
+            number: 'C11.6',
+            title: 'Quy tắc và Quy ước Đặt tên Biến — Bảng 11-3 Từ khóa Dành riêng & Bản chất Động',
+            level: 'Cơ bản đến Trung cấp',
+            duration: '35 phút',
+            isNew314: false,
+            keywords: ['quy tắc đặt tên', 'Bảng 11-3', 'từ khóa dành riêng', 'reserved keywords', 'soft keywords', 'quy ước CPython', 'định kiểu động', 'const']
+          },
+          {
+            id: 'lp-c11-07',
+            number: 'C11.7',
+            title: 'Câu lệnh Biểu thức — Bảng 11-4 & Cạm bẫy Gán đè Phương thức Thay đổi Tại chỗ',
+            level: 'Cơ bản đến Trung cấp',
+            duration: '30 phút',
+            isNew314: false,
+            keywords: ['câu lệnh biểu thức', 'expression statement', 'Bảng 11-4', 'side effect', 'cạm bẫy in-place', 'append trả về None', 'sort trả về None']
+          },
+          {
+            id: 'lp-c11-08',
+            number: 'C11.8',
+            title: 'Thao tác In ấn Toàn diện — Hàm print(), 4 Tham số Từ khóa & Thực hành Định dạng',
+            level: 'Cơ bản đến Trung cấp',
+            duration: '35 phút',
+            isNew314: false,
+            keywords: ['thao tác in ấn', 'hàm print', 'sys.stdout', 'sep', 'end', 'file', 'flush', 'định dạng chuỗi', 'f-string']
+          },
+          {
+            id: 'lp-c11-09',
+            number: 'C11.9',
+            title: 'Chuyển hướng Luồng in (Stream Redirection), Tóm tắt Chương 11 & Trọn bộ 4 Câu hỏi Ôn tập',
+            level: 'Trung cấp đến Nâng cao',
+            duration: '45 phút',
+            isNew314: false,
+            keywords: ['chuyển hướng luồng', 'stream redirection', 'sys.stdout', 'sys.stderr', 'FileFaker', 'đa hình', 'tóm tắt Chương 11', '4 câu hỏi ôn tập']
+          }
+        ]
       }
     ]
   }
@@ -2261,7 +2365,7 @@ export const CURRICULUM = COURSES.flatMap((course) =>
 );
 
 /**
- * Trả về danh sách phẳng tất cả 34 bài học theo thứ tự học tập của 2 học phần
+ * Trả về danh sách phẳng tất cả 219 bài học theo thứ tự học tập của 4 học phần
  */
 export function getFlatLessons() {
   const flat = [];

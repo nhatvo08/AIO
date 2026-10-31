@@ -9,8 +9,7 @@ bám theo mà không phá vỡ trang Python. Đây là luật kỹ thuật, khô
 | [02-hop-dong.md](02-hop-dong.md) | Hợp đồng kỹ thuật: DOM id, route, localStorage, schema dữ liệu, widget, CSS | Khi thêm/sửa dữ liệu, DOM, style |
 | [03-quy-trinh.md](03-quy-trinh.md) | 5 quy trình mở rộng kèm checklist và mẫu | Khi thêm bài, phần, chuyên đề, widget |
 | [04-kiem-chung.md](04-kiem-chung.md) | Cổng kiểm chứng, số liệu kỳ vọng, bằng chứng bắt buộc | Trước khi kết luận "đã xong" |
-| [05-quy-chuan-uiux-bai-hoc.md](05-quy-chuan-uiux-bai-hoc.md) | Quy tắc thiết kế UI/UX & khuôn mẫu bài học trang Networking (HP1 Cơ bản + HP2 Chuyên sâu Linux) | **Bắt buộc đọc trước khi thêm/sửa bài học trên `network.html`** |
-| [06-ke-hoach-networking-v3.md](06-ke-hoach-networking-v3.md) | Kế hoạch đào tạo & Đề cương Master Curriculum v3 (Học phần II: 13 GĐ / 70 bài) | Single Source of Truth cho Học phần II Networking |
+| [07-quy-chuan-uiux-design-rulebook.md](07-quy-chuan-uiux-design-rulebook.md) | Bộ Quy Tắc Thiết Kế UI/UX Toàn Diện (v3.0) — Chuẩn hóa Design Tokens, Components, Accessibility & QA Checklist | **Quy tắc thiết kế hệ thống chuẩn mực cho toàn bộ nền tảng học kỹ thuật tĩnh** |
 
 ## Nguyên tắc áp dụng
 
@@ -26,7 +25,7 @@ bám theo mà không phá vỡ trang Python. Đây là luật kỹ thuật, khô
 
 | Nhóm luật | Thi hành ở |
 |---|---|
-| Điểm vào, nạp script theo protocol | `index.html`, `github.html`, `linux.html`, `network.html` |
+| Điểm vào, nạp script theo protocol | `index.html`, `github.html`, `linux.html` |
 | Render, route, TOC, tiến độ | `js/app.js` |
 | Lưu trữ, theme, cỡ chữ | `js/storage.js` |
 | Widget tương tác | `js/widgets.js` |
@@ -34,5 +33,5 @@ bám theo mà không phá vỡ trang Python. Đây là luật kỹ thuật, khô
 | Tô sáng mã, escape HTML | `js/highlighter.js` |
 | Mục lục khóa Python | `data/curriculum.js` |
 | Nội dung bài | `data/lessons/<id>.js` |
-| Chuyên đề GitHub/Linux/Networking | `data/github/level*.js`, `data/linux/level*.js`, `data/network/*.js`, `css/network.css`, `js/*-app.js` |
+| Chuyên đề GitHub/Linux | `data/github/level*.js`, `data/linux/level*.js`, `js/*-app.js` |
 | Kiểm chứng tự động | `tools/verify-all.mjs` |

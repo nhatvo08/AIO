@@ -83,7 +83,7 @@ a:hover {
   background-color: var(--bg-glass);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-glass);
   box-shadow: var(--shadow-xs);
   display: flex;
   align-items: center;
@@ -91,6 +91,12 @@ a:hover {
   padding: 0 20px;
   gap: 16px;
   transition: background-color 0.2s, border-color 0.2s;
+}
+
+@supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+  .top-header {
+    background-color: var(--bg-surface);
+  }
 }
 
 /* Thanh tiến độ đọc bài học (Reading Progress Bar) */
@@ -118,8 +124,8 @@ a:hover {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: var(--radius-pill);
   background: var(--bg-surface);
   color: var(--text-primary);
@@ -128,13 +134,13 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
-  transition: opacity 0.2s, transform 0.2s, visibility 0.2s, background-color 0.15s, color 0.15s;
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s, background-color 0.15s, color 0.15s, box-shadow 0.15s;
   z-index: 90;
 }
 
@@ -150,6 +156,15 @@ a:hover {
   border-color: var(--accent-primary);
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
+}
+
+.back-to-top-btn:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.back-to-top-btn:active {
+  transform: translateY(0) scale(0.95);
 }
 
 .header-left {
@@ -281,6 +296,18 @@ a.brand-link:hover {
   border-color: var(--border-strong);
 }
 
+[data-theme="dark"] .header-nav-tab[data-page="python"].active {
+  color: var(--accent-text);
+}
+
+[data-theme="dark"] .header-nav-tab[data-page="github"].active {
+  color: var(--topic-github);
+}
+
+[data-theme="dark"] .header-nav-tab[data-page="linux"].active {
+  color: var(--topic-linux);
+}
+
 .header-nav-tab .nav-tab-icon {
   font-size: 0.95rem;
   line-height: 1;
@@ -379,10 +406,20 @@ a.brand-link:hover {
 
 .progress-card {
   flex-shrink: 0;
-  background: var(--bg-surface-alt);
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
+  padding: 14px 16px;
+  box-shadow: var(--shadow-xs);
+}
+
+@supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+  .progress-card {
+    background: var(--bg-surface-alt);
+    border-color: var(--border-subtle);
+  }
 }
 
 .progress-header {
@@ -418,13 +455,94 @@ a.brand-link:hover {
   justify-content: space-between;
 }
 
+/* Ô Tìm kiếm nhanh bài học trong Sidebar (Spotlight Filter) */
+.sidebar-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.sidebar-search-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.sidebar-search-input {
+  width: 100%;
+  height: 36px;
+  padding: 0 32px 0 32px;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.84rem;
+  font-family: var(--font-sans);
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sidebar-search-input::placeholder {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.sidebar-search-input:focus {
+  outline: none;
+  background: var(--bg-surface);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.sidebar-search-clear {
+  position: absolute;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.sidebar-search-clear:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-hover);
+}
+
+.sidebar-search-clear:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 1px;
+}
+
+.sidebar-empty-search {
+  padding: 24px 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
 /* Bộ lọc chuyển nhanh Học phần trong Sidebar */
 .sidebar-course-tabs {
   flex-shrink: 0;
   display: flex;
   gap: 6px;
   padding: 4px 0 10px 0;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-glass);
   margin-bottom: 12px;
   overflow-x: auto;
   overflow-y: hidden;
@@ -695,6 +813,33 @@ a.brand-link:hover {
   max-width: 1020px;
 }
 
+/* Cuộn neo chính xác — không bị che bởi sticky top header */
+[id^="sec-"],
+section[id],
+article[id],
+.hero-banner,
+.course-home-section,
+.part-card,
+.lesson-section,
+h2[id],
+h3[id],
+h4[id] {
+  scroll-margin-top: calc(var(--header-height) + 18px);
+}
+
+/* Trải nghiệm đọc: khoảng cách dòng 1.7, dãn chữ nhẹ, giới hạn độ rộng tối đa */
+.main-content p,
+.main-content li {
+  line-height: var(--line-height-body);
+  letter-spacing: var(--tracking-normal);
+}
+
+.main-content > section > p,
+.lesson-problem,
+.lesson-summary-list li {
+  max-width: var(--content-max-width);
+}
+
 /* Cột 3: Mục lục "Trong bài này" bên phải */
 .sidebar-right {
   position: sticky;
@@ -748,6 +893,143 @@ a.brand-link:hover {
   color: var(--accent-primary);
   border-left-color: var(--accent-primary);
   font-weight: 600;
+}
+
+/* Breadcrumb tương tác và có thể click (Nielsen Norman Wayfinding) */
+.breadcrumb-nav-link,
+.breadcrumb-part-link {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--radius-xs);
+  transition: color 0.15s ease, background-color 0.15s ease;
+  text-decoration: none;
+}
+
+.breadcrumb-nav-link:hover,
+.breadcrumb-part-link:hover {
+  color: var(--accent-primary);
+  background: var(--accent-soft);
+}
+
+.breadcrumb-nav-link:focus-visible,
+.breadcrumb-part-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 1px;
+}
+
+/* Mục lục bài học nhanh trên Mobile/Tablet (khi sidebar-right ẩn) */
+.mobile-toc-box {
+  display: none;
+  margin: 14px 0 20px;
+}
+
+@media (max-width: 1200px) {
+  .mobile-toc-box {
+    display: block;
+  }
+}
+
+.mobile-toc-details {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mobile-toc-details[open] {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
+}
+
+.mobile-toc-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  min-height: 44px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-surface-alt);
+  transition: background-color 0.15s ease;
+}
+
+.mobile-toc-summary::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-toc-summary:hover {
+  background: var(--bg-surface-hover);
+}
+
+.mobile-toc-summary:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: -2px;
+}
+
+.mobile-toc-summary-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-toc-chevron {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+.mobile-toc-details[open] .mobile-toc-chevron {
+  transform: rotate(180deg);
+}
+
+.mobile-toc-dropdown {
+  padding: 10px 14px 14px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.mobile-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobile-toc-link {
+  display: block;
+  padding: 8px 12px;
+  min-height: 38px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.mobile-toc-link:hover {
+  background: var(--bg-surface-alt);
+  color: var(--accent-primary);
+}
+
+.mobile-toc-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 1px;
 }
 
 /* Ngăn kéo (Drawer Backdrop) cho Mobile */

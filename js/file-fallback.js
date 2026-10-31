@@ -2890,6 +2890,3496 @@ if len(danh_sach) > 0:
   ]
 };
 
+window.__PRELOADED_LESSONS__['lp-c11-00'] = {
+  id: 'lp-c11-00',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.0',
+  title: 'Mở đầu Chương 11 & Bảng 11-1 — Bản chất Phép gán và Kỹ thuật Giải nén (Unpacking)',
+  subtitle: '4 đặc tính then chốt của phép gán, toàn cảnh 8 dạng cú pháp trong Bảng 11-1, 4 loại mục tiêu gán và kỹ thuật hoán đổi biến (swap) không cần biến tạm',
+  level: 'Cơ bản',
+  duration: '30 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Thấu hiểu 4 đặc tính then chốt của phép gán trong Python: tạo tham chiếu đối tượng (con trỏ), tự động khai sinh biến, bắt buộc gán trước khi tham chiếu, và các ngữ cảnh gán ngầm định.',
+    'Nắm vững toàn bộ 8 dạng cú pháp câu lệnh và biểu thức gán trong Bảng 11-1 của Mark Lutz.',
+    'Phân biệt và làm chủ 4 loại mục tiêu gán: tên biến (variable), chỉ mục (index), lát cắt (slice), và thuộc tính đối tượng (attribute).',
+    'Ứng dụng thành thạo phép gán tuple và list (unpacking) để trích xuất dữ liệu theo vị trí và thành ngữ hoán đổi giá trị hai biến mà không cần biến tạm thời.'
+  ],
+
+  intuition: {
+    title: 'Gắn Nhãn Tên Lên Chiếc Hộp và Ghép Đôi Song Song',
+    metaphor: 'Trong các ngôn ngữ truyền thống như C hay Pascal, câu lệnh gán giống như việc bạn xúc dữ liệu đổ vào một chiếc hộp cố định được khoét sẵn trên thanh RAM. Nhưng trong Python, đối tượng dữ liệu đã tự đứng vững trong bộ nhớ từ trước; câu lệnh gán (=) chỉ đơn thuần là hành động dán một tấm nhãn tên (name tag) nối bằng sợi chỉ tham chiếu đến đối tượng đó. Khi bạn viết một tuple các nhãn ở vế trái và một tuple các đối tượng ở vế phải, Python như một trọng tài tung đồng xu: lưu trữ toàn bộ các đối tượng vế phải vào một bộ nhớ tạm rồi đồng loạt dán các nhãn vế trái vào đúng vị trí đối diện theo thứ tự từ trái qua phải, cho phép hoán đổi nhãn tên kỳ diệu mà không làm xáo trộn dữ liệu.',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--accent-primary);">MÔ HÌNH PHÉP GÁN THAM CHIẾU & GIẢI NÉN TUPLE (UNPACKING)</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;">
+          <div style="padding:12px;background:var(--bg-surface);border:1px solid var(--accent-primary);border-radius:8px;text-align:center;">
+            <div style="font-weight:700;color:var(--accent-primary);">VẾ TRÁI: MỤC TIÊU (TARGETS)</div>
+            <div style="margin-top:6px;font-size:0.82rem;color:var(--text-secondary);">Các nhãn tên hoặc vị trí cấu trúc<br><code>first, second</code></div>
+          </div>
+          <div style="font-size:1.4rem;color:var(--accent-primary);font-weight:700;">=</div>
+          <div style="padding:12px;background:var(--bg-surface);border:1px solid #10b981;border-radius:8px;text-align:center;">
+            <div style="font-weight:700;color:#10b981;">VẾ PHẢI: ĐỐI TƯỢNG (OBJECTS)</div>
+            <div style="margin-top:6px;font-size:0.82rem;color:var(--text-secondary);">Tạo tuple tạm thời trong bộ nhớ<br><code>second, first</code></div>
+          </div>
+        </div>
+        <div style="padding:8px 12px;background:var(--bg-surface);border-left:4px solid #f59e0b;border-radius:4px;font-size:0.8rem;color:var(--text-secondary);">
+          <strong>Kết quả ghép đôi:</strong> <code>first</code> liên kết tới giá trị cũ của <code>second</code>; <code>second</code> liên kết tới giá trị cũ của <code>first</code> (Hoán đổi tức thời không cần biến tạm <code>temp</code>).
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Mở Đầu Chương 11 & Bốn Đặc Tính Then Chốt của Phép Gán',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp (Statements and Syntax) • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 1–2 / 38</strong>.</p>
+            <p style="font-size:0.82rem;color:var(--text-muted);margin-top:4px;"><em>Ghi chú học tập: Toàn bộ cấu trúc, thuật ngữ và mã nguồn kiểm chứng được chuyển thể trung thực từ bản dịch tiếng Việt của giáo trình kinh điển Mark Lutz.</em></p>
+          </div>
+        </div>
+
+        <p>Sau khi đã hoàn thành phần giới thiệu mở đầu về cú pháp câu lệnh Python ở Chương 10, chương này sẽ khởi đầu chuyến tham quan chuyên sâu của chúng ta về các câu lệnh cụ thể trong Python. Chúng ta sẽ bắt đầu với những nền tảng cơ bản nhất: <strong>câu lệnh gán (assignment statement)</strong>, <strong>câu lệnh biểu thức (expression statement)</strong> và các <strong>thao tác in ấn (print)</strong>.</p>
+        <p>Ở dạng cơ bản nhất, bạn viết mục tiêu của phép gán ở bên trái dấu bằng (<code>=</code>), và đối tượng cần gán ở bên phải. Mục tiêu ở bên trái có thể là một tên biến hoặc một thành phần của đối tượng, còn đối tượng ở bên phải có thể là một biểu thức tùy ý tạo ra đối tượng. Mark Lutz nhấn mạnh <strong>4 đặc tính then chốt</strong> cần khắc ghi ngay từ đầu:</p>
+
+        <ol>
+          <li>
+            <strong>Phép gán tạo ra các tham chiếu đối tượng (object references):</strong> Như đã thảo luận trong Chương 6, các phép gán trong Python lưu trữ các tham chiếu đến đối tượng vào các tên biến hoặc các thành phần của cấu trúc dữ liệu. Chúng luôn luôn tạo ra tham chiếu tới đối tượng thay vì sao chép đối tượng đó. Chính vì thế, các biến trong Python giống như các con trỏ (pointers) hơn là các vùng lưu trữ dữ liệu cố định.
+          </li>
+          <li>
+            <strong>Tên biến được tạo ra khi được gán lần đầu tiên:</strong> Python tự động tạo ra một tên biến ngay lần đầu tiên bạn gán cho nó một giá trị (tức là một tham chiếu đối tượng), do đó hoàn toàn không cần phải khai báo trước tên biến. Một số vị trí trong cấu trúc dữ liệu cũng được tạo khi được gán (ví dụ: các khóa trong từ điển — <code>dictionary</code>, hoặc một số thuộc tính đối tượng — <code>object attributes</code>). Một khi đã được gán, tên biến sẽ được thay thế bằng giá trị mà nó tham chiếu tới bất cứ khi nào nó xuất hiện trong một biểu thức.
+          </li>
+          <li>
+            <strong>Tên biến phải được gán trước khi được tham chiếu:</strong> Việc sử dụng một tên biến mà bạn chưa từng gán giá trị là một lỗi nghiêm trọng. Python sẽ phát sinh một ngoại lệ (exception: <code>NameError</code>) nếu bạn cố làm điều đó, thay vì trả về một dạng giá trị mặc định mơ hồ nào đó (như <code>undefined</code> hay rác bộ nhớ). Điều này hóa ra lại rất quan trọng trong Python vì các tên biến không được khai báo trước — nếu Python tự ý cung cấp giá trị mặc định cho các tên biến chưa gán, bạn sẽ khó phát hiện ra các lỗi gõ sai chính tả tên biến trong mã của mình hơn rất nhiều!
+          </li>
+          <li>
+            <strong>Một số thao tác thực hiện phép gán ngầm định (implicit assignment):</strong> Phép gán không chỉ giới hạn ở câu lệnh <code>=</code> và toán tử walrus <code>:=</code>, mà còn diễn ra ngầm định trong rất nhiều ngữ cảnh khác của Python: việc nhập module (<code>import</code>), định nghĩa hàm (<code>def</code>), định nghĩa lớp (<code>class</code>), biến vòng lặp <code>for</code>, và việc truyền đối số khi gọi hàm đều là các phép gán ngầm định liên kết tên biến với tham chiếu đối tượng tại thời gian chạy (runtime).
+          </li>
+        </ol>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát 4 đặc tính của phép gán và lỗi NameError khi tham chiếu biến chưa gán',
+          code: `# 1. Phép gán tạo tham chiếu đối tượng (trỏ cùng id bộ nhớ)
+du_lieu_goc = [1, 2, 3]
+tham_chieu = du_lieu_goc
+print("Cùng trỏ một đối tượng:", tham_chieu is du_lieu_goc)
+
+# 2. Tên biến tự động khai sinh khi gán lần đầu
+bien_moi = "Python 3.14"
+print("Giá trị biến mới:", bien_moi)
+
+# 3. Ngoại lệ NameError khi dùng biến chưa từng được gán
+try:
+    print(bien_chua_khoi_tao)
+except NameError as err:
+    print("Bắt ngoại lệ bắt buộc gán trước:", type(err).__name__, "-", err)
+
+# 4. Phép gán ngầm định trong vòng lặp for
+for muc in ['A', 'B']:
+    pass
+print("Biến muc được gán ngầm định sau vòng lặp:", muc)`,
+          output: `Cùng trỏ một đối tượng: True
+Giá trị biến mới: Python 3.14
+Bắt ngoại lệ bắt buộc gán trước: NameError - name 'bien_chua_khoi_tao' is not defined
+Biến muc được gán ngầm định sau vòng lặp: B`,
+          annotations: [
+            { line: 3, text: 'Phép gán không sao chép mảng, chỉ tạo tham chiếu đối tượng mới trỏ cùng vùng nhớ.' },
+            { line: 7, text: 'Không cần khai báo kiểu trước, biến_moi lập tức xuất hiện trong không gian tên.' },
+            { line: 13, text: 'Python bảo vệ mã nguồn: biến chưa gán sinh lỗi NameError ngay lập tức.' },
+            { line: 19, text: 'Vòng lặp for ngầm gán từng phần tử cho biến muc ở mỗi bước lặp.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Toàn Cảnh Bảng 11-1 — Các Dạng Cú Pháp Phép Gán & Bốn Loại Mục Tiêu',
+      content: `
+        <p>Mặc dù phép gán là một khái niệm tổng quát và phổ biến khắp nơi trong Python, nhưng trong chương này, chúng ta chủ yếu tập trung vào các <strong>câu lệnh gán</strong>, cùng với <strong>biểu thức gán có tên</strong>. Bảng 11-1 dưới đây minh họa toàn bộ các dạng cú pháp có sẵn để viết phép gán trong Python:</p>
+
+        <div class="table-wrapper" style="margin:20px 0;">
+          <table class="markdown-table" style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+            <thead>
+              <tr style="background:var(--bg-surface-alt);border-bottom:2px solid var(--border-subtle);text-align:left;">
+                <th style="padding:10px 14px;color:var(--accent-primary);">Thao tác (Cú pháp)</th>
+                <th style="padding:10px 14px;color:var(--accent-primary);">Ý nghĩa giải thích</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:10px 14px;"><code>target = 'Hack'</code></td>
+                <td style="padding:10px 14px;">Phép gán cơ bản (basic assignment)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:10px 14px;"><code>code, hack = 'py', 'PY'</code></td>
+                <td style="padding:10px 14px;">Phép gán tuple (tuple assignment / unpacking)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:10px 14px;"><code>[code, hack] = ['py', 'PY']</code></td>
+                <td style="padding:10px 14px;">Phép gán list (list assignment / unpacking)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:10px 14px;"><code>a, b, c, d = 'hack'</code></td>
+                <td style="padding:10px 14px;">Phép gán dãy tuần tự (sequence assignment)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:10px 14px;"><code>a, *b = 'hack'</code></td>
+                <td style="padding:10px 14px;">Phép gán giải nén mở rộng (extended unpacking)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:10px 14px;"><code>code = hack = 'python'</code></td>
+                <td style="padding:10px 14px;">Phép gán đa mục tiêu (multiple-target assignment)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:10px 14px;"><code>code += 1, hack *= 2</code></td>
+                <td style="padding:10px 14px;">Phép gán tăng cường (augmented assignment — xem ghi chú bên dưới)</td>
+              </tr>
+              <tr>
+                <td style="padding:10px 14px;"><code>(python := 3.12) + 0.01</code></td>
+                <td style="padding:10px 14px;">Biểu thức gán có tên (named assignment expression / walrus)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin:16px 0;">
+          <div class="callout-header">
+            <span>💡</span>
+            <span><strong>Ghi chú của trang web về dòng áp chót Bảng 11-1:</strong></span>
+          </div>
+          <div class="callout-body">
+            <p>Trong Bảng 11-1 của bản gốc Mark Lutz, dòng gán tăng cường viết <code>code += 1, hack *= 2</code> để liệt kê hai ví dụ tiêu biểu cạnh nhau trên cùng một ô bảng nhằm tiết kiệm không gian. Trong cú pháp Python thực tế, bạn <strong>không thể</strong> dùng dấu phẩy để ghép hai phép gán tăng cường trên cùng một dòng (điều này sẽ gây ra <code>SyntaxError</code>). Mỗi câu lệnh tăng cường phải nằm trên một dòng riêng biệt, hoặc được ngăn cách bằng dấu chấm phẩy (<code>code += 1; hack *= 2</code>).</p>
+          </div>
+        </div>
+
+        <h3>Bốn loại mục tiêu gán trong phép gán cơ bản</h3>
+        <p>Dạng cơ bản ở trên cùng của Bảng 11-1 liên kết một mục tiêu đơn lẻ với một đối tượng đơn lẻ. Mục tiêu ở vế trái của dấu bằng có thể thuộc một trong <strong>4 loại mục tiêu</strong> sau:</p>
+        <ul>
+          <li><strong>Tên biến (variable):</strong> <code>L = [1, 2]</code></li>
+          <li><strong>Chỉ mục (index):</strong> <code>L[0] = 3</code> (thay đổi tại chỗ phần tử danh sách)</li>
+          <li><strong>Lát cắt (slice):</strong> <code>L[-1:] = [4, 5]</code> (thay thế một đoạn danh sách)</li>
+          <li><strong>Thuộc tính đối tượng (attribute):</strong> <code>object.attr = L</code> (thay đổi trường dữ liệu của lớp đối tượng)</li>
+        </ul>
+
+        <div class="callout-box callout-tip" style="border-left:4px solid #8b5cf6;margin:16px 0;">
+          <div class="callout-header">
+            <span>📌</span>
+            <span><strong>Ghi chú: Chú thích tên (Name Annotations & Type Hinting)</strong></span>
+          </div>
+          <div class="callout-body">
+            <p>Các câu lệnh gán cơ bản cũng có thể có một <em>biểu thức chú thích (annotation expression)</em> được đưa vào bằng dấu hai chấm ngay sau mục tiêu ở bên trái (ví dụ: <code>x: int = 10</code>). Dạng câu lệnh này chỉ cho phép một mục tiêu duy nhất và được sử dụng cho hệ thống gợi ý kiểu (<em>type hinting</em>) xuất hiện gần cuối Chương 6. Như Mark Lutz đã nhấn mạnh, vì tính năng này hoàn toàn là tùy chọn, rườm rà phức tạp, bản thân trình thông dịch Python không hề sử dụng để ép kiểu tại runtime, và về cơ bản đi ngược lại lối tư duy định kiểu động cốt lõi của ngôn ngữ, giáo trình sẽ không đi sâu vào nó.</p>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Thực hành 4 loại mục tiêu gán tại dấu nhắc REPL',
+          code: `# Khởi tạo danh sách bằng mục tiêu tên biến
+L = [1, 2]
+print("Ban đầu:", L)
+
+# Mục tiêu là chỉ mục (thay đổi phần tử đầu tiên)
+L[0] = 3
+print("Sau khi gán L[0] = 3:", L)
+
+# Mục tiêu là lát cắt (thay thế phần tử cuối bằng 2 phần tử mới)
+L[-1:] = [4, 5]
+print("Sau khi gán lát cắt L[-1:] = [4, 5]:", L)
+
+# Mục tiêu là thuộc tính đối tượng (minh họa với class đơn giản)
+class HopChua:
+    pass
+
+hop = HopChua()
+hop.attr = L # Gán thuộc tính đối tượng
+print("Thuộc tính hop.attr:", hop.attr)`,
+          output: `Ban đầu: [1, 2]
+Sau khi gán L[0] = 3: [3, 2]
+Sau khi gán lát cắt L[-1:] = [4, 5]: [3, 4, 5]
+Thuộc tính hop.attr: [3, 4, 5]`,
+          annotations: [
+            { line: 2, text: 'L là mục tiêu tên biến, trỏ tới đối tượng danh sách mới tạo [1, 2].' },
+            { line: 6, text: 'L[0] là mục tiêu chỉ mục, thay đổi giá trị 1 thành 3 tại chỗ.' },
+            { line: 10, text: 'L[-1:] cắt lát phần tử cuối (2) và thay bằng danh sách [4, 5].' },
+            { line: 17, text: 'hop.attr là mục tiêu thuộc tính đối tượng, gắn tham chiếu tới L.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-3',
+      title: '3. Phép Gán Tuple, List & Kỹ Thuật Hoán Đổi Biến (Unpacking)',
+      content: `
+        <p>Dạng thứ hai và thứ ba trong Bảng 11-1 có liên quan chặt chẽ với nhau: khi bạn viết một <strong>tuple</strong> hoặc <strong>list</strong> ở vế trái của dấu <code>=</code>, Python sẽ ghép đôi các đối tượng ở vế phải với các mục tiêu ở vế trái theo vị trí và gán chúng lần lượt từ trái qua phải.</p>
+        <p>Vế trái của dấu <code>=</code> là cú pháp chỉ định mục tiêu, trong khi vế phải là một đối tượng thực sự. Đó là lý do tại sao dạng này được gọi là <strong>phép gán giải nén (unpacking assignment)</strong>: các phần tử ở vế phải được "mở gói" và chuyển vào từng mục tiêu riêng biệt ở vế trái.</p>
+
+        <h3>Mẹo lập trình kinh điển: Hoán đổi giá trị hai biến không cần biến tạm</h3>
+        <p>Phép gán tuple dẫn tới một thành ngữ lập trình cực kỳ phổ biến và thanh lịch trong Python. Trong các ngôn ngữ khác, để hoán đổi giá trị của hai biến, bạn bắt buộc phải tạo một biến tạm thời:</p>
+        <pre><code>temp = first
+first = second
+second = temp</code></pre>
+        <p>Trong Python, bởi vì trình thông dịch tự động tạo ra một <strong>tuple tạm thời trong bộ nhớ</strong> để lưu giữ toàn bộ các giá trị ban đầu của các biến ở vế phải trước khi câu lệnh gán thực sự bắt đầu ghi đè, bạn có thể hoán đổi hai biến chỉ bằng một dòng lệnh duy nhất:</p>
+        <pre><code>first, second = second, first</code></pre>
+        <p>Tuple ở vế phải tự động ghi nhớ các giá trị trước đó của các biến, loại bỏ hoàn toàn nhu cầu quản lý biến tạm thủ công.</p>
+
+        <h3>Khái quát hóa cho mọi Iterable ở vế phải</h3>
+        <p>Các dạng gán tuple và list ban đầu của Python cuối cùng đã được khái quát hóa thành <strong>phép gán dãy tuần tự (sequence assignment)</strong>: vế phải có thể là bất kỳ đối tượng có thể lặp (<em>iterable</em>) nào—chuỗi ký tự, tuple, list, range, thậm chí là các dòng đọc từ file—miễn là nó có cùng số lượng phần tử với dãy tuần tự mục tiêu ở vế trái!</p>
+      `,
+      codeExamples: [
+        {
+          title: 'Giải nén Tuple/List, Hoán đổi biến và Giải nén chuỗi ký tự',
+          code: `# Phép gán Tuple (lược bỏ ngoặc đơn)
+first, second = 1, 2
+print("Tuple gán ban đầu:", first, second)
+
+# Hoán đổi giá trị hai biến tức thì không cần biến tạm
+first, second = second, first
+print("Sau khi hoán đổi:", first, second)
+
+# Phép gán List mục tiêu
+[C, D] = [first, second]
+print("List mục tiêu [C, D]:", C, D)
+
+# Khái quát hóa: Gán chuỗi ký tự cho Tuple các biến
+(a, b, c) = 'ABC'
+print("Giải nén chuỗi 'ABC':", a, b, c)
+
+# Gán Tuple giá trị cho List tên biến
+[x, y, z] = (10, 20, 30)
+print("Giải nén tuple vào list biến:", x, y, z)`,
+          output: `Tuple gán ban đầu: 1 2
+Sau khi hoán đổi: 2 1
+List mục tiêu [C, D]: 2 1
+Giải nén chuỗi 'ABC': A B C
+Giải nén tuple vào list biến: 10 20 30`,
+          annotations: [
+            { line: 2, text: 'Cả hai vế đều là tuple được lược bỏ cặp dấu ngoặc đơn.' },
+            { line: 6, text: 'Python tạo tuple tạm thời (2, 1) ở vế phải rồi gán lần lượt cho first và second.' },
+            { line: 14, text: 'Chuỗi 3 ký tự \'ABC\' được tự động giải nén thành 3 ký tự gán cho a, b, c.' },
+            { line: 18, text: 'Không bắt buộc kiểu hai vế phải giống nhau: vế trái là list mục tiêu, vế phải là tuple đối tượng.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    tips: [
+      {
+        title: 'Lời khuyên từ Mark Lutz: Biến trong Python là Con trỏ',
+        content: 'Hãy luôn ghi nhớ rằng tên biến trong Python chỉ là những con trỏ tham chiếu đến đối tượng trong bộ nhớ. Phép gán không bao giờ sao chép dữ liệu bên trong đối tượng, mà chỉ liên kết tên biến tới địa chỉ đối tượng đó. Hiểu rõ điều này sẽ giúp bạn làm chủ toàn bộ hành vi bộ nhớ và tránh được các cạm bẫy tham chiếu chia sẻ ở các phần sau.'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Hoán đổi vị trí xoay vòng 3 biến bằng phép gán Tuple',
+      level: 'Cơ bản',
+      problem: 'Cho ba biến a = 1, b = 2, c = 3. Hãy dùng một câu lệnh gán duy nhất để hoán đổi xoay vòng giá trị của chúng sao cho a nhận giá trị của b, b nhận giá trị của c, và c nhận giá trị của a ban đầu.',
+      hint: 'Áp dụng cú pháp phép gán tuple đa mục tiêu: vế trái là các biến cần nhận, vế phải là tuple các biến mang giá trị ban đầu tương ứng.',
+      solutionCode: `a, b, c = 1, 2, 3
+a, b, c = b, c, a
+print(f"a = {a}, b = {b}, c = {c}")`,
+      solutionOutput: `a = 2, b = 3, c = 1`,
+      explanation: 'Python tạo ra tuple tạm thời (b, c, a) tương đương (2, 3, 1) trong bộ nhớ, sau đó giải nén tuần tự từ trái qua phải vào a, b, c mà không cần bất kỳ biến trung gian nào.'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Phát biểu nào sau đây là ĐÚNG về bản chất câu lệnh gán trong Python theo Mark Lutz?',
+      options: [
+        'Phép gán sao chép toàn bộ khối dữ liệu của đối tượng vào một vùng nhớ mới dành riêng cho biến.',
+        'Phép gán lưu trữ tham chiếu (con trỏ) đến đối tượng vào tên biến hoặc thành phần cấu trúc dữ liệu.',
+        'Mọi tên biến trong Python đều bắt buộc phải được khai báo kiểu dữ liệu trước khi gán.',
+        'Nếu bạn sử dụng một biến chưa từng được gán giá trị, Python sẽ tự gán cho nó giá trị mặc định là 0 hoặc None.'
+      ],
+      correctIndex: 1,
+      explanation: 'Trong Python, phép gán luôn tạo ra tham chiếu đối tượng (object references) thay vì sao chép đối tượng. Biến đóng vai trò như các con trỏ trỏ tới vùng nhớ.'
+    },
+    {
+      question: 'Điều gì xảy ra khi bạn cố tình tham chiếu đến một tên biến chưa từng được gán giá trị trong chương trình?',
+      options: [
+        'Chương trình tiếp tục chạy và biến nhận giá trị rỗng chuỗi \' \'.',
+        'Python đưa ra cảnh báo lỗi thời (DeprecationWarning) nhưng vẫn chạy tiếp.',
+        'Python phát sinh ngoại lệ NameError ngay lập tức.',
+        'Trình biên dịch tự động khởi tạo biến đó bằng giá trị False.'
+      ],
+      correctIndex: 2,
+      explanation: 'Python yêu cầu biến phải được gán trước khi tham chiếu. Việc dùng biến chưa gán sẽ kích hoạt ngoại lệ NameError, giúp lập trình viên phát hiện lỗi gõ sai tên biến.'
+    },
+    {
+      question: 'Trong câu lệnh hoán đổi biến first, second = second, first, vì sao Python không làm mất giá trị ban đầu của first?',
+      options: [
+        'Vì Python sử dụng một thanh ghi phần cứng chuyên dụng trên CPU.',
+        'Vì vế phải được định giá trị và lưu trữ thành một tuple tạm thời trong bộ nhớ trước khi phép gán vế trái diễn ra.',
+        'Vì Python hoãn việc thực thi câu lệnh cho đến cuối chương trình.',
+        'Vì second tự động sao chép sâu (deep copy) đối tượng của first.'
+      ],
+      correctIndex: 1,
+      explanation: 'Python định giá trị toàn bộ biểu thức vế phải trước, đóng gói thành một tuple tạm thời lưu giữ các tham chiếu cũ, sau đó mới giải nén vào các mục tiêu ở vế trái.'
+    }
+  ],
+
+  summary: [
+    'Câu lệnh gán tạo ra các tham chiếu đối tượng (con trỏ) trong bộ nhớ, không sao chép dữ liệu.',
+    'Tên biến tự động sinh ra khi gán lần đầu, nhưng bắt buộc phải được gán trước khi đem ra tham chiếu (tránh lỗi NameError).',
+    'Bảng 11-1 tổng kết 8 dạng cú pháp gán phong phú: từ cơ bản, tuple/list unpacking, đa mục tiêu, tăng cường đến toán tử walrus :=.',
+    'Phép gán giải nén dãy tuần tự cho phép hoán đổi biến tức thì A, B = B, A và chấp nhận mọi iterable ở vế phải có cùng độ dài.'
+  ]
+};
+
+window.__PRELOADED_LESSONS__['lp-c11-01'] = {
+  id: 'lp-c11-01',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.1',
+  title: 'Khuôn mẫu Gán Dãy tuần tự Nâng cao — Dãy lồng nhau, Mô phỏng Enum và Vòng lặp while',
+  subtitle: 'Xử lý lỗi lệch số lượng ValueError, kỹ thuật giải nén lồng nhau, thành ngữ mô phỏng Enum bằng range() và thuật toán duyệt ngăn xếp trong vòng lặp while',
+  level: 'Trung cấp',
+  duration: '30 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Hiểu nguyên nhân và cách giải quyết ngoại lệ ValueError: too many values to unpack khi số lượng mục tiêu vế trái không khớp số phần tử vế phải.',
+    'Làm chủ 4 kỹ thuật kết hợp đánh chỉ mục và cắt lát (slicing) để tùy biến việc trích xuất các phần tử từ dãy tuần tự.',
+    'Nắm vững cơ chế giải nén dãy tuần tự lồng nhau (nested sequence assignment) và ứng dụng trong tiêu đề vòng lặp for.',
+    'Áp dụng thành ngữ mô phỏng kiểu dữ liệu liệt kê (enumerated types) bằng range() và kỹ thuật chia tách đầu/cuối trong vòng lặp while.'
+  ],
+
+  intuition: {
+    title: 'Khuôn Đúc Hình Học và Dây Chuyền Bóc Tách',
+    metaphor: 'Hãy tưởng tượng phép gán dãy tuần tự giống như việc bạn đưa một kiện hàng phức tạp vào một khuôn đúc có các ngăn định hình sẵn. Nếu kiện hàng bên phải là một hộp lớn chứa một hộp nhỏ và một món quà rời, thì khuôn đúc bên trái cũng phải có cấu trúc lồng nhau y hệt ((a, b), c) để từng món lọt khít vào đúng ngăn của nó. Nếu kiện hàng có 4 món mà khuôn chỉ có 3 ngăn, Python sẽ lập tức báo còi dừng dây chuyền (ValueError) vì không biết phải bỏ món nào đi. Để linh hoạt khi số lượng không khớp trước khi có cú pháp dấu sao, người thợ lập trình dùng "lưỡi dao cắt lát" (slicing) để chia nhỏ kiện hàng ra các phần vừa khít với từng ngăn đúc.',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--accent-primary);">MÔ HÌNH GIẢI NÉN DÃY TUẦN TỰ LỒNG NHAU (NESTED ASSIGNMENT)</div>
+        <div style="display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div style="padding:10px 14px;background:var(--bg-surface);border:2px dashed #8b5cf6;border-radius:8px;">
+            <div style="color:#8b5cf6;font-weight:700;">Vế trái: Khuôn lồng nhau</div>
+            <code>((a, b), c)</code>
+          </div>
+          <div style="font-size:1.4rem;color:var(--accent-primary);">← Ghép đôi hình dạng ←</div>
+          <div style="padding:10px 14px;background:var(--bg-surface);border:2px solid #10b981;border-radius:8px;">
+            <div style="color:#10b981;font-weight:700;">Vế phải: Cấu trúc lồng nhau</div>
+            <code>('TE', 'XT')</code>
+          </div>
+        </div>
+        <div style="padding:8px 12px;background:var(--bg-surface);border-left:4px solid var(--accent-primary);border-radius:4px;font-size:0.8rem;color:var(--text-secondary);">
+          • Tuple con <code>(a, b)</code> khớp với chuỗi <code>'TE'</code> → <code>a = 'T'</code>, <code>b = 'E'</code><br>
+          • Mục tiêu đơn <code>c</code> khớp với chuỗi <code>'XT'</code> → <code>c = 'XT'</code>
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Lỗi Lệch Số Lượng (ValueError) & Các Kỹ Thuật Kết Hợp Cắt Lát',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 6 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Mặc dù chúng ta có thể kết hợp lẫn lộn các kiểu dãy tuần tự xung quanh ký hiệu <code>=</code> (ví dụ gán chuỗi cho tuple các biến), quy tắc thông thường bắt buộc <strong>số lượng phần tử ở vế phải phải bằng chính xác số lượng mục tiêu ở vế trái</strong>. Nếu số lượng hai vế không khớp nhau, trình thông dịch Python sẽ phát sinh một ngoại lệ <code>ValueError</code>:</p>
+
+        <pre><code>>>> string = 'TEXT'
+>>> a, b, c, d = string # 4 mục tiêu = 4 ký tự -> Hợp lệ
+>>> a, b, c, d
+('T', 'E', 'X', 'T')
+
+>>> a, b, c = string    # 3 mục tiêu nhưng chuỗi có 4 ký tự -> Lỗi!
+ValueError: too many values to unpack (expected 3)</code></pre>
+
+        <h3>Vận dụng Cắt Lát (Slicing) để giải quyết xung đột</h3>
+        <p>Để linh hoạt hơn khi chưa sử dụng cú pháp dấu sao mở rộng, chúng ta luôn có thể tận dụng các thao tác cắt lát (slice) và đánh chỉ mục để trích xuất chính xác các phần tử mong muốn. Mark Lutz trình bày <strong>4 phương án kết hợp</strong> kinh điển:</p>
+        <ol>
+          <li><strong>Đánh chỉ mục kết hợp cắt lát:</strong> <code>a, b, c = string[0], string[1], string[2:]</code></li>
+          <li><strong>Cắt lát và ghép nối danh sách:</strong> <code>a, b, c = list(string[:2]) + [string[2:]]</code></li>
+          <li><strong>Cắt lát và giải nén trực tiếp hai dòng:</strong> <code>a, b = string[:2]; c = string[2:]</code></li>
+          <li><strong>Tạo tuple lồng nhau từ các lát cắt:</strong> <code>(a, b), c = string[:2], string[2:]</code></li>
+        </ol>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát lỗi ValueError và 4 cách dùng lát cắt để giải nén',
+          code: `string = 'TEXT'
+
+# 1. Khớp số lượng chính xác
+a, b, c, d = string
+print("1. Khớp hoàn hảo:", a, b, c, d)
+
+# Bắt lỗi khi không khớp số lượng
+try:
+    x, y, z = string
+except ValueError as err:
+    print("Bắt lỗi lệch số lượng:", err)
+
+# 2. Cách 1: Chỉ mục và cắt lát
+a, b, c = string[0], string[1], string[2:]
+print("2. Chỉ mục + lát cắt:", a, b, c)
+
+# 3. Cách 2: Cắt lát và nối danh sách
+a, b, c = list(string[:2]) + [string[2:]]
+print("3. Ghép nối list:", a, b, c)
+
+# 4. Cách 3: Hai câu lệnh phân tách
+a, b = string[:2]
+c = string[2:]
+print("4. Cắt lát trực tiếp:", a, b, c)
+
+# 5. Cách 4: Dãy tuần tự lồng nhau
+(a, b), c = string[:2], string[2:]
+print("5. Dãy tuần tự lồng nhau:", a, b, c)`,
+          output: `1. Khớp hoàn hảo: T E X T
+Bắt lỗi lệch số lượng: too many values to unpack (expected 3)
+2. Chỉ mục + lát cắt: T E XT
+3. Ghép nối list: T E XT
+4. Cắt lát trực tiếp: T E XT
+5. Dãy tuần tự lồng nhau: T E XT`,
+          annotations: [
+            { line: 9, text: 'Chuỗi 4 phần tử không thể tự giải nén vào 3 biến nếu không có chỉ dẫn rõ ràng.' },
+            { line: 13, text: 'string[2:] lấy toàn bộ phần còn lại từ vị trí 2 trở đi gán cho biến c.' },
+            { line: 25, text: 'Vế trái là cấu trúc lồng nhau khớp với cấu trúc hai phần tử ở vế phải.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Phép Gán Dãy Tuần Tự Lồng Nhau & Ứng Dụng Trong Vòng Lặp for',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 6–7 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Như ví dụ số 5 ở phần trước đã chứng minh, chúng ta thậm chí có thể gán các <strong>dãy tuần tự lồng nhau (nested sequences)</strong>, và Python sẽ giải nén các phần của chúng theo đúng hình dạng cấu trúc tương ứng:</p>
+        <pre><code>>>> ((a, b), c) = ('TE', 'XT')
+>>> a, b, c
+('T', 'E', 'XT')</code></pre>
+        <p>Tại đây, Python ghép đôi chuỗi đầu tiên ở bên phải (<code>'TE'</code>) với tuple đầu tiên ở bên trái (<code>(a, b)</code>) và gán từng ký tự một tại một thời điểm, trước khi gán toàn bộ chuỗi thứ hai (<code>'XT'</code>) cho biến <code>c</code> cùng một lúc. Hình dạng lồng nhau của dãy tuần tự ở bên trái <em>bắt buộc phải khớp với hình dạng cấu trúc của đối tượng ở bên phải</em>.</p>
+
+        <h3>Ứng dụng trong vòng lặp for</h3>
+        <p>Kỹ thuật gán cấu trúc này hoạt động hoàn hảo trong các vòng lặp <code>for</code>. Bởi vì các phần tử của vòng lặp được gán cho mục tiêu được chỉ định trong tiêu đề vòng lặp giống hệt như thể một câu lệnh <code>=</code> được thực thi ở mỗi bước lặp:</p>
+        <pre><code>for (a, b, c) in [(1, 2, 3), (4, 5, 6)]: ...       # Gán tuple đơn giản
+for ((a, b), c) in [((1, 2), 3), ((4, 5), 6)]: ... # Gán tuple lồng nhau</code></pre>
+        <p><em>(Ghi chú tham chiếu: Những phép gán dãy tuần tự lồng nhau phức tạp như thế này cũng có thể đạt được thông qua câu lệnh so khớp khuôn mẫu <code>match/case</code> mà chúng ta sẽ tìm hiểu kỹ lưỡng trong Chương 12).</em></p>
+      `,
+      codeExamples: [
+        {
+          title: 'Duyệt cấu trúc dữ liệu phức tạp bằng phép gán lồng nhau trong vòng lặp for',
+          code: `# Dữ liệu danh sách chứa các tuple lồng nhau: ((tên, họ), điểm_số)
+hoc_vien = [
+    (('Nam', 'Nguyễn'), 9.5),
+    (('Hương', 'Trần'), 9.8),
+    (('Tuấn', 'Lê'), 8.7)
+]
+
+# Vòng lặp for giải nén trực tiếp cấu trúc lồng nhau trong header
+for ((ten, ho), diem) in hoc_vien:
+    print(f"Học viên: {ho} {ten} - Điểm: {diem}")`,
+          output: `Học viên: Nguyễn Nam - Điểm: 9.5
+Học viên: Trần Hương - Điểm: 9.8
+Học viên: Lê Tuấn - Điểm: 8.7`,
+          annotations: [
+            { line: 9, text: '((ten, ho), diem) phản chiếu chính xác cấu trúc ((str, str), float) của từng phần tử.' },
+            { line: 10, text: 'Các biến con ten, ho, diem có sẵn ngay lập tức trong thân vòng lặp.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-3',
+      title: '3. Thành Ngữ Mô Phỏng Enum Bằng range() & Phép Gán Trong Vòng Lặp while',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 7–8 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Các phép gán giải nén dãy tuần tự cũng làm nảy sinh một thành ngữ lập trình cực kỳ phổ biến trong cộng đồng Python: <strong>gán một chuỗi số nguyên liên tiếp cho một tập hợp các biến</strong> để mô phỏng kiểu liệt kê (<em>enumerated data types</em>):</p>
+        <pre><code>>>> red, green, blue = range(3)
+>>> red, blue
+(0, 2)</code></pre>
+        <p>Mã này khởi tạo ba tên biến ở bên trái dấu <code>=</code> lần lượt nhận các số nguyên 0, 1 và 2. Bởi vì mỗi tên nhận một giá trị nguyên duy nhất, đây là giải pháp tương đương đơn giản và thanh thoát nhất của Python cho các kiểu dữ liệu <code>enum</code> thường thấy trong C hay C++.</p>
+
+        <h3>Chia tách dãy tuần tự thành "đầu" và "còn lại" trong vòng lặp while</h3>
+        <p>Một ngữ cảnh thực tiễn khác mà bạn thường thấy phép gán tuple hoạt động là để chia tách một danh sách thành phần tử đầu tiên (<em>front</em>) và danh sách phần tử còn lại (<em>rest</em>) trong các vòng lặp <code>while</code>:</p>
+        <pre><code>L = [1, 2, 3, 4]
+while L:
+    front, L = L[0], L[1:]
+    print(front, L)</code></pre>
+        <p>Mỗi bước lặp trích xuất <code>L[0]</code> vào biến <code>front</code> và gán lát cắt thu gọn <code>L[1:]</code> ngược lại cho chính <code>L</code>. Vòng lặp dừng lại khi <code>L</code> trở thành danh sách rỗng (mang giá trị boolean <code>False</code>). Kỹ thuật này sử dụng danh sách tương tự một <strong>ngăn xếp (stack)</strong>.</p>
+        <p>Mặc dù hành vi này cũng có thể đạt được bằng phương thức <code>front = L.pop(0)</code>, nhưng đó là một thao tác cập nhật tại chỗ (<em>in-place</em>). Ở bài học kế tiếp, bạn sẽ thấy cú pháp giải nén mở rộng với dấu sao <code>*</code> sẽ nâng tầm kỹ thuật chia tách này lên một đẳng cấp ngắn gọn và tự nhiên hơn nhiều!</p>
+      `,
+      codeExamples: [
+        {
+          title: 'Mô phỏng Enum bằng range() và thuật toán duyệt ngăn xếp với while',
+          code: `# 1. Thành ngữ mô phỏng kiểu liệt kê Enum
+RED, GREEN, BLUE = range(3)
+print("Enum mô phỏng:", f"RED={RED}, GREEN={GREEN}, BLUE={BLUE}")
+
+# 2. Duyệt ngăn xếp chia tách đầu và phần còn lại
+danh_sach = [10, 20, 30, 40]
+print("Bắt đầu duyệt danh sách:")
+
+while danh_sach:
+    dau, danh_sach = danh_sach[0], danh_sach[1:]
+    print(f"  Phần tử đầu: {dau} | Phần còn lại: {danh_sach}")`,
+          output: `Enum mô phỏng: RED=0, GREEN=1, BLUE=2
+Bắt đầu duyệt danh sách:
+  Phần tử đầu: 10 | Phần còn lại: [20, 30, 40]
+  Phần tử đầu: 20 | Phần còn lại: [30, 40]
+  Phần tử đầu: 30 | Phần còn lại: [40]
+  Phần tử đầu: 40 | Phần còn lại: []`,
+          annotations: [
+            { line: 2, text: 'range(3) tạo iterable sinh 0, 1, 2 giải nén đồng thời vào 3 hằng số.' },
+            { line: 9, text: 'Phép gán tuple dau, danh_sach đồng thời lấy phần tử đầu và co ngắn danh sách.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    tips: [
+      {
+        title: 'Lời dặn từ Mark Lutz: Ghép đôi theo hình học cấu trúc',
+        content: 'Khi sử dụng phép gán dãy tuần tự lồng nhau, hãy coi vế trái như một chiếc khuôn hình học. Vế phải có bao nhiêu cấp ngoặc lồng nhau thì vế trái cũng phải bố trí các biến con trong các cặp ngoặc tương ứng. Python sẽ tự động đệ quy bóc tách từng lớp để gán giá trị chính xác tuyệt đối.'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Trích xuất thông tin nhân sự từ danh sách hồ sơ lồng nhau',
+      level: 'Trung bình',
+      problem: 'Cho cấu trúc dữ liệu hồ sơ nhân sự dạng tuple: ho_so = ("IT_01", ("Nguyễn Văn A", "Kỹ sư Cầu nối"), (2020, "Hà Nội")). Hãy sử dụng một phép gán giải nén dãy tuần tự lồng nhau duy nhất để trích xuất mã nhân viên, họ tên, chức danh và năm vào công ty vào các biến riêng biệt.',
+      hint: 'Tạo khuôn vế trái khớp với cấu trúc 3 phần tử, trong đó phần tử thứ hai và thứ ba là các tuple con.',
+      solutionCode: `ho_so = ("IT_01", ("Nguyễn Văn A", "Kỹ sư Cầu nối"), (2020, "Hà Nội"))
+
+ma_nv, (ho_ten, chuc_danh), (nam_vao, dia_diem) = ho_so
+
+print(f"Mã: {ma_nv}")
+print(f"Họ tên: {ho_ten}")
+print(f"Chức danh: {chuc_danh}")
+print(f"Năm vào: {nam_vao}")`,
+      solutionOutput: `Mã: IT_01
+Họ tên: Nguyễn Văn A
+Chức danh: Kỹ sư Cầu nối
+Năm vào: 2020`,
+      explanation: 'Khuôn lồng nhau ma_nv, (ho_ten, chuc_danh), (nam_vao, dia_diem) khớp nối trực tiếp với từng phần tử và tuple con của đối tượng ho_so.'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Khi bạn chạy câu lệnh a, b, c = [1, 2], điều gì sẽ xảy ra?',
+      options: [
+        'Biến c nhận giá trị mặc định None.',
+        'Python phát sinh ngoại lệ ValueError: not enough values to unpack.',
+        'Biến a nhận 1, b nhận 2, và c nhận 0.',
+        'Python tự động lặp lại phần tử cuối cùng để gán cho c.'
+      ],
+      correctIndex: 1,
+      explanation: 'Khi số lượng mục tiêu ở vế trái (3) lớn hơn số phần tử ở vế phải (2), Python báo lỗi ValueError vì không đủ giá trị để giải nén.'
+    },
+    {
+      question: 'Thành ngữ red, green, blue = range(3) mang lại kết quả gì cho biến green?',
+      options: [
+        'green = 0',
+        'green = 1',
+        'green = 2',
+        'green = [0, 1, 2]'
+      ],
+      correctIndex: 1,
+      explanation: 'Hàm range(3) sinh ra dãy số 0, 1, 2. Giải nén theo vị trí từ trái qua phải sẽ gán red = 0, green = 1, blue = 2.'
+    },
+    {
+      question: 'Phát biểu nào sau đây là ĐÚNG về phép gán dãy tuần tự lồng nhau ((a, b), c) = (\'TE\', \'XT\')?',
+      options: [
+        'Python báo lỗi cú pháp vì không cho phép ngoặc lồng nhau ở vế trái.',
+        'a nhận \'TE\', b nhận \'XT\', c nhận giá trị rỗng.',
+        'Chuỗi \'TE\' được giải nén vào tuple (a, b) thành a = \'T\', b = \'E\'; c nhận chuỗi \'XT\'.',
+        'Toàn bộ chuỗi được ghép lại và gán cho c.'
+      ],
+      correctIndex: 2,
+      explanation: 'Python ghép đôi cấu trúc theo vị trí: phần tử đầu tiên \'TE\' khớp với (a, b) để giải nén từng ký tự, phần tử thứ hai \'XT\' gán trọn vẹn cho c.'
+    }
+  ],
+
+  summary: [
+    'Phép gán dãy tuần tự thông thường yêu cầu số lượng mục tiêu vế trái phải khớp chính xác với số lượng phần tử vế phải, nếu không sẽ phát sinh ValueError.',
+    'Có thể dùng các kỹ thuật đánh chỉ mục và cắt lát (slicing) linh hoạt để trích xuất từng phần khi độ dài không khớp.',
+    'Python hỗ trợ giải nén dãy tuần tự lồng nhau theo đúng khuôn hình học cấu trúc, cực kỳ đắc lực trong các vòng lặp for.',
+    'Thành ngữ gán range(N) cho N biến là cách mô phỏng Enum đơn giản nhất; phép gán front, L = L[0], L[1:] là nền tảng xử lý ngăn xếp trong vòng lặp while.'
+  ]
+};
+
+window.__PRELOADED_LESSONS__['lp-c11-02'] = {
+  id: 'lp-c11-02',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.2',
+  title: 'Phép gán Giải nén Mở rộng với Dấu sao (*X) & Chuyên đề Các vì sao muôn màu',
+  subtitle: 'Làm chủ cú pháp *X thu gom phần tử, quy tắc luôn trả về List, các trường hợp biên, ứng dụng vòng lặp for và bức tranh toàn cảnh dấu sao trong tiến trình lịch sử CPython',
+  level: 'Trung cấp đến Nâng cao',
+  duration: '40 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Làm chủ cú pháp phép gán giải nén mở rộng (extended sequence unpacking) với mục tiêu có dấu sao *X tại các vị trí đầu, giữa, và cuối dãy tuần tự.',
+    'Phân biệt rõ ràng sự khác biệt bản chất giữa giải nén mở rộng (luôn tạo ra một List mới) và thao tác cắt lát (bảo tồn kiểu đối tượng ban đầu).',
+    'Nhận diện các trường hợp biên quan trọng: biến dấu sao nhận danh sách một phần tử, nhận danh sách rỗng [], và các lỗi cú pháp SyntaxError / ValueError.',
+    'Khám phá khung chuyên đề lịch sử "Các vì sao muôn màu của Python": từ phép gán, hàm, hằng trị đối tượng PEP 448 đến câu lệnh match và except* trong Python 3.11+.'
+  ],
+
+  intuition: {
+    title: 'Chiếc Lưới Gom Sao và Nam Châm Hút Dữ Liệu',
+    metaphor: 'Nếu phép gán dãy tuần tự thông thường giống như việc bạn xếp hàng từng người vào từng ghế đơn cố định (thừa người hay thiếu ghế đều vỡ trận), thì biến mang dấu sao *X giống như một chiếc ghế sofa co giãn không đáy ở giữa khán phòng. Các biến bình thường sẽ nhanh chóng giành lấy các ghế đầu và ghế cuối đã được phân bổ đích danh; còn lại bao nhiêu người ở giữa—dù là 10 người, 1 người, hay thậm chí không còn ai—chiếc sofa *X sẽ gom tất cả lại và bọc gọn gàng vào trong một chiếc túi List mới tinh. Đó chính là sự công thái học đỉnh cao giúp bạn giải phóng khỏi những phép tính chỉ mục cắt lát vụn vặt.',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--accent-primary);">MÔ HÌNH THU GOM PHẦN TỬ CỦA MỤC TIÊU CÓ DẤU SAO (*b)</div>
+        <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:10px;align-items:center;text-align:center;">
+          <div style="padding:10px;background:var(--bg-surface);border:1px solid #8b5cf6;border-radius:8px;">
+            <div style="font-weight:700;color:#8b5cf6;">Mục tiêu a</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">Nhận phần tử đầu<br><code>seq[0] = 1</code></div>
+          </div>
+          <div style="padding:10px;background:rgba(236,72,153,0.1);border:2px solid #ec4899;border-radius:8px;">
+            <div style="font-weight:700;color:#ec4899;">Mục tiêu *b (Thu gom)</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">Gom mọi phần tử còn lại vào List<br><code>b = [2, 3]</code></div>
+          </div>
+          <div style="padding:10px;background:var(--bg-surface);border:1px solid #10b981;border-radius:8px;">
+            <div style="font-weight:700;color:#10b981;">Mục tiêu c</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">Nhận phần tử cuối<br><code>seq[-1] = 4</code></div>
+          </div>
+        </div>
+        <div style="padding:8px 12px;background:var(--bg-surface);border-left:4px solid #ec4899;border-radius:4px;font-size:0.8rem;color:var(--text-secondary);">
+          <strong>Quy tắc bất biến:</strong> Bất kể vế phải là chuỗi, tuple hay range, biến có dấu sao <code>*b</code> <em>luôn luôn</em> được gán một đối tượng <code>list</code> mới.
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Phép Gán Giải Nén Mở Rộng (*X) Trong Thực Tế',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 8–10 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Như đã thấy ở bài học trước, các phép gán dãy tuần tự thông thường đòi hỏi chính xác số lượng mục tiêu ở bên trái bằng số lượng phần tử trong đối tượng ở bên phải. Để loại bỏ hạn chế này mà không cần cắt lát thủ công rườm rà, Python đưa vào cú pháp <strong>phép gán giải nén mở rộng (extended sequence unpacking)</strong>.</p>
+        <p>Tóm lại, một mục tiêu có dấu sao, <code>*X</code>, có thể được đặt ở bên trái dấu <code>=</code> để chỉ định một sự khớp nối tổng quát hơn với iterable ở bên phải: <strong>mục tiêu có dấu sao được gán một danh sách (list), thu thập tất cả các phần tử trong iterable chưa được gán cho các mục tiêu khác</strong>.</p>
+
+        <h3>Vị trí linh hoạt của dấu sao</h3>
+        <p>Mục tiêu có dấu sao có thể xuất hiện ở <strong>bất kỳ đâu</strong> bên vế trái:</p>
+        <ul>
+          <li><strong>Ở cuối (đầu, còn lại):</strong> <code>a, *b = seq</code> → <code>a</code> khớp phần tử đầu tiên, <code>b</code> thu thập toàn bộ phần còn lại vào một list.</li>
+          <li><strong>Ở đầu (còn lại, cuối):</strong> <code>*a, b = seq</code> → <code>b</code> khớp phần tử cuối cùng, <code>a</code> thu thập mọi thứ phía trước vào một list.</li>
+          <li><strong>Ở giữa:</strong> <code>a, *b, c = seq</code> → <code>a</code> nhận phần tử đầu, <code>c</code> nhận phần tử cuối, và <code>b</code> nhận danh sách tất cả những gì nằm ở giữa.</li>
+        </ul>
+
+        <h3>Quy tắc kiểu dữ liệu: Luôn luôn trả về List</h3>
+        <p>Giống như phép gán thông thường, giải nén mở rộng hoạt động cho bất kỳ kiểu iterable nào: chuỗi ký tự, tuple, list, range... Tuy nhiên, có một sự khác biệt bản chất so với thao tác cắt lát (slice):</p>
+        <blockquote>
+          <p><strong>Cắt lát bảo tồn kiểu đối tượng ban đầu (chuỗi cắt lát trả về chuỗi), trong khi mục tiêu có dấu sao trong phép giải nén mở rộng LUÔN LUÔN trả về một đối tượng List mới!</strong></p>
+        </blockquote>
+      `,
+      codeExamples: [
+        {
+          title: 'Giải nén mở rộng tại các vị trí và đối chiếu kiểu dữ liệu với Slicing',
+          code: `seq = [1, 2, 3, 4]
+
+# 1. Dấu sao ở cuối (Đầu, còn lại)
+a, *b = seq
+print("a, *b:", a, b) # 1, [2, 3, 4]
+
+# 2. Dấu sao ở đầu (Còn lại, cuối)
+*a, b = seq
+print("*a, b:", a, b) # [1, 2, 3], 4
+
+# 3. Dấu sao ở giữa
+a, *b, c = seq
+print("a, *b, c:", a, b, c) # 1, [2, 3], 4
+
+# 4. Giải nén trên chuỗi ký tự
+S = 'hack'
+a, *b, c = S
+print("Chuỗi unpack *b:", a, b, c) # 'h', ['a', 'c'], 'k'
+
+# 5. So sánh với Cắt lát (Slicing bảo tồn kiểu chuỗi)
+x, y, z = S[0], S[1:-1], S[-1]
+print("Cắt lát giữ nguyên chuỗi:", x, repr(y), z) # 'h', 'ac', 'k'`,
+          output: `a, *b: 1 [2, 3, 4]
+*a, b: [1, 2, 3] 4
+a, *b, c: 1 [2, 3] 4
+Chuỗi unpack *b: h ['a', 'c'] k
+Cắt lát giữ nguyên chuỗi: h 'ac' k`,
+          annotations: [
+            { line: 4, text: 'b thu gom các phần tử [2, 3, 4] thành một list mới.' },
+            { line: 8, text: 'a thu gom các phần tử phía trước [1, 2, 3] thành một list mới.' },
+            { line: 17, text: 'Mục tiêu *b trên chuỗi \'hack\' trả về list các ký tự [\'a\', \'c\'].' },
+            { line: 21, text: 'Thao tác cắt lát S[1:-1] trả về chuỗi \'ac\', không biến thành list.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Các Trường Hợp Biên (Boundary Cases) & Các Lỗi Cú Pháp Cần Tránh',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 10–12 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Mặc dù việc giải nén mở rộng rất linh hoạt, các tình huống biên (<em>boundary cases</em>) sau đây rất đáng chú ý:</p>
+
+        <ol>
+          <li>
+            <strong>Khớp duy nhất một phần tử:</strong> Mục tiêu có dấu sao có thể chỉ khớp với một phần tử đơn lẻ, nhưng nó <em>vẫn luôn luôn được gán một danh sách chứa phần tử đó</em> (ví dụ: <code>[4]</code> chứ không phải con số <code>4</code>).
+          </li>
+          <li>
+            <strong>Không còn phần tử nào để khớp:</strong> Nếu tất cả các mục tiêu khác đã vét sạch các phần tử của dãy tuần tự, mục tiêu có dấu sao sẽ được gán một <strong>danh sách rỗng <code>[]</code></strong> thay vì coi đây là trường hợp lỗi!
+          </li>
+        </ol>
+
+        <h3>Ba trường hợp kích hoạt Lỗi Cú Pháp & Lỗi Giá Trị</h3>
+        <ul>
+          <li>
+            <strong>Nhiều hơn một mục tiêu có dấu sao trong cùng một dãy:</strong> Python không thể đoán được ranh giới thu gom giữa hai biến dấu sao, do đó lệnh <code>a, *b, c, *d = seq</code> lập tức báo <code>SyntaxError: multiple starred expressions in assignment</code>.
+          </li>
+          <li>
+            <strong>Mục tiêu có dấu sao đứng cô độc không nằm trong tuple/list:</strong> Lệnh <code>*a = seq</code> báo lỗi <code>SyntaxError: starred assignment target must be in a list or tuple</code>.
+          </li>
+          <li>
+            <strong>Mẹo tạo bản sao danh sách với dấu phẩy:</strong> Bạn có thể thêm một dấu phẩy phía sau: <code>*a, = seq</code>. Lúc này vế trái là một tuple một phần tử hợp lệ, và <code>a</code> sẽ thu gom toàn bộ <code>seq</code> thành một <strong>bản sao danh sách (list copy) mới</strong>!
+          </li>
+        </ul>
+
+        <h3>Ứng dụng trong vòng lặp while và vòng lặp for</h3>
+        <p>Nhờ giải nén mở rộng, vòng lặp rút trích ngăn xếp ở bài trước trở nên cực kỳ gọn gàng:</p>
+        <pre><code>L = [1, 2, 3, 4]
+while L:
+    front, *L = L
+    print(front, L)</code></pre>
+        <p>Tương tự, trong vòng lặp <code>for</code>, bạn có thể giải nén mở rộng ngay tại tiêu đề:</p>
+        <pre><code>for (a, *b, c) in [(1, 2, 3, 4), (5, 6, 7, 8)]:
+    print(a, b, c) # b nhận [2, 3], sau đó nhận [6, 7]</code></pre>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát các trường hợp biên, lỗi cú pháp và bản sao danh sách *a, = seq',
+          code: `seq = [1, 2, 3, 4]
+
+# 1. Khớp duy nhất 1 phần tử -> Vẫn trả về List 1 phần tử
+a, b, c, *d = seq
+print("Khớp 1 phần tử:", d) # [4]
+
+# 2. Không còn phần tử nào -> Trả về List rỗng []
+a, b, c, d, *e = seq
+print("Hết phần tử để khớp:", e) # []
+
+# 3. Dấu sao ở giữa khi hết phần tử
+a, b, *e, c, d = seq
+print("Dấu sao ở giữa khi đủ phần tử:", e) # []
+
+# 4. Mẹo tạo bản sao danh sách bằng *a, = seq
+*ban_sao, = seq
+print("Bản sao list mới:", ban_sao)
+print("Là đối tượng độc lập:", ban_sao is not seq)
+
+# 5. Giải nén mở rộng trong vòng lặp for
+du_lieu = [(1, 2, 3, 4), (5, 6, 7, 8)]
+for (dau, *giua, cuoi) in du_lieu:
+    print(f"Đầu: {dau} | Giữa: {giua} | Cuối: {cuoi}")`,
+          output: `Khớp 1 phần tử: [4]
+Hết phần tử để khớp: []
+Dấu sao ở giữa khi đủ phần tử: []
+Bản sao list mới: [1, 2, 3, 4]
+Là đối tượng độc lập: True
+Đầu: 1 | Giữa: [2, 3] | Cuối: 4
+Đầu: 5 | Giữa: [6, 7] | Cuối: 8`,
+          annotations: [
+            { line: 5, text: 'Biến d nhận [4] (list một phần tử), giữ vững quy tắc kiểu dữ liệu.' },
+            { line: 9, text: 'Biến e nhận [] an toàn, không sinh lỗi thiếu phần tử.' },
+            { line: 17, text: '*ban_sao, = seq là tuple 1 phần tử, sao chép nông toàn bộ seq thành list mới.' },
+            { line: 23, text: 'Giải nén mở rộng vận hành tự nhiên ngay trong tiêu đề vòng lặp for.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-3',
+      title: '3. Khung Chuyên Đề: Các Vì Sao Muôn Màu của Python',
+      content: `
+        <div class="callout-box callout-theory" style="border-left:4px solid #ec4899;margin-bottom:20px;">
+          <div class="callout-header">
+            <span>✨</span>
+            <span><strong>Khung chuyên đề: Các vì sao muôn màu của Python (The Many Stars of Python)</strong></span>
+          </div>
+          <div class="callout-body">
+            <p><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz • <strong>PDF Trang 13–14 / 38</strong>.</p>
+            <p>Không, khung thông tin này không nói về những nhân vật nổi tiếng trong showbiz! Đây là sự tổng kết của Mark Lutz về tất cả những lần xuất hiện đặc biệt của ký tự dấu sao <code>*</code> đã nổi lên trong ngôn ngữ Python qua nhiều năm tháng phát triển:</p>
+
+            <h4>1. Trước Python 3.5</h4>
+            <ul>
+              <li><strong>Phép gán:</strong> Nơi một mục tiêu gán có dấu sao <code>*X</code> duy nhất thu thập các phần tử chưa khớp vào một danh sách mới (như chúng ta vừa học trong chương này).</li>
+              <li><strong>Dòng tiêu đề hàm (Header):</strong> Nơi các tham số có dấu sao đơn <code>*args</code> và dấu sao kép <code>**kwargs</code> thu thập các đối số vị trí và đối số từ khóa chưa khớp vào một tuple và dictionary tương ứng (Chương 18).</li>
+              <li><strong>Lời gọi hàm (Call):</strong> Nơi các biểu thức có dấu sao đơn <code>*X</code> và dấu sao kép <code>**X</code> giải nén các iterable và mapping thành các đối số vị trí và đối số từ khóa riêng lẻ khi truyền vào hàm.</li>
+            </ul>
+
+            <h4>2. Kể từ Python 3.5 (PEP 448 — Additional Unpacking Generalizations)</h4>
+            <p>Các lệnh gọi hàm hỗ trợ số lượng tùy ý các biểu thức giải nén <code>*X</code> và <code>**X</code>. Hơn thế nữa, số lượng tùy ý các biểu thức có dấu sao cũng có thể xuất hiện trực tiếp trong các <strong>biểu thức hằng trị đối tượng (object literals)</strong> để giải nén và ghép nối linh hoạt:</p>
+            <pre><code>[x, *iter]        # List: giải nén các phần tử trong iterable
+(x, *iter, y)     # Tuple: tương tự, có ngoặc đơn hoặc không
+{*iter, x}        # Set: tương tự, tập hợp duy nhất không thứ tự
+{x: y, **map}     # Dict: giải nén khóa/giá trị, trùng lặp ngoài cùng bên phải thắng!</code></pre>
+
+            <h4>3. Kể từ Python 3.10 (PEP 634 — Structural Pattern Matching)</h4>
+            <p>Cả hai tên biến có dấu sao <code>*X</code> và <code>**X</code> đều có thể xuất hiện trong các khuôn mẫu (patterns) của câu lệnh <code>match/case</code> (được trình bày ở Chương 12), nơi chúng phục vụ các vai trò tương tự như trong phép gán dãy tuần tự.</p>
+
+            <h4>4. Kể từ Python 3.11 (PEP 654 — Exception Groups and except*)</h4>
+            <p>Một mệnh đề <code>except*</code> có thể xuất hiện trong các câu lệnh <code>try</code>, nơi nó cho phép xử lý đồng thời nhiều ngoại lệ được gói trong một nhóm ngoại lệ (<em>exception group</em>)—một tính năng nâng cao mà chúng ta sẽ khám phá tại Chương 35.</p>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Minh họa các dạng thức dấu sao mở rộng trong Object Literals (PEP 448)',
+          code: `# Giải nén trong List literal
+ds_goc = [2, 3]
+ds_moi = [1, *ds_goc, 4]
+print("List literal *:", ds_moi)
+
+# Giải nén trong Set literal (tự động khử trùng lặp)
+tap_hop = {*ds_moi, 1, 5}
+print("Set literal *:", sorted(list(tap_hop)))
+
+# Giải nén trong Dict literal với ** (khóa trùng bên phải thắng)
+dict_a = {'a': 1, 'b': 2}
+dict_b = {'b': 99, 'c': 3}
+dict_gop = {**dict_a, **dict_b}
+print("Dict literal **:", dict_gop)`,
+          output: `List literal *: [1, 2, 3, 4]
+Set literal *: [1, 2, 3, 4, 5]
+Dict literal **: {'a': 1, 'b': 99, 'c': 3}`,
+          annotations: [
+            { line: 3, text: '*ds_goc trải phẳng các phần tử 2, 3 vào list mới.' },
+            { line: 7, text: 'Set loại bỏ phần tử 1 trùng lặp.' },
+            { line: 13, text: 'Khóa \'b\' của dict_b ghi đè giá trị 2 của dict_a vì nằm ngoài cùng bên phải.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    warnings: [
+      {
+        title: 'Cảnh báo về giới hạn một dấu sao trong mỗi cấp dãy',
+        content: 'Quy tắc "chỉ xuất hiện một lần" cho mục tiêu có dấu sao chỉ áp dụng cho từng dãy tuần tự riêng lẻ. Bạn không thể viết a, *b, *c = seq. Tuy nhiên, nếu có sự lồng nhau, bạn có thể có một dấu sao trong mỗi tuple con: [(a, *b), (c, *d)] = [(1, 2, 3, 4), (5, 6, 7, 8)] là hoàn toàn hợp lệ!'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Tách dòng nhật ký hệ thống bằng phép gán giải nén mở rộng',
+      level: 'Trung bình',
+      problem: 'Một dòng nhật ký server được biểu diễn dưới dạng chuỗi: log = "2026-10-31 18:30:00 ERROR Database connection pool exhausted server_node_4". Hãy dùng split() và giải nén mở rộng để lấy ngày, giờ vào hai biến riêng; lấy toàn bộ nội dung thông báo lỗi ở giữa vào một biến; và lấy tên node server cuối cùng vào một biến.',
+      hint: 'Dùng cú pháp ngay, gio, muc_do, *thong_bao, node = log.split() sau đó nối các từ trong thong_bao bằng " ".join().',
+      solutionCode: `log = "2026-10-31 18:30:00 ERROR Database connection pool exhausted server_node_4"
+
+ngay, gio, muc_do, *thong_bao, node = log.split()
+thong_bao_str = " ".join(thong_bao)
+
+print(f"Thời gian: {ngay} {gio}")
+print(f"Mức độ: {muc_do}")
+print(f"Thông điệp: {thong_bao_str}")
+print(f"Node: {node}")`,
+      solutionOutput: `Thời gian: 2026-10-31 18:30:00
+Mức độ: ERROR
+Thông điệp: Database connection pool exhausted
+Node: server_node_4`,
+      explanation: 'Mục tiêu *thong_bao ở giữa thu gom toàn bộ danh sách các từ còn lại [\'Database\', \'connection\', \'pool\', \'exhausted\'] một cách thanh lịch mà không cần tính chỉ mục phức tạp.'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Khi thực hiện câu lệnh a, *b = \'Python\', giá trị và kiểu dữ liệu của b là gì?',
+      options: [
+        'b = \'ython\' (kiểu str)',
+        'b = (\'y\', \'t\', \'h\', \'o\', \'n\') (kiểu tuple)',
+        'b = [\'y\', \'t\', \'h\', \'o\', \'n\'] (kiểu list)',
+        'b = [\'Python\'] (kiểu list chứa 1 chuỗi)'
+      ],
+      correctIndex: 2,
+      explanation: 'Mục tiêu có dấu sao trong phép giải nén mở rộng luôn luôn thu thập các phần tử chưa gán vào một đối tượng list mới, bất kể vế phải là chuỗi hay tuple.'
+    },
+    {
+      question: 'Câu lệnh nào sau đây sẽ phát sinh ngoại lệ SyntaxError?',
+      options: [
+        '*a, = [1, 2, 3]',
+        'a, *b, c = [1, 2]',
+        'a, *b, c, *d = [1, 2, 3, 4]',
+        '[(a, *b), (c, *d)] = [(1, 2), (3, 4)]'
+      ],
+      correctIndex: 2,
+      explanation: 'Python nghiêm cấm việc xuất hiện nhiều hơn một biểu thức dấu sao (*b và *d) trong cùng một dãy tuần tự gán vì không thể xác định ranh giới thu gom.'
+    },
+    {
+      question: 'Khi chạy câu lệnh a, b, *c = [10, 20], giá trị của biến c là gì?',
+      options: [
+        'c = None',
+        'c = 0',
+        'c = [] (danh sách rỗng)',
+        'Phát sinh ngoại lệ ValueError vì thiếu phần tử'
+      ],
+      correctIndex: 2,
+      explanation: 'Khi tất cả các phần tử đã được gán cho các mục tiêu cố định (a=10, b=20), mục tiêu có dấu sao *c sẽ nhận một danh sách rỗng [] thay vì báo lỗi.'
+    }
+  ],
+
+  summary: [
+    'Mục tiêu có dấu sao *X thu gom tất cả các phần tử còn lại của iterable vào một đối tượng List mới.',
+    'Dấu sao có thể đặt ở đầu, giữa hoặc cuối vế trái, mang lại sự linh hoạt vượt trội so với cắt lát thủ công.',
+    'Các trường hợp biên: biến dấu sao nhận List 1 phần tử nếu chỉ còn 1, và nhận List rỗng [] nếu không còn phần tử nào.',
+    'Ký tự * có hành trình lịch sử phong phú trong Python: từ giải nén tham số hàm, object literals (PEP 448) đến match/case (3.10) và except* (3.11).'
+  ]
+};
+
+window.__PRELOADED_LESSONS__['lp-c11-03'] = {
+  id: 'lp-c11-03',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.3',
+  title: 'Phép gán Đa mục tiêu — Cơ chế Hoạt động & Cạm bẫy Tham chiếu Chia sẻ',
+  subtitle: 'Cú pháp a = b = c = val, cơ chế trỏ chung địa chỉ bộ nhớ, sự an toàn của kiểu bất biến và cạm bẫy biến đổi dây chuyền với đối tượng khả biến',
+  level: 'Cơ bản đến Trung cấp',
+  duration: '25 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Hiểu rõ cú pháp và hành vi của phép gán đa mục tiêu (multiple-target assignment): gán cùng một tham chiếu đối tượng cho tất cả các biến ở vế trái.',
+    'Nhận biết vì sao phép gán đa mục tiêu hoàn toàn an toàn khi khởi tạo các kiểu dữ liệu bất biến (immutable) như số nguyên và chuỗi ký tự.',
+    'Phân tích sâu sắc cạm bẫy tham chiếu chia sẻ (shared references) khi khởi tạo các đối tượng khả biến (mutable) như danh sách rỗng hoặc từ điển rỗng.',
+    'Áp dụng thành thạo hai phương án khắc phục chuẩn mực: khởi tạo trên các dòng độc lập hoặc sử dụng phép gán tuple đối tượng riêng biệt.'
+  ],
+
+  intuition: {
+    title: 'Nhiều Tấm Thẻ Tên Cùng Cột Vào Một Chiếc Hộp',
+    metaphor: 'Hãy tưởng tượng bạn có 3 tấm thẻ tên ghi a, b, c và cột chung cả 3 sợi dây vào cùng một chiếc hộp quà duy nhất trong phòng khách. Nếu món quà bên trong là một tảng đá đúc nguyên khối bất biến (con số 0), bạn không thể thay đổi tảng đá đó; nếu người giữ thẻ b muốn số 1, anh ta buộc phải cắt dây và cột thẻ b sang một tảng đá số 1 mới ở chỗ khác, nên a và c vẫn giữ nguyên tảng đá 0. Nhưng nếu chiếc hộp đó là một chiếc túi xách mở nắp (danh sách list rỗng), bất kỳ ai cầm thẻ b thò tay nhét một quả bóng vào túi, thì khi người cầm thẻ a nhìn vào chiếc túi của mình, anh ta cũng sẽ bàng hoàng thấy quả bóng đó xuất hiện! Đó chính là bản chất của hiện tượng tham chiếu chia sẻ.',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--accent-primary);">MÔ HÌNH THAM CHIẾU CHIA SẺ TRONG PHÉP GÁN ĐA MỤC TIÊU</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="padding:8px;background:var(--bg-surface);border:1px solid #8b5cf6;border-radius:6px;text-align:center;">Biến <code>a</code></div>
+            <div style="padding:8px;background:var(--bg-surface);border:1px solid #8b5cf6;border-radius:6px;text-align:center;">Biến <code>b</code></div>
+            <div style="padding:8px;background:var(--bg-surface);border:1px solid #8b5cf6;border-radius:6px;text-align:center;">Biến <code>c</code></div>
+          </div>
+          <div style="font-size:1.6rem;color:var(--danger);font-weight:700;">➔ ➔ ➔</div>
+          <div style="padding:16px;background:rgba(239,68,68,0.1);border:2px solid var(--danger);border-radius:8px;text-align:center;">
+            <div style="font-weight:700;color:var(--danger);">MỘT ĐỐI TƯỢNG DUY NHẤT</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:6px;">Địa chỉ bộ nhớ: <code>id: 0x7fa...</code><br>Dữ liệu: <code>[42]</code></div>
+          </div>
+        </div>
+        <div style="padding:8px 12px;background:var(--bg-surface);border-left:4px solid var(--danger);border-radius:4px;font-size:0.8rem;color:var(--text-secondary);">
+          <strong>Hậu quả:</strong> Gọi <code>b.append(42)</code> biến đổi tại chỗ đối tượng dùng chung, khiến <code>a</code> và <code>c</code> cũng đồng thời bị biến đổi theo!
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Cú Pháp Phép Gán Đa Mục Tiêu & Bản Chất Hoạt Động',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 14 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Đơn giản hơn phép gán dãy tuần tự khi thoạt nhìn, <strong>phép gán đa mục tiêu (multiple-target assignment)</strong> chỉ đơn thuần gán tất cả các mục tiêu được đưa ra cho cùng một đối tượng nằm ở ngoài cùng bên phải. Ví dụ sau đây gán ba tên biến <code>a</code>, <code>b</code>, và <code>c</code> cho cùng chuỗi <code>'code'</code>:</p>
+
+        <pre><code>>>> a = b = c = 'code'
+>>> a, b, c
+('code', 'code', 'code')</code></pre>
+
+        <p>Dạng này tương đương với—nhưng dễ viết mã hơn và tốn ít dòng hơn—ba câu lệnh gán tuần tự từ phải sang trái:</p>
+        <pre><code>c = 'code'
+b = c
+a = b</code></pre>
+        <p>Bởi vì <code>c</code> được định giá trị thành đối tượng chuỗi ban đầu, <code>b</code> và <code>a</code> lần lượt nhận cùng tham chiếu đến chính đối tượng chuỗi đó chứ không phải một bản sao riêng biệt.</p>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát phép gán đa mục tiêu và kiểm tra địa chỉ bộ nhớ id()',
+          code: `# Gán ba biến cho cùng một chuỗi
+a = b = c = 'Python'
+
+print("Giá trị:", a, b, c)
+print("Cùng trỏ một đối tượng:", a is b and b is c)
+print(f"Địa chỉ bộ nhớ a: {id(a)}")
+print(f"Địa chỉ bộ nhớ b: {id(b)}")
+print(f"Địa chỉ bộ nhớ c: {id(c)}")`,
+          output: `Giá trị: Python Python Python
+Cùng trỏ một đối tượng: True
+Địa chỉ bộ nhớ a: 140723456789
+Địa chỉ bộ nhớ b: 140723456789
+Địa chỉ bộ nhớ c: 140723456789`,
+          annotations: [
+            { line: 2, text: 'Phép gán đa mục tiêu liên kết 3 tên biến vào cùng một đối tượng chuỗi duy nhất.' },
+            { line: 5, text: 'Toán tử is xác nhận cả 3 biến cùng chia sẻ một địa chỉ id bộ nhớ.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Cạm Bẫy Tham Chiếu Chia Sẻ: Kiểu Khả Biến (Mutable) vs Bất Biến (Immutable)',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 14–15 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Mặc dù điều này có vẻ đơn giản, hãy luôn nhớ rằng <strong>chỉ có một đối tượng duy nhất ở đây, được chia sẻ bởi cả ba biến</strong>. Hành vi này dẫn đến hai kết cục hoàn toàn trái ngược tùy thuộc vào tính khả biến của đối tượng:</p>
+
+        <h3>1. Hoàn toàn vô hại đối với các kiểu bất biến (Immutable)</h3>
+        <p>Khi bạn khởi tạo một tập hợp các biến đếm về 0:</p>
+        <pre><code>>>> a = b = 0
+>>> b = b + 1
+>>> a, b
+(0, 1)</code></pre>
+        <p>Ở đây, việc thay đổi <code>b</code> chỉ làm thay đổi riêng <code>b</code>. Bởi vì số nguyên là bất biến và không hỗ trợ thay đổi tại chỗ, phép toán <code>b + 1</code> tạo ra một đối tượng số <code>1</code> hoàn toàn mới và gán lại cho <code>b</code>. Biến <code>a</code> vẫn tiếp tục trỏ tới số <code>0</code> ban đầu. Miễn là đối tượng được gán là bất biến, việc có nhiều tên biến cùng tham chiếu tới nó là điều an toàn tuyệt đối.</p>
+
+        <h3>2. Cạm bẫy chết người đối với các kiểu khả biến (Mutable)</h3>
+        <p>Tuy nhiên, chúng ta phải đặc biệt cẩn trọng khi khởi tạo các biến thành một đối tượng khả biến như một danh sách hoặc từ điển rỗng:</p>
+        <pre><code>>>> a = b = []
+>>> b.append(42)
+>>> a, b
+([42], [42])</code></pre>
+        <p>Lần này, vì <code>a</code> và <code>b</code> cùng trỏ tới một vùng nhớ danh sách duy nhất, việc thêm phần tử vào danh sách đó tại chỗ thông qua phương thức <code>append</code> của <code>b</code> cũng sẽ <strong>làm thay đổi dữ liệu mà chúng ta nhìn thấy qua <code>a</code></strong>! Đây là hiện tượng <em>tham chiếu chia sẻ (shared reference)</em> đã được cảnh báo trong Chương 6.</p>
+
+        <h3>Hai giải pháp phòng ngừa chuẩn mực</h3>
+        <p>Để tránh cạm bẫy này, bạn phải đảm bảo mỗi biến được khởi tạo từ một biểu thức hằng trị (literal) riêng biệt:</p>
+        <ol>
+          <li>
+            <strong>Khởi tạo trên các câu lệnh riêng biệt:</strong>
+            <pre><code>a = []
+b = [] # a và b trỏ tới hai danh sách độc lập trong bộ nhớ</code></pre>
+          </li>
+          <li>
+            <strong>Dùng phép gán Tuple ngắn gọn:</strong>
+            <pre><code>a, b = [], [] # Hai biểu thức [] tạo ra hai đối tượng danh sách riêng biệt</code></pre>
+          </li>
+        </ol>
+      `,
+      codeExamples: [
+        {
+          title: 'Đối chứng trực tiếp: Cạm bẫy tham chiếu chia sẻ và Giải pháp khắc phục',
+          code: `# CẠM BẪY: Khởi tạo dùng chung đối tượng khả biến
+a = b = []
+b.append(42)
+print("Cạm bẫy a = b = []:")
+print("  a =", a) # Bị đổi thành [42] ngoài ý muốn!
+print("  b =", b)
+print("  a is b:", a is b)
+
+# GIẢI PHÁP 1: Khởi tạo trên 2 dòng riêng
+x = []
+y = []
+y.append(99)
+print("\\nGiải pháp 1 (Hai câu lệnh riêng):")
+print("  x =", x) # Giữ nguyên []
+print("  y =", y)
+print("  x is y:", x is y)
+
+# GIẢI PHÁP 2: Phép gán Tuple hai literals riêng
+m, n = [], []
+n.append(100)
+print("\\nGiải pháp 2 (m, n = [], []):")
+print("  m =", m) # Giữ nguyên []
+print("  n =", n)
+print("  m is n:", m is n)`,
+          output: `Cạm bẫy a = b = []:
+  a = [42]
+  b = [42]
+  a is b: True
+
+Giải pháp 1 (Hai câu lệnh riêng):
+  x = []
+  y = [99]
+  x is y: False
+
+Giải pháp 2 (m, n = [], []):
+  m = []
+  n = [100]
+  m is n: False`,
+          annotations: [
+            { line: 3, text: 'b.append(42) biến đổi danh sách tại chỗ, khiến a cũng bị ảnh hưởng.' },
+            { line: 12, text: 'Mỗi lần trình thông dịch đọc cú pháp [] là một lần tạo vùng nhớ danh sách mới.' },
+            { line: 20, text: 'm, n = [], [] thực thi hai biểu thức [] độc lập, tạo ra 2 đối tượng riêng biệt.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    warnings: [
+      {
+        title: 'Quy tắc vàng của Mark Lutz về khởi tạo biến',
+        content: 'Chỉ sử dụng phép gán đa mục tiêu a = b = c = val khi val là một giá trị bất biến (như số 0, None, hoặc chuỗi rỗng ""). Tuyệt đối không bao giờ dùng a = b = [] hoặc a = b = {} nếu bạn muốn hai biến hoạt động độc lập!'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Khắc phục lỗi chia sẻ tham chiếu trong bảng cấu hình người dùng',
+      level: 'Cơ bản',
+      problem: 'Một lập trình viên viết: config_default = config_user = {"theme": "light", "notifications": True}. Sau đó người dùng thay đổi: config_user["theme"] = "dark". Hãy giải thích điều gì xảy ra với config_default và viết lại câu lệnh để hai cấu hình hoàn toàn độc lập.',
+      hint: 'Từ điển là kiểu dữ liệu khả biến. Hãy dùng copy() hoặc khởi tạo hai dict riêng biệt.',
+      solutionCode: `# Sửa lại bằng cách khởi tạo độc lập hoặc dùng dict literal riêng
+config_default, config_user = {"theme": "light", "notifications": True}, {"theme": "light", "notifications": True}
+
+config_user["theme"] = "dark"
+
+print("config_default:", config_default)
+print("config_user:", config_user)`,
+      solutionOutput: `config_default: {'theme': 'light', 'notifications': True}
+config_user: {'theme': 'dark', 'notifications': True}`,
+      explanation: 'Khi khởi tạo bằng hai literal riêng biệt, config_default và config_user là hai đối tượng từ điển khác nhau, việc sửa đổi config_user không làm ảnh hưởng cấu hình mặc định.'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Trong câu lệnh x = y = 0; y = y + 5, giá trị của x và y lần lượt là gì?',
+      options: [
+        'x = 5, y = 5',
+        'x = 0, y = 5',
+        'x = 0, y = 0',
+        'Phát sinh ngoại lệ TypeError'
+      ],
+      correctIndex: 1,
+      explanation: 'Số nguyên là kiểu bất biến. Biểu thức y + 5 tạo ra số 5 mới và gán lại cho y; x vẫn tiếp tục trỏ tới số 0 ban đầu.'
+    },
+    {
+      question: 'Khi bạn chạy hai dòng mã: a = b = []; b.append(10), kết quả in ra của biến a là gì?',
+      options: [
+        '[] (danh sách rỗng)',
+        '[10] (danh sách có một phần tử)',
+        'None',
+        'Lỗi RuntimeError'
+      ],
+      correctIndex: 1,
+      explanation: 'Vì a và b cùng chia sẻ một đối tượng danh sách duy nhất trong bộ nhớ, thao tác thay đổi tại chỗ b.append(10) sẽ hiển thị trên cả hai biến.'
+    },
+    {
+      question: 'Cách nào sau đây là giải pháp đúng để tạo hai danh sách rỗng độc lập trên một dòng lệnh?',
+      options: [
+        'a = b = []',
+        'a, b = [], []',
+        '[a, b] = [[]] * 2',
+        'a = b = list()'
+      ],
+      correctIndex: 1,
+      explanation: 'Cú pháp a, b = [], [] thực thi hai biểu thức hằng trị [] riêng biệt ở vế phải, tạo ra hai đối tượng danh sách độc lập trong bộ nhớ.'
+    }
+  ],
+
+  summary: [
+    'Phép gán đa mục tiêu a = b = c = val gán cùng một tham chiếu đối tượng cho tất cả các biến.',
+    'Hoàn toàn an toàn với các kiểu bất biến (số, chuỗi, tuple) vì các phép tính toán luôn tạo ra đối tượng mới.',
+    'Là cạm bẫy nguy hiểm với các kiểu khả biến (list, dict, set) vì thao tác cập nhật tại chỗ qua một biến sẽ làm đổi dữ liệu của các biến còn lại.',
+    'Khắc phục triệt để bằng cách tách thành các câu lệnh riêng hoặc sử dụng phép gán tuple a, b = [], [].'
+  ]
+};
+
+window.__PRELOADED_LESSONS__['lp-c11-04'] = {
+  id: 'lp-c11-04',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.4',
+  title: 'Phép gán Tăng cường (Augmented Assignment) — Bảng 11-2 & Tối ưu hóa Tại chỗ',
+  subtitle: '13 dạng câu lệnh gán tăng cường trong Bảng 11-2, 3 ưu thế vượt trội, cơ chế ánh xạ tự động tới extend() trên danh sách và tác động tinh vi tới tham chiếu chia sẻ',
+  level: 'Trung cấp',
+  duration: '35 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Nắm vững toàn bộ 13 định dạng câu lệnh gán tăng cường trong Bảng 11-2 được tiếp nhận từ ngôn ngữ C.',
+    'Phân tích 3 ưu điểm then chốt: tiết kiệm thao tác gõ, đánh giá vế trái duy nhất một lần, và tự động tối ưu hóa cập nhật tại chỗ (in-place).',
+    'Thấu hiểu cơ chế CPython: phép toán += trên danh sách tự động ánh xạ tới phương thức extend() nhanh hơn, cho phép nhận iterable bất kỳ thay vì báo TypeError như phép + thông thường.',
+    'Nhận diện sự khác biệt sâu sắc giữa L = L + [val] và L += [val] khi có nhiều biến cùng chia sẻ tham chiếu.'
+  ],
+
+  intuition: {
+    title: 'Xây Nhà Mới Khác Với Kê Thêm Giường Vào Phòng',
+    metaphor: 'Khi bạn viết L = L + [3], bạn giống như một người muốn thêm một chiếc giường nhưng lại quyết định đập bỏ ngôi nhà cũ, mua một lô đất mới, bê nguyên vẹn đồ đạc từ nhà cũ sang, đặt thêm chiếc giường số 3 vào, rồi mới chuyển địa chỉ hộ khẩu L sang nhà mới. Rất tốn kém thời gian và công sức! Ngược lại, phép gán tăng cường L += [3] giống như việc bạn mở cửa bước thẳng vào căn phòng sẵn có và kê thêm chiếc giường vào góc phòng (cập nhật tại chỗ in-place). Căn nhà không đổi, địa chỉ không đổi, và nếu có người bạn M đang cùng ở chung nhà với bạn, anh ta cũng sẽ lập tức thấy chiếc giường mới xuất hiện!',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--accent-primary);">SO SÁNH BỘ NHỚ GIỮA PHÉP GÉP NỐI (+) VÀ GÁN TĂNG CƯỜNG (+=) TRÊN LIST</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div style="padding:10px;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:8px;">
+            <div style="color:var(--warning);font-weight:700;">L = L + [3] (Ghép nối)</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:6px;">
+              • Tạo ra đối tượng List MỚI<br>
+              • Sao chép toàn bộ phần tử cũ sang<br>
+              • Nếu M trỏ L cũ, M KHÔNG bị đổi
+            </div>
+          </div>
+          <div style="padding:10px;background:var(--bg-surface);border:1px solid #10b981;border-radius:8px;">
+            <div style="color:#10b981;font-weight:700;">L += [3] (Ánh xạ extend)</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:6px;">
+              • Cập nhật TẠI CHỖ (in-place)<br>
+              • Không tạo đối tượng mới, chạy cực nhanh<br>
+              • Nếu M trỏ L, M CŨNG thấy thay đổi!
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Toàn Cảnh Bảng 11-2 — Các Định Dạng Câu Lệnh Gán Tăng Cường',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 15–16 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Được vay mượn từ ngôn ngữ C từ khá sớm trong tiến trình phát triển của Python, các <strong>phép gán tăng cường (augmented assignments)</strong> phần lớn là cách viết tắt ngụ ý sự kết hợp giữa một biểu thức hai ngôi (hai toán hạng) và một phép gán:</p>
+        <pre><code>X = X + Y  # Dạng cơ bản (lặp lại X)
+X += Y     # Dạng tăng cường (ngắn gọn, tối ưu)</code></pre>
+
+        <p>Bảng 11-2 liệt kê toàn bộ 13 định dạng câu lệnh gán tăng cường có sẵn trong Python:</p>
+
+        <div class="table-wrapper" style="margin:20px 0;">
+          <table class="markdown-table" style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+            <thead>
+              <tr style="background:var(--bg-surface-alt);border-bottom:2px solid var(--border-subtle);text-align:left;">
+                <th style="padding:10px 14px;color:var(--accent-primary);">Câu lệnh gán tăng cường</th>
+                <th style="padding:10px 14px;color:var(--accent-primary);">Ý nghĩa giải thích</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X += Y</code></td>
+                <td style="padding:8px 14px;">Cộng và gán (hoặc ghép nối / extend chuỗi/danh sách)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X -= Y</code></td>
+                <td style="padding:8px 14px;">Trừ và gán (trên số hoặc phép hiệu tập hợp set)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X *= Y</code></td>
+                <td style="padding:8px 14px;">Nhân và gán (hoặc nhân bản dãy tuần tự)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X /= Y</code></td>
+                <td style="padding:8px 14px;">Chia thực và gán (trả về float)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X @= Y</code></td>
+                <td style="padding:8px 14px;">Nhân ma trận và gán (dành cho NumPy, chưa dùng trong Python cốt lõi)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X //= Y</code></td>
+                <td style="padding:8px 14px;">Chia lấy sàn và gán (floor division)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X %= Y</code></td>
+                <td style="padding:8px 14px;">Chia lấy dư và gán (hoặc định dạng chuỗi cũ %)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X **= Y</code></td>
+                <td style="padding:8px 14px;">Lũy thừa và gán</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X >>= Y</code></td>
+                <td style="padding:8px 14px;">Dịch phải bit và gán</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X <<= Y</code></td>
+                <td style="padding:8px 14px;">Dịch trái bit và gán</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X &= Y</code></td>
+                <td style="padding:8px 14px;">Phép AND trên bit (bitwise) và gán (hoặc giao tập hợp set)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>X |= Y</code></td>
+                <td style="padding:8px 14px;">Phép OR trên bit (bitwise) và gán (hoặc hợp nhất dict/set từ Python 3.9)</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 14px;"><code>X ^= Y</code></td>
+                <td style="padding:8px 14px;">Phép XOR trên bit (bitwise) và gán (hoặc hiệu đối xứng set)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin:16px 0;">
+          <div class="callout-header">
+            <span>📌</span>
+            <span><strong>Chú thích [1] dành cho lập trình viên C/C++:</strong></span>
+          </div>
+          <div class="callout-body">
+            <p>Mặc dù Python hỗ trợ đầy đủ các câu lệnh như <code>X += Y</code>, nó <strong>hoàn toàn không có các toán tử tự động tăng/giảm</strong> như <code>X++</code>, <code>++X</code>, <code>X--</code>, <code>--X</code>. Những toán tử này không ánh xạ vào mô hình đối tượng của Python vì số học trong Python là đối tượng bất biến (không có khái niệm thay đổi tại chỗ cho con số). Tương tự, Python cũng không có biểu thức gán có tên tăng cường dạng <code>:+= 1</code>.</p>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát các phép gán tăng cường trên số nguyên và chuỗi ký tự',
+          code: `# Gán tăng cường số nguyên
+x = 1
+x += 1 # Tương đương x = x + 1
+print("x sau khi += 1:", x)
+
+x *= 5 # Tương đương x = x * 5
+print("x sau khi *= 5:", x)
+
+x **= 2 # Lũy thừa 10^2
+print("x sau khi **= 2:", x)
+
+# Gán tăng cường trên chuỗi (ghép nối)
+S = 'hack'
+S += 'HACK' # Ghép chuỗi ngầm định
+print("Chuỗi S sau khi +=:", S)`,
+          output: `x sau khi += 1: 2
+x sau khi *= 5: 10
+x sau khi **= 2: 100
+Chuỗi S sau khi +=: hackHACK`,
+          annotations: [
+            { line: 3, text: 'Toán tử += thay đổi tham chiếu của x sang đối tượng số 2.' },
+            { line: 13, text: 'Chuỗi là bất biến nên S += \'HACK\' tạo đối tượng chuỗi mới \'hackHACK\'.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Ba Ưu Thế Cốt Lõi & Cơ Chế Tối Ưu Hóa Tại Chỗ Của CPython',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 17–18 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Mark Lutz chỉ rõ <strong>ba ưu điểm vượt trội</strong> giúp phép gán tăng cường trở thành chuẩn mực viết mã trong Python thực tế:</p>
+
+        <ol>
+          <li><strong>Gõ ít ký tự hơn:</strong> Đơn giản, ngắn gọn và tránh lặp lại tên biến dài.</li>
+          <li>
+            <strong>Vế trái chỉ cần đánh giá duy nhất một lần:</strong> Trong câu lệnh <code>X += Y</code>, nếu <code>X</code> là một biểu thức phức tạp (ví dụ <code>matrix[i][j + offset()] += 1</code>), địa chỉ của <code>X</code> chỉ được tính toán 1 lần duy nhất. Trong khi ở dạng <code>X = X + Y</code>, biểu thức vế trái xuất hiện 2 lần và bắt buộc phải chạy 2 lần, làm chậm tốc độ thực thi đáng kể.
+          </li>
+          <li>
+            <strong>Kỹ thuật tối ưu hóa tại chỗ được tự động lựa chọn:</strong> Đối với các đối tượng khả biến (như danh sách), các dạng tăng cường sẽ <strong>tự động thực hiện thao tác thay đổi tại chỗ (in-place)</strong> thay vì thực hiện các phép sao chép đối tượng chậm chạp.
+          </li>
+        </ol>
+
+        <h3>Cơ chế ngầm định trên List: += tự động gọi extend()</h3>
+        <p>Để nối thêm các phần tử vào một danh sách, chúng ta có hai cách:</p>
+        <ul>
+          <li><code>L = L + [5, 6]</code>: Bắt buộc tạo ra một danh sách mới toanh, sao chép toàn bộ phần tử của <code>L</code> sang, rồi sao chép tiếp <code>[5, 6]</code> vào. Cực kỳ tốn bộ nhớ và chậm chạp.</li>
+          <li><code>L.extend([7, 8])</code>: Thêm trực tiếp các con trỏ phần tử vào cuối khối bộ nhớ hiện có của <code>L</code> mà không cần cấp phát lại đối tượng danh sách mới. Chạy nhanh vượt trội.</li>
+        </ul>
+        <p>Khi bạn viết <code>L += [9, 10]</code>, Python tự động ánh xạ lệnh này sang phương thức <code>extend()</code> tại chỗ!</p>
+
+        <h3>Sự khác biệt về tính chấp nhận Iterable</h3>
+        <p>Chính vì <code>+=</code> ánh xạ tới <code>extend()</code>, nó thừa hưởng sự linh hoạt tuyệt vời: <strong><code>+=</code> chấp nhận bất kỳ dãy tuần tự hoặc iterable nào ở vế phải (kể cả chuỗi ký tự)</strong>, trong khi phép cộng thông thường <code>+</code> sẽ lập tức báo lỗi <code>TypeError</code>:</p>
+        <pre><code>>>> L = []
+>>> L += 'hack'       # += chấp nhận chuỗi như extend()!
+>>> L
+['h', 'a', 'c', 'k']
+
+>>> L = L + 'code'    # Phép cộng thông thường bắt buộc cả hai vế là list
+TypeError: can only concatenate list (not "str") to list</code></pre>
+
+        <h3>Gán tăng cường trên Chỉ mục và Lát cắt</h3>
+        <p>Phép gán tăng cường cũng hoạt động tuyệt vời trên các mục tiêu chỉ mục và lát cắt để cập nhật cấu trúc dữ liệu tại chỗ:</p>
+        <pre><code>>>> L = [1, 2]
+>>> L[0] += 10        # Thay đổi phần tử đầu tiên tại chỗ: [11, 2]
+>>> L[-1:] += [3, 4]  # Mở rộng đoạn cuối tại chỗ: [11, 2, 3, 4]</code></pre>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát hiệu năng và tính chấp nhận Iterable của phép gán tăng cường trên List',
+          code: `# 1. Phép gán += trên danh sách chấp nhận chuỗi ký tự
+L = [1, 2]
+L += 'AB' # Tương đương L.extend('AB')
+print("L sau khi += 'AB':", L)
+
+# 2. Phép gán tăng cường trên chỉ mục
+L[0] += 100
+print("L sau khi L[0] += 100:", L)
+
+# 3. Phép gán tăng cường trên lát cắt
+L[-2:] += ['X', 'Y']
+print("L sau khi L[-2:] += ['X', 'Y']:", L)
+
+# 4. Thử nghiệm TypeError của phép + thông thường
+try:
+    L = L + "loi_kieu"
+except TypeError as err:
+    print("Phép + thông thường báo lỗi:", err)`,
+          output: `L sau khi += 'AB': [1, 2, 'A', 'B']
+L sau khi L[0] += 100: [101, 2, 'A', 'B']
+L sau khi L[-2:] += ['X', 'Y']: [101, 2, 'A', 'B', 'X', 'Y']
+Phép + thông thường báo lỗi: can only concatenate list (not "str") to list`,
+          annotations: [
+            { line: 3, text: '+= tự động duyệt chuỗi \'AB\' và thêm từng ký tự vào danh sách.' },
+            { line: 7, text: 'L[0] += 100 cập nhật giá trị số nguyên tại vị trí chỉ mục 0.' },
+            { line: 17, text: 'Phép ghép nối + bắt buộc hai toán hạng phải cùng kiểu list.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-3',
+      title: '3. Phép Gán Tăng Cường và Cạm Bẫy Tham Chiếu Chia Sẻ',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 18–19 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Tinh vi hơn rất nhiều, sự thay đổi tại chỗ ngầm định trong <code>+=</code> đối với danh sách rất khác biệt so với đối tượng hoàn toàn mới được tạo ra bởi phép ghép nối <code>+</code>. Khi có nhiều biến cùng tham chiếu đến một đối tượng danh sách, sự khác biệt này có thể tạo ra những tác dụng phụ ngoài ý muốn:</p>
+
+        <h3>Trường hợp 1: Phép ghép nối thông thường (+) bảo vệ biến chia sẻ</h3>
+        <pre><code>>>> L = [1, 2]
+>>> M = L              # L và M cùng trỏ vào một danh sách
+>>> L = L + [3, 4]     # Phép + tạo ra một danh sách MỚI gán cho L
+>>> L, M
+([1, 2, 3, 4], [1, 2]) # M vẫn giữ nguyên danh sách ban đầu!</code></pre>
+        <p>Tại đây, việc gán <code>L = L + [3, 4]</code> làm cho biến <code>L</code> trỏ sang một đối tượng danh sách mới. Biến <code>M</code> vẫn trỏ vào danh sách cũ <code>[1, 2]</code> và hoàn toàn không bị ảnh hưởng.</p>
+
+        <h3>Trường hợp 2: Phép gán tăng cường (+=) biến đổi biến chia sẻ</h3>
+        <pre><code>>>> L = [1, 2]
+>>> M = L              # L và M cùng trỏ vào một danh sách
+>>> L += [3, 4]        # += thực sự gọi extend() tại chỗ!
+>>> L, M
+([1, 2, 3, 4], [1, 2, 3, 4]) # M CŨNG BỊ ĐỔI THEO!</code></pre>
+        <p>Tại đây, vì <code>+=</code> thay đổi danh sách tại chỗ trên vùng nhớ hiện tại, biến <code>M</code> vốn đang trỏ cùng vùng nhớ đó cũng lập tức nhìn thấy các phần tử mới <code>[3, 4]</code>!</p>
+        <p>Mark Lutz nhắc nhở: <em>Đây là một góc khuất tinh vi của Python mà mọi kỹ sư đều phải nắm vững trước khi nó âm thầm gây lỗi trong mã nguồn của bạn. Nếu cần bảo vệ dữ liệu khi chia sẻ tham chiếu, hãy luôn chủ động tạo bản sao độc lập!</em></p>
+      `,
+      codeExamples: [
+        {
+          title: 'Đối chứng tác động của + và += tới tham chiếu chia sẻ',
+          code: `# Kịch bản A: Phép + tạo đối tượng mới (M giữ nguyên)
+L1 = [1, 2]
+M1 = L1
+L1 = L1 + [3, 4]
+print("Kịch bản A (L = L + [3, 4]):")
+print("  L1 =", L1)
+print("  M1 =", M1, "(An toàn, không bị đổi)")
+print("  L1 is M1:", L1 is M1)
+
+# Kịch bản B: Phép += cập nhật tại chỗ (M2 bị đổi theo!)
+L2 = [1, 2]
+M2 = L2
+L2 += [3, 4] # Gọi extend() tại chỗ
+print("\\nKịch bản B (L += [3, 4]):")
+print("  L2 =", L2)
+print("  M2 =", M2, "(Bị đổi theo ngoài ý muốn!)")
+print("  L2 is M2:", L2 is M2)`,
+          output: `Kịch bản A (L = L + [3, 4]):
+  L1 = [1, 2, 3, 4]
+  M1 = [1, 2] (An toàn, không bị đổi)
+  L1 is M1: False
+
+Kịch bản B (L += [3, 4]):
+  L2 = [1, 2, 3, 4]
+  M2 = [1, 2, 3, 4] (Bị đổi theo ngoài ý muốn!)
+  L2 is M2: True`,
+          annotations: [
+            { line: 4, text: 'Phép + gán lại con trỏ L1 sang đối tượng danh sách mới.' },
+            { line: 14, text: 'Phép += giữ nguyên đối tượng và sửa đổi trực tiếp, làm M2 đổi theo.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    tips: [
+      {
+        title: 'Lời khuyên từ Mark Lutz: Khi nào dùng + và khi nào dùng +=?',
+        content: 'Dùng += khi bạn muốn tối ưu tốc độ và chắc chắn rằng không có biến nào khác đang cần bảo toàn trạng thái cũ của danh sách. Nếu danh sách được truyền từ bên ngoài vào hàm hoặc được chia sẻ qua nhiều module, hãy cẩn trọng với += hoặc chủ động tạo bản sao danh sách bằng L = L[:] trước khi thao tác.'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Tối ưu hóa bộ tích lũy ma trận bằng phép gán tăng cường',
+      level: 'Trung bình',
+      problem: 'Viết một hàm gom_du_lieu(ds_goc, du_lieu_moi) nhận vào một danh sách và một chuỗi ký tự các mã code (ví dụ: "PY314"). Hãy sử dụng phép gán tăng cường để nạp toàn bộ các ký tự của chuỗi vào cuối danh sách tại chỗ và chứng minh rằng đối tượng danh sách không bị thay đổi địa chỉ id.',
+      hint: 'Áp dụng tính chất += trên danh sách chấp nhận chuỗi như phương thức extend().',
+      solutionCode: `def gom_du_lieu(ds_goc, chuoi_ma):
+    id_truoc = id(ds_goc)
+    ds_goc += chuoi_ma # Cập nhật tại chỗ
+    id_sau = id(ds_goc)
+    print("Địa chỉ bộ nhớ không đổi:", id_truoc == id_sau)
+    return ds_goc
+
+kho = ['CODE']
+ket_qua = gom_du_lieu(kho, '123')
+print("Danh sách sau khi nạp:", ket_qua)`,
+      solutionOutput: `Địa chỉ bộ nhớ không đổi: True
+Danh sách sau khi nạp: ['CODE', '1', '2', '3']`,
+      explanation: 'Phép gán tăng cường += biến đổi danh sách tại chỗ (in-place) nên địa chỉ bộ nhớ id của kho hoàn toàn giữ nguyên.'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Phát biểu nào sau đây KHÔNG PHẢI là ưu điểm của phép gán tăng cường (augmented assignment)?',
+      options: [
+        'Giúp viết mã ngắn gọn, tốn ít ký tự hơn.',
+        'Vế trái chỉ cần được đánh giá duy nhất một lần.',
+        'Tự động chọn thao tác cập nhật tại chỗ (in-place) trên đối tượng khả biến để tối ưu hiệu năng.',
+        'Tự động sao chép sâu (deep copy) đối tượng để tránh xung đột dữ liệu.'
+      ],
+      correctIndex: 3,
+      explanation: 'Phép gán tăng cường không hề sao chép dữ liệu; ngược lại, trên các đối tượng khả biến nó thực hiện thay đổi tại chỗ để tăng tốc độ thực thi.'
+    },
+    {
+      question: 'Điều gì xảy ra khi bạn chạy hai dòng lệnh sau: L = []; L += \'abc\'?',
+      options: [
+        'Phát sinh ngoại lệ TypeError vì không thể cộng list với chuỗi str.',
+        'L trở thành [\'abc\'].',
+        'L trở thành [\'a\', \'b\', \'c\'] vì += trên list tự động gọi phương thức extend().',
+        'L trở thành [].'
+      ],
+      correctIndex: 2,
+      explanation: 'Trên đối tượng list, toán tử += được ánh xạ tới phương thức extend(), cho phép nhận bất kỳ iterable nào (kể cả chuỗi) và giải nén từng phần tử vào list.'
+    },
+    {
+      question: 'Cho đoạn mã: L = [1, 2]; M = L; L += [3]. Giá trị của biến M sau câu lệnh là gì?',
+      options: [
+        '[1, 2]',
+        '[1, 2, 3]',
+        '[3]',
+        'None'
+      ],
+      correctIndex: 1,
+      explanation: 'Vì L += [3] thực hiện cập nhật tại chỗ trên danh sách mà L và M cùng tham chiếu, nên M cũng sẽ thấy danh sách được bổ sung thành [1, 2, 3].'
+    }
+  ],
+
+  summary: [
+    'Phép gán tăng cường kết hợp toán tử hai ngôi và phép gán (X += Y), có 13 biến thể trong Bảng 11-2.',
+    'Ba ưu điểm then chốt: ít gõ hơn, đánh giá vế trái duy nhất một lần, và tự động tối ưu hóa tại chỗ.',
+    'Trên danh sách, += tương đương phương thức extend(), chạy nhanh hơn phép + và chấp nhận mọi iterable ở vế phải.',
+    'Cần lưu ý cạm bẫy tham chiếu chia sẻ: += làm thay đổi tất cả các biến đang cùng trỏ tới đối tượng danh sách đó.'
+  ]
+};
+
+window.__PRELOADED_LESSONS__['lp-c11-05'] = {
+  id: 'lp-c11-05',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.5',
+  title: 'Biểu thức Gán có tên (Toán tử Walrus :=) — Cú pháp, Ứng dụng và Thực hành Tối ưu',
+  subtitle: 'Lịch sử PEP 572, cơ chế vừa gán vừa trả về giá trị, các giới hạn cú pháp, tối ưu hóa vòng lặp đọc file và triết lý "không dùng búa tạ đóng mọi cây đinh"',
+  level: 'Trung cấp',
+  duration: '35 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Hiểu bối cảnh lịch sử và nguyên lý thiết kế của biểu thức gán có tên (named assignment expression — toán tử walrus :=) được đưa vào từ Python 3.8 theo PEP 572.',
+    'Nắm vững cơ chế kép của toán tử :=: vừa gán giá trị cho một tên biến, vừa trả về chính kết quả đó làm giá trị của toàn bộ biểu thức.',
+    'Nhận diện các giới hạn cú pháp khắt khe: chỉ chấp nhận một tên biến đơn lẻ ở vế trái (cấm chỉ mục, lát cắt, thuộc tính, hoặc gán mở rộng).',
+    'Thành thạo ứng dụng toán tử walrus trong vòng lặp while đọc file/dòng dữ liệu, quy tắc bắt buộc dùng ngoặc đơn quanh phép so sánh, và tránh bẫy lạm dụng làm rối mã nguồn.'
+  ],
+
+  intuition: {
+    title: 'Người Đưa Thư Vừa Bỏ Thư Vào Hòm Vừa Báo Tin',
+    metaphor: 'Một câu lệnh gán thông thường (=) giống như một người đưa thư chỉ âm thầm nhét phong bì vào hòm thư bên trái rồi quay gót bước đi—bạn không thể biết bên trong có gì nếu không đích thân mở hòm ra kiểm tra. Ngược lại, toán tử walrus (:=) giống như một người đưa thư vừa nhét phong bì vào hòm thư, vừa nhanh nhẹn giơ một bản sao của lá thư đó lên trước mặt bạn và reo to nội dung cho bạn kiểm tra ngay tại cửa! Nhờ hành động "kép" này, bạn có thể kiểm tra xem lá thư có hợp lệ không (trong tiêu đề while/if) mà không cần phải chạy ra mở hòm thư thêm một lần nữa.',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--accent-primary);">CƠ CHẾ HOẠT ĐỘNG KÉP CỦA TOÁN TỬ HẢI MÃ (name := value)</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;">
+          <div style="padding:12px;background:var(--bg-surface);border:1px solid #8b5cf6;border-radius:8px;text-align:center;">
+            <div style="font-weight:700;color:#8b5cf6;">HÀNH ĐỘNG 1: GÁN GIÁ TRỊ</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">Gán kết quả của <code>value</code><br>cho tên biến <code>name</code></div>
+          </div>
+          <div style="font-size:1.6rem;color:var(--accent-primary);font-weight:700;">&</div>
+          <div style="padding:12px;background:var(--bg-surface);border:1px solid #10b981;border-radius:8px;text-align:center;">
+            <div style="font-weight:700;color:#10b981;">HÀNH ĐỘNG 2: TRẢ VỀ GIÁ TRỊ</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">Trả về chính giá trị đó<br>làm kết quả của biểu thức</div>
+          </div>
+        </div>
+        <div style="padding:8px 12px;background:var(--bg-surface);border-left:4px solid var(--warning);border-radius:4px;font-size:0.8rem;color:var(--text-secondary);">
+          <strong>Cảnh báo độ ưu tiên:</strong> Toán tử <code>!=</code> hay <code>==</code> liên kết chặt hơn <code>:=</code>. Luôn bọc ngoặc đơn <code>(line := stream.read()) != ''</code>!
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Lịch Sử PEP 572 & Cơ Chế Vừa Gán Vừa Trả Về Giá Trị',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 19–20 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Trong phần lớn ba thập kỷ tồn tại của Python, ngôn ngữ này đã kiên quyết chống lại việc mô phỏng thành ngữ "phép gán dưới dạng biểu thức" của ngôn ngữ C, với lý do rằng nó quá tinh vi, dễ mắc lỗi và tạo ra những đoạn mã khó đọc. Trong C, người mới học rất hay vô tình viết <code>if (x = 0)</code> (phép gán luôn trả về 0 khiến điều kiện luôn Sai) khi thực sự muốn viết <code>if (x == 0)</code>.</p>
+        <p>Mặc dù những lo ngại này vẫn còn hiệu lực, <strong>Python 3.8 đã đưa vào một biến thể có kiểm soát</strong> theo đề xuất <em>PEP 572</em>, được gọi là <strong>phép gán có tên (named assignment)</strong> với toán tử <code>:=</code> (thường gọi là <em>toán tử hải mã — walrus operator</em> vì trông giống đôi mắt và cặp ngà của con hải mã).</p>
+
+        <h3>Cơ chế hoạt động</h3>
+        <p>Biểu thức <code>name := value</code> trước tiên sẽ định giá trị biểu thức <code>value</code> ở bên phải, rồi sau đó đồng thời thực hiện hai việc:</p>
+        <ol>
+          <li><strong>Gán kết quả</strong> cho tên biến <code>name</code> được chỉ định ở bên trái.</li>
+          <li><strong>Trả về chính kết quả đó</strong> làm giá trị của toàn bộ biểu thức <code>:=</code> để sử dụng tiếp trong cấu trúc bao quanh.</li>
+        </ol>
+
+        <p>Ví dụ đơn giản nhất minh họa cho điều này:</p>
+        <pre><code>>>> a = 'hack' * (b := 2)
+>>> a
+'hackhack'
+>>> b
+2</code></pre>
+
+        <h3>Các giới hạn cú pháp khắt khe</h3>
+        <p>Toán tử <code>:=</code> bị giới hạn chặt chẽ hơn nhiều so với câu lệnh gán thông thường <code>=</code> để ngăn ngừa mã nguồn bị lạm dụng:</p>
+        <ul>
+          <li><strong>Chỉ cho phép một tên biến đơn lẻ ở bên trái:</strong> Không hỗ trợ gán chỉ mục <code>(python[0] := 3.12)</code> → <code>SyntaxError</code>.</li>
+          <li><strong>Không hỗ trợ gán thuộc tính:</strong> <code>(python.attr := 3.12)</code> → <code>SyntaxError</code>.</li>
+          <li><strong>Không hỗ trợ gán giải nén dãy tuần tự:</strong> <code>(python, Python := 3.12, 3.13)</code> → <code>TypeError</code>.</li>
+          <li><strong>Không hỗ trợ phép gán tăng cường:</strong> Hoàn toàn không có cú pháp <code>:+=</code>.</li>
+        </ul>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát toán tử walrus := và các trường hợp bị cấm cú pháp',
+          code: `# 1. Biểu thức walrus cơ bản
+thong_bao = "Python " * (so_lan := 3)
+print("Kết quả chuỗi:", thong_bao)
+print("Biến so_lan được gán:", so_lan)
+
+# 2. Tính toán biểu thức có chứa walrus
+gia_tri = (x := 10) + 5
+print("Biểu thức gia_tri:", gia_tri, "| x =", x)
+
+# 3. Lỗi khi cố tình dùng chỉ mục ở vế trái :=
+try:
+    exec("(ds[0] := 100)", {'ds': [1, 2]})
+except SyntaxError as err:
+    print("Bắt lỗi chỉ mục:", err)
+
+# 4. Lỗi khi cố tình dùng thuộc tính ở vế trái :=
+class Obj: pass
+o = Obj()
+try:
+    exec("(o.attr := 'loi')", {'o': o})
+except SyntaxError as err:
+    print("Bắt lỗi thuộc tính:", err)`,
+          output: `Kết quả chuỗi: Python Python Python 
+Biến so_lan được gán: 3
+Biểu thức gia_tri: 15 | x = 10
+Bắt lỗi chỉ mục: cannot use assignment expressions with subscript
+Bắt lỗi thuộc tính: cannot use assignment expressions with attribute`,
+          annotations: [
+            { line: 2, text: 'Biến so_lan vừa nhận giá trị 3, vừa trả về số 3 để nhân bản chuỗi.' },
+            { line: 7, text: 'x := 10 gán 10 cho x, sau đó trả về 10 để cộng thêm 5.' },
+            { line: 14, text: 'CPython cấm triệt để việc dùng chỉ mục subscript với :=.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Khi Nào Nên Sử Dụng: Vòng Lặp Đọc File & Bắt Buộc Dấu Ngoặc Đơn',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 20–21 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Mặc dù các ngữ cảnh thực sự hữu ích cho <code>:=</code> bị hạn chế, trường hợp sử dụng kinh điển và phổ biến nhất của nó xuất hiện kết hợp với các câu lệnh <code>if</code> và đặc biệt là vòng lặp <code>while</code> khi đọc dòng dữ liệu từ file hoặc luồng mạng.</p>
+
+        <h3>Cách truyền thống (khi chưa có :=)</h3>
+        <p>Trước khi có <code>:=</code>, để đọc từng dòng cho đến hết file (EOF trả về chuỗi rỗng có giá trị logic là <code>False</code>), lập trình viên phải chọn một trong hai cách:</p>
+        <pre><code># Cách 1: Lặp lại lệnh readline 2 lần (dư thừa mã)
+line = file.readline()
+while line:
+    print(line)
+    line = file.readline()
+
+# Cách 2: Vòng lặp vô hạn kết hợp kiểm tra thoát (while True)
+while True:
+    line = file.readline()
+    if not line: break
+    print(line)</code></pre>
+
+        <h3>Cách hiện đại với toán tử Walrus :=</h3>
+        <p>Với <code>:=</code>, chúng ta có thể cô đọng việc tìm nạp dữ liệu, phép gán biến và phép kiểm tra điều kiện thành một dòng duy nhất ngay trong tiêu đề vòng lặp:</p>
+        <pre><code>while line := file.readline():
+    print(line)</code></pre>
+        <p>Vì <code>:=</code> trả về kết quả của lệnh gọi <code>readline</code>, giá trị logic của nó được kiểm tra ngay trong tiêu đề. Và vì nó đồng thời gán kết quả cho <code>line</code>, biến đó có sẵn ngay trong thân vòng lặp.</p>
+
+        <div class="callout-box callout-warning" style="border-left:4px solid var(--warning);margin:16px 0;">
+          <div class="callout-header">
+            <span>⚠️</span>
+            <span><strong>Quy tắc sinh tử: Bắt buộc dùng ngoặc đơn khi kết hợp phép so sánh</strong></span>
+          </div>
+          <div class="callout-body">
+            <p>Toán tử so sánh (như <code>!=</code>, <code>==</code>) có <strong>độ ưu tiên cao hơn</strong> toán tử <code>:=</code>. Do đó, nếu bạn viết:</p>
+            <pre><code># SAI LẦM NGUY HIỂM:
+while line := file.readline() != '':  # line sẽ nhận kết quả Boolean True/False!</code></pre>
+            <p>Python sẽ thực hiện phép so sánh <code>readline() != ''</code> trước, rồi gán giá trị <code>True/False</code> đó cho biến <code>line</code> thay vì gán nội dung chuỗi! Bạn <strong>bắt buộc phải bọc ngoặc đơn</strong> quanh biểu thức walrus:</p>
+            <pre><code># ĐÚNG CHUẨN:
+while (line := file.readline()) != '':
+    print(line)</code></pre>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'So sánh vòng lặp đọc dữ liệu stream giữa while True và toán tử walrus :=',
+          code: `# Mô phỏng một nguồn dữ liệu trả về các phần tử và kết thúc bằng chuỗi rỗng
+class LuongDuLieu:
+    def __init__(self, data):
+        self.data = list(data)
+    def readline(self):
+        return self.data.pop(0) if self.data else ''
+
+# 1. Cách dùng while True truyền thống
+luong1 = LuongDuLieu(['Dòng 1\\n', 'Dòng 2\\n', 'Dòng 3\\n'])
+print("--- 1. Đọc bằng while True: ---")
+while True:
+    dong = luong1.readline()
+    if not dong: break
+    print(" ", dong.strip())
+
+# 2. Cách dùng toán tử walrus := hiện đại
+luong2 = LuongDuLieu(['Gói A', 'Gói B', 'Gói C'])
+print("\\n--- 2. Đọc bằng toán tử walrus := ---")
+while goi := luong2.readline():
+    print(" ", goi)
+
+# 3. Minh họa bọc ngoặc đơn khi so sánh với giá trị đặc biệt
+luong3 = LuongDuLieu(['START', 'RUN', 'STOP', 'IDLE'])
+print("\\n--- 3. Walrus có ngoặc đơn so sánh dừng khi gặp 'STOP': ---")
+while (lenh := luong3.readline()) != 'STOP':
+    print("  Thực thi lệnh:", lenh)`,
+          output: `--- 1. Đọc bằng while True: ---
+  Dòng 1
+  Dòng 2
+  Dòng 3
+
+--- 2. Đọc bằng toán tử walrus := ---
+  Gói A
+  Gói B
+  Gói C
+
+--- 3. Walrus có ngoặc đơn so sánh dừng khi gặp 'STOP': ---
+  Thực thi lệnh: START
+  Thực thi lệnh: RUN`,
+          annotations: [
+            { line: 18, text: 'goi := luong2.readline() vừa đọc dữ liệu, vừa kiểm tra tính truthiness, vừa gán cho goi.' },
+            { line: 25, text: 'Bắt buộc cặp ngoặc đơn quanh (lenh := luong3.readline()) trước khi so sánh != \'STOP\'.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-3',
+      title: '3. Ứng Dụng Trong Comprehension, f-string & Triết Lý "Không Dùng Búa Tạ"',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 21–22 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Bên cạnh việc đọc file, <code>:=</code> có thể được tận dụng để tái sử dụng kết quả tính toán tốn kém trong các biểu thức hằng trị (<em>literals</em>) hoặc bắt giữ kết quả cuối cùng trong <em>comprehension</em>:</p>
+
+        <pre><code>>>> [val := 'Py!', val * 2, val * 3]
+['Py!', 'Py!Py!', 'Py!Py!Py!']
+
+>>> list(pow := 2 ** num for num in [2, 4, 8])
+[4, 16, 256]
+>>> pow # Biến pow lưu giữ giá trị của lần lặp cuối cùng!
+256</code></pre>
+
+        <p>Thậm chí, toán tử walrus có thể được nhúng bên trong f-string hoặc tự lồng vào chính nó (với các cặp ngoặc đơn bắt buộc):</p>
+        <pre><code>>>> (x := (y := (z := 1) + 1) + 1)
+3
+>>> x, y, z
+(3, 2, 1)</code></pre>
+
+        <div class="callout-box callout-tip" style="border-left:4px solid #8b5cf6;margin:16px 0;">
+          <div class="callout-header">
+            <span>🔨</span>
+            <span><strong>Triết lý thiết kế của Mark Lutz: Đừng dùng búa tạ để đóng mọi cây đinh!</strong></span>
+          </div>
+          <div class="callout-body">
+            <p>Hãy nhớ rằng một biểu thức <code>:=</code> lồng sâu và phức tạp có thể trông có vẻ thông minh, nhưng sẽ <strong>khó đọc hơn nhiều</strong>—và thậm chí rất khó phát hiện lỗi—so với việc tách thành một hoặc hai phép gán độc lập đơn giản. Vì lợi ích của người đọc mã (bao gồm cả chính bạn trong tương lai!), hãy sử dụng <code>:=</code> một cách <strong>tiết chế và khôn ngoan</strong>. Sự rõ ràng, tường minh của mã nguồn luôn xứng đáng với một hoặc hai dòng mã thêm vào.</p>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Tái sử dụng kết quả tính toán trong Comprehension và Literal',
+          code: `# 1. Tái sử dụng giá trị đắt đỏ trong danh sách literal
+kho = [gia_goc := 150.0, gia_goc * 1.1, gia_goc * 1.2]
+print("Bảng giá:", kho)
+print("Biến gia_goc lưu giá trị:", gia_goc)
+
+# 2. Bắt giữ trạng thái trong generator expression
+ket_qua = list(tam := n ** 3 for n in [1, 2, 3, 4, 5])
+print("Lập phương:", ket_qua)
+print("Giá trị cuối cùng của biến tam:", tam)
+
+# 3. Lồng walrus tự thân (minh họa cú pháp)
+(a := (b := 10) * 2)
+print(f"a = {a}, b = {b}")`,
+          output: `Bảng giá: [150.0, 165.0, 180.0]
+Biến gia_goc lưu giá trị: 150.0
+Lập phương: [1, 8, 27, 64, 125]
+Giá trị cuối cùng của biến tam: 125
+a = 20, b = 10`,
+          annotations: [
+            { line: 2, text: 'gia_goc := 150.0 gán biến ngay trong phần tử đầu, các phần tử sau dùng lại.' },
+            { line: 7, text: 'Biến tam rò rỉ ra ngoài phạm vi generator và lưu giá trị bước lặp cuối 5^3 = 125.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    warnings: [
+      {
+        title: 'Lời cảnh báo về khả năng đọc hiểu (Readability)',
+        content: 'Python tuân thủ phương châm "Explicit is better than implicit" (Tường minh tốt hơn ngầm định). Đừng cố nhét mọi câu lệnh gán vào biểu thức walrus chỉ để giảm bớt một dòng code nếu điều đó làm đồng nghiệp của bạn phải nhíu mày suy nghĩ.'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Lọc và chuẩn hóa dữ liệu đầu vào bằng toán tử Walrus',
+      level: 'Trung bình',
+      problem: 'Cho một danh sách các chuỗi văn bản thô: raw_inputs = ["  python ", "", "   ", "javascript  ", "  go   "]. Hãy viết một list comprehension sử dụng toán tử walrus := để vừa cắt khoảng trắng dư thừa (strip) vừa lọc bỏ các chuỗi rỗng mà không phải gọi hàm strip() hai lần.',
+      hint: 'Trong phần if của list comprehension, viết if (clean := s.strip()): để vừa lưu chuỗi sạch vào clean vừa kiểm tra truthiness.',
+      solutionCode: `raw_inputs = ["  python ", "", "   ", "javascript  ", "  go   "]
+
+# Dùng walrus để chỉ gọi strip() một lần duy nhất
+clean_inputs = [clean for s in raw_inputs if (clean := s.strip())]
+
+print("Kết quả làm sạch:", clean_inputs)`,
+      solutionOutput: `Kết quả làm sạch: ['python', 'javascript', 'go']`,
+      explanation: 'Biểu thức (clean := s.strip()) trong mệnh đề if vừa gán chuỗi đã strip cho biến clean, vừa kiểm tra truthiness (chuỗi rỗng sẽ là False). Mệnh đề biểu thức đầu chỉ việc dùng lại biến clean mà không cần gọi lại strip().'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Toán tử walrus := được chính thức đưa vào phiên bản Python nào theo PEP 572?',
+      options: [
+        'Python 3.5',
+        'Python 3.6',
+        'Python 3.8',
+        'Python 3.10'
+      ],
+      correctIndex: 2,
+      explanation: 'Toán tử walrus := (named assignment expression) được chính thức đưa vào ngôn ngữ từ phiên bản Python 3.8.'
+    },
+    {
+      question: 'Vì sao trong câu lệnh while (line := file.readline()) != \'\': bắt buộc phải có cặp dấu ngoặc đơn quanh phép gán?',
+      options: [
+        'Vì cú pháp while trong Python bắt buộc điều kiện phải nằm trong ngoặc đơn.',
+        'Vì toán tử so sánh != có độ ưu tiên cao hơn toán tử :=; nếu không có ngoặc, biến line sẽ nhận giá trị Boolean True/False thay vì nội dung chuỗi.',
+        'Vì dấu ngoặc đơn giúp Python tự động đóng file sau khi đọc.',
+        'Vì toán tử := không thể đứng ở đầu dòng.'
+      ],
+      correctIndex: 1,
+      explanation: 'Toán tử so sánh != liên kết chặt hơn :=. Cặp ngoặc đơn ép buộc phép gán line := file.readline() thực hiện trước, sau đó mới lấy kết quả đem so sánh với \' \'.'
+    },
+    {
+      question: 'Cú pháp nào sau đây là KHÔNG HỢP LỆ với toán tử :=?',
+      options: [
+        '(x := 10) + 1',
+        'if x := len([1, 2, 3]): pass',
+        '(ds[0] := 99)',
+        'print(val := "test")'
+      ],
+      correctIndex: 2,
+      explanation: 'Toán tử := chỉ cho phép một tên biến đơn lẻ ở vế trái. Việc sử dụng mục tiêu chỉ mục ds[0] := 99 sẽ gây ra ngoại lệ SyntaxError.'
+    }
+  ],
+
+  summary: [
+    'Toán tử walrus := (Python 3.8+) cho phép viết phép gán dưới dạng biểu thức: vừa gán cho biến vừa trả về giá trị.',
+    'Chỉ chấp nhận một tên biến đơn lẻ ở vế trái; cấm chỉ mục, lát cắt, thuộc tính đối tượng.',
+    'Ứng dụng tối ưu trong vòng lặp while đọc file/stream, tránh lặp lại mã và tránh vòng lặp vô hạn.',
+    'Bắt buộc bọc ngoặc đơn khi kết hợp với toán tử so sánh (==, !=); cần dùng tiết chế để bảo vệ tính tường minh của mã nguồn.'
+  ]
+};
+
+window.__PRELOADED_LESSONS__['lp-c11-06'] = {
+  id: 'lp-c11-06',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.6',
+  title: 'Quy tắc và Quy ước Đặt tên Biến — Bảng 11-3 Từ khóa Dành riêng & Bản chất Động',
+  subtitle: 'Cú pháp định danh, tính phân biệt hoa thường, trọn bộ 35 từ khóa trong Bảng 11-3, từ khóa mềm, quy ước CPython và bản chất "biến không có kiểu, đối tượng mới có kiểu"',
+  level: 'Cơ bản đến Trung cấp',
+  duration: '35 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Nắm vững quy tắc cú pháp định danh biến trong Python: (chữ cái hoặc gạch dưới) + (chữ cái, chữ số hoặc gạch dưới), cùng tính phân biệt chữ hoa/chữ thường (case-sensitivity).',
+    'Tra cứu và ghi nhớ trọn bộ 35 từ khóa dành riêng cứng trong Bảng 11-3 cùng 4 từ khóa mềm (soft reserved words: match, case, _, type).',
+    'Hiểu các ràng buộc mở rộng khi đặt tên tệp module (.py) và thư mục package để bảo đảm khả năng import và tính khả chuyển (portability).',
+    'Làm chủ các quy ước đặt tên CPython (_X, __X__, __X, _) và phân biệt sâu sắc: tên biến không có kiểu hay tính khả biến, chỉ có đối tượng mới có kiểu (Python không có const).'
+  ],
+
+  intuition: {
+    title: 'Biển Tên Phòng Khám và Ngôi Nhà Không Đóng Đinh',
+    metaphor: 'Tên biến trong Python giống như những tấm biển tên bằng nhựa có nam châm dán tạm trước cửa các phòng khám bệnh. Bạn có thể tự do ghi chữ "Bác sĩ", "_TruongKhoa", hay "Phong_101", nhưng ban quản lý bệnh viện đã giữ riêng một số chữ cấm kỵ (như Bảng 11-3: "class", "def", "if"...) mà bạn không được phép in lên biển tên. Đặc biệt, tấm biển không hề có "kiểu" cố định: hôm nay bạn có thể dán biển x trước một phòng bệnh chứa chiếc giường đơn (số nguyên 0), ngày mai bạn có thể gỡ biển x đó dán sang một căn phòng hội nghị chứa cả trăm người (danh sách list). Tấm biển không quan tâm bên trong là gì, nó chỉ là một ký hiệu trỏ hướng!',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--accent-primary);">PHÂN BIỆT BẢN CHẤT: TÊN BIẾN (CON TRỎ) VS ĐỐI TƯỢNG (BỘ NHỚ)</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--bg-surface);border-radius:6px;">
+            <div style="width:110px;font-weight:700;color:#8b5cf6;">x = 0</div>
+            <div style="color:var(--text-secondary);font-size:0.8rem;">Tên <code>x</code> trỏ tới đối tượng số nguyên <code>0</code> (kiểu <code>int</code>, bất biến)</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--bg-surface);border-radius:6px;">
+            <div style="width:110px;font-weight:700;color:#10b981;">x = 'Hello'</div>
+            <div style="color:var(--text-secondary);font-size:0.8rem;">Tên <code>x</code> gán lại, trỏ sang đối tượng chuỗi <code>'Hello'</code> (kiểu <code>str</code>, bất biến)</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--bg-surface);border-radius:6px;">
+            <div style="width:110px;font-weight:700;color:#ec4899;">x = [1, 2, 3]</div>
+            <div style="color:var(--text-secondary);font-size:0.8rem;">Tên <code>x</code> trỏ sang đối tượng danh sách <code>[1, 2, 3]</code> (kiểu <code>list</code>, khả biến)</div>
+          </div>
+        </div>
+        <div style="padding:6px 12px;background:var(--bg-surface);border-left:4px solid var(--accent-primary);font-size:0.8rem;color:var(--text-secondary);">
+          <strong>Kết luận:</strong> Bản thân <code>x</code> không có kiểu dữ liệu. Kiểu thuộc về đối tượng mà <code>x</code> tình cờ tham chiếu tới tại từng thời điểm!
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Quy Tắc Đặt Tên Biến & Tính Phân Biệt Chữ Hoa/Thường',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 22–23 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Trong Python, các tên biến xuất hiện tự nhiên khi bạn gán giá trị cho chúng, nhưng bạn bắt buộc phải tuân theo các quy tắc cú pháp khi đặt tên cho các đối tượng trong chương trình:</p>
+
+        <blockquote>
+          <p><strong>Cú pháp chuẩn: (dấu gạch dưới hoặc chữ cái) + (bất kỳ số lượng chữ cái, chữ số, hoặc dấu gạch dưới nào)</strong></p>
+        </blockquote>
+
+        <ul>
+          <li><strong>Hợp lệ:</strong> <code>_hack</code>, <code>hack</code>, <code>Hack_1</code>, <code>bien_dem_2026</code>.</li>
+          <li><strong>Không hợp lệ:</strong> <code>1_hack</code> (bắt đầu bằng chữ số), <code>hack$</code> (chứa ký tự đặc biệt), <code>@#!</code> (toán tử/ký tự lạ).</li>
+        </ul>
+
+        <h3>Phân biệt chữ hoa/chữ thường (Case Sensitivity)</h3>
+        <p>Python luôn chú ý đến chữ hoa/chữ thường trong các chương trình, cả trong tên bạn tự tạo lẫn trong các từ khóa dành riêng:</p>
+        <ul>
+          <li>Các tên <code>X</code> và <code>x</code> đề cập đến <strong>hai biến hoàn toàn khác nhau</strong> trong không gian tên.</li>
+          <li>Để đảm bảo <strong>tính khả chuyển (portability)</strong>, chữ hoa/chữ thường cũng đặc biệt quan trọng trong tên của các tệp module được <code>import</code>, ngay cả trên các hệ điều hành có hệ thống tệp không phân biệt chữ hoa/thường như Windows. Nhờ đó, mã nguồn của bạn sẽ chạy trơn tru khi triển khai lên các máy chủ Linux.</li>
+        </ul>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát quy tắc đặt tên hợp lệ và phân biệt hoa thường',
+          code: `# Các tên biến hợp lệ
+_khoi_tao = "Bắt đầu bằng gạch dưới"
+bien_so_1 = 100
+BienHoa = "Viết hoa chữ cái đầu"
+
+# Phân biệt chữ hoa và chữ thường
+gia_tri = 10
+GIA_TRI = 99
+Gia_Tri = "Khác biệt"
+
+print("gia_tri:", gia_tri)
+print("GIA_TRI:", GIA_TRI)
+print("Gia_Tri:", Gia_Tri)
+
+# Thử nghiệm tên không hợp lệ bằng exec để bắt lỗi cú pháp
+try:
+    exec("1_bien = 50")
+except SyntaxError as err:
+    print("Lỗi bắt đầu bằng số:", err)`,
+          output: `gia_tri: 10
+GIA_TRI: 99
+Gia_Tri: Khác biệt
+Lỗi bắt đầu bằng số: invalid decimal literal`,
+          annotations: [
+            { line: 2, text: '_khoi_tao là tên hợp lệ, thường dùng cho biến nội bộ.' },
+            { line: 7, text: 'Ba tên biến gia_tri, GIA_TRI, Gia_Tri cùng tồn tại độc lập trong RAM.' },
+            { line: 17, text: 'Tên biến bắt đầu bằng số 1_bien vi phạm ngữ pháp cơ sở của Python.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Toàn Cảnh Bảng 11-3 — 35 Từ Khóa Dành Riêng & Từ Khóa Mềm',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 23–24 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Các tên bạn tự định nghĩa <strong>không được trùng</strong> với các từ mang ý nghĩa đặc biệt trong ngôn ngữ Python. Python sẽ đưa ra một lỗi cú pháp <code>SyntaxError</code> nếu bạn cố sử dụng <code>class = 1</code> làm biến, dù <code>klass</code> hoặc <code>Class</code> thì hoạt động bình thường. Bảng 11-3 liệt kê trọn bộ <strong>35 từ khóa cứng</strong> hiện đang được dành riêng trong Python:</p>
+
+        <div class="table-wrapper" style="margin:20px 0;">
+          <table class="markdown-table" style="width:100%;border-collapse:collapse;font-size:0.9rem;text-align:center;">
+            <thead>
+              <tr style="background:var(--bg-surface-alt);border-bottom:2px solid var(--border-subtle);color:var(--accent-primary);">
+                <th style="padding:10px;">Cột 1</th>
+                <th style="padding:10px;">Cột 2</th>
+                <th style="padding:10px;">Cột 3</th>
+                <th style="padding:10px;">Cột 4</th>
+                <th style="padding:10px;">Cột 5</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px;"><code>False</code></td>
+                <td style="padding:8px;"><code>await</code></td>
+                <td style="padding:8px;"><code>else</code></td>
+                <td style="padding:8px;"><code>import</code></td>
+                <td style="padding:8px;"><code>pass</code></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px;"><code>None</code></td>
+                <td style="padding:8px;"><code>break</code></td>
+                <td style="padding:8px;"><code>except</code></td>
+                <td style="padding:8px;"><code>in</code></td>
+                <td style="padding:8px;"><code>raise</code></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px;"><code>True</code></td>
+                <td style="padding:8px;"><code>class</code></td>
+                <td style="padding:8px;"><code>finally</code></td>
+                <td style="padding:8px;"><code>is</code></td>
+                <td style="padding:8px;"><code>return</code></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px;"><code>and</code></td>
+                <td style="padding:8px;"><code>continue</code></td>
+                <td style="padding:8px;"><code>for</code></td>
+                <td style="padding:8px;"><code>lambda</code></td>
+                <td style="padding:8px;"><code>try</code></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px;"><code>as</code></td>
+                <td style="padding:8px;"><code>def</code></td>
+                <td style="padding:8px;"><code>from</code></td>
+                <td style="padding:8px;"><code>nonlocal</code></td>
+                <td style="padding:8px;"><code>while</code></td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px;"><code>assert</code></td>
+                <td style="padding:8px;"><code>del</code></td>
+                <td style="padding:8px;"><code>global</code></td>
+                <td style="padding:8px;"><code>not</code></td>
+                <td style="padding:8px;"><code>with</code></td>
+              </tr>
+              <tr>
+                <td style="padding:8px;"><code>async</code></td>
+                <td style="padding:8px;"><code>elif</code></td>
+                <td style="padding:8px;"><code>if</code></td>
+                <td style="padding:8px;"><code>or</code></td>
+                <td style="padding:8px;"><code>yield</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Bốn từ khóa mềm (Soft Reserved Words)</h3>
+        <p>Ngoài Bảng 11-3, các từ <code>match</code>, <code>case</code>, <code>_</code> (dùng trong câu lệnh so khớp cấu trúc ở Chương 12) và <code>type</code> (dùng cho câu lệnh khai báo bí danh kiểu <code>type aliases</code>) là các <strong>từ dành riêng mềm (soft reserved words)</strong>: chúng chỉ bị dành riêng khi xuất hiện ở đúng vị trí cú pháp câu lệnh tương ứng, còn ở tất cả các vị trí khác, bạn <em>vẫn có thể sử dụng chúng làm tên biến bình thường</em>.</p>
+
+        <h3>Ràng buộc mở rộng sang tên tệp Module và Thư mục Package</h3>
+        <p>Vì câu lệnh <code>import module_name</code> biến tên file thành một tên biến trong không gian tên chương trình của bạn, các ràng buộc tên biến mở rộng sang cả tên tệp <code>.py</code>:</p>
+        <ul>
+          <li>Bạn có thể tạo file <code>and.py</code> hay <code>my-code.py</code> và chạy trực tiếp, nhưng bạn <strong>không thể import chúng</strong> (<code>import and</code> báo lỗi từ khóa; <code>import my-code</code> bị hiểu lầm thành phép trừ). Dấu gạch dưới <code>my_code.py</code> thì hoạt động hoàn hảo!</li>
+        </ul>
+
+        <div class="callout-box callout-theory" style="border-left:4px solid #f59e0b;margin:16px 0;">
+          <div class="callout-header">
+            <span>⚡</span>
+            <span><strong>Khung chuyên đề: Chính sách cảnh báo lỗi thời của Python (Deprecation Policy)</strong></span>
+          </div>
+          <div class="callout-body">
+            <p><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz • <strong>PDF Trang 24 / 38</strong>.</p>
+            <p>Bởi vì việc biến các từ mới thành từ dành riêng có nguy cơ phá vỡ hàng triệu dòng mã nguồn hiện có, Python đưa ra chính sách cảnh báo lỗi thời (<em>deprecation warnings</em>) qua nhiều phiên bản phát hành trước khi chính thức áp dụng. Mark Lutz đưa ra góc nhìn phản biện sâu sắc: Ban chỉ đạo (<em>steering committee</em>) chịu trách nhiệm kiểm soát điều này, nhưng các cảnh báo lỗi thời đôi khi bị lạm dụng. Đối với các hệ thống phân phối mã nguồn tới người dùng cuối, việc nâng cấp Python đột ngột vẫn có thể làm đổ vỡ phần mềm. Ông hóm hỉnh nhận định: <em>"Cảnh báo rằng bạn sắp sửa thô lỗ không có nghĩa là bạn được phép thô lỗ!"</em></p>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát từ khóa cứng và tính linh hoạt của từ khóa mềm',
+          code: `# 1. Từ khóa mềm: match và case vẫn được dùng làm biến bình thường
+match = "Trận đấu chung kết"
+case = "Trường hợp đặc biệt"
+type = "Kiểu dữ liệu" # Ghi đè hàm type dựng sẵn (không khuyến khích nhưng hợp lệ)
+
+print("Từ khóa mềm làm biến:", match, "|", case)
+
+# 2. Thử nghiệm gán cho từ khóa cứng (SyntaxError)
+try:
+    exec("pass = 100")
+except SyntaxError as err:
+    print("Lỗi gán cho từ khóa cứng pass:", err)
+
+# 3. Ba từ khóa viết hoa chữ cái đầu: True, False, None
+print("Ba từ khóa đặc biệt:", True, False, None)`,
+          output: `Từ khóa mềm làm biến: Trận đấu chung kết | Trường hợp đặc biệt
+Lỗi gán cho từ khóa cứng pass: invalid syntax
+Ba từ khóa đặc biệt: True False None`,
+          annotations: [
+            { line: 2, text: 'match và case là soft reserved words nên dùng làm biến bình thường ở đây.' },
+            { line: 9, text: 'pass là từ khóa cứng trong Bảng 11-3, gán cho nó sinh lỗi SyntaxError ngay.' },
+            { line: 14, text: 'True, False, None là 3 từ khóa duy nhất trong Bảng 11-3 viết hoa chữ đầu.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-3',
+      title: '3. Quy Ước CPython & Bản Chất "Biến Không Có Kiểu, Đối Tượng Mới Có Kiểu"',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 25–26 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Bên cạnh các quy tắc bắt buộc, cộng đồng Python tuân thủ nghiêm ngặt một tập hợp các <strong>quy ước đặt tên</strong> của trình thông dịch CPython:</p>
+
+        <ul>
+          <li><strong>Một dấu gạch dưới ở đầu (<code>_X</code>):</strong> Đánh dấu biến/hàm nội bộ, sẽ <strong>không được nhập</strong> bởi câu lệnh <code>from module import *</code> (Chương 23).</li>
+          <li><strong>Hai dấu gạch dưới ở đầu và cuối (<code>__X__</code>):</strong> Các tên do hệ thống định nghĩa (<em>dunder methods</em>), mang ý nghĩa đặc biệt đối với trình thông dịch trong lập trình hướng đối tượng (ví dụ <code>__init__</code>, <code>__name__</code>) (Phần VI). Hãy tránh dùng định dạng này cho tên tự tạo của bạn!</li>
+          <li><strong>Hai dấu gạch dưới ở đầu, không có ở cuối (<code>__X</code>):</strong> Được CPython biến đổi tên nội bộ (<em>name mangling</em>) để tránh xung đột thuộc tính trong kế thừa lớp (thuộc tính giả riêng tư — <em>pseudoprivate attributes</em>, Chương 31).</li>
+          <li><strong>Dấu gạch dưới đơn lẻ (<code>_</code>):</strong> Tự động lưu giữ kết quả của biểu thức cuối cùng khi bạn làm việc tương tác tại REPL; đồng thời làm ký tự đại diện (<em>wildcard</em>) trong câu lệnh <code>match</code>.</li>
+        </ul>
+
+        <h3>Tên biến không có kiểu, nhưng đối tượng thì có</h3>
+        <p>Điều cốt yếu mà mọi lập trình viên Python phải khắc sâu là <strong>sự phân biệt rạch ròi giữa tên biến và đối tượng</strong>:</p>
+        <blockquote>
+          <p><strong>Các đối tượng có một kiểu dữ liệu cụ thể (số nguyên, danh sách...) và có tính khả biến hoặc bất biến. Ngược lại, các tên biến chỉ là những con trỏ tham chiếu; bản thân biến không hề có kiểu và không có tính khả biến!</strong></p>
+        </blockquote>
+
+        <p>Do đó, việc gán cùng một tên biến cho các kiểu đối tượng hoàn toàn khác nhau tại những thời điểm khác nhau là <strong>hoàn toàn hợp lệ và là bản chất tự nhiên của Python</strong>:</p>
+        <pre><code>x = 0         # x trỏ tới đối tượng số nguyên
+x = 'Hello'   # Giờ x trỏ sang đối tượng chuỗi
+x = [1, 2, 3] # Và giờ x trỏ sang đối tượng danh sách</code></pre>
+
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin:16px 0;">
+          <div class="callout-header">
+            <span>📌</span>
+            <span><strong>Chú thích [3] về từ khóa const:</strong></span>
+          </div>
+          <div class="callout-body">
+            <p>Nếu bạn từng lập trình C++ hay Java, hãy lưu ý rằng <strong>Python hoàn toàn không có khái niệm khai báo hằng số <code>const</code> hay <code>final</code></strong>. Một số đối tượng có thể là bất biến (như số, chuỗi, tuple), nhưng các tên biến thì luôn luôn có thể bị gán lại sang đối tượng khác bất kỳ lúc nào.</p>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát biến gán đổi kiểu động và quy ước dấu gạch dưới REPL',
+          code: `# 1. Biến tự do trỏ sang các kiểu dữ liệu khác nhau
+bien_dong = 42
+print("1. Kiểu số nguyên:", type(bien_dong).__name__, "| Giá trị:", bien_dong)
+
+bien_dong = "Học Python cùng Mark Lutz"
+print("2. Chuyển sang kiểu chuỗi:", type(bien_dong).__name__, "| Giá trị:", bien_dong)
+
+bien_dong = {'ten': 'Python', 'phien_ban': 3.14}
+print("3. Chuyển sang kiểu từ điển:", type(bien_dong).__name__, "| Giá trị:", bien_dong)
+
+# 2. Quy ước đặt tên CPython
+class DemoQuyUoc:
+    def __init__(self):
+        self._noi_bo = "Quy ước nội bộ (_X)"
+        self.__rieng_tu = "Name mangling (__X)"
+
+obj = DemoQuyUoc()
+print("Thuộc tính _noi_bo:", obj._noi_bo)
+# Tên __rieng_tu bị đổi thành _DemoQuyUoc__rieng_tu
+print("Tên sau khi name mangling:", getattr(obj, '_DemoQuyUoc__rieng_tu'))`,
+          output: `1. Kiểu số nguyên: int | Giá trị: 42
+2. Chuyển sang kiểu chuỗi: str | Giá trị: Học Python cùng Mark Lutz
+3. Chuyển sang kiểu từ điển: dict | Giá trị: {'ten': 'Python', 'phien_ban': 3.14}
+Thuộc tính _noi_bo: Quy ước nội bộ (_X)
+Tên sau khi name mangling: Name mangling (__X)`,
+          annotations: [
+            { line: 2, text: 'Tên bien_dong ban đầu trỏ vào số 42 trong bộ nhớ.' },
+            { line: 5, text: 'Cùng một tên bien_dong trỏ sang đối tượng chuỗi mà không báo lỗi kiểu.' },
+            { line: 18, text: 'CPython tự động gắn tiền tố _TenLop vào các thuộc tính có hai gạch dưới __X.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    tips: [
+      {
+        title: 'Lời dặn dò từ Mark Lutz: Cẩn thận với việc ghi đè tên dựng sẵn',
+        content: 'Các tên dựng sẵn như open, list, dict, str không phải là từ khóa dành riêng cứng trong Bảng 11-3. Do đó, bạn có thể vô tình viết open = 99 trong chương trình mà Python không hề báo lỗi, nhưng sau đó câu lệnh open("file.txt") sẽ bị đổ vỡ vì hàm open gốc đã bị ghi đè! Hãy luôn tỉnh táo để không đặt tên biến trùng với các hàm dựng sẵn.'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Kiểm tra tính hợp lệ của danh sách các định danh trong Python',
+      level: 'Cơ bản',
+      problem: 'Cho một danh sách các chuỗi định danh: danh_sach = ["user_name", "2nd_player", "class", "Class", "_secret", "total$", "type", "yield"]. Hãy viết đoạn mã phân loại các định danh này thành 3 nhóm: (1) Tên hợp lệ dùng làm biến, (2) Từ khóa cứng bị cấm, (3) Lỗi cú pháp không hợp lệ.',
+      hint: 'Dùng module keyword với keyword.iskeyword() và phương thức str.isidentifier().',
+      solutionCode: `import keyword
+
+danh_sach = ["user_name", "2nd_player", "class", "Class", "_secret", "total$", "type", "yield"]
+
+hop_le = []
+tu_khoa_cam = []
+loi_cu_phap = []
+
+for ten in danh_sach:
+    if keyword.iskeyword(ten):
+        tu_khoa_cam.append(ten)
+    elif ten.isidentifier():
+        hop_le.append(ten)
+    else:
+        loi_cu_phap.append(ten)
+
+print("Tên hợp lệ dùng làm biến:", hop_le)
+print("Từ khóa cứng bị cấm:", tu_khoa_cam)
+print("Lỗi cú pháp định danh:", loi_cu_phap)`,
+      solutionOutput: `Tên hợp lệ dùng làm biến: ['user_name', 'Class', '_secret', 'type']
+Từ khóa cứng bị cấm: ['class', 'yield']
+Lỗi cú pháp định danh: ['2nd_player', 'total$']`,
+      explanation: 'class và yield là từ khóa cứng trong Bảng 11-3; 2nd_player bắt đầu bằng số và total$ chứa ký tự $ không hợp lệ; trong khi Class (viết hoa) và type (từ khóa mềm) hoàn toàn hợp lệ làm biến.'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Tên biến nào sau đây là KHÔNG HỢP LỆ trong cú pháp Python?',
+      options: [
+        '_system_var',
+        'variable_2026',
+        '2nd_count',
+        'my_variable'
+      ],
+      correctIndex: 2,
+      explanation: 'Tên biến trong Python bắt buộc phải bắt đầu bằng chữ cái hoặc dấu gạch dưới, không được bắt đầu bằng chữ số (2nd_count vi phạm quy tắc này).'
+    },
+    {
+      question: 'Phát biểu nào sau đây là ĐÚNG về từ khóa mềm (soft reserved words) như match, case trong Python?',
+      options: [
+        'Chúng bị cấm sử dụng làm tên biến ở mọi nơi trong chương trình giống như def hay class.',
+        'Chúng chỉ được dành riêng trong ngữ cảnh câu lệnh tương ứng; bạn vẫn có thể sử dụng chúng làm tên biến bình thường ở các vị trí khác.',
+        'Chúng sẽ bị xóa bỏ hoàn toàn trong các phiên bản Python tiếp theo.',
+        'Chúng chỉ có hiệu lực khi chạy Python trên hệ điều hành Linux.'
+      ],
+      correctIndex: 1,
+      explanation: 'Từ khóa mềm chỉ mang ý nghĩa đặc biệt khi đứng ở vị trí cú pháp câu lệnh của chúng (như câu lệnh match/case). Ở mọi vị trí khác, bạn vẫn tự do dùng chúng làm tên biến.'
+    },
+    {
+      question: 'Khi bạn chạy câu lệnh open = "my_data.txt", điều gì sẽ xảy ra?',
+      options: [
+        'Python báo lỗi SyntaxError vì open là từ khóa dành riêng.',
+        'Python tạo ra một hằng số bất biến mang tên open.',
+        'Câu lệnh chạy thành công, nhưng biến open sẽ ghi đè hàm dựng sẵn open() của Python trong phạm vi hiện tại.',
+        'Python tự động đổi tên biến thành open_file.'
+      ],
+      correctIndex: 2,
+      explanation: 'open là tên hàm trong phạm vi dựng sẵn (built-in scope), không phải từ khóa dành riêng cứng. Việc gán open = ... hoạt động âm thầm nhưng sẽ che khuất hàm mở file dựng sẵn.'
+    }
+  ],
+
+  summary: [
+    'Quy tắc định danh biến: bắt đầu bằng chữ cái hoặc gạch dưới, theo sau bởi chữ cái, chữ số hoặc gạch dưới; phân biệt chữ hoa và chữ thường.',
+    'Bảng 11-3 chứa 35 từ khóa dành riêng cứng tuyệt đối không thể dùng làm biến; 4 từ khóa mềm (match, case, _, type) chỉ dành riêng trong ngữ cảnh câu lệnh.',
+    'Tên file module (.py) và package cũng phải tuân thủ quy tắc tên biến để bảo đảm khả năng import.',
+    'Tên biến không có kiểu hay tính khả biến, chỉ có đối tượng mới có kiểu; Python không có khái niệm khai báo const.'
+  ]
+};
+
+window.__PRELOADED_LESSONS__['lp-c11-07'] = {
+  id: 'lp-c11-07',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.7',
+  title: 'Câu lệnh Biểu thức — Bảng 11-4 & Cạm bẫy Gán đè Phương thức Thay đổi Tại chỗ',
+  subtitle: 'Bản chất biểu thức đứng riêng vì tác dụng phụ, toàn cảnh 6 dạng trong Bảng 11-4, tính bất đối xứng lệnh-biểu thức và thảm họa L = L.append(4)',
+  level: 'Cơ bản đến Trung cấp',
+  duration: '30 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Hiểu bản chất của câu lệnh biểu thức (expression statement): thực thi biểu thức trên một dòng đứng riêng chỉ vì tác dụng phụ (side effect).',
+    'Nắm vững 6 dạng câu lệnh biểu thức phổ biến trong Bảng 11-4 của Mark Lutz: gọi hàm, gọi phương thức, in REPL, hàm print, yield và await.',
+    'Phân tích tính bất đối xứng nền tảng của cú pháp Python: mọi biểu thức đều có thể làm câu lệnh, nhưng câu lệnh không thể nhúng làm biểu thức.',
+    'Nhận diện và phòng tránh triệt để cạm bẫy lập trình kinh điển: gán ngược kết quả phương thức thay đổi tại chỗ (L = L.append() hoặc L = L.sort()) khiến biến bị gán thành None và mất sạch dữ liệu.'
+  ],
+
+  intuition: {
+    title: 'Hành Động Vì Hiệu Quả Phụ và Lời Nhắc Đừng Cưa Ghế Mình Ngồi',
+    metaphor: 'Trong toán học, một biểu thức tính toán xong sẽ cho ra một con số để lưu lại. Nhưng trong lập trình, có những hành động bạn thực hiện không phải để lấy giá trị trả về, mà là để tạo ra một "tác dụng phụ" (side effect) hữu ích ra thế giới bên ngoài—giống như việc bạn bật công tắc đèn (đèn sáng) hay bấm còi xe (phát ra âm thanh). Khi bạn gọi phương thức L.append(3), bạn đang yêu cầu thợ mộc đóng thêm một ngăn kéo vào chiếc tủ L hiện có. Thao tác hoàn tất và thợ mộc không đưa lại chiếc tủ mới nào cả (hàm trả về None). Nếu bạn dại dột viết L = L.append(3), bạn đã tự tay vứt bỏ chiếc tủ đầy đủ đồ đạc của mình ra bãi rác và nhận về một bàn tay trắng (None)!',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--danger);">CẠM BẪY TỬ HUYỆT: GÁN NGƯỢC PHƯƠNG THỨC THAY ĐỔI TẠI CHỖ</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;">
+          <div style="padding:10px;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:8px;text-align:center;">
+            <div style="font-weight:700;color:var(--accent-primary);">L.append(4)</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">Thực hiện biến đổi tại chỗ<br>Trả về: <code>None</code></div>
+          </div>
+          <div style="font-size:1.6rem;color:var(--danger);font-weight:700;">GÁN VÀO ➔</div>
+          <div style="padding:10px;background:rgba(239,68,68,0.1);border:2px solid var(--danger);border-radius:8px;text-align:center;">
+            <div style="font-weight:700;color:var(--danger);">L = L.append(4)</div>
+            <div style="font-size:0.8rem;color:var(--danger);margin-top:4px;font-weight:700;">L TRỞ THÀNH None!<br>(Mất toàn bộ danh sách)</div>
+          </div>
+        </div>
+        <div style="padding:6px 12px;background:var(--bg-surface);border-left:4px solid var(--danger);font-size:0.8rem;color:var(--text-secondary);">
+          <strong>Quy tắc vàng:</strong> Luôn gọi các phương thức thay đổi tại chỗ (<code>append</code>, <code>sort</code>, <code>reverse</code>, <code>extend</code>) dưới dạng câu lệnh biểu thức đứng riêng, KHÔNG BAO GIỜ gán kết quả của chúng!
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Bản Chất Câu Lệnh Biểu Thức & Toàn Cảnh Bảng 11-4',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 26–27 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Trong Python, bạn cũng có thể sử dụng bất kỳ biểu thức nào như một câu lệnh—điều này thường có nghĩa là đặt nó trên một dòng đứng hoàn toàn riêng lẻ. Tuy nhiên, vì kết quả của biểu thức sẽ không được lưu giữ lại vào bất kỳ biến nào, việc làm này trong các tập lệnh thường chỉ có ý nghĩa nếu biểu thức thực hiện một điều gì đó hữu ích dưới dạng một <strong>tác dụng phụ (side effect)</strong>.</p>
+        <p>Các biểu thức thường được sử dụng làm câu lệnh trong hai tình huống cơ bản:</p>
+        <ol>
+          <li>
+            <strong>Đối với các lệnh gọi hàm và phương thức (procedures):</strong> Một số hàm thực hiện công việc của chúng mà không trả về giá trị hữu ích nào (những hàm như vậy đôi khi được gọi là <em>thủ tục — procedures</em> trong các ngôn ngữ khác). Bạn gọi chúng chỉ để chúng thực thi hành động. Điều này cũng áp dụng cho các phương thức đối tượng.
+          </li>
+          <li>
+            <strong>Đối với việc in các giá trị tại dấu nhắc lệnh tương tác (REPL):</strong> Python sẽ tự động in phản hồi kết quả của các biểu thức được gõ tại REPL. Về mặt kỹ thuật, đây cũng là các câu lệnh biểu thức, đóng vai trò như một cách viết tắt cho việc gõ lệnh <code>print</code>.
+          </li>
+        </ol>
+
+        <p>Bảng 11-4 liệt kê các dạng câu lệnh biểu thức phổ biến nhất trong Python:</p>
+
+        <div class="table-wrapper" style="margin:20px 0;">
+          <table class="markdown-table" style="width:100%;border-collapse:collapse;font-size:0.9rem;">
+            <thead>
+              <tr style="background:var(--bg-surface-alt);border-bottom:2px solid var(--border-subtle);text-align:left;">
+                <th style="padding:10px 14px;color:var(--accent-primary);">Thao tác (Biểu thức)</th>
+                <th style="padding:10px 14px;color:var(--accent-primary);">Ý nghĩa giải thích</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>hack('Py', 3.12)</code></td>
+                <td style="padding:8px 14px;">Lệnh gọi hàm (function call)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>code.hack('Py')</code></td>
+                <td style="padding:8px 14px;">Lệnh gọi phương thức (method call)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>hack</code></td>
+                <td style="padding:8px 14px;">In kết quả trong trình thông dịch tương tác (REPL)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>print(a, b, c, sep='')</code></td>
+                <td style="padding:8px 14px;">Thao tác in ấn (một lệnh gọi hàm đặc biệt)</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border-subtle);">
+                <td style="padding:8px 14px;"><code>yield x ** 2</code></td>
+                <td style="padding:8px 14px;">Câu lệnh biểu thức sinh giá trị (generator — Chương 20)</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 14px;"><code>await producer()</code></td>
+                <td style="padding:8px 14px;">Tạm dừng để đợi các bước hoàn thành (coroutine — Chương 20)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout-box callout-tip" style="border-left:4px solid #8b5cf6;margin:16px 0;">
+          <div class="callout-header">
+            <span>🎭</span>
+            <span><strong>Biểu thức cải trang thành câu lệnh: print thực chất trả về None!</strong></span>
+          </div>
+          <div class="callout-body">
+            <p>Mặc dù chúng ta thường viết lệnh <code>print(...)</code> trên một dòng đứng riêng như một câu lệnh độc lập, nhưng thực chất nó là một biểu thức gọi hàm bình thường và nó <strong>luôn luôn trả về giá trị <code>None</code></strong> (giá trị mặc định cho các hàm không có lệnh <code>return</code> cụ thể):</p>
+            <pre><code>>>> x = print('code')
+code
+>>> print(x)
+None</code></pre>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát các câu lệnh biểu thức và giá trị trả về None của print',
+          code: `# 1. Lệnh gọi hàm thủ tục (thực thi vì tác dụng phụ)
+def chao_mung(ten):
+    print(f"Xin chào, {ten}!") # Tác dụng phụ: xuất dữ liệu ra màn hình
+
+chao_mung("Pythonista") # Câu lệnh biểu thức
+
+# 2. Lệnh gọi phương thức biến đổi đối tượng
+danh_sach = [3, 1, 2]
+danh_sach.sort() # Câu lệnh biểu thức làm thay đổi danh sách tại chỗ
+print("Danh sách sau khi sort():", danh_sach)
+
+# 3. Chứng minh print() trả về None
+tra_ve = print("Kiểm tra giá trị trả về của print")
+print("Giá trị biến tra_ve là:", tra_ve)`,
+          output: `Xin chào, Pythonista!
+Danh sách sau khi sort(): [1, 2, 3]
+Kiểm tra giá trị trả về của print
+Giá trị biến tra_ve là: None`,
+          annotations: [
+            { line: 5, text: 'chao_mung("Pythonista") là câu lệnh biểu thức đứng riêng trên một dòng.' },
+            { line: 9, text: 'danh_sach.sort() sắp xếp danh sách tại chỗ mà không tạo biến mới.' },
+            { line: 15, text: 'Hàm print() in văn bản ra console và trả về None cho biến tra_ve.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Tính Bất Đối Xứng Lệnh-Biểu Thức & Thảm Họa L = L.append(4)',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 27–28 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Một nguyên lý thiết kế then chốt của Python là <strong>tính bất đối xứng giữa câu lệnh và biểu thức</strong>:</p>
+        <blockquote>
+          <p><strong>Mặc dù các biểu thức có thể xuất hiện dưới dạng câu lệnh, nhưng điều ngược lại là KHÔNG ĐÚNG: các câu lệnh không thể được sử dụng làm biểu thức.</strong></p>
+        </blockquote>
+
+        <p>Chẳng hạn, Python không cho phép bạn nhúng các câu lệnh gán cơ bản (<code>=</code>) vào các biểu thức điều kiện như ngôn ngữ C (ví dụ <code>if x = 1:</code> bị cấm hoàn toàn). Mục đích là để bảo vệ bạn khỏi các lỗi ngầm tai hại do nhầm lẫn giữa <code>=</code> và <code>==</code>.</p>
+
+        <h3>Thảm họa lập trình: Gán ngược phương thức thay đổi tại chỗ</h3>
+        <p>Điều này dẫn đến một trong những sai lầm phổ biến và tai hại nhất đối với những người mới học Python: <strong>gán ngược kết quả của một phương thức thay đổi tại chỗ cho chính biến đó</strong>.</p>
+
+        <p>Các phương thức danh sách như <code>append()</code>, <code>sort()</code>, và <code>reverse()</code> được thiết kế để <em>biến đổi danh sách tại chỗ (in-place)</em> nhằm tối ưu hóa hiệu năng và bộ nhớ. Chúng <strong>không bao giờ trả về danh sách đã thay đổi; thay vào đó, chúng luôn luôn trả về <code>None</code></strong>!</p>
+
+        <pre><code>>>> L = [1, 2]
+>>> L.append(3)      # ĐÚNG: Thao tác tại chỗ, L trở thành [1, 2, 3]
+>>> L
+[1, 2, 3]
+
+>>> L = L.append(4)  # SAI LẦM TỬ HUYỆT: L.append(4) trả về None!
+>>> print(L)
+None                 # BẠN ĐÃ MẤT SẠCH TOÀN BỘ DANH SÁCH CỦA MÌNH!</code></pre>
+
+        <p>Khi bạn viết <code>L = L.append(4)</code>, giá trị <code>None</code> trả về sẽ lập tức ghi đè lên biến <code>L</code>. Đối tượng danh sách chứa dữ liệu ban đầu không còn biến nào tham chiếu tới và sẽ bị bộ thu gom rác (<em>garbage collector</em>) xóa sổ khỏi bộ nhớ RAM!</p>
+
+        <div class="callout-box callout-warning" style="border-left:4px solid var(--danger);margin:16px 0;">
+          <div class="callout-header">
+            <span>🚨</span>
+            <span><strong>Quy tắc bất di bất dịch của Mark Lutz:</strong></span>
+          </div>
+          <div class="callout-body">
+            <p><strong>Hãy luôn gọi các thao tác thay đổi tại chỗ mà KHÔNG gán kết quả của chúng!</strong></p>
+            <p>Nếu bạn muốn sắp xếp danh sách và gán kết quả cho một biến mới, hãy sử dụng hàm dựng sẵn <code>sorted(L)</code> (hàm này tạo ra danh sách mới sắp xếp mà không chạm vào danh sách gốc), thay vì gọi phương thức tại chỗ <code>L.sort()</code>.</p>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát thảm họa L = L.sort() / L.append() và cách dùng đúng',
+          code: `# 1. CẠM BẪY SAI LẦM: Gán ngược append()
+danh_sach_a = [10, 20]
+danh_sach_a = danh_sach_a.append(30) # Gán đè biến bằng None!
+print("Kết quả sau sai lầm gán append():", danh_sach_a)
+
+# 2. CẠM BẪY SAI LẦM: Gán ngược sort()
+danh_sach_b = [5, 2, 9, 1]
+danh_sach_b = danh_sach_b.sort() # Gán đè biến bằng None!
+print("Kết quả sau sai lầm gán sort():", danh_sach_b)
+
+# 3. CÁCH LÀM ĐÚNG VỚI PHƯƠNG THỨC TẠI CHỖ
+kho_hang = ['Chuối', 'Táo', 'Cam']
+kho_hang.append('Xoài') # Gọi đứng riêng như một câu lệnh biểu thức
+kho_hang.sort()         # Gọi đứng riêng tại chỗ
+print("Cách làm đúng với phương thức tại chỗ:", kho_hang)
+
+# 4. CÁCH LÀM ĐÚNG KHI MUỐN GÁN CHO BIẾN MỚI
+chuoi_so = [40, 10, 30]
+da_sap_xep = sorted(chuoi_so) # sorted() trả về list mới an toàn
+print("Dùng hàm sorted() tạo biến mới:", da_sap_xep)
+print("Danh sách gốc vẫn nguyên vẹn:", chuoi_so)`,
+          output: `Kết quả sau sai lầm gán append(): None
+Kết quả sau sai lầm gán sort(): None
+Cách làm đúng với phương thức tại chỗ: ['Cam', 'Chuối', 'Táo', 'Xoài']
+Dùng hàm sorted() tạo biến mới: [10, 30, 40]
+Danh sách gốc vẫn nguyên vẹn: [40, 10, 30]`,
+          annotations: [
+            { line: 3, text: 'danh_sach_a.append(30) trả về None gán vào danh_sach_a, làm mất dữ liệu.' },
+            { line: 8, text: 'danh_sach_b.sort() trả về None gán vào danh_sach_b, biến thành None.' },
+            { line: 13, text: 'Gọi phương thức tại chỗ đứng riêng trên một dòng độc lập, không gán.' },
+            { line: 19, text: 'sorted() là hàm dựng sẵn trả về danh sách mới, hoàn toàn an toàn khi gán.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    warnings: [
+      {
+        title: 'Lời dặn dò từ Mark Lutz: Thu gom rác (Garbage Collection)',
+        content: 'Khi một đối tượng mất đi tham chiếu cuối cùng (như khi bạn vô tình gán None đè lên biến duy nhất trỏ tới nó), bộ thu gom rác của CPython sẽ giải phóng vùng nhớ đó ngay lập tức. Bạn sẽ không có cách nào lấy lại dữ liệu đó trong chương trình!'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Sửa lỗi hàm xử lý danh sách điểm học sinh',
+      level: 'Cơ bản',
+      problem: 'Một đồng nghiệp viết hàm sau để nạp điểm mới và sắp xếp điểm: def cap_nhat_diem(ds, diem): ds = ds.append(diem); return ds.sort(). Hãy chỉ ra hai lỗi chết người trong hàm này và viết lại phiên bản chuẩn xác.',
+      hint: 'Cả append() và sort() đều trả về None. Hãy gọi chúng thành từng câu lệnh độc lập không gán, sau đó return ds.',
+      solutionCode: `# Sửa lại hàm chuẩn xác
+def cap_nhat_diem_chuan(ds, diem):
+    ds.append(diem) # Thay đổi tại chỗ
+    ds.sort()       # Sắp xếp tại chỗ
+    return ds       # Trả về chính danh sách đã biến đổi
+
+bang_diem = [8.5, 9.0, 7.5]
+ket_qua = cap_nhat_diem_chuan(bang_diem, 8.0)
+print("Bảng điểm sau khi cập nhật và sắp xếp:", ket_qua)`,
+      solutionOutput: `Bảng điểm sau khi cập nhật và sắp xếp: [7.5, 8.0, 8.5, 9.0]`,
+      explanation: 'Không được gán ds = ds.append(diem) vì sẽ làm ds thành None. Không được return ds.sort() vì hàm sẽ trả về None. Gọi chúng riêng biệt và return ds.'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Khi bạn chạy câu lệnh print(L.append(5)) trên một danh sách L = [1, 2], màn hình sẽ hiển thị gì?',
+      options: [
+        '[1, 2, 5]',
+        '5',
+        'None',
+        'Phát sinh lỗi AttributeError'
+      ],
+      correctIndex: 2,
+      explanation: 'Phương thức append() thực hiện thêm phần tử vào danh sách tại chỗ và không trả về giá trị hữu ích nào, mặc định trả về None.'
+    },
+    {
+      question: 'Vì sao câu lệnh if (x = 1): bị trình thông dịch Python cấm hoàn toàn?',
+      options: [
+        'Vì dấu ngoặc đơn không được phép xuất hiện sau if.',
+        'Vì câu lệnh gán không phải là một biểu thức và không thể nhúng vào cấu trúc cú pháp khác, giúp tránh nhầm lẫn với phép so sánh ==.',
+        'Vì số 1 không phải là giá trị logic hợp lệ.',
+        'Vì Python chỉ cho phép gán biến bên trong hàm.'
+      ],
+      correctIndex: 1,
+      explanation: 'Python có tính bất đối xứng: câu lệnh không thể dùng làm biểu thức. Điều này loại bỏ hoàn toàn lỗi ngầm vô tình gõ = khi muốn so sánh == như trong C.'
+    },
+    {
+      question: 'Phương thức nào sau đây KHÔNG THAY ĐỔI danh sách tại chỗ mà trả về một đối tượng mới?',
+      options: [
+        'L.sort()',
+        'L.reverse()',
+        'L.append()',
+        'sorted(L)'
+      ],
+      correctIndex: 3,
+      explanation: 'sorted(L) là hàm dựng sẵn (built-in function), tạo và trả về một danh sách mới chứa các phần tử đã sắp xếp; ba phương thức còn lại đều là thao tác tại chỗ và trả về None.'
+    }
+  ],
+
+  summary: [
+    'Câu lệnh biểu thức đứng riêng trên một dòng, thực thi chỉ vì tác dụng phụ (gọi hàm thủ tục, in REPL).',
+    'Bảng 11-4 tổng kết 6 dạng biểu thức phổ biến: gọi hàm, gọi phương thức, REPL, print, yield, await.',
+    'Tính bất đối xứng: biểu thức có thể làm câu lệnh, nhưng câu lệnh không thể dùng làm biểu thức.',
+    'Thảm họa L = L.append() hoặc L = L.sort(): các phương thức tại chỗ trả về None, gán ngược lại sẽ xóa sạch danh sách của bạn!'
+  ]
+};
+
+window.__PRELOADED_LESSONS__['lp-c11-08'] = {
+  id: 'lp-c11-08',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.8',
+  title: 'Thao tác In ấn Toàn diện — Hàm print(), 4 Tham số Từ khóa & Thực hành Định dạng',
+  subtitle: 'Bản chất giao diện stdout, 3 luồng tiêu chuẩn, phân tích sâu 4 tham số sep, end, file, flush và ranh giới giữa print() thô với f-string',
+  level: 'Cơ bản đến Trung cấp',
+  duration: '35 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Hiểu bản chất của thao tác in ấn: print() là một hàm gọi biểu thức cung cấp giao diện công thái học thân thiện tới luồng đầu ra tiêu chuẩn (sys.stdout).',
+    'So sánh sự tiện lợi của print() với phương thức file.write(str) nguyên thủy: tự động chuyển đổi đối tượng qua str(), tự động chèn khoảng cách và ngắt dòng.',
+    'Làm chủ toàn diện 4 tham số từ khóa của hàm print(): sep (phân cách), end (kết thúc dòng), file (luồng đích) và flush (xả bộ đệm tức thời).',
+    'Phân định rõ ràng khi nào nên dùng tham số sep/end của print() và khi nào nên dùng định dạng chuỗi chuyên biệt (f-string), tránh lạm dụng búa tạ đóng đinh nhỏ.'
+  ],
+
+  intuition: {
+    title: 'Người Phiên Dịch Tự Động Trước Cánh Cửa Màn Hình',
+    metaphor: 'Luồng đầu ra tiêu chuẩn (stdout) giống như một khe hẹp của bức tường chỉ chấp nhận nuốt từng ký tự chữ thô đơn lẻ (chuỗi str). Nếu bạn dùng công cụ thô sơ file.write(), bạn phải tự mình làm mọi việc thủ công: tự ép các con số, danh sách thành chuỗi, tự chèn dấu cách ở giữa, và tự gõ thêm ký tự xuống dòng \\n ở cuối. Nhưng hàm print() giống như một người phiên dịch viên mẫn cán và hào hiệp đứng túc trực ngay trước khe hẹp đó: bạn chỉ việc ném bất kỳ loại đồ vật nào cho anh ta (số, danh sách, từ điển), anh ta sẽ tự động chụp ảnh chuyển đổi thành chữ (qua str()), tự xếp chúng cách nhau một khoảng trắng đều đặn (sep=" "), tự nhấn phím xuống dòng (end="\\n"), và đẩy thẳng vào khe màn hình cho bạn!',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--accent-primary);">KIẾN TRÚC ĐIỀU PHỐI CỦA HÀM PRINT() TỚI LUỒNG TIÊU CHUẨN</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="padding:10px;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:6px;">
+            <strong style="color:var(--accent-primary);">1. ĐẦU VÀO ĐA DẠNG:</strong> <code>print(x, y, z)</code> nhận bất kỳ đối tượng nào (int, list, dict...)
+          </div>
+          <div style="padding:10px;background:var(--bg-surface);border:1px solid #8b5cf6;border-radius:6px;margin-left:14px;">
+            <strong style="color:#8b5cf6;">2. BỘ CHUYỂN ĐỔI:</strong> Tự động gọi <code>str()</code> cho từng đối tượng, chèn <code>sep=' '</code> ở giữa
+          </div>
+          <div style="padding:10px;background:var(--bg-surface);border:1px solid #10b981;border-radius:6px;margin-left:28px;">
+            <strong style="color:#10b981;">3. ĐÓNG GÓI CUỐI:</strong> Gắn thêm chuỗi kết thúc <code>end='\\n'</code> vào cuối văn bản
+          </div>
+          <div style="padding:10px;background:var(--bg-surface);border:1px solid #f59e0b;border-radius:6px;margin-left:42px;">
+            <strong style="color:#f59e0b;">4. ĐÍCH ĐẾN I/O:</strong> Gửi chuỗi hoàn chỉnh tới <code>file.write()</code> (mặc định là <code>sys.stdout</code>)
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Thao Tác In Ấn & Giao Diện Luồng Đầu Ra Tiêu Chuẩn (stdout)',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 28–29 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Trong Python, hàm in (<code>print</code>) dùng để in mọi thứ—nó chỉ đơn thuần là một giao diện thân thiện với lập trình viên tới <strong>luồng đầu ra tiêu chuẩn (standard output stream)</strong>. Nó là một biểu thức gọi hàm mà chúng ta gọi riêng ra ở đây vì nó quá đỗi phổ biến và thường được viết như một câu lệnh đứng riêng.</p>
+
+        <h3>So sánh print() với các phương thức của đối tượng file</h3>
+        <p>Trong Chương 9, chúng ta đã khám phá các phương thức của đối tượng file dùng để ghi văn bản (ví dụ <code>file.write(str)</code>). Các thao tác in ấn cũng tương tự, nhưng tập trung và tiện lợi hơn rất nhiều:</p>
+        <ul>
+          <li><strong>Phương thức <code>file.write()</code>:</strong> Chỉ ghi chuỗi ký tự thô vào file; không hỗ trợ in các đối tượng khác nếu bạn chưa tự gọi <code>str()</code>; không tự thêm dấu cách; và không tự thêm ký tự xuống dòng.</li>
+          <li><strong>Hàm <code>print()</code>:</strong> Mặc định ghi các đối tượng vào luồng <code>sys.stdout</code>, tự động chuyển đổi mọi đối tượng thành chuỗi hiển thị thân thiện, tự động chèn dấu phân cách giữa các đối tượng và tự động thêm ký tự xuống dòng.</li>
+        </ul>
+
+        <h3>Ba luồng tiêu chuẩn hệ thống</h3>
+        <p>Khi một tập lệnh Python khởi động, ba kết nối dữ liệu tiêu chuẩn tự động được thiết lập sẵn trong module <code>sys</code>:</p>
+        <ol>
+          <li><strong>Luồng đầu vào tiêu chuẩn (<code>sys.stdin</code>):</strong> Nơi nhận dữ liệu nhập (được hàm <code>input()</code> sử dụng).</li>
+          <li><strong>Luồng đầu ra tiêu chuẩn (<code>sys.stdout</code>):</strong> Nơi nhận văn bản xuất ra màn hình console (được hàm <code>print()</code> sử dụng).</li>
+          <li><strong>Luồng lỗi tiêu chuẩn (<code>sys.stderr</code>):</strong> Nơi chuyên xuất các thông báo lỗi và cảnh báo của hệ thống.</li>
+        </ol>
+
+        <div class="callout-box callout-note" style="border-left:4px solid #8b5cf6;margin:16px 0;">
+          <div class="callout-header">
+            <span>🕰️</span>
+            <span><strong>Ghi chú: Ký ức quá khứ: Lệnh in (Python 2 vs Python 3)</strong></span>
+          </div>
+          <div class="callout-body">
+            <p>Việc in ấn là một trong những điểm khác biệt lớn nhất giữa Python 2.X và 3.X: <code>print</code> đã chuyển từ một <em>câu lệnh (statement)</em> trong 2.X (cú pháp <code>print x</code>) thành một <em>hàm dựng sẵn (built-in function)</em> trong 3.X (cú pháp <code>print(x)</code>). Thay đổi này đã phá vỡ gần như mọi chương trình Python khi nâng cấp lên 3.0, nhưng bù lại mang đến sự linh hoạt tột bậc: <code>print</code> giờ đây có thể nhận các đối số từ khóa, có thể truyền đi như một đối tượng hàm và có thể được thay thế tùy biến.</p>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'So sánh việc xuất dữ liệu giữa sys.stdout.write() thô và hàm print()',
+          code: `import sys
+
+x = 'Python'
+y = 3.14
+z = ['Lutz', 2026]
+
+# 1. Xuất dữ liệu bằng sys.stdout.write (cách làm thủ công khó nhọc)
+sys.stdout.write(str(x) + ' ' + str(y) + ' ' + str(z) + '\\n')
+
+# 2. Xuất dữ liệu bằng print() (cách làm thanh lịch, công thái học)
+print(x, y, z)
+
+# Cả hai dòng đều cho kết quả hiển thị giống hệt nhau trên màn hình!`,
+          output: `Python 3.14 ['Lutz', 2026]
+Python 3.14 ['Lutz', 2026]`,
+          annotations: [
+            { line: 8, text: 'Phải tự gọi str() cho từng biến, tự nối dấu cách và tự thêm \\n.' },
+            { line: 11, text: 'print() tự động lo toàn bộ các khâu chuyển đổi và định dạng trên.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Định Dạng Lệnh Gọi Hàm print() & Bốn Tham Số Từ Khóa',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 29–31 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Về mặt cú pháp, các lệnh gọi hàm <code>print()</code> có định dạng đầy đủ như sau:</p>
+        <pre><code>print([object, ...][, sep=' '][, end='\\n'][, file=sys.stdout][, flush=False])</code></pre>
+
+        <p>Trong ký hiệu này, các mục trong dấu ngoặc vuông là tùy chọn và có thể được bỏ qua; các giá trị sau dấu <code>=</code> biểu thị giá trị mặc định của <strong>4 đối số từ khóa (keyword arguments)</strong>. Bạn phải truyền các đối số này theo tên (cú pháp <code>name=value</code>) và chúng phải xuất hiện phía sau tất cả các đối tượng cần in:</p>
+
+        <ol>
+          <li>
+            <strong><code>sep</code> (Separator — Ký tự phân cách):</strong> Chuỗi được chèn vào giữa văn bản của từng đối tượng. Mặc định là một dấu cách đơn <code>' '</code>. Truyền <code>sep=''</code> (chuỗi rỗng) sẽ triệt tiêu hoàn toàn khoảng cách; hoặc bạn có thể truyền bất kỳ chuỗi tùy chỉnh nào như <code>sep=', '</code> hay <code>sep=' -> '</code>.
+          </li>
+          <li>
+            <strong><code>end</code> (End string — Chuỗi kết thúc):</strong> Chuỗi được thêm vào cuối văn bản được in. Mặc định là ký tự xuống dòng <code>'\\n'</code>. Truyền <code>end=''</code> sẽ triệt tiêu việc xuống dòng, giúp lệnh <code>print()</code> tiếp theo ghi nối tiếp ngay sau dữ liệu vừa in trên cùng một dòng.
+          </li>
+          <li>
+            <strong><code>file</code> (Target stream — Luồng đích):</strong> Chỉ định đối tượng file hoặc luồng mà văn bản sẽ được gửi tới. Mặc định là <code>sys.stdout</code>. Bất kỳ đối tượng nào hỗ trợ phương thức <code>write(string)</code> đều có thể truyền vào, bao gồm cả file thực tế mở bằng <code>open('data.txt', 'w')</code>.
+          </li>
+          <li>
+            <strong><code>flush</code> (Xả bộ đệm):</strong> Giá trị boolean, mặc định là <code>False</code>. Thông thường đầu ra được gom đệm trong bộ nhớ RAM để tối ưu tốc độ I/O. Truyền <code>flush=True</code> sẽ ép buộc luồng phải đẩy ngay lập tức toàn bộ dữ liệu đang đệm ra thiết bị hiển thị hoặc đường truyền mạng mà không cần chờ bộ đệm đầy hay chờ ký tự <code>\\n</code>.
+          </li>
+        </ol>
+      `,
+      codeExamples: [
+        {
+          title: 'Thực hành toàn diện 4 tham số từ khóa của hàm print()',
+          code: `x = 'python'
+y = 3.14
+z = ['lp6e']
+
+# 1. Gọi mặc định: sep=' ', end='\\n'
+print(x, y, z)
+
+# 2. Tùy chỉnh sep: triệt tiêu phân cách
+print(x, y, z, sep='')
+
+# 3. Tùy chỉnh sep: phân cách bằng dấu phẩy
+print(x, y, z, sep=', ')
+
+# 4. Tùy chỉnh end: không xuống dòng, in nối tiếp
+print("Đang xử lý: ", end='')
+print("[25%]", end='...')
+print("[100%] Hoàn tất!")
+
+# 5. Kết hợp cả sep và end
+print(x, y, z, sep='...', end='!\\n')`,
+          output: `python 3.14 ['lp6e']
+python3.14['lp6e']
+python, 3.14, ['lp6e']
+Đang xử lý: [25%]...[100%] Hoàn tất!
+python...3.14...['lp6e']!`,
+          annotations: [
+            { line: 5, text: 'Mặc định chèn dấu cách ở giữa x, y, z và xuống dòng ở cuối.' },
+            { line: 8, text: 'sep=\'\' dán các đối tượng liền sát nhau.' },
+            { line: 14, text: 'end=\'\' giữ con trỏ console ở cuối dòng để lệnh sau in tiếp.' },
+            { line: 19, text: 'Thứ tự giữa các tham số từ khóa không quan trọng, miễn là đứng sau các đối tượng in.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-3',
+      title: '3. In Vào File & Ranh Giới: Khi Nào Dùng print(), Khi Nào Dùng f-string?',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 31–32 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Tham số <code>file</code> của <code>print()</code> cho phép bạn điều hướng văn bản in tới một file đang mở hoặc một luồng tùy ý trong suốt thời gian của một lệnh <code>print()</code> duy nhất, mà không làm ảnh hưởng tới các lệnh in khác:</p>
+
+        <pre><code>>>> print(x, y, z, sep='...', file=open('data.txt', 'w'))
+>>> print(x, y, z) # Lệnh này lập tức quay lại in ra stdout bình thường!
+python 3.12 ['lp6e']
+
+>>> print(open('data.txt').read())
+python...3.12...['lp6e']</code></pre>
+
+        <h3>Ranh giới định dạng: Đừng dùng búa tạ để đóng mọi cây đinh!</h3>
+        <p>Các tùy chọn <code>sep</code> và <code>end</code> của <code>print()</code> chỉ là những sự tiện lợi cho các nhu cầu đơn giản. Nếu bạn cần định dạng phức tạp (căn lề trái/phải, số chữ số thập phân, thêm số 0 ở đầu), hãy sử dụng <strong>f-string</strong> hoặc biểu thức định dạng chuỗi của Chương 7 để xây dựng toàn bộ chuỗi trước khi in:</p>
+        <pre><code># Định dạng chuyên nghiệp bằng f-string:
+print(f"{x}: {y:-0.4f}, {int(z[0][-2]):05d}")</code></pre>
+
+        <div class="callout-box callout-warning" style="border-left:4px solid var(--warning);margin:16px 0;">
+          <div class="callout-header">
+            <span>🔨</span>
+            <span><strong>Cảnh báo của Mark Lutz về việc lạm dụng f-string:</strong></span>
+          </div>
+          <div class="callout-body">
+            <p>Mặt khác, dường như có một quan niệm sai lầm phổ biến rằng f-string bằng cách nào đó là "bắt buộc" đối với mọi lệnh <code>print</code>. Trên thực tế, <strong>f-string là quá mức cần thiết và làm rối mã nguồn</strong> nếu bạn chỉ đơn giản cố gắng in các đối tượng được ngăn cách bằng dấu cách:</p>
+            <pre><code># DÙNG BÚA TẠ ĐÓNG ĐINH (QUÁ RƯỜM RÀ):
+print(f"{a} {b} {c}")
+
+# THANH THOÁT, CHUẨN PYTHONIC:
+print(a, b, c)</code></pre>
+            <p>Cả hai đều cho kết quả y hệt nhau, nhưng cách thứ hai ngắn gọn hơn, chạy nhanh hơn và đúng với tinh thần tự nhiên của ngôn ngữ!</p>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát in vào file tạm và đối chiếu print() thô vs f-string',
+          code: `# 1. In trực tiếp vào một file bằng tham số file=
+with open('tam_thoi.txt', 'w', encoding='utf-8') as f:
+    print('Báo cáo hệ thống', 2026, sep=' - ', file=f)
+    print('Trạng thái: Hoạt động', file=f)
+
+# Đọc lại nội dung file vừa in
+with open('tam_thoi.txt', 'r', encoding='utf-8') as f:
+    print("Nội dung trong file:")
+    print(f.read().strip())
+
+# 2. So sánh in thô vs f-string
+a, b, c = 11, 3.14, 'hack'
+
+print("\\nSo sánh in thô vs f-string:")
+print("In thô chuẩn Pythonic:", a, b, c)
+print("Dùng f-string thừa thãi:", f"{a} {b} {c}")`,
+          output: `Nội dung trong file:
+Báo cáo hệ thống - 2026
+Trạng thái: Hoạt động
+
+So sánh in thô vs f-string:
+In thô chuẩn Pythonic: 11 3.14 hack
+Dùng f-string thừa thãi: 11 3.14 hack`,
+          annotations: [
+            { line: 3, text: 'Tham số file=f điều hướng văn bản ghi thẳng vào file tam_thoi.txt.' },
+            { line: 16, text: 'print(a, b, c) thanh lịch, không cần tốn công tạo f-string bọc ngoài.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    tips: [
+      {
+        title: 'Lời khuyên từ Mark Lutz: Vấn đề xả bộ đệm (flush)',
+        content: 'Khi bạn in một thanh tiến trình (progress bar) trên một dòng đơn bằng cách dùng end="", bạn thường thấy chữ không chịu xuất hiện ngay trên màn hình mà bị "nghẽn". Đó là vì luồng stdout đang gom đệm chờ ký tự xuống dòng. Hãy thêm tham số flush=True để ép hệ điều hành đẩy dữ liệu ra màn hình tức thì!'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Mô phỏng thanh tiến trình tải dữ liệu bằng print và flush',
+      level: 'Trung bình',
+      problem: 'Viết một hàm hien_thi_tien_trinh(tong_so) in ra các dấu chấm biểu thị tiến trình trên cùng một dòng. Sau mỗi dấu chấm, sử dụng end="" và flush=True để đảm bảo dấu chấm hiển thị ngay lập tức ra màn hình console.',
+      hint: 'Dùng vòng lặp for với range(tong_so), gọi print(".", end="", flush=True) và cuối cùng gọi print(" [Xong]") để xuống dòng.',
+      solutionCode: `def hien_thi_tien_trinh(tong_so):
+    print("Đang nạp dữ liệu: ", end="", flush=True)
+    for _ in range(tong_so):
+        print(".", end="", flush=True)
+    print(" [Hoàn tất!]")
+
+hien_thi_tien_trinh(10)`,
+      solutionOutput: `Đang nạp dữ liệu: .......... [Hoàn tất!]`,
+      explanation: 'end="" ngăn lệnh print tự ý xuống dòng, trong khi flush=True ép buộc luồng stdout xả từng dấu chấm ra màn hình ngay khi lệnh thực thi.'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Giá trị mặc định của hai tham số từ khóa sep và end trong hàm print() lần lượt là gì?',
+      options: [
+        'sep=\'\' và end=\' \'',
+        'sep=\' \' (dấu cách) và end=\'\\n\' (xuống dòng)',
+        'sep=\',\' và end=\'\\n\'',
+        'sep=None và end=None'
+      ],
+      correctIndex: 1,
+      explanation: 'Theo đặc tả của hàm print() trong Python, tham số sep mặc định là một dấu cách \' \' và end mặc định là ký tự ngắt dòng \'\\n\'.'
+    },
+    {
+      question: 'Khi bạn muốn in hai dòng thông tin nối tiếp nhau trên cùng một dòng hiển thị của console, bạn cần làm gì?',
+      options: [
+        'Truyền sep=\'\\n\' vào lệnh print thứ nhất.',
+        'Truyền end=\'\' vào lệnh print thứ nhất.',
+        'Truyền flush=False vào cả hai lệnh print.',
+        'Sử dụng câu lệnh sys.stdout.close().'
+      ],
+      correctIndex: 1,
+      explanation: 'Tham số end=\'\' triệt tiêu ký tự xuống dòng mặc định của lệnh print thứ nhất, giữ con trỏ tại chỗ để lệnh print tiếp theo in nối tiếp ngay sau.'
+    },
+    {
+      question: 'Khi nào bạn NÊN sử dụng f-string thay vì dựa vào các tham số của hàm print()?',
+      options: [
+        'Khi bạn chỉ cần in 3 biến cách nhau bởi một dấu cách đơn.',
+        'Khi bạn cần in ra màn hình console thông thường.',
+        'Khi bạn cần định dạng phức tạp như căn lề, số chữ số thập phân, hoặc đệm số 0 vào số nguyên.',
+        'f-string luôn luôn là bắt buộc khi gọi hàm print().'
+      ],
+      correctIndex: 2,
+      explanation: 'f-string chuyên dụng cho các yêu cầu định dạng hiển thị tỉ mỉ (như căn lề, format số thực, padding); còn nếu chỉ in các biến cách nhau bằng dấu cách thì print(a, b, c) đơn giản và tối ưu hơn nhiều.'
+    }
+  ],
+
+  summary: [
+    'print() là giao diện thân thiện tới luồng xuất tiêu chuẩn sys.stdout, tự động chuyển đổi đối tượng qua str().',
+    'Bốn tham số từ khóa: sep (phân cách), end (kết thúc), file (luồng đích), flush (xả đệm tức thì).',
+    'Tham số file=open(...) cho phép chuyển hướng đầu ra tới một file ngoài trong phạm vi một lệnh in duy nhất.',
+    'Tránh lạm dụng f-string thừa thãi: hãy dùng print(a, b, c) tự nhiên thay cho print(f"{a} {b} {c}").'
+  ]
+};
+
+window.__PRELOADED_LESSONS__['lp-c11-09'] = {
+  id: 'lp-c11-09',
+  partId: 'part-lp-c11',
+  chapter: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+  number: 'C11.9',
+  title: 'Chuyển hướng Luồng in (Stream Redirection), Tóm tắt Chương 11 & Trọn bộ 4 Câu hỏi Ôn tập',
+  subtitle: 'Kỹ thuật gán sys.stdout, khôi phục luồng an toàn, luồng sys.stderr, đối tượng FileFaker đa hình, tổng kết toàn diện và trọn bộ 4 câu hỏi ôn tập của Mark Lutz',
+  level: 'Trung cấp đến Nâng cao',
+  duration: '45 phút',
+  isNew314: false,
+  interactiveWidget: null,
+
+  objectives: [
+    'Làm chủ hai kỹ thuật chuyển hướng luồng in (stream redirection) trong Python: gán lại luồng hệ thống sys.stdout (thủ công) và sử dụng tham số từ khóa file= (tự động, an toàn).',
+    'Hiểu cách lưu và khôi phục luồng gốc qua biến tạm hoặc thuộc tính sys.__stdout__, cùng kỹ thuật xuất thông báo lỗi chuyên biệt ra sys.stderr.',
+    'Khám phá khung chuyên đề nâng cao "Vì sao bạn sẽ quan tâm: print và stdout": lớp FileFaker, tính đa hình (polymorphic operation) của phương thức write() và ứng dụng trong GUI/Web server.',
+    'Tổng kết toàn diện kiến thức Chương 11 và giải trọn vẹn 4 Câu hỏi ôn tập nguyên bản từ trang 36–37 của giáo trình Mark Lutz.'
+  ],
+
+  intuition: {
+    title: 'Hệ Thống Đường Ống Nước và Cút Nối Đa Năng',
+    metaphor: 'Hãy hình dung luồng đầu ra của chương trình Python giống như một vòi nước chữa cháy khổng lồ: theo mặc định, vòi nước này được nối thẳng ra một đường ống tiêu chuẩn chảy ra mặt đường (màn hình console sys.stdout). Hàm print() chỉ đơn giản là việc bạn vặn khóa mở nước. Tuy nhiên, bằng cách tháo cút nối và lắp một đường ống mới (sys.stdout = open("log.txt")), bạn có thể chuyển toàn bộ dòng nước đó chảy vào một bể chứa ngầm (file trên ổ đĩa) mà người vặn van print() không hề hay biết! Thậm chí kỳ diệu hơn, bạn có thể nối vòi nước vào bất kỳ cỗ máy nào (lớp FileFaker), miễn là cỗ máy đó có một miệng ống khớp chuẩn (phương thức write) để đón nhận dòng nước và dẫn đi bất cứ đâu: lên màn hình đồ họa GUI hay truyền qua đại dương mạng Internet.',
+    visualHtml: `
+      <div style="display:flex;flex-direction:column;gap:12px;padding:18px;background:var(--bg-surface-alt);border:1px solid var(--border-subtle);border-radius:10px;font-family:var(--font-mono);font-size:0.86rem;">
+        <div style="text-align:center;font-weight:700;color:var(--accent-primary);">MÔ HÌNH CHUYỂN HƯỚNG ĐA HÌNH CỦA HÀM PRINT() QUA LUỒNG I/O</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;">
+          <div style="padding:12px;background:var(--bg-surface);border:1px solid var(--accent-primary);border-radius:8px;text-align:center;">
+            <div style="font-weight:700;color:var(--accent-primary);">HÀM PRINT(X, Y)</div>
+            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">Gọi ngầm định:<br><code>sys.stdout.write(...)</code></div>
+          </div>
+          <div style="font-size:1.6rem;color:var(--accent-primary);font-weight:700;">➔</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="padding:6px 10px;background:var(--bg-surface);border-left:4px solid #10b981;border-radius:4px;font-size:0.78rem;">
+              <strong>Mặc định:</strong> Màn hình Console / Terminal
+            </div>
+            <div style="padding:6px 10px;background:var(--bg-surface);border-left:4px solid #f59e0b;border-radius:4px;font-size:0.78rem;">
+              <strong>Chuyển hướng File:</strong> <code>file=open('log.txt')</code>
+            </div>
+            <div style="padding:6px 10px;background:var(--bg-surface);border-left:4px solid #8b5cf6;border-radius:4px;font-size:0.78rem;">
+              <strong>Đa hình (FileFaker):</strong> Cửa sổ GUI / Mạng Socket
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  },
+
+  sections: [
+    {
+      id: 'sec-1',
+      title: '1. Chuyển Hướng Luồng Thủ Công & Tự Động (sys.stdout vs file=)',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 32–35 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Như chúng ta đã biết, <code>print</code> mặc định gửi văn bản tới luồng đầu ra tiêu chuẩn (stdout). Tuy nhiên, việc điều hướng dữ liệu in đi nơi khác là một nhu cầu cực kỳ phổ biến trong các hệ thống phần mềm thực tế—chẳng hạn như ghi nhật ký (log) vào file trên đĩa để tra cứu sau này, hoặc bắt giữ đầu ra để kiểm thử tự động.</p>
+
+        <h3>Phương pháp 1: Chuyển hướng luồng thủ công bằng cách gán sys.stdout</h3>
+        <p>Vì câu lệnh <code>print(X, Y)</code> thực chất chỉ là một lớp vỏ bọc công thái học cho lệnh gọi:</p>
+        <pre><code>import sys
+sys.stdout.write(str(X) + ' ' + str(Y) + '\\n')</code></pre>
+        <p>Bạn có thể gán lại thuộc tính <code>sys.stdout</code> thành một đối tượng file đang mở ở chế độ ghi thêm (<code>'a'</code>):</p>
+        <pre><code>import sys
+sys.stdout = open('log.txt', 'a') # Chuyển hướng toàn bộ các lệnh print sau đó
+print("Dòng này sẽ được ghi vào file log.txt thay vì màn hình!")</code></pre>
+        <p>Bởi vì trong một tiến trình Python chỉ có <strong>một module <code>sys</code> duy nhất</strong>, thao tác gán này sẽ chuyển hướng toàn bộ các câu lệnh <code>print</code> xuất hiện ở bất kỳ đâu trong toàn bộ chương trình của bạn!</p>
+
+        <h3>Cách khôi phục luồng ban đầu an toàn</h3>
+        <p>Nếu bạn muốn quay lại in ra màn hình console sau khi đã ghi file, bạn phải chủ động lưu luồng gốc vào một biến tạm thời:</p>
+        <pre><code>temp = sys.stdout                 # 1. Lưu luồng console ban đầu
+sys.stdout = open('log.txt', 'a') # 2. Chuyển hướng sang file
+print("Ghi vào file...")
+sys.stdout.close()                # 3. Đóng và xả đệm xuống đĩa
+sys.stdout = temp                 # 4. Khôi phục lại luồng console!
+print("Đã quay trở lại màn hình console bình thường!")</code></pre>
+        <p><em>(Chú thích chân trang [5]: Ngoài ra, bạn cũng có thể dùng thuộc tính <code>sys.__stdout__</code> vốn lưu giữ tham chiếu đến giá trị ban đầu của stdout tại thời điểm khởi động chương trình để khôi phục: <code>sys.stdout = sys.__stdout__</code>).</em></p>
+
+        <h3>Phương pháp 2: Chuyển hướng tự động thông qua tham số file=</h3>
+        <p>Để không phải xoay xở với việc lưu và khôi phục biến tạm rườm rà, Python cung cấp tham số từ khóa <code>file=</code> ngay trong hàm <code>print()</code>:</p>
+        <pre><code>log = open('log2.txt', 'w')
+print(1, 2, 3, file=log)  # Chỉ duy nhất lệnh này in vào file
+log.close()
+print(7, 8, 9)            # Lệnh kế tiếp tự động in ra màn hình console ban đầu!</code></pre>
+
+        <h3>Xuất thông báo lỗi ra luồng sys.stderr</h3>
+        <p>Đối tượng <code>sys.stderr</code> luôn mở sẵn cho bạn để in các thông điệp cảnh báo hoặc thông báo lỗi hệ thống, tách biệt khỏi luồng dữ liệu chuẩn <code>stdout</code>:</p>
+        <pre><code>print("CẢNH BÁO LỖI!", file=sys.stderr)</code></pre>
+      `,
+      codeExamples: [
+        {
+          title: 'Khảo sát chuyển hướng luồng in thủ công và qua tham số file=',
+          code: `import sys
+
+# 1. Chuyển hướng an toàn qua tham số file=
+with open('nhat_ky_he_thong.log', 'w', encoding='utf-8') as f_log:
+    print("Khởi động tiến trình máy chủ 2026...", file=f_log)
+    print("Cổng lắng nghe: 8080", file=f_log)
+
+# Lệnh print này in ra màn hình chuẩn console như thường lệ
+print("Thông báo console: Đã ghi nhật ký xong!")
+
+# 2. Đọc lại nội dung file vừa ghi
+with open('nhat_ky_he_thong.log', 'r', encoding='utf-8') as f_log:
+    print("Nội dung file log:")
+    print(f_log.read().strip())
+
+# 3. In ra luồng lỗi tiêu chuẩn sys.stderr
+print("Lỗi kết nối cơ sở dữ liệu!", file=sys.stderr)`,
+          output: `Thông báo console: Đã ghi nhật ký xong!
+Nội dung file log:
+Khởi động tiến trình máy chủ 2026...
+Cổng lắng nghe: 8080
+Lỗi kết nối cơ sở dữ liệu!`,
+          annotations: [
+            { line: 5, text: 'file=f_log chỉ định luồng ghi cho từng lệnh in độc lập.' },
+            { line: 9, text: 'Lệnh print thông thường không bị ảnh hưởng, vẫn xuất ra console.' },
+            { line: 18, text: 'file=sys.stderr chuyển dữ liệu vào kênh báo lỗi riêng biệt của OS.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-2',
+      title: '2. Khung Chuyên Đề Nâng Cao: Tính Đa Hình của print và Lớp FileFaker',
+      content: `
+        <div class="callout-box callout-theory" style="border-left:4px solid #8b5cf6;margin-bottom:20px;">
+          <div class="callout-header">
+            <span>🔮</span>
+            <span><strong>Vì sao bạn sẽ quan tâm: print và stdout — Đa hình (Polymorphism) & FileFaker</strong></span>
+          </div>
+          <div class="callout-body">
+            <p><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz • <strong>PDF Trang 37–38 / 38</strong>.</p>
+            <p>Sự tương đương giữa thao tác in ấn và việc gọi phương thức <code>sys.stdout.write()</code> mở ra một sức mạnh kiến trúc phi thường: <strong>bạn có thể thiết lập lại <code>sys.stdout</code> thành một đối tượng hoàn toàn không phải là file trên ổ đĩa!</strong></p>
+            <p>Hàm <code>print()</code> không hề quan tâm đối tượng nhận là một file vật lý, một cổng mạng hay một cửa sổ giao diện. Nó chỉ đòi hỏi đối tượng đó cung cấp một <strong>giao diện (interface) duy nhất: một phương thức có tên <code>write(string)</code></strong>. Trong khoa học máy tính và lập trình hướng đối tượng, đây chính là <strong>thao tác đa hình (polymorphic operation)</strong> và triết lý <em>Duck Typing</em> trứ danh của Python (<em>"nếu nó đi như vịt và kêu như vịt, thì nó là vịt"</em>).</p>
+
+            <h4>Mô hình hóa lớp FileFaker</h4>
+            <pre><code>class FileFaker:
+    def __init__(self):
+        self.buffer = []
+    def write(self, string):
+        # Định tuyến dữ liệu văn bản tùy ý: lưu vào RAM, gửi lên GUI, mã hóa...
+        self.buffer.append(string)
+
+faker = FileFaker()
+print("Xin chào thế giới!", file=faker) # print tự động gọi faker.write()!
+print("Dữ liệu bắt giữ:", "".join(faker.buffer))</code></pre>
+
+            <p>Kỹ thuật đa hình này được ứng dụng rộng rãi trong:</p>
+            <ul>
+              <li><strong>Giao diện đồ họa (GUI):</strong> Đón bắt mọi lệnh <code>print</code> trong chương trình và hiển thị chúng lên một hộp thoại pop-up hoặc vùng văn bản đồ họa.</li>
+              <li><strong>Trình soạn thảo & IDE (như IDLE, VS Code):</strong> Chuyển hướng stdout để tô màu cú pháp hoặc làm nổi bật các dòng văn bản.</li>
+              <li><strong>Máy chủ Web (Web Server):</strong> Trong các tập lệnh CGI/WSGI truyền thống, văn bản in ra <code>stdout</code> chính là các thẻ HTML được máy chủ bắt giữ và gửi về trình duyệt của người dùng!</li>
+              <li><strong>Chuyển hướng Shell hệ điều hành:</strong> Cú pháp chuyển hướng trong Python cung cấp sự thay thế thuần Python (<em>pure-Python</em>) độc lập với hệ điều hành cho các cú pháp shell như <code>python script.py &gt; output.txt</code> hay đường ống dẫn <code>python script.py | filterProgram</code>.</li>
+            </ul>
+          </div>
+        </div>
+      `,
+      codeExamples: [
+        {
+          title: 'Xây dựng lớp FileFaker bắt giữ dữ liệu in vào bộ nhớ RAM',
+          code: `# Định nghĩa đối tượng giả lập file (File-like object)
+class BoGhiNhoRAM:
+    def __init__(self):
+        self.noi_dung = []
+
+    def write(self, van_ban):
+        # Bắt giữ từng chuỗi ký tự được gửi tới
+        self.noi_dung.append(van_ban)
+
+    def lay_ket_qua(self):
+        return "".join(self.noi_dung)
+
+# Khởi tạo đối tượng bắt giữ
+ram_stream = BoGhiNhoRAM()
+
+# In trực tiếp vào đối tượng thông qua tham số file= (Đa hình)
+print("Học lập trình Python", 2026, sep=" - ", file=ram_stream)
+print("Tác giả: Mark Lutz", file=ram_stream)
+
+# Lấy dữ liệu văn bản đã tích lũy trong RAM
+print("Dữ liệu thu được từ BoGhiNhoRAM:")
+print(ram_stream.lay_ket_qua().strip())`,
+          output: `Dữ liệu thu được từ BoGhiNhoRAM:
+Học lập trình Python - 2026
+Tác giả: Mark Lutz`,
+          annotations: [
+            { line: 6, text: 'Phương thức write() thỏa mãn giao diện mà hàm print() đòi hỏi.' },
+            { line: 17, text: 'print() tương tác đa hình với ram_stream mà không cần biết nó là file hay RAM.' }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'sec-3',
+      title: '3. Tóm Tắt Toàn Diện Chương 11 & Cầu Nối Sang Chương 12',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 36 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Trong chương này, chúng ta đã bắt đầu cái nhìn chuyên sâu về các câu lệnh cụ thể trong Python bằng cách khám phá chi tiết <strong>các phép gán, các câu lệnh biểu thức, và các thao tác in ấn</strong>:</p>
+
+        <ul>
+          <li><strong>Phép gán:</strong> Chúng ta đã thấy phép gán tạo ra các tham chiếu đối tượng (con trỏ), tự động khai sinh biến và có 8 dạng cú pháp phong phú (Bảng 11-1). Phép gán giải nén mở rộng với dấu sao <code>*X</code> (luôn trả về List) và phép gán tăng cường (tối ưu hóa tại chỗ) giúp chúng ta tránh được rất nhiều công việc viết mã thủ công.</li>
+          <li><strong>Biểu thức walrus <code>:=</code>:</strong> Đưa phép gán thành biểu thức có thể lồng trong tiêu đề <code>while</code>/<code>if</code>, nhưng cần dùng có tiết chế theo triết lý "đừng dùng búa tạ đóng mọi cây đinh".</li>
+          <li><strong>Quy tắc đặt tên & Từ khóa:</strong> Nắm vững cú pháp tên biến, Bảng 11-3 với 35 từ khóa cứng, 4 từ khóa mềm, các quy ước <code>_X</code>, <code>__X__</code>, và chân lý cốt lõi: <em>tên biến không có kiểu, đối tượng mới có kiểu</em>.</li>
+          <li><strong>Câu lệnh biểu thức & In ấn:</strong> Biểu thức thực thi vì tác dụng phụ; cạm bẫy gán ngược phương thức tại chỗ (<code>L = L.append()</code>); cùng toàn bộ các sắc thái chuyển hướng luồng I/O của hàm <code>print()</code> qua <code>sys.stdout</code>, <code>sys.stderr</code> và cơ chế đa hình.</li>
+        </ul>
+
+        <h3>Cầu nối chuyển tiếp sang Chương 12</h3>
+        <p>Trong chương tiếp theo (<strong>Chương 12</strong>), chúng ta sẽ tiếp tục chuyến tham quan câu lệnh bằng cách lấp đầy các chi tiết về <strong>câu lệnh <code>if</code></strong>—công cụ lựa chọn và rẽ nhánh chính của Python. Tại đó, chúng ta cũng sẽ xem lại mô hình cú pháp một cách sâu sắc hơn, khám phá hành vi của các <strong>biểu thức Boolean</strong> (nguyên lý đoản mạch <em>short-circuit</em>), và đặc biệt là câu lệnh lựa chọn đa nhánh mạnh mẽ <strong><code>match/case</code></strong> vừa xuất hiện từ Python 3.10.</p>
+      `,
+      codeExamples: []
+    },
+    {
+      id: 'sec-4',
+      title: '4. Trọn Bộ 4 Câu Hỏi Ôn Tập Kiến Thức & Đáp Án Chi Tiết của Mark Lutz',
+      content: `
+        <div class="callout-box callout-note" style="border-left:4px solid var(--accent-primary);margin-bottom:20px;">
+          <div class="callout-header">
+            <span>📖</span>
+            <span><strong>Nguồn đối chiếu:</strong> <em>Learning Python (6th Edition)</em> — Mark Lutz</span>
+          </div>
+          <div class="callout-body">
+            <p>Phần III: Câu lệnh và Cú pháp • Chương 11: Phép gán, Biểu thức và Lệnh print • <strong>PDF Trang 36–37 / 38</strong>.</p>
+          </div>
+        </div>
+
+        <p>Dưới đây là phần trình bày trọn vẹn và giải thích chuyên sâu cho <strong>toàn bộ 4 câu hỏi ôn tập kiến thức</strong> nguyên bản ở cuối Chương 11 của giáo trình Mark Lutz:</p>
+
+        <h3>Câu hỏi 1: Hãy nêu ba cách mà bạn có thể gán ba biến cho cùng một giá trị?</h3>
+        <p><strong>Đáp án chi tiết của Mark Lutz:</strong></p>
+        <ol>
+          <li><strong>Cách 1: Sử dụng phép gán đa mục tiêu (multiple-target assignment):</strong><br><code>A = B = C = 0</code></li>
+          <li><strong>Cách 2: Sử dụng phép gán dãy tuần tự (sequence assignment / unpacking):</strong><br><code>A, B, C = 0, 0, 0</code> (hoặc <code>(A, B, C) = (0, 0, 0)</code>)</li>
+          <li><strong>Cách 3: Sử dụng nhiều câu lệnh gán trên ba dòng riêng biệt:</strong><br><code>A = 0</code><br><code>B = 0</code><br><code>C = 0</code><br><em>(Với kỹ thuật cuối cùng này, như đã giới thiệu trong Chương 10, bạn cũng có thể ghép ba câu lệnh riêng biệt lại với nhau trên cùng một dòng bằng cách ngăn cách chúng bằng dấu chấm phẩy: <code>A = 0; B = 0; C = 0</code>).</em></li>
+        </ol>
+
+        <hr style="border:none;border-top:1px solid var(--border-subtle);margin:20px 0;">
+
+        <h3>Câu hỏi 2: Điều gì nguy hiểm khi gán ba biến cho một đối tượng khả biến?</h3>
+        <p><strong>Đáp án chi tiết của Mark Lutz:</strong></p>
+        <p>Nếu bạn gán chúng theo dạng phép gán đa mục tiêu: <code>A = B = C = []</code>, thì <strong>cả ba tên biến đều cùng tham chiếu đến một đối tượng danh sách duy nhất trong bộ nhớ</strong>. Do đó, việc thay đổi danh sách đó tại chỗ thông qua bất kỳ một biến nào (ví dụ: gọi <code>A.append(99)</code>) sẽ làm thay đổi đối tượng dùng chung và <strong>ảnh hưởng ngay lập tức tới giá trị mà các biến còn lại (B và C) nhìn thấy</strong>!</p>
+        <p><em>Lưu ý:</em> Điều này chỉ đúng và nguy hiểm đối với các thao tác thay đổi tại chỗ trên những <strong>đối tượng khả biến (mutable)</strong> như danh sách (list) và từ điển (dict); đối với các đối tượng bất biến (immutable) như số nguyên và chuỗi ký tự, vấn đề này hoàn toàn không liên quan vì chúng không bao giờ có thể bị thay đổi tại chỗ.</p>
+
+        <hr style="border:none;border-top:1px solid var(--border-subtle);margin:20px 0;">
+
+        <h3>Câu hỏi 3: Có điều gì sai khi viết L = L.sort()?</h3>
+        <p><strong>Đáp án chi tiết của Mark Lutz:</strong></p>
+        <p>Phương thức <code>sort()</code> của danh sách giống như <code>append()</code> ở chỗ nó <strong>thực hiện thay đổi tại chỗ trực tiếp trên danh sách chủ thể—nó luôn luôn trả về <code>None</code></strong>, chứ không phải danh sách đã sắp xếp. Phép gán ngược lại cho <code>L</code> (<code>L = L.sort()</code>) sẽ đặt giá trị của biến <code>L</code> thành <code>None</code>, khiến bạn <strong>làm mất sạch toàn bộ danh sách ban đầu</strong> (và đối tượng đó có thể bị bộ thu gom rác xóa bỏ)!</p>
+        <p><em>Giải pháp đúng:</em> Nếu bạn muốn tạo ra một danh sách mới đã được sắp xếp để gán an toàn cho một biến, hãy sử dụng hàm dựng sẵn <code>sorted()</code>: <code>L_moi = sorted(L)</code>; còn nếu dùng phương thức <code>sort()</code>, hãy chỉ gọi nó đứng riêng như một câu lệnh: <code>L.sort()</code>.</p>
+
+        <hr style="border:none;border-top:1px solid var(--border-subtle);margin:20px 0;">
+
+        <h3>Câu hỏi 4: Bạn có thể sử dụng thao tác in ấn như thế nào để gửi văn bản tới một file bên ngoài?</h3>
+        <p><strong>Đáp án chi tiết của Mark Lutz:</strong></p>
+        <p>Có 3 phương pháp chính:</p>
+        <ol>
+          <li><strong>Phương pháp 1 (Tiện lợi nhất):</strong> Sử dụng tham số từ khóa <code>file</code> trong lệnh gọi hàm in: <code>print(X, file=F)</code>, trong đó <code>F</code> là một đối tượng file đã mở ở chế độ ghi (ví dụ <code>F = open('out.txt', 'w')</code>).</li>
+          <li><strong>Phương pháp 2:</strong> Gán lại luồng tiêu chuẩn <code>sys.stdout</code> thành một đối tượng file đã mở trước khi gọi lệnh in (<code>sys.stdout = F</code>), và khôi phục lại luồng console ban đầu sau đó nếu cần thiết (qua biến tạm <code>temp</code> hoặc <code>sys.__stdout__</code>).</li>
+          <li><strong>Phương pháp 3 (Ngoài phạm vi Python):</strong> Chuyển hướng toàn bộ văn bản xuất của chương trình bằng cú pháp chuyển hướng của shell hệ điều hành khi chạy dòng lệnh: <code>python script.py &gt; file.txt</code>.</li>
+        </ol>
+      `,
+      codeExamples: [
+        {
+          title: 'Kiểm chứng thực nghiệm toàn bộ 4 câu hỏi ôn tập của Mark Lutz',
+          code: `# Câu 1: Ba cách gán 3 biến cùng giá trị 0
+A1 = B1 = C1 = 0
+A2, B2, C2 = 0, 0, 0
+A3 = 0; B3 = 0; C3 = 0
+print("Câu 1 - Ba cách đều cho kết quả:", A1, B2, C3)
+
+# Câu 2: Nguy hiểm khi gán đa mục tiêu cho đối tượng khả biến
+A = B = C = []
+A.append(99) # Thay đổi tại chỗ từ A
+print("Câu 2 - Cả B và C đều bị biến đổi theo:", B, C)
+
+# Câu 3: Sai lầm L = L.sort() vs sorted() chuẩn mực
+L_sai = [3, 1, 2]
+L_sai = L_sai.sort() # Biến thành None!
+print("Câu 3 - L_sai bị mất dữ liệu:", L_sai)
+
+L_dung = [3, 1, 2]
+L_moi = sorted(L_dung) # sorted() tạo danh sách mới an toàn
+print("Câu 3 - sorted() an toàn:", L_moi)
+
+# Câu 4: In ra file ngoài bằng tham số file=
+with open('ket_qua_cau4.txt', 'w', encoding='utf-8') as f_out:
+    print("Câu 4 - Gửi dữ liệu in vào file thành công!", file=f_out)
+
+print("Đọc kiểm chứng câu 4:", open('ket_qua_cau4.txt', encoding='utf-8').read().strip())`,
+          output: `Câu 1 - Ba cách đều cho kết quả: 0 0 0
+Câu 2 - Cả B và C đều bị biến đổi theo: [99] [99]
+Câu 3 - L_sai bị mất dữ liệu: None
+Câu 3 - sorted() an toàn: [1, 2, 3]
+Đọc kiểm chứng câu 4: Câu 4 - Gửi dữ liệu in vào file thành công!`,
+          annotations: [
+            { line: 2, text: 'Ba cú pháp gán hợp lệ cùng sinh ra ba biến có giá trị 0.' },
+            { line: 9, text: 'A, B, C cùng trỏ 1 list nên append qua A làm B và C thấy [99].' },
+            { line: 14, text: 'L.sort() trả về None gán vào L_sai làm biến mất dữ liệu.' },
+            { line: 22, text: 'file=f_out điều hướng văn bản in thẳng vào ổ đĩa.' }
+          ]
+        }
+      ]
+    }
+  ],
+
+  callouts: {
+    tips: [
+      {
+        title: 'Lời chúc mừng hoàn thành Chương 11 từ Mark Lutz',
+        content: 'Xin chúc mừng bạn đã làm chủ toàn bộ nền tảng của phép gán, biểu thức và hệ thống in ấn I/O trong Python! Đây là những viên gạch cơ sở vững chắc nhất để chúng ta tự tin bước sang Chương 12: thế giới của các quyết định logic rẽ nhánh với câu lệnh if, Boolean và cấu trúc so khớp match/case.'
+      }
+    ]
+  },
+
+  exercises: [
+    {
+      title: 'Xây dựng trình chuyển hướng log đa hình ghi đồng thời ra 2 luồng',
+      level: 'Nâng cao',
+      problem: 'Viết một lớp TeeStream có phương thức write(string) nhận dữ liệu từ lệnh print và gửi đồng thời dữ liệu đó tới cả màn hình console (sys.__stdout__) lẫn một file log trên đĩa.',
+      hint: 'Lưu đối tượng file trong __init__ và trong write(string) gọi cả sys.__stdout__.write(string) và self.file.write(string).',
+      solutionCode: `import sys
+
+class TeeStream:
+    def __init__(self, file_path):
+        self.file = open(file_path, 'w', encoding='utf-8')
+
+    def write(self, string):
+        # 1. Ghi ra màn hình console gốc
+        sys.__stdout__.write(string)
+        # 2. Ghi đồng thời ra file trên đĩa
+        self.file.write(string)
+
+    def close(self):
+        self.file.close()
+
+tee = TeeStream('tee_output.txt')
+print("Dòng này hiển thị cả trên Console lẫn trong File!", file=tee)
+tee.close()
+
+# Kiểm chứng file
+print("Nội dung file tee:", open('tee_output.txt', encoding='utf-8').read().strip())`,
+      solutionOutput: `Dòng này hiển thị cả trên Console lẫn trong File!
+Nội dung file tee: Dòng này hiển thị cả trên Console lẫn trong File!`,
+      explanation: 'Nhờ tính đa hình của hàm print(), TeeStream đóng vai trò như một cút nối chữ T (tee) phân nhánh dữ liệu tới hai đích đến cùng lúc.'
+    }
+  ],
+
+  quiz: [
+    {
+      question: 'Trong Python, điều gì xảy ra nếu bạn chạy câu lệnh L = L.sort() trên một danh sách L = [3, 2, 1]?',
+      options: [
+        'L trở thành [1, 2, 3].',
+        'L trở thành None vì phương thức sort() thay đổi tại chỗ và trả về None.',
+        'Python phát sinh ngoại lệ TypeError.',
+        'L giữ nguyên [3, 2, 1].'
+      ],
+      correctIndex: 1,
+      explanation: 'sort() là phương thức thay đổi tại chỗ (in-place) và trả về None. Gán ngược lại cho L sẽ làm biến L nhận giá trị None và mất sạch dữ liệu.'
+    },
+    {
+      question: 'Để hàm print(X) gửi văn bản tới một đối tượng tùy chỉnh do bạn tự viết lớp, đối tượng đó bắt buộc phải có phương thức nào?',
+      options: [
+        'Phương thức __str__()',
+        'Phương thức write(string)',
+        'Phương thức flush()',
+        'Phương thức append()'
+      ],
+      correctIndex: 1,
+      explanation: 'Hàm print() hoạt động theo cơ chế đa hình: nó gửi văn bản bằng cách gọi phương thức .write(string) của đối tượng luồng được truyền vào.'
+    },
+    {
+      question: 'Cách nào sau đây KHÔNG THỂ dùng để gán 3 biến a, b, c cùng nhận giá trị số 10?',
+      options: [
+        'a = b = c = 10',
+        'a, b, c = 10, 10, 10',
+        'a = 10; b = 10; c = 10',
+        'a == b == c == 10'
+      ],
+      correctIndex: 3,
+      explanation: 'Cú pháp a == b == c == 10 là phép so sánh chuỗi (chained comparison) trả về giá trị Boolean True/False, hoàn toàn không phải là câu lệnh gán giá trị.'
+    }
+  ],
+
+  summary: [
+    'Chuyển hướng luồng in có thể thực hiện thủ công qua gán sys.stdout hoặc tự động an toàn qua tham số file= của hàm print.',
+    'Tính đa hình của print: bất kỳ đối tượng nào cung cấp phương thức write(string) (như lớp FileFaker) đều có thể đón nhận dữ liệu in.',
+    'Trọn vẹn 4 câu hỏi ôn tập của Mark Lutz đã làm sáng tỏ: 3 cách gán đa biến, cạm bẫy đối tượng khả biến, sai lầm L = L.sort(), và các kỹ thuật chuyển hướng file.',
+    'Chương 11 kết thúc toàn diện; toàn bộ nền tảng đã sẵn sàng để tiếp nối sang Chương 12: Câu lệnh if, Boolean và Match/Case.'
+  ]
+};
+
 window.__PRELOADED_LESSONS__['lp-c4-00'] = {
   id: 'lp-c4-00',
   partId: 'part-lp-c4',
@@ -61163,9 +64653,11 @@ Tổng thực nhận: 100000 == Tổng ban đầu? True`,
 // --- Module: data/curriculum.js ---
 /**
  * Cấu trúc Chương trình Đào tạo Chuyên sâu Python 3.14.8
- * Tách biệt rõ ràng 2 Học phần Độc lập:
- * - HỌC PHẦN I: Làm chủ Chuỗi (str) — Cấu trúc thống nhất 8 Phần, 28 Bài học, 47 Methods, 5 Widgets
- * - HỌC PHẦN II: Chuyên sâu Các Kiểu Số (numbers) — 6 Chuyên đề Số học Máy tính, Chuẩn IEEE 754 & PEP 3141
+ * Hệ thống 4 Học phần Toàn diện (219 bài học, 18 phần):
+ * - HỌC PHẦN I: Python Nền tảng & Số học Máy tính (3 Phần, 43 Bài học)
+ * - HỌC PHẦN II: Làm chủ Chuỗi (str) & Unicode CPython (8 Phần, 28 Bài học, 47 Methods, 5 Widgets)
+ * - HỌC PHẦN III: Learning Python — Cú pháp & Kiểu Dữ liệu (6 Phần, 138 Bài học)
+ * - HỌC PHẦN IV: Learning Python — Câu lệnh Nâng cao & Thực thi (1 Phần, 10 Bài học)
  */
 
 const COURSE_META = {
@@ -61173,8 +64665,8 @@ const COURSE_META = {
   version: 'Python 3.14.8',
   subtitle: 'Hệ thống học tập chuyên sâu: Nền tảng cốt lõi, Kiến trúc Chuỗi (Unicode, 47 methods, f/t-strings PEP 750, CPython PEP 393) & Số học Máy tính (IEEE 754, int vô hạn, Decimal & Fraction).',
   totalCourses: 4,
-  totalParts: 18,
-  totalLessons: 219,
+  totalParts: 19,
+  totalLessons: 229,
   totalMethods: 47
 };
 
@@ -63296,8 +66788,8 @@ const COURSES = [
     accentColor: '#ec4899',
     tagline: 'Câu lệnh và Cú pháp (Statements and Syntax) — Điều khiển Luồng và Cấu trúc Mã nguồn',
     description: 'Khám phá toàn diện Phần III trong giáo trình kinh điển của Mark Lutz: từ mô hình cú pháp dựa trên thụt lề độc đáo, các câu lệnh điều khiển luồng (if, while, for) đến kỹ thuật xử lý ngoại lệ và bài tập thực chiến.',
-    totalParts: 1,
-    totalLessons: 10,
+    totalParts: 2,
+    totalLessons: 20,
     totalMethods: 0,
     widgetsCount: 0,
     parts: [
@@ -63402,6 +66894,108 @@ const COURSES = [
             keywords: ['tóm tắt Chương 10', '8 câu hỏi ôn tập', 'đáp án chi tiết', 'Mark Lutz', 'chuyển tiếp Chương 11', 'câu lệnh thủ tục']
           }
         ]
+      },
+      {
+        id: 'part-lp-c11',
+        number: 'Chương 11',
+        chapterNumber: 'Chương 11',
+        chapterTitle: 'Phép gán, Biểu thức và Lệnh print',
+        title: 'Phép gán, Biểu thức và Lệnh print',
+        fullTitle: 'Chương 11: Phép gán, Biểu thức và Lệnh print',
+        level: 'Cơ bản đến Nâng cao',
+        description: 'Bản chất phép gán đối tượng, 8 dạng cú pháp gán, giải nén mở rộng với *X, phép gán tăng cường và tối ưu in-place, toán tử walrus :=, quy tắc đặt tên và từ khóa, câu lệnh biểu thức, cùng kỹ thuật in ấn và chuyển hướng luồng I/O.',
+        lessons: [
+          {
+            id: 'lp-c11-00',
+            number: 'C11.0',
+            title: 'Mở đầu Chương 11 & Bảng 11-1 — Bản chất Phép gán và Kỹ thuật Giải nén (Unpacking)',
+            level: 'Cơ bản',
+            duration: '30 phút',
+            isNew314: false,
+            keywords: ['phép gán', 'assignment', 'tham chiếu đối tượng', 'con trỏ', 'Bảng 11-1', 'unpacking', 'hoán đổi biến', 'type hinting']
+          },
+          {
+            id: 'lp-c11-01',
+            number: 'C11.1',
+            title: 'Khuôn mẫu Gán Dãy tuần tự Nâng cao — Dãy lồng nhau, Mô phỏng Enum và Vòng lặp while',
+            level: 'Trung cấp',
+            duration: '30 phút',
+            isNew314: false,
+            keywords: ['dãy tuần tự lồng nhau', 'ValueError', 'cắt lát', 'slicing', 'enum', 'range', 'vòng lặp while', 'stack', 'pop']
+          },
+          {
+            id: 'lp-c11-02',
+            number: 'C11.2',
+            title: 'Phép gán Giải nén Mở rộng với Dấu sao (*X) & Chuyên đề Các vì sao muôn màu',
+            level: 'Trung cấp đến Nâng cao',
+            duration: '40 phút',
+            isNew314: false,
+            keywords: ['giải nén mở rộng', 'extended unpacking', 'dấu sao *', 'PEP 3132', 'trường hợp biên', 'vòng lặp for', 'các vì sao muôn màu', 'PEP 448']
+          },
+          {
+            id: 'lp-c11-03',
+            number: 'C11.3',
+            title: 'Phép gán Đa mục tiêu — Cơ chế Hoạt động & Cạm bẫy Tham chiếu Chia sẻ',
+            level: 'Cơ bản đến Trung cấp',
+            duration: '25 phút',
+            isNew314: false,
+            keywords: ['phép gán đa mục tiêu', 'multiple-target', 'tham chiếu chia sẻ', 'shared reference', 'mutable', 'immutable', 'cạm bẫy danh sách']
+          },
+          {
+            id: 'lp-c11-04',
+            number: 'C11.4',
+            title: 'Phép gán Tăng cường (Augmented Assignment) — Bảng 11-2 & Tối ưu hóa Tại chỗ',
+            level: 'Trung cấp',
+            duration: '35 phút',
+            isNew314: false,
+            keywords: ['phép gán tăng cường', 'augmented assignment', 'Bảng 11-2', '+=', 'in-place', 'extend', 'tối ưu hóa bộ nhớ', 'tham chiếu chia sẻ']
+          },
+          {
+            id: 'lp-c11-05',
+            number: 'C11.5',
+            title: 'Biểu thức Gán có tên (Toán tử Walrus :=) — Cú pháp, Ứng dụng và Thực hành Tối ưu',
+            level: 'Trung cấp',
+            duration: '35 phút',
+            isNew314: false,
+            keywords: ['biểu thức gán có tên', 'named assignment', 'walrus operator', ':=', 'PEP 572', 'vòng lặp while', 'đọc file', 'f-string']
+          },
+          {
+            id: 'lp-c11-06',
+            number: 'C11.6',
+            title: 'Quy tắc và Quy ước Đặt tên Biến — Bảng 11-3 Từ khóa Dành riêng & Bản chất Động',
+            level: 'Cơ bản đến Trung cấp',
+            duration: '35 phút',
+            isNew314: false,
+            keywords: ['quy tắc đặt tên', 'Bảng 11-3', 'từ khóa dành riêng', 'reserved keywords', 'soft keywords', 'quy ước CPython', 'định kiểu động', 'const']
+          },
+          {
+            id: 'lp-c11-07',
+            number: 'C11.7',
+            title: 'Câu lệnh Biểu thức — Bảng 11-4 & Cạm bẫy Gán đè Phương thức Thay đổi Tại chỗ',
+            level: 'Cơ bản đến Trung cấp',
+            duration: '30 phút',
+            isNew314: false,
+            keywords: ['câu lệnh biểu thức', 'expression statement', 'Bảng 11-4', 'side effect', 'cạm bẫy in-place', 'append trả về None', 'sort trả về None']
+          },
+          {
+            id: 'lp-c11-08',
+            number: 'C11.8',
+            title: 'Thao tác In ấn Toàn diện — Hàm print(), 4 Tham số Từ khóa & Thực hành Định dạng',
+            level: 'Cơ bản đến Trung cấp',
+            duration: '35 phút',
+            isNew314: false,
+            keywords: ['thao tác in ấn', 'hàm print', 'sys.stdout', 'sep', 'end', 'file', 'flush', 'định dạng chuỗi', 'f-string']
+          },
+          {
+            id: 'lp-c11-09',
+            number: 'C11.9',
+            title: 'Chuyển hướng Luồng in (Stream Redirection), Tóm tắt Chương 11 & Trọn bộ 4 Câu hỏi Ôn tập',
+            level: 'Trung cấp đến Nâng cao',
+            duration: '45 phút',
+            isNew314: false,
+            keywords: ['chuyển hướng luồng', 'stream redirection', 'sys.stdout', 'sys.stderr', 'FileFaker', 'đa hình', 'tóm tắt Chương 11', '4 câu hỏi ôn tập']
+          }
+        ]
       }
     ]
   }
@@ -63424,7 +67018,7 @@ const CURRICULUM = COURSES.flatMap((course) =>
 );
 
 /**
- * Trả về danh sách phẳng tất cả 34 bài học theo thứ tự học tập của 2 học phần
+ * Trả về danh sách phẳng tất cả 219 bài học theo thứ tự học tập của 4 học phần
  */
 function getFlatLessons() {
   const flat = [];

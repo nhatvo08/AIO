@@ -10,7 +10,7 @@ Mỗi điều rút ra từ code đang chạy, không phải quy ước đề xu�
 | R4 | Khóa Python dùng **ES Module**; các chuyên đề dùng **IIFE + TopicEngine + biến global** — không trộn hai mô hình | `js/app.js` có `import`; `js/topic-engine.js`, `js/github-app.js`, `js/linux-app.js` là IIFE đọc global để chạy trên `file://` | `grep -c "^import" js/app.js`; `grep "window.GH_LEVEL1_DATA"` |
 | R5 | `data/lessons/<id>.js` phải `export default {...}`; **tên file chính là `id`**, chỉ gồm `[a-z0-9-]` | `js/app.js:79` import động `` `../data/lessons/${lessonId}.js` ``; route chỉ nhận `[a-z0-9-]` | `verify-all` (mục "Mục lục curriculum") |
 | R6 | Mỗi bài học phải có mặt trong `data/curriculum.js` **và** ngược lại — không file mồ côi, không id treo | `getFlatLessons()` sinh menu, tiến độ, bài trước/sau | `verify-all` báo "Thiếu file bài học" / "không có trong curriculum" |
-| R7 | `COURSE_META.totalLessons` phải bằng số bài thật; `totalParts` bằng số phần thật | Hiển thị ở trang chủ và progress "0/209" | `verify-all` (đối chiếu `totalLessons`) |
+| R7 | `COURSE_META.totalLessons` phải bằng số bài thật; `totalParts` bằng số phần thật | Hiển thị ở trang chủ và progress "0/219" | `verify-all` (đối chiếu `totalLessons`) |
 | R8 | Không đổi tên/ý nghĩa các field mà renderer đang đọc (bảng đầy đủ ở [02](02-hop-dong.md)); chỉ được **thêm** field tùy chọn mới | `renderLessonView` đọc trực tiếp từng field | `verify-all` + mở 1 bài có đủ mục |
 | R9 | `id` của section phải duy nhất trong bài; thiếu `id` thì renderer tự sinh `section-<n>` | TOC dùng `id` để cuộn và highlight (`renderRightToc`) | Mở bài, bấm từng mục ở cột "Trong bài này" |
 | R10 | `callouts` chỉ nhận **2 dạng**: object `{pitfalls, tips, newIn314, deepDive}` hoặc array phần tử có `type: 'pitfall' \| 'warning' \| 'tip'`. Không dạng thứ 3 | `js/app.js` rẽ nhánh theo `Array.isArray` | `verify-all` + mở bài có callout |
@@ -25,7 +25,7 @@ Mỗi điều rút ra từ code đang chạy, không phải quy ước đề xu�
 | R19 | Không hard-code màu/kích thước mới: dùng biến trong `css/variables.css`; style riêng chuyên đề phải prefix `gh-` / `lx-` | Theme sáng/tối đổi bằng `data-theme`, cỡ chữ bằng `data-font-size` | Đổi theme + cỡ chữ, không có phần tử "lạc màu" |
 | R20 | Không sửa tay `js/file-fallback.js` (sinh tự động); sửa `data/lessons/` rồi sinh lại bằng `node tools/build-fallback.mjs` | `index.html` nạp bundle này khi protocol là `file:` | `verify-all` mục "Bundle file://" |
 | R21 | Nội dung bài học là **dữ liệu**: HTML trong `content` chỉ dùng class đã có, **không đặt thẻ `<script>` thật**, không style inline tùy tiện | Renderer chèn `content` thẳng vào DOM; chỉ `code`/`problem`/callout mới được escape | `grep -rn "<script" data/lessons/` |
-| R22 | Mọi thay đổi phải kết thúc bằng: `node tools/verify-all.mjs` = 6/6, 3 trang 0 lỗi console, sidebar 209 / 20 / 41 mục | [04-kiem-chung.md](04-kiem-chung.md) | Chạy lại 3 bước trên |
+| R22 | Mọi thay đổi phải kết thúc bằng: `node tools/verify-all.mjs` = 6/6, 3 trang hoạt động 0 lỗi console, sidebar 219 / 20 / 41 mục | [04-kiem-chung.md](04-kiem-chung.md) | Chạy lại 3 bước trên |
 
 ## Điều cấm tuyệt đối
 

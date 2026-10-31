@@ -11,18 +11,18 @@ node tools/verify-all.mjs    # phải in "6/6 mục đạt", mã thoát 0
 
 | Mục | Kỳ vọng hiện tại |
 |---|---|
-| Mục lục curriculum | 209 bài / 3 học phần / 209 file |
-| Nạp bài học | 209/209 hợp lệ |
+| Mục lục curriculum | 219 bài / 4 học phần / 219 file |
+| Nạp bài học | 219/219 hợp lệ |
 | Dữ liệu GitHub | 3 cấp / 18 bài + 2 tra cứu |
 | Dữ liệu Linux | 4 cấp / 41 bài |
-| Đường dẫn nội bộ | 50 tham chiếu, 0 hỏng |
-| Bundle `file://` | 209 khoá khớp curriculum |
+| Đường dẫn nội bộ | Kiểm tra mọi tham chiếu HTML/JS, 0 hỏng |
+| Bundle `file://` | 219 khoá khớp curriculum |
 
 Đổi nội dung bài học ⇒ **phải** sinh lại `js/file-fallback.js`, nếu không cổng này vẫn xanh nhưng chế độ
 `file://` đã lệch nội dung. Đếm khoá duy nhất (đừng dùng `grep -c` vì bundle còn 2 chỗ đọc lại khoá):
 
 ```bash
-grep -o "__PRELOADED_LESSONS__\['[^']*'\]" js/file-fallback.js | sort -u | wc -l   # = 209
+grep -o "__PRELOADED_LESSONS__\['[^']*'\]" js/file-fallback.js | sort -u | wc -l   # = 219
 ```
 
 ## G2. Thủ công — 3 trang qua HTTP
@@ -33,7 +33,7 @@ python -m http.server 8788 --bind 127.0.0.1
 
 | Trang | Sidebar | Bấm 1 bài | Console |
 |---|---|---|---|
-| `http://127.0.0.1:8788/index.html` | 209 mục, 17 phần | Tiêu đề + TOC đúng | 0 lỗi |
+| `http://127.0.0.1:8788/index.html` | 219 mục, 18 phần | Tiêu đề + TOC đúng | 0 lỗi |
 | `http://127.0.0.1:8788/github.html` | 20 mục (18 bài + 2 tra cứu) | render đúng | 0 lỗi |
 | `http://127.0.0.1:8788/linux.html` | 41 mục, 4 phần | render đúng | 0 lỗi |
 
@@ -78,5 +78,5 @@ grep -rn "edge_temp" --exclude-dir=.git .   # phải rỗng (không tái sinh pr
 
 | Mục | Lý do | Cách xử lý |
 |---|---|---|
-| Chế độ `file://` (bundle) | Môi trường agent chặn mở `file://` | Người dùng mở trực tiếp `index.html`, xác nhận 209 bài |
+| Chế độ `file://` (bundle) | Môi trường agent chặn mở `file://` | Người dùng mở trực tiếp `index.html`, xác nhận 219 bài |
 | Sinh bundle `file://` đa nền tảng | Đã có `tools/build-fallback.mjs` | Chạy lệnh `node tools/build-fallback.mjs` trên mọi hệ điều hành |

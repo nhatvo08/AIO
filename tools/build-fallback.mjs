@@ -34,7 +34,7 @@ chunks.push(' */\n');
 chunks.push('(function() {\n');
 chunks.push('  window.__PRELOADED_LESSONS__ = {};\n\n');
 
-// 1. Quét và gói toàn bộ 209 bài học Python
+// 1. Quét và gói toàn bộ 219 bài học Python
 const lessonFiles = fs
   .readdirSync(lessonsDir)
   .filter((f) => f.endsWith('.js'))

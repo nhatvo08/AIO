@@ -81,6 +81,7 @@
     var PART_ICONS = config.partIcons || {};
     var heroConfig = config.hero || {};
     var topNavId = config.topNavId || ('top-nav-' + topicId);
+    var updateScrollIndicators = function () {};
 
     // Thu thập danh sách phẳng tất cả bài học
     var ALL_LESSONS = [];
@@ -158,6 +159,15 @@
     var activeFilter = 'all';
     var tocObserver = null;
     var partOpenState = {};
+    var searchQuery = '';
+
+    function normalizeSearch(str) {
+      return (str || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+    }
 
     function renderSidebar() {
       var state = loadState();
@@ -175,7 +185,13 @@
       var statsEl = document.getElementById('sidebar-progress-stats');
       var treeEl = document.getElementById('curriculum-tree');
 
-      if (fillEl) fillEl.style.width = pct + '%';
+      if (fillEl) {
+        fillEl.style.width = pct + '%';
+        var tier = pct < 25 ? 'tier-1' : (pct < 50 ? 'tier-2' : (pct < 75 ? 'tier-3' : (pct < 100 ? 'tier-4' : 'tier-5')));
+        fillEl.setAttribute('data-tier', tier);
+        fillEl.classList.remove('tier-1', 'tier-2', 'tier-3', 'tier-4', 'tier-5');
+        fillEl.classList.add(tier);
+      }
       if (pctEl) pctEl.textContent = pct + '%';
       if (statsEl) {
         statsEl.innerHTML = '<span>Đã hoàn thành: <strong>' + completedCount + '/' + totalCount + '</strong> bài</span>';
@@ -202,11 +218,26 @@
 
       if (!treeEl) return;
 
+      var q = normalizeSearch(searchQuery);
+
       function renderSinglePartGroup(part) {
-        var partLessons = part.lessons || [];
-        var partDoneCount = partLessons.filter(function (l) { return isLessonDone(l.id); }).length;
+        var allPartLessons = part.lessons || [];
+        var partLessons = q
+          ? allPartLessons.filter(function (l) {
+              var numMatch = normalizeSearch(l.number).includes(q);
+              var titleMatch = normalizeSearch(l.title).includes(q);
+              var kwMatch = (l.keywords || []).some(function (k) { return normalizeSearch(k).includes(q); });
+              return numMatch || titleMatch || kwMatch;
+            })
+          : allPartLessons;
+
+        if (q && partLessons.length === 0) {
+          return '';
+        }
+
+        var partDoneCount = allPartLessons.filter(function (l) { return isLessonDone(l.id); }).length;
         var hasActiveLesson = partLessons.some(function (l) { return l.id === currentView; });
-        var isOpen = hasActiveLesson || Boolean(partOpenState[part.id]);
+        var isOpen = q ? true : (hasActiveLesson || Boolean(partOpenState[part.id]));
         var isCollapsed = !isOpen;
         var icon = PART_ICONS[part.id] || part.icon || '';
 
@@ -232,7 +263,7 @@
               '<span>' +
                 (icon ? '<span aria-hidden="true" style="margin-right:4px;">' + icon + '</span> ' : '') +
                 '<strong>' + escapeHtml(part.number) + ':</strong> ' + escapeHtml(part.title) +
-                ' <small style="color:var(--text-muted);font-weight:500;">(' + partDoneCount + '/' + partLessons.length + ')</small>' +
+                ' <small style="color:var(--text-muted);font-weight:500;">(' + (q ? (partLessons.length + ' khớp') : (partDoneCount + '/' + allPartLessons.length)) + ')</small>' +
               '</span>' +
               '<span class="part-chevron">▾</span>' +
             '</button>' +
@@ -268,8 +299,13 @@
           var bannerIcon = banner.icon || course.icon || '🌐';
           var bannerClass = banner.customClass || course.customClass || (topicPrefix + '-banner');
           var bannerBadge = (banner.badge || course.badge)
-            ? ('<span class="sidebar-course-badge" style="margin-left:auto;font-size:0.68rem;padding:1px 6px;border-radius:var(--radius-xs);background:var(--topic-network-bg);color:var(--topic-network);border:1px solid var(--topic-network-border);">' + escapeHtml(banner.badge || course.badge) + '</span>')
+            ? ('<span class="sidebar-course-badge" style="margin-left:auto;font-size:0.68rem;padding:1px 6px;border-radius:var(--radius-xs);background:var(--accent-soft);color:var(--accent-primary);border:1px solid var(--border-subtle);">' + escapeHtml(banner.badge || course.badge) + '</span>')
             : '';
+
+          var renderedParts = courseParts.map(renderSinglePartGroup).filter(Boolean).join('');
+          if (q && !renderedParts) {
+            return '';
+          }
 
           return '' +
             '<div class="sidebar-course-section" data-course-id="' + escapeHtml(course.id) + '">' +
@@ -284,9 +320,9 @@
                   bannerBadge +
                 '</div>' +
               '</div>' +
-              courseParts.map(renderSinglePartGroup).join('') +
+              renderedParts +
             '</div>';
-        }).join('');
+        }).filter(Boolean).join('');
 
         treeEl.innerHTML = coursesSidebarHtml;
       } else {
@@ -297,7 +333,7 @@
               return allowed.indexOf(p.id) !== -1;
             });
 
-        var partsHtml = filteredParts.map(renderSinglePartGroup).join('');
+        var partsHtml = filteredParts.map(renderSinglePartGroup).filter(Boolean).join('');
 
         if (config.courseBanner) {
           var banner = config.courseBanner;
@@ -306,10 +342,10 @@
           var bannerIcon = banner.icon || '🌐';
           var bannerClass = banner.customClass || (topicPrefix + '-banner');
           var bannerBadge = banner.badge
-            ? ('<span class="sidebar-course-badge" style="margin-left:auto;font-size:0.68rem;padding:1px 6px;border-radius:var(--radius-xs);background:var(--topic-network-bg);color:var(--topic-network);border:1px solid var(--topic-network-border);">' + escapeHtml(banner.badge) + '</span>')
+            ? ('<span class="sidebar-course-badge" style="margin-left:auto;font-size:0.68rem;padding:1px 6px;border-radius:var(--radius-xs);background:var(--accent-soft);color:var(--accent-primary);border:1px solid var(--border-subtle);">' + escapeHtml(banner.badge) + '</span>')
             : '';
 
-          treeEl.innerHTML = '' +
+          treeEl.innerHTML = (q && !partsHtml) ? '' : ('' +
             '<div class="sidebar-course-section" data-course-id="course-' + topicId + '">' +
               '<div class="sidebar-course-banner ' + bannerClass + '">' +
                 '<div class="sidebar-course-banner-top">' +
@@ -323,10 +359,19 @@
                 '</div>' +
               '</div>' +
               partsHtml +
-            '</div>';
+            '</div>');
         } else {
           treeEl.innerHTML = partsHtml;
         }
+      }
+
+      if (q && !treeEl.querySelector('.lesson-nav-btn')) {
+        treeEl.innerHTML = '' +
+          '<div class="sidebar-empty-search">' +
+            '<p style="font-size:1.3rem;margin-bottom:6px;" aria-hidden="true">🔍</p>' +
+            '<p>Không tìm thấy bài học nào với từ khóa</p>' +
+            '<p style="color:var(--text-primary);font-weight:700;margin-top:4px;">“' + escapeHtml(searchQuery) + '”</p>' +
+          '</div>';
       }
 
       treeEl.querySelectorAll('.part-group-header').forEach(function (btn) {
@@ -348,6 +393,7 @@
       treeEl.querySelectorAll('.lesson-nav-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
           navigateTo(btn.dataset.lessonId);
+          closeDrawer();
         });
       });
 
@@ -633,6 +679,9 @@
       });
 
       window.scrollTo({ top: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      updateScrollIndicators();
     }
 
     function renderLessonView(lessonId) {
@@ -837,13 +886,21 @@
             '</div>' +
             '<div class="exercise-problem" style="line-height:1.65;margin-bottom:10px;">' + formatMultilineHtml(exProblem) + '</div>' +
             (exHint ? '<div class="exercise-hint" style="margin-bottom:10px;"><strong>Gợi ý:</strong> ' + formatMultilineHtml(exHint) + '</div>' : '') +
-            '<details class="solution-details">' +
-              '<summary class="solution-summary">👁️ Bấm để xem đáp án lệnh &amp; giải thích chi tiết</summary>' +
-              '<div class="solution-body">' +
-                solCard +
-                explanationHtml +
+            '<div class="exercise-solution-wrapper">' +
+              '<button type="button" class="solution-toggle-btn" id="sol-btn-' + escapeHtml(lesson.id) + '-' + exIdx + '" aria-expanded="false" aria-controls="sol-panel-' + escapeHtml(lesson.id) + '-' + exIdx + '">' +
+                '<span class="solution-toggle-icon" aria-hidden="true">👁️</span> ' +
+                '<span class="solution-toggle-text">Bấm để xem đáp án lệnh &amp; giải thích chi tiết</span> ' +
+                '<span class="solution-toggle-chevron" aria-hidden="true">▾</span>' +
+              '</button>' +
+              '<div class="solution-accordion-panel" id="sol-panel-' + escapeHtml(lesson.id) + '-' + exIdx + '" role="region" aria-labelledby="sol-btn-' + escapeHtml(lesson.id) + '-' + exIdx + '">' +
+                '<div class="solution-accordion-inner">' +
+                  '<div class="solution-body">' +
+                    solCard +
+                    explanationHtml +
+                  '</div>' +
+                '</div>' +
               '</div>' +
-            '</details>' +
+            '</div>' +
           '</div>';
       }).join('');
 
@@ -982,11 +1039,43 @@
       var courseNum = matchedCourse ? (matchedCourse.number || (matchedCourse.banner && matchedCourse.banner.number)) : (config.courseBanner ? config.courseBanner.number : '');
       var courseTitle = matchedCourse ? (matchedCourse.title || (matchedCourse.banner && matchedCourse.banner.title)) : (config.courseBanner ? config.courseBanner.title : topicTitle);
       var breadcrumbCourseBadge = courseNum
-        ? ('<span class="breadcrumb-course-badge course-' + (matchedCourse ? matchedCourse.id : topicId) + '">' + escapeHtml(courseNum) + ': ' + escapeHtml(courseTitle) + '</span>')
-        : '';
-      var breadcrumbHtml = breadcrumbCourseBadge
-        ? (breadcrumbCourseBadge + ' › ' + escapeHtml(item.partNumber) + ': ' + escapeHtml(item.partTitle) + ' › Bài ' + escapeHtml(lesson.number))
-        : (escapeHtml(topicTitle) + ' › ' + escapeHtml(item.partNumber) + ': ' + escapeHtml(item.partTitle) + ' › Bài ' + escapeHtml(lesson.number));
+        ? ('<button type="button" class="breadcrumb-nav-link" data-nav="overview" title="Về tổng quan Lộ trình"><span class="breadcrumb-course-badge course-' + (matchedCourse ? matchedCourse.id : topicId) + '">' + escapeHtml(courseNum) + ': ' + escapeHtml(courseTitle) + '</span></button>')
+        : ('<button type="button" class="breadcrumb-nav-link" data-nav="overview" title="Về tổng quan Lộ trình">' + escapeHtml(topicTitle) + '</button>');
+
+      var breadcrumbPartLink = '<button type="button" class="breadcrumb-part-link" data-part-target="part-card-' + item.partId + '" title="Xem phần học trên Lộ trình">' + escapeHtml(item.partNumber) + ': ' + escapeHtml(item.partTitle) + '</button>';
+
+      var breadcrumbHtml = breadcrumbCourseBadge + ' › ' + breadcrumbPartLink + ' › <span>Bài ' + escapeHtml(lesson.number) + '</span>';
+
+      var tocList = [
+        { id: 'sec-objectives', label: '1. Mục tiêu bài học' },
+        ...(lesson.intuition ? [{ id: 'sec-intuition', label: '2. Trực giác' }] : []),
+        ...(lesson.sections || []).map(function (s) { return { id: s.id, label: s.title }; }),
+        ...(deepDiveHtml || pitfallsHtml || tipsHtml ? [{ id: 'sec-callouts', label: 'Lưu ý & Chuyên sâu' }] : []),
+        ...(exercisesHtml ? [{ id: 'sec-exercises', label: 'Bài tập thực hành' }] : []),
+        ...(quizHtml ? [{ id: 'sec-quiz', label: 'Câu hỏi trắc nghiệm' }] : []),
+        ...(summaryHtml ? [{ id: 'sec-summary', label: 'Tóm tắt bài học' }] : []),
+        ...(lesson.reflectionQuestion ? [{ id: 'sec-reflection', label: 'Thử thách bản chất' }] : [])
+      ];
+
+      var mobileTocHtml = '' +
+        '<nav class="mobile-toc-box" aria-label="Mục lục bài học trên di động">' +
+          '<details class="mobile-toc-details">' +
+            '<summary class="mobile-toc-summary">' +
+              '<span class="mobile-toc-summary-label">' +
+                '<span class="mobile-toc-icon" aria-hidden="true">📑</span>' +
+                '<span>Mục lục bài học (' + tocList.length + ' mục)</span>' +
+              '</span>' +
+              '<span class="mobile-toc-chevron" aria-hidden="true">▾</span>' +
+            '</summary>' +
+            '<div class="mobile-toc-dropdown">' +
+              '<ul class="mobile-toc-list">' +
+                tocList.map(function (it) {
+                  return '<li><a class="mobile-toc-link" href="#' + escapeHtml(it.id) + '" data-toc-target="' + escapeHtml(it.id) + '">' + escapeHtml(it.label) + '</a></li>';
+                }).join('') +
+              '</ul>' +
+            '</div>' +
+          '</details>' +
+        '</nav>';
 
       mainEl.innerHTML = '' +
         '<article class="lesson-article">' +
@@ -1008,6 +1097,8 @@
               }).join('') +
             '</ul>' +
           '</section>' +
+
+          mobileTocHtml +
 
           intuitionHtml +
           sectionsHtml +
@@ -1174,22 +1265,79 @@
         });
       });
 
+      // Tương tác nút Bấm xem đáp án với hiệu ứng accordion mượt mà và aria đồng bộ
+      mainEl.querySelectorAll('.solution-toggle-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var panelId = btn.getAttribute('aria-controls');
+          var panel = document.getElementById(panelId);
+          if (!panel) return;
+          var isExpanded = btn.getAttribute('aria-expanded') === 'true';
+          var nextState = !isExpanded;
+          btn.setAttribute('aria-expanded', String(nextState));
+          panel.classList.toggle('is-open', nextState);
+          var textEl = btn.querySelector('.solution-toggle-text');
+          if (textEl) {
+            textEl.textContent = nextState
+              ? 'Ẩn đáp án lệnh & giải thích chi tiết'
+              : 'Bấm để xem đáp án lệnh & giải thích chi tiết';
+          }
+        });
+      });
+
+      // Tương tác Mục lục nhanh trên Mobile
+      mainEl.querySelectorAll('.mobile-toc-link').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          var targetId = link.dataset.tocTarget;
+          var targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            var detailsEl = link.closest('.mobile-toc-details');
+            if (detailsEl) detailsEl.removeAttribute('open');
+            try {
+              window.history.replaceState(null, '', '#' + targetId);
+            } catch (_e) {}
+          }
+        });
+      });
+
+      // Tương tác Breadcrumb nhảy về Phần học trên Lộ trình
+      mainEl.querySelectorAll('.breadcrumb-part-link').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          var partTargetId = btn.getAttribute('data-part-target');
+          navigateTo('overview');
+          if (partTargetId) {
+            setTimeout(function () {
+              var targetEl = document.getElementById(partTargetId);
+              if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }, 80);
+          }
+        });
+      });
+
       if (tocEl) {
         if (tocObserver) {
           tocObserver.disconnect();
           tocObserver = null;
         }
 
-        var tocList = [
-          { id: 'sec-objectives', label: '1. Mục tiêu bài học' },
-          ...(lesson.intuition ? [{ id: 'sec-intuition', label: '2. Trực giác' }] : []),
-          ...(lesson.sections || []).map(function (s) { return { id: s.id, label: s.title }; }),
-          ...(deepDiveHtml || pitfallsHtml || tipsHtml ? [{ id: 'sec-callouts', label: 'Lưu ý & Chuyên sâu' }] : []),
-          ...(exercisesHtml ? [{ id: 'sec-exercises', label: 'Bài tập thực hành' }] : []),
-          ...(quizHtml ? [{ id: 'sec-quiz', label: 'Câu hỏi trắc nghiệm' }] : []),
-          ...(summaryHtml ? [{ id: 'sec-summary', label: 'Tóm tắt bài học' }] : []),
-          ...(lesson.reflectionQuestion ? [{ id: 'sec-reflection', label: 'Thử thách bản chất' }] : [])
-        ];
+        function setActiveToc(activeId) {
+          if (!activeId) return;
+          var matchedLink = null;
+          tocEl.querySelectorAll('.toc-link').forEach(function (a) {
+            var isMatch = a.dataset.tocTarget === activeId;
+            a.classList.toggle('active', isMatch);
+            if (isMatch) matchedLink = a;
+          });
+          if (matchedLink) {
+            try {
+              matchedLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            } catch (_e) {}
+          }
+        }
 
         tocEl.innerHTML = '' +
           '<div class="toc-heading">Trong bài này</div>' +
@@ -1204,7 +1352,13 @@
             e.preventDefault();
             var targetId = link.dataset.tocTarget;
             var targetEl = document.getElementById(targetId);
-            if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (targetEl) {
+              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              setActiveToc(targetId);
+              try {
+                window.history.replaceState(null, '', '#' + targetId);
+              } catch (_e) {}
+            }
           });
         });
 
@@ -1212,13 +1366,10 @@
           tocObserver = new IntersectionObserver(function (entries) {
             entries.forEach(function (entry) {
               if (entry.isIntersecting) {
-                var activeId = entry.target.id;
-                tocEl.querySelectorAll('.toc-link').forEach(function (a) {
-                  a.classList.toggle('active', a.dataset.tocTarget === activeId);
-                });
+                setActiveToc(entry.target.id);
               }
             });
-          }, { rootMargin: '-80px 0px -70% 0px', threshold: 0.05 });
+          }, { rootMargin: '-75px 0px -65% 0px', threshold: 0.05 });
 
           tocList.forEach(function (item) {
             var el = document.getElementById(item.id);
@@ -1242,7 +1393,22 @@
         } catch (_mathErr) {}
       }
 
+      // Luôn cuộn trang lên đầu khi nạp bài học
       window.scrollTo({ top: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+
+      // Nếu hash là một section cụ thể trong bài (không phải #overview hay #lesson=...)
+      if (window.location.hash && window.location.hash.indexOf('lesson=') === -1 && window.location.hash !== '#overview') {
+        var initialTargetId = window.location.hash.substring(1);
+        setTimeout(function () {
+          var targetEl = document.getElementById(initialTargetId);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (typeof setActiveToc === 'function') setActiveToc(initialTargetId);
+          }
+        }, 80);
+      }
     }
 
     function navigateTo(targetId) {
@@ -1256,6 +1422,10 @@
         closeDrawer();
         renderSidebar();
         renderOverviewView();
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        updateScrollIndicators();
         return;
       }
 
@@ -1276,13 +1446,25 @@
       renderSidebar();
       renderLessonView(targetId);
 
-      // Auto-scroll sidebar tới bài học đang active để người dùng luôn thấy vị trí hiện tại
-      try {
-        var activeBtn = document.querySelector('.lesson-nav-btn[data-lesson-id="' + targetId + '"]');
-        if (activeBtn) {
-          activeBtn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        }
-      } catch (_e) {}
+      // Đảm bảo trình duyệt luôn cuộn lên đầu bài học mới
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+      if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(function () {
+          window.scrollTo({ top: 0, behavior: 'auto' });
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          updateScrollIndicators();
+        });
+      } else {
+        setTimeout(function () {
+          window.scrollTo({ top: 0, behavior: 'auto' });
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+          updateScrollIndicators();
+        }, 0);
+      }
     }
 
     function closeDrawer() {
@@ -1374,7 +1556,7 @@
       var progressFill = document.getElementById('reading-progress-fill');
       var backToTopBtn = document.getElementById('back-to-top-btn');
 
-      function updateScrollIndicators() {
+      updateScrollIndicators = function () {
         if (progressFill) {
           var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
           if (maxScroll <= 0) {
@@ -1389,6 +1571,23 @@
             backToTopBtn.classList.add('visible');
           } else {
             backToTopBtn.classList.remove('visible');
+          }
+        }
+        // Xử lý kích hoạt mục cuối cùng trong mục lục khi cuộn tới cuối trang
+        if (maxScroll > 0 && window.scrollY >= (maxScroll - 25)) {
+          var tocEl = document.getElementById('toc-container');
+          if (tocEl) {
+            var links = tocEl.querySelectorAll('.toc-link');
+            if (links.length > 0) {
+              var lastLink = links[links.length - 1];
+              if (!lastLink.classList.contains('active')) {
+                links.forEach(function (l) { l.classList.remove('active'); });
+                lastLink.classList.add('active');
+                try {
+                  lastLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                } catch (_e) {}
+              }
+            }
           }
         }
       }
@@ -1439,8 +1638,30 @@
       window.addEventListener('keydown', function (e) {
         var tag = document.activeElement ? document.activeElement.tagName : '';
         if (['INPUT', 'TEXTAREA', 'SELECT'].indexOf(tag) !== -1 || (document.activeElement && document.activeElement.isContentEditable)) {
+          if (e.key === 'Escape' && document.activeElement.id === 'sidebar-search-input') {
+            var searchInp = document.getElementById('sidebar-search-input');
+            var searchClr = document.getElementById('sidebar-search-clear');
+            if (searchInp) {
+              searchInp.value = '';
+              searchInp.blur();
+            }
+            if (searchClr) searchClr.hidden = true;
+            searchQuery = '';
+            renderSidebar();
+          }
           return;
         }
+
+        if (e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+          var searchInput = document.getElementById('sidebar-search-input');
+          if (searchInput) {
+            e.preventDefault();
+            searchInput.focus();
+            searchInput.select();
+          }
+          return;
+        }
+
         if (e.key === '[' || (e.altKey && e.key === 'ArrowLeft')) {
           e.preventDefault();
           navigatePrevious();
@@ -1449,6 +1670,45 @@
           navigateNext();
         }
       });
+
+      // Khởi tạo ô tìm kiếm nhanh bài học trong Sidebar
+      var sidebarLeft = document.getElementById('sidebar-left');
+      var searchInput = document.getElementById('sidebar-search-input');
+      if (sidebarLeft && !searchInput) {
+        var searchBox = document.createElement('div');
+        searchBox.className = 'sidebar-search-box';
+        searchBox.innerHTML = '' +
+          '<span class="sidebar-search-icon" aria-hidden="true">🔍</span>' +
+          '<input type="text" id="sidebar-search-input" class="sidebar-search-input" placeholder="Tìm bài học... (/)" aria-label="Tìm kiếm nhanh bài học" autocomplete="off" spellcheck="false">' +
+          '<button type="button" id="sidebar-search-clear" class="sidebar-search-clear" aria-label="Xóa nội dung tìm kiếm" hidden>✕</button>';
+        var insertBeforeTarget = document.getElementById('sidebar-course-tabs') || document.getElementById('curriculum-tree');
+        if (insertBeforeTarget) {
+          sidebarLeft.insertBefore(searchBox, insertBeforeTarget);
+        }
+        searchInput = document.getElementById('sidebar-search-input');
+      }
+
+      var searchClearBtn = document.getElementById('sidebar-search-clear');
+      if (searchInput) {
+        searchInput.addEventListener('input', function () {
+          searchQuery = searchInput.value;
+          if (searchClearBtn) {
+            searchClearBtn.hidden = !searchQuery;
+          }
+          renderSidebar();
+        });
+      }
+      if (searchClearBtn) {
+        searchClearBtn.addEventListener('click', function () {
+          if (searchInput) {
+            searchInput.value = '';
+            searchInput.focus();
+          }
+          searchQuery = '';
+          searchClearBtn.hidden = true;
+          renderSidebar();
+        });
+      }
 
       document.getElementById(topNavId)?.addEventListener('click', function (e) {
         e.preventDefault();
