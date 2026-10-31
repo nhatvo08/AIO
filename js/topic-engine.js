@@ -63,7 +63,17 @@
     var topicPrefix = config.topicPrefix || topicId;
     var topicTitle = config.topicTitle || 'Chuyên đề Thực chiến';
     var storageKey = config.storageKey || ('py314_' + topicPrefix + '_course_state_v1');
+    var coursesConfig = config.courses || null;
     var rawParts = config.parts || [];
+    if (Array.isArray(coursesConfig) && coursesConfig.length > 0) {
+      coursesConfig.forEach(function (c) {
+        (c.parts || []).forEach(function (p) {
+          if (p && rawParts.indexOf(p) === -1) {
+            rawParts.push(p);
+          }
+        });
+      });
+    }
     if (config.referenceData) {
       rawParts.push(config.referenceData);
     }
@@ -75,12 +85,15 @@
     // Thu thập danh sách phẳng tất cả bài học
     var ALL_LESSONS = [];
     PARTS.forEach(function (part) {
-      (part.lessons || []).forEach(function (lesson) {
+      var partLessons = part.lessons || [];
+      partLessons.forEach(function (lesson, lIdx) {
         ALL_LESSONS.push({
+          part: part,
           partId: part.id,
           partNumber: part.number,
           partTitle: part.title,
           partLevel: part.level,
+          isLastInPart: lIdx === partLessons.length - 1,
           lesson: lesson
         });
       });
@@ -175,7 +188,9 @@
         btn.onclick = function () {
           activeFilter = val;
           if (activeFilter !== 'all') {
-            partOpenState[activeFilter] = true;
+            activeFilter.split(',').forEach(function (pid) {
+              partOpenState[pid.trim()] = true;
+            });
           }
           filterBtns.forEach(function (b) {
             var bVal = b.dataset.courseFilter || b.dataset.filter;
@@ -187,17 +202,13 @@
 
       if (!treeEl) return;
 
-      var filteredParts = activeFilter === 'all'
-        ? PARTS
-        : PARTS.filter(function (p) { return p.id === activeFilter; });
-
-      treeEl.innerHTML = filteredParts.map(function (part) {
+      function renderSinglePartGroup(part) {
         var partLessons = part.lessons || [];
         var partDoneCount = partLessons.filter(function (l) { return isLessonDone(l.id); }).length;
         var hasActiveLesson = partLessons.some(function (l) { return l.id === currentView; });
         var isOpen = hasActiveLesson || Boolean(partOpenState[part.id]);
         var isCollapsed = !isOpen;
-        var icon = PART_ICONS[part.id] || '';
+        var icon = PART_ICONS[part.id] || part.icon || '';
 
         var lessonsHtml = partLessons.map(function (l) {
           var isDone = isLessonDone(l.id);
@@ -227,7 +238,96 @@
             '</button>' +
             '<ul class="part-lessons">' + lessonsHtml + '</ul>' +
           '</div>';
-      }).join('');
+      }
+
+      if (Array.isArray(coursesConfig) && coursesConfig.length > 0) {
+        var coursesSidebarHtml = coursesConfig.map(function (course) {
+          var courseParts = (course.parts || []).filter(function (p) {
+            if (activeFilter === 'all') return true;
+            if (activeFilter === course.id) return true;
+            var allowed = activeFilter.split(',').map(function (s) { return s.trim(); });
+            return allowed.indexOf(p.id) !== -1 || allowed.indexOf(course.id) !== -1;
+          });
+
+          if (courseParts.length === 0 && activeFilter !== 'all') {
+            return '';
+          }
+
+          var courseTotalLessons = 0;
+          var courseCompletedLessons = 0;
+          (course.parts || []).forEach(function (part) {
+            (part.lessons || []).forEach(function (l) {
+              courseTotalLessons++;
+              if (isLessonDone(l.id)) courseCompletedLessons++;
+            });
+          });
+
+          var banner = course.banner || {};
+          var bannerNumber = banner.number || course.number || '';
+          var bannerTitle = banner.title || course.title || '';
+          var bannerIcon = banner.icon || course.icon || '🌐';
+          var bannerClass = banner.customClass || course.customClass || (topicPrefix + '-banner');
+          var bannerBadge = (banner.badge || course.badge)
+            ? ('<span class="sidebar-course-badge" style="margin-left:auto;font-size:0.68rem;padding:1px 6px;border-radius:var(--radius-xs);background:var(--topic-network-bg);color:var(--topic-network);border:1px solid var(--topic-network-border);">' + escapeHtml(banner.badge || course.badge) + '</span>')
+            : '';
+
+          return '' +
+            '<div class="sidebar-course-section" data-course-id="' + escapeHtml(course.id) + '">' +
+              '<div class="sidebar-course-banner ' + bannerClass + '">' +
+                '<div class="sidebar-course-banner-top">' +
+                  '<span class="sidebar-course-number-tag">' + escapeHtml(bannerNumber) + '</span>' +
+                  '<span class="sidebar-course-count">' + courseCompletedLessons + '/' + courseTotalLessons + ' bài</span>' +
+                '</div>' +
+                '<div class="sidebar-course-title">' +
+                  '<span class="course-banner-icon" aria-hidden="true">' + bannerIcon + '</span>' +
+                  '<span>' + escapeHtml(bannerTitle) + '</span>' +
+                  bannerBadge +
+                '</div>' +
+              '</div>' +
+              courseParts.map(renderSinglePartGroup).join('') +
+            '</div>';
+        }).join('');
+
+        treeEl.innerHTML = coursesSidebarHtml;
+      } else {
+        var filteredParts = activeFilter === 'all'
+          ? PARTS
+          : PARTS.filter(function (p) {
+              var allowed = activeFilter.split(',').map(function (s) { return s.trim(); });
+              return allowed.indexOf(p.id) !== -1;
+            });
+
+        var partsHtml = filteredParts.map(renderSinglePartGroup).join('');
+
+        if (config.courseBanner) {
+          var banner = config.courseBanner;
+          var bannerNumber = banner.number || 'Học phần II';
+          var bannerTitle = banner.title || topicTitle;
+          var bannerIcon = banner.icon || '🌐';
+          var bannerClass = banner.customClass || (topicPrefix + '-banner');
+          var bannerBadge = banner.badge
+            ? ('<span class="sidebar-course-badge" style="margin-left:auto;font-size:0.68rem;padding:1px 6px;border-radius:var(--radius-xs);background:var(--topic-network-bg);color:var(--topic-network);border:1px solid var(--topic-network-border);">' + escapeHtml(banner.badge) + '</span>')
+            : '';
+
+          treeEl.innerHTML = '' +
+            '<div class="sidebar-course-section" data-course-id="course-' + topicId + '">' +
+              '<div class="sidebar-course-banner ' + bannerClass + '">' +
+                '<div class="sidebar-course-banner-top">' +
+                  '<span class="sidebar-course-number-tag">' + escapeHtml(bannerNumber) + '</span>' +
+                  '<span class="sidebar-course-count">' + completedCount + '/' + totalCount + ' bài</span>' +
+                '</div>' +
+                '<div class="sidebar-course-title">' +
+                  '<span class="course-banner-icon" aria-hidden="true">' + bannerIcon + '</span>' +
+                  '<span>' + escapeHtml(bannerTitle) + '</span>' +
+                  bannerBadge +
+                '</div>' +
+              '</div>' +
+              partsHtml +
+            '</div>';
+        } else {
+          treeEl.innerHTML = partsHtml;
+        }
+      }
 
       treeEl.querySelectorAll('.part-group-header').forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -279,7 +379,7 @@
       var resumeBtnStyle = heroConfig.accentColor ? ' style="background:' + escapeHtml(heroConfig.accentColor) + ';"' : '';
       var statValueStyle = heroConfig.accentColor ? ' style="color:' + escapeHtml(heroConfig.accentColor) + ';"' : '';
 
-      var partsHtml = PARTS.map(function (part) {
+      function renderSinglePartCard(part) {
         var partLessons = part.lessons || [];
         var partDone = partLessons.filter(function (l) { return isLessonDone(l.id); }).length;
         var lessonsListHtml = partLessons.map(function (l) {
@@ -294,7 +394,7 @@
         }).join('');
 
         var pillClassExtra = config.pillPrefix ? (' ' + config.pillPrefix + '-part-pill ' + config.pillPrefix + '-part-pill-' + (part.id.replace('part-' + config.pillPrefix + '-', ''))) : '';
-        var pillIcon = (PART_ICONS[part.id] ? PART_ICONS[part.id] + ' ' : '');
+        var pillIcon = (PART_ICONS[part.id] ? PART_ICONS[part.id] + ' ' : (part.icon ? part.icon + ' ' : ''));
 
         return '' +
           '<article class="part-card" id="part-card-' + part.id + '">' +
@@ -316,7 +416,9 @@
               ) : '') +
             '</div>' +
           '</article>';
-      }).join('');
+      }
+
+      var partsHtml = PARTS.map(renderSinglePartCard).join('');
 
       var heroActionsHtml = '';
       if (resumeItem) {
@@ -358,6 +460,94 @@
         ? config.overviewExtraSections()
         : (config.overviewExtraSections || '');
 
+      var coursePct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+      var banner = config.courseBanner;
+      var roadmapSectionHtml = '';
+
+      if (Array.isArray(coursesConfig) && coursesConfig.length > 0) {
+        roadmapSectionHtml = coursesConfig.map(function (course) {
+          var courseParts = course.parts || [];
+          var courseTotal = 0;
+          var courseDone = 0;
+          courseParts.forEach(function (p) {
+            (p.lessons || []).forEach(function (l) {
+              courseTotal++;
+              if (isLessonDone(l.id)) courseDone++;
+            });
+          });
+          var cPct = courseTotal > 0 ? Math.round((courseDone / courseTotal) * 100) : 0;
+          var cBanner = course.banner || {};
+          var bannerTheme = cBanner.customClass ? (cBanner.customClass.replace('-banner', '-theme')) : (course.customClass ? course.customClass.replace('-banner', '-theme') : (topicPrefix + '-theme'));
+          var bannerBadge = cBanner.customClass ? (cBanner.customClass.replace('-banner', '-badge')) : (course.customClass ? course.customClass.replace('-banner', '-badge') : (topicPrefix + '-badge'));
+          var bannerFill = cBanner.customClass ? (cBanner.customClass.replace('-banner', '-fill')) : (course.customClass ? course.customClass.replace('-banner', '-fill') : (topicPrefix + '-fill'));
+          var bannerNumber = cBanner.number || course.number || '';
+          var bannerTitle = cBanner.title || course.title || '';
+          var bannerIcon = cBanner.icon || course.icon || '🌐';
+          var bannerTag = cBanner.badge || course.badge || (courseParts.length + ' Phần');
+          var courseDesc = course.desc || cBanner.desc || '';
+
+          return '' +
+            '<section class="course-home-section" id="home-' + escapeHtml(course.id) + '">' +
+              '<div class="course-section-header-lg ' + bannerTheme + '">' +
+                '<div class="course-header-badge-row">' +
+                  '<span class="course-number-badge ' + bannerBadge + '">' + escapeHtml(bannerNumber) + '</span>' +
+                  '<span class="course-tag-badge">' + escapeHtml(bannerTag) + '</span>' +
+                  '<span class="course-meta-badge">' + courseParts.length + ' Phần • ' + courseTotal + ' Bài học</span>' +
+                '</div>' +
+                '<h2 class="course-title-lg">' +
+                  '<span>' + bannerIcon + '</span> ' +
+                  '<span>' + escapeHtml(bannerTitle) + '</span>' +
+                '</h2>' +
+                (courseDesc ? ('<p class="course-desc-lg">' + escapeHtml(courseDesc) + '</p>') : '') +
+                '<div class="course-progress-indicator">' +
+                  '<div class="course-prog-bar">' +
+                    '<div class="course-prog-fill ' + bannerFill + '" style="width:' + cPct + '%;"></div>' +
+                  '</div>' +
+                  '<span>Tiến độ ' + escapeHtml(bannerNumber) + ': <strong>' + courseDone + '/' + courseTotal + '</strong> bài (' + cPct + '%)</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="roadmap-grid">' + courseParts.map(renderSinglePartCard).join('') + '</div>' +
+            '</section>';
+        }).join('');
+      } else if (banner) {
+        var bannerTheme = banner.customClass ? (banner.customClass.replace('-banner', '-theme')) : (topicPrefix + '-theme');
+        var bannerBadge = banner.customClass ? (banner.customClass.replace('-banner', '-badge')) : (topicPrefix + '-badge');
+        var bannerFill = banner.customClass ? (banner.customClass.replace('-banner', '-fill')) : (topicPrefix + '-fill');
+        var bannerNumber = banner.number || 'Học phần II';
+        var bannerTitle = banner.title || topicTitle;
+        var bannerIcon = banner.icon || '🌐';
+        var bannerTag = banner.badge || (PARTS.length + ' Giai đoạn');
+
+        roadmapSectionHtml = '' +
+          '<section class="course-home-section" id="home-course-' + topicId + '">' +
+            '<div class="course-section-header-lg ' + bannerTheme + '">' +
+              '<div class="course-header-badge-row">' +
+                '<span class="course-number-badge ' + bannerBadge + '">' + escapeHtml(bannerNumber) + '</span>' +
+                '<span class="course-tag-badge">' + escapeHtml(bannerTag) + '</span>' +
+                '<span class="course-meta-badge">' + PARTS.length + ' Giai đoạn • ' + totalCount + ' Bài học</span>' +
+              '</div>' +
+              '<h2 class="course-title-lg">' +
+                '<span>' + bannerIcon + '</span> ' +
+                '<span>' + escapeHtml(bannerTitle) + '</span>' +
+              '</h2>' +
+              '<p class="course-desc-lg">' + (heroConfig.desc || '') + '</p>' +
+              '<div class="course-progress-indicator">' +
+                '<div class="course-prog-bar">' +
+                  '<div class="course-prog-fill ' + bannerFill + '" style="width:' + coursePct + '%;"></div>' +
+                '</div>' +
+                '<span>Tiến độ ' + escapeHtml(bannerNumber) + ': <strong>' + completedCount + '/' + totalCount + '</strong> bài (' + coursePct + '%)</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="roadmap-grid">' + partsHtml + '</div>' +
+          '</section>';
+      } else {
+        roadmapSectionHtml = '' +
+          '<section>' +
+            '<h2 class="roadmap-section-title">' + (heroConfig.roadmapTitle || 'Lộ trình Chuyên đề') + '</h2>' +
+            '<div class="roadmap-grid">' + partsHtml + '</div>' +
+          '</section>';
+      }
+
       mainEl.innerHTML = '' +
         '<section class="hero-banner"' + heroStyle + '>' +
           '<div class="hero-eyebrow"' + eyebrowStyle + '>' + (heroConfig.eyebrow || ('<span>' + escapeHtml(topicTitle) + '</span>')) + '</div>' +
@@ -367,10 +557,9 @@
           '<div class="hero-stats-grid">' + statsItemsHtml + '</div>' +
         '</section>' +
         extraSectionsHtml +
-        '<section>' +
-          '<h2 class="roadmap-section-title">' + (heroConfig.roadmapTitle || 'Lộ trình Chuyên đề') + '</h2>' +
-          '<div class="roadmap-grid">' + partsHtml + '</div>' +
-        '</section>';
+        '<div class="courses-roadmap-container">' +
+          roadmapSectionHtml +
+        '</div>';
 
       if (tocEl) {
         var extraToc = config.overviewExtraTocItems || [];
@@ -378,14 +567,43 @@
           return '<li><a class="toc-link" href="#' + escapeHtml(item.id) + '">' + escapeHtml(item.label) + '</a></li>';
         }).join('');
 
+        var coursesTocHtml = '';
+        if (Array.isArray(coursesConfig) && coursesConfig.length > 0) {
+          coursesTocHtml = coursesConfig.map(function (c) {
+            var bNum = c.number || (c.banner ? c.banner.number : '');
+            var bTitle = c.title || (c.banner ? c.banner.title : '');
+            var bIcon = c.icon || (c.banner ? c.banner.icon : '🌐');
+            var cParts = c.parts || [];
+            return '' +
+              '<div style="margin-top:12px;margin-bottom:6px;font-weight:700;font-size:0.75rem;text-transform:uppercase;color:var(--text-muted);letter-spacing:0.04em;">' +
+                '<a class="toc-link toc-course-title" href="#home-' + escapeHtml(c.id) + '" style="color:inherit;text-decoration:none;display:block;">' +
+                  bIcon + ' ' + escapeHtml(bNum) + ': ' + escapeHtml(bTitle) +
+                '</a>' +
+              '</div>' +
+              '<ul class="toc-list" style="margin-bottom:12px;">' +
+                cParts.map(function (p) {
+                  return '<li><a class="toc-link" href="#part-card-' + p.id + '"><strong>' + escapeHtml(p.number) + ':</strong> ' + escapeHtml(p.title) + '</a></li>';
+                }).join('') +
+              '</ul>';
+          }).join('');
+        }
+
+        var bannerTocHtml = banner ? ('' +
+          '<div style="margin-top:12px;margin-bottom:6px;font-weight:700;font-size:0.75rem;text-transform:uppercase;color:var(--text-muted);letter-spacing:0.04em;">' +
+            '<a class="toc-link toc-course-title" href="#home-course-' + topicId + '" style="color:inherit;text-decoration:none;display:block;">' +
+              banner.icon + ' ' + escapeHtml(banner.number) + ': ' + escapeHtml(banner.title) +
+            '</a>' +
+          '</div>'
+        ) : '';
+
         tocEl.innerHTML = '' +
-          '<div class="toc-heading">Lộ trình Chuyên đề</div>' +
-          '<ul class="toc-list">' +
-            extraTocHtml +
+          '<div class="toc-heading">Lộ trình Khóa học</div>' +
+          (extraTocHtml ? ('<ul class="toc-list" style="margin-bottom:8px;">' + extraTocHtml + '</ul>') : '') +
+          (coursesTocHtml || (bannerTocHtml + '<ul class="toc-list">' +
             PARTS.map(function (p) {
               return '<li><a class="toc-link" href="#part-card-' + p.id + '">' + escapeHtml(p.number) + ': ' + escapeHtml(p.title) + '</a></li>';
             }).join('') +
-          '</ul>';
+          '</ul>'));
 
         tocEl.querySelectorAll('.toc-link').forEach(function (link) {
           link.addEventListener('click', function (e) {
@@ -466,6 +684,13 @@
                     return '<li class="annotation-item"><span class="ann-line-badge">Dòng ' + escapeHtml(String(ann.line)) + '</span><span>' + formatInlineCode(ann.text) + '</span></li>';
                   }).join('') +
                 '</ul>' +
+                (ex.explanation ? '<p style="margin:8px 0 0;font-size:0.88rem;color:var(--text-secondary);">' + formatInlineCode(ex.explanation) + '</p>' : '') +
+              '</div>';
+          } else if (ex.explanation) {
+            annotationsHtml = '' +
+              '<div class="code-annotations">' +
+                '<div class="annotations-title">Giải thích kết quả thực thi</div>' +
+                '<p style="margin:4px 0 0;font-size:0.88rem;line-height:1.6;color:var(--text-secondary);">' + formatInlineCode(ex.explanation) + '</p>' +
               '</div>';
           }
 
@@ -504,9 +729,11 @@
           '</section>';
       }).join('');
 
-      // Callouts
+      // Callouts (ưu tiên lesson.callouts.{pitfalls,tips}, tương thích dự phòng lesson.{pitfalls,tips})
       var callouts = lesson.callouts || {};
-      var pitfallsHtml = (callouts.pitfalls || []).map(function (p) {
+      var pitfallsList = callouts.pitfalls || lesson.pitfalls || [];
+      var tipsList = callouts.tips || lesson.tips || [];
+      var pitfallsHtml = pitfallsList.map(function (p) {
         return '' +
           '<div class="callout-box callout-pitfall">' +
             '<div class="callout-header"><span>⚠️ Lỗi thường gặp:</span> <span>' + formatInlineCode(p.title) + '</span></div>' +
@@ -514,7 +741,7 @@
           '</div>';
       }).join('');
 
-      var tipsHtml = (callouts.tips || []).map(function (t) {
+      var tipsHtml = tipsList.map(function (t) {
         return '' +
           '<div class="callout-box callout-tip">' +
             '<div class="callout-header"><span>💡 Ghi nhớ hữu ích:</span> <span>' + formatInlineCode(t.title) + '</span></div>' +
@@ -522,15 +749,41 @@
           '</div>';
       }).join('');
 
+      var deepDiveData = callouts.deepDive || null;
+      var deepDiveHtml = deepDiveData ? ('' +
+        '<details class="deep-dive-details">' +
+          '<summary class="deep-dive-summary">' +
+            '<span>🔍 Chuyên sâu Kernel &amp; RFC: ' + formatInlineCode(deepDiveData.title) + '</span>' +
+            '<span class="deep-dive-toggle-hint">Bấm để mở rộng / thu gọn ▾</span>' +
+          '</summary>' +
+          '<div class="deep-dive-content">' +
+            (deepDiveData.content || '') +
+          '</div>' +
+        '</details>'
+      ) : '';
+
       // Exercises
       var exercisesHtml = (lesson.exercises || []).map(function (ex, exIdx) {
         var exTitle = ex.title || ('Thử thách thực hành ' + (exIdx + 1));
-        var exProblem = ex.problem || ex.question || '';
-        var exCode = ex.solutionCode || ex.command || '';
-        var exOutput = ex.solutionOutput || '';
+        var exProblem = ex.problem || ex.question || ex.task || ex.prompt || '';
+
+        var rawCode = ex.solutionCode || ex.command || '';
+        if (!rawCode && ex.solution) {
+          if (Array.isArray(ex.solution.commands) && ex.solution.commands.length > 0) {
+            rawCode = ex.solution.commands.join('\n');
+          } else if (typeof ex.solution.code === 'string') {
+            rawCode = ex.solution.code;
+          } else if (typeof ex.solution === 'string') {
+            rawCode = ex.solution;
+          }
+        }
+        var exCode = rawCode || '';
+
+        var exOutput = ex.solutionOutput || (ex.solution && ex.solution.output) || '';
         var exLevel = ex.level || 'Vừa';
-        var exExplanation = ex.explanation || '';
+        var exExplanation = ex.explanation || (ex.solution && ex.solution.explanation) || (ex.solution && typeof ex.solution.desc === 'string' ? ex.solution.desc : '');
         var exHint = ex.hint || '';
+        var exCodeId = topicPrefix + '-sol-' + lesson.id + '-' + exIdx;
 
         var solLines = exCode ? exCode.split('\n').map(function (l, idx) {
           return '<div class="code-line"><span class="line-num">' + (idx + 1) + '</span><span class="line-content">' + escapeHtml(l) + '</span></div>';
@@ -543,9 +796,13 @@
                 '<span class="lang-tag">Lời giải mẫu</span>' +
                 '<span>' + escapeHtml(exTitle) + '</span>' +
               '</div>' +
+              '<button type="button" class="copy-code-btn" data-copy-target="' + exCodeId + '" aria-label="Sao chép câu lệnh">' +
+                '<span>📋</span> <span class="copy-btn-text">Sao chép</span>' +
+              '</button>' +
             '</div>' +
+            '<textarea id="' + exCodeId + '" style="display:none;" readonly>' + escapeHtml(exCode) + '</textarea>' +
             '<pre class="code-pre"><code>' + solLines + '</code></pre>' +
-            (exOutput ? '<div class="code-output-block"><div class="output-label"><span>Kết quả</span></div><pre class="output-pre">' + escapeHtml(exOutput) + '</pre></div>' : '') +
+            (exOutput ? '<div class="code-output-block"><div class="output-label"><span>Kết quả mong đợi</span></div><pre class="output-pre">' + escapeHtml(exOutput) + '</pre></div>' : '') +
           '</div>'
         ) : '';
 
@@ -558,10 +815,24 @@
             '</div>';
         }
 
+        if (!solCard && !explanationHtml && ex.solution) {
+          explanationHtml = '' +
+            '<div class="solution-explanation" style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--border-subtle);font-size:0.92rem;line-height:1.65;">' +
+              '<strong>Lời giải chi tiết:</strong>' +
+              '<div style="margin-top:4px;">' + formatMultilineHtml(typeof ex.solution === 'string' ? ex.solution : JSON.stringify(ex.solution)) + '</div>' +
+            '</div>';
+        }
+
+        var exLevelClass = (exLevel === 'Dễ' || exLevel === 'Cơ bản')
+          ? 'ex-easy'
+          : (exLevel === 'Vừa' || exLevel === 'Trung bình' || exLevel === 'Trung cấp')
+            ? 'ex-medium'
+            : 'ex-hard';
+
         return '' +
           '<div class="exercise-card">' +
             '<div class="exercise-header">' +
-              '<span class="ex-level-badge ' + (exLevel === 'Dễ' ? 'ex-easy' : exLevel === 'Vừa' ? 'ex-medium' : 'ex-hard') + '">Mức: ' + escapeHtml(exLevel) + '</span>' +
+              '<span class="ex-level-badge ' + exLevelClass + '">Mức: ' + escapeHtml(exLevel) + '</span>' +
               '<span class="exercise-title">' + formatInlineCode(exTitle) + '</span>' +
             '</div>' +
             '<div class="exercise-problem" style="line-height:1.65;margin-bottom:10px;">' + formatMultilineHtml(exProblem) + '</div>' +
@@ -576,10 +847,69 @@
           '</div>';
       }).join('');
 
-      // Summary
+      // Quiz kiểm tra nhanh tương tác (hỗ trợ cả lesson.quiz lẫn part.quiz ở bài cuối module)
+      var letters = ['A', 'B', 'C', 'D', 'E'];
+      var quizList = Array.isArray(lesson.quiz) && lesson.quiz.length > 0 ? lesson.quiz : [];
+      var quizSectionTitle = 'Câu hỏi Trắc nghiệm (Quiz)';
+      if (quizList.length === 0 && item.isLastInPart && item.part && item.part.quiz && Array.isArray(item.part.quiz.questions)) {
+        quizList = item.part.quiz.questions;
+        quizSectionTitle = item.part.quiz.title || ('Bài kiểm tra tổng kết ' + item.partNumber);
+      }
+      var quizStorageKey = storageKey + '_quiz';
+      function getSavedQuizAnswer(lId, qIdx) {
+        try {
+          var raw = localStorage.getItem(quizStorageKey);
+          if (!raw) return null;
+          var map = JSON.parse(raw);
+          return (map[lId] && map[lId][qIdx] !== undefined) ? map[lId][qIdx] : null;
+        } catch (_e) { return null; }
+      }
+
+      var quizHtml = quizList.map(function (q, qIdx) {
+        var savedAns = getSavedQuizAnswer(lesson.id, qIdx);
+        var isAnswered = savedAns !== null && savedAns !== undefined;
+        var isCorrect = isAnswered && savedAns === q.correctIndex;
+
+        var optionsHtml = (q.options || []).map(function (opt, oIdx) {
+          var stateClass = '';
+          if (isAnswered) {
+            if (oIdx === q.correctIndex) stateClass = 'correct';
+            else if (oIdx === savedAns) stateClass = 'wrong';
+          }
+          return '' +
+            '<button type="button" class="quiz-option-btn ' + stateClass + '" data-quiz-opt="' + oIdx + '">' +
+              '<span class="quiz-option-letter">' + (letters[oIdx] || (oIdx + 1)) + '</span>' +
+              '<span>' + formatInlineCode(opt) + '</span>' +
+            '</button>';
+        }).join('');
+
+        return '' +
+          '<div class="quiz-card" data-quiz-idx="' + qIdx + '" data-correct-idx="' + q.correctIndex + '">' +
+            '<div class="quiz-question">Câu ' + (qIdx + 1) + ': ' + formatInlineCode(q.question) + '</div>' +
+            '<div class="quiz-options">' + optionsHtml + '</div>' +
+            '<div class="quiz-explanation ' + (isAnswered ? 'visible' : '') + ' ' + (isAnswered ? (isCorrect ? 'is-correct' : 'is-wrong') : '') + '">' +
+              '<strong>' + (isAnswered ? (isCorrect ? '🎉 Chính xác!' : '❌ Chưa chính xác!') : '') + '</strong>' +
+              '<span> ' + formatInlineCode(q.explanation || '') + '</span>' +
+            '</div>' +
+          '</div>';
+      }).join('');
+
+      // Summary + Câu hỏi tự kiểm tra (selfReviewQuestions)
       var summaryHtml = (lesson.summary || []).map(function (line) {
         return '<li>' + formatInlineCode(line) + '</li>';
       }).join('');
+      var selfReviewHtml = '';
+      if (Array.isArray(lesson.selfReviewQuestions) && lesson.selfReviewQuestions.length > 0) {
+        selfReviewHtml = '' +
+          '<div class="net-self-review">' +
+            '<div class="net-self-review-title"><span>❓</span> <span>Câu hỏi tự kiểm tra nhanh</span></div>' +
+            '<ul class="net-self-review-list">' +
+              lesson.selfReviewQuestions.map(function (rq) {
+                return '<li>' + formatInlineCode(rq) + '</li>';
+              }).join('') +
+            '</ul>' +
+          '</div>';
+      }
 
       // Thử thách bản chất (Reflection Challenge)
       var reflectionHtml = '';
@@ -619,22 +949,50 @@
 
       var intuitionHtml = '';
       if (lesson.intuition) {
+        var intTitle = lesson.intuition.title || 'Hiểu bằng trực giác đời thường';
+        var intMetaphor = lesson.intuition.metaphor || lesson.intuition.analogy || '';
+        var intBoundary = lesson.intuition.boundary ? (
+          '<div class="intuition-boundary ' + topicPrefix + '-intuition-boundary">' +
+            '<strong>⚠️ Ranh giới của phép ví dụ (Where the analogy breaks down):</strong> ' +
+            formatInlineCode(lesson.intuition.boundary) +
+          '</div>'
+        ) : '';
         intuitionHtml = '' +
           '<section id="sec-intuition" class="intuition-box ' + topicPrefix + '-intuition-box">' +
             '<div class="intuition-header ' + topicPrefix + '-intuition-header">' +
               '<span class="' + topicPrefix + '-intuition-icon-pill" aria-hidden="true">💡</span>' +
-              '<span class="' + topicPrefix + '-intuition-title-text">2. Trực giác: ' + escapeHtml(lesson.intuition.title) + '</span>' +
+              '<span class="' + topicPrefix + '-intuition-title-text">2. Trực giác: ' + escapeHtml(intTitle) + '</span>' +
             '</div>' +
-            '<p class="intuition-metaphor ' + topicPrefix + '-intuition-metaphor">' + formatInlineCode(lesson.intuition.metaphor) + '</p>' +
+            (intMetaphor ? '<p class="intuition-metaphor ' + topicPrefix + '-intuition-metaphor">' + formatInlineCode(intMetaphor) + '</p>' : '') +
+            intBoundary +
             (lesson.intuition.visualHtml ? '<div class="intuition-visual ' + topicPrefix + '-intuition-visual">' + lesson.intuition.visualHtml + '</div>' : '') +
           '</section>';
       }
+
+      var matchedCourse = null;
+      if (Array.isArray(coursesConfig)) {
+        for (var cIdx = 0; cIdx < coursesConfig.length; cIdx++) {
+          var cParts = coursesConfig[cIdx].parts || [];
+          if (cParts.some(function (p) { return p.id === item.partId; })) {
+            matchedCourse = coursesConfig[cIdx];
+            break;
+          }
+        }
+      }
+      var courseNum = matchedCourse ? (matchedCourse.number || (matchedCourse.banner && matchedCourse.banner.number)) : (config.courseBanner ? config.courseBanner.number : '');
+      var courseTitle = matchedCourse ? (matchedCourse.title || (matchedCourse.banner && matchedCourse.banner.title)) : (config.courseBanner ? config.courseBanner.title : topicTitle);
+      var breadcrumbCourseBadge = courseNum
+        ? ('<span class="breadcrumb-course-badge course-' + (matchedCourse ? matchedCourse.id : topicId) + '">' + escapeHtml(courseNum) + ': ' + escapeHtml(courseTitle) + '</span>')
+        : '';
+      var breadcrumbHtml = breadcrumbCourseBadge
+        ? (breadcrumbCourseBadge + ' › ' + escapeHtml(item.partNumber) + ': ' + escapeHtml(item.partTitle) + ' › Bài ' + escapeHtml(lesson.number))
+        : (escapeHtml(topicTitle) + ' › ' + escapeHtml(item.partNumber) + ': ' + escapeHtml(item.partTitle) + ' › Bài ' + escapeHtml(lesson.number));
 
       mainEl.innerHTML = '' +
         '<article class="lesson-article">' +
           '<header class="lesson-header">' +
             '<div class="lesson-meta-row">' +
-              '<span class="part-breadcrumb">' + escapeHtml(topicTitle) + ' › ' + escapeHtml(item.partNumber) + ': ' + escapeHtml(item.partTitle) + ' › Bài ' + escapeHtml(lesson.number) + '</span>' +
+              '<span class="part-breadcrumb">' + breadcrumbHtml + '</span>' +
               '<span class="level-badge ' + getLevelBadgeClass(lesson.level) + '">' + escapeHtml(lesson.level) + '</span>' +
               '<span class="level-badge" style="background:var(--bg-surface-alt);color:var(--text-secondary);">⏱ ' + escapeHtml(lesson.duration || '30 phút') + '</span>' +
             '</div>' +
@@ -654,9 +1012,10 @@
           intuitionHtml +
           sectionsHtml +
 
-          (pitfallsHtml || tipsHtml ? (
+          (pitfallsHtml || tipsHtml || deepDiveHtml ? (
             '<section id="sec-callouts">' +
               '<h2>Lưu ý Quan trọng &amp; Cạm bẫy thực tế</h2>' +
+              deepDiveHtml +
               pitfallsHtml +
               tipsHtml +
             '</section>'
@@ -669,10 +1028,18 @@
             '</section>'
           ) : '') +
 
+          (quizHtml ? (
+            '<section id="sec-quiz">' +
+              '<h2>' + escapeHtml(quizSectionTitle) + '</h2>' +
+              '<div class="quiz-container">' + quizHtml + '</div>' +
+            '</section>'
+          ) : '') +
+
           (summaryHtml ? (
             '<section id="sec-summary" class="summary-box">' +
               '<div class="summary-title"><span>📌</span> <span>Tóm tắt Bài học</span></div>' +
               '<ul>' + summaryHtml + '</ul>' +
+              selfReviewHtml +
             '</section>'
           ) : '') +
 
@@ -747,6 +1114,50 @@
         });
       });
 
+      // Gắn sự kiện chọn đáp án Quiz tương tác
+      mainEl.querySelectorAll('.quiz-card').forEach(function (card) {
+        var qIdx = parseInt(card.dataset.quizIdx, 10);
+        var correctIdx = parseInt(card.dataset.correctIdx, 10);
+        var explanationEl = card.querySelector('.quiz-explanation');
+
+        card.querySelectorAll('.quiz-option-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var optIdx = parseInt(btn.dataset.quizOpt, 10);
+            try {
+              var raw = localStorage.getItem(quizStorageKey);
+              var map = raw ? JSON.parse(raw) : {};
+              if (!map[lesson.id]) map[lesson.id] = {};
+              map[lesson.id][qIdx] = optIdx;
+              localStorage.setItem(quizStorageKey, JSON.stringify(map));
+            } catch (_e) {}
+
+            card.querySelectorAll('.quiz-option-btn').forEach(function (b) {
+              var bIdx = parseInt(b.dataset.quizOpt, 10);
+              b.classList.remove('correct', 'wrong');
+              if (bIdx === correctIdx) {
+                b.classList.add('correct');
+              } else if (bIdx === optIdx) {
+                b.classList.add('wrong');
+              }
+            });
+
+            if (explanationEl) {
+              explanationEl.classList.add('visible');
+              explanationEl.classList.remove('is-correct', 'is-wrong');
+              if (optIdx === correctIdx) {
+                explanationEl.classList.add('is-correct');
+                var strongEl = explanationEl.querySelector('strong');
+                if (strongEl) strongEl.textContent = '🎉 Chính xác!';
+              } else {
+                explanationEl.classList.add('is-wrong');
+                var strongEl = explanationEl.querySelector('strong');
+                if (strongEl) strongEl.textContent = '❌ Chưa chính xác!';
+              }
+            }
+          });
+        });
+      });
+
       var completeBtn = document.getElementById('btn-toggle-complete');
       if (completeBtn) {
         completeBtn.addEventListener('click', function () {
@@ -773,8 +1184,9 @@
           { id: 'sec-objectives', label: '1. Mục tiêu bài học' },
           ...(lesson.intuition ? [{ id: 'sec-intuition', label: '2. Trực giác' }] : []),
           ...(lesson.sections || []).map(function (s) { return { id: s.id, label: s.title }; }),
-          ...(pitfallsHtml || tipsHtml ? [{ id: 'sec-callouts', label: 'Lưu ý & Cạm bẫy' }] : []),
+          ...(deepDiveHtml || pitfallsHtml || tipsHtml ? [{ id: 'sec-callouts', label: 'Lưu ý & Chuyên sâu' }] : []),
           ...(exercisesHtml ? [{ id: 'sec-exercises', label: 'Bài tập thực hành' }] : []),
+          ...(quizHtml ? [{ id: 'sec-quiz', label: 'Câu hỏi trắc nghiệm' }] : []),
           ...(summaryHtml ? [{ id: 'sec-summary', label: 'Tóm tắt bài học' }] : []),
           ...(lesson.reflectionQuestion ? [{ id: 'sec-reflection', label: 'Thử thách bản chất' }] : [])
         ];
@@ -863,6 +1275,14 @@
       }
       renderSidebar();
       renderLessonView(targetId);
+
+      // Auto-scroll sidebar tới bài học đang active để người dùng luôn thấy vị trí hiện tại
+      try {
+        var activeBtn = document.querySelector('.lesson-nav-btn[data-lesson-id="' + targetId + '"]');
+        if (activeBtn) {
+          activeBtn.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+      } catch (_e) {}
     }
 
     function closeDrawer() {

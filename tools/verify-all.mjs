@@ -119,8 +119,26 @@ await check('Dữ liệu Linux', () => {
 });
 
 await check('Dữ liệu Networking', () => {
-  const files = fs
-    .readdirSync(abs('data/network'))
+  const allFiles = fs.readdirSync(abs('data/network'));
+
+  // 1. Học phần I: Networking Cơ Bản (basic-mod*.js)
+  const basicFiles = allFiles
+    .filter((file) => /^basic-mod\d+\.js$/.test(file))
+    .sort((a, b) => {
+      const na = parseInt(a.match(/basic-mod(\d+)\.js/)[1], 10);
+      const nb = parseInt(b.match(/basic-mod(\d+)\.js/)[1], 10);
+      return na - nb;
+    });
+
+  const basicParts = basicFiles.map((file) => {
+    const num = file.match(/basic-mod(\d+)\.js/)[1];
+    const data = loadGlobalScript(`data/network/${file}`, `NET_BASIC_MOD${num}_DATA`);
+    assert(data && Array.isArray(data.lessons), `data/network/${file} thiếu mảng lessons`);
+    return { file, part: data };
+  });
+
+  // 2. Học phần II: Networking Chuyên Sâu (phase*.js)
+  const phaseFiles = allFiles
     .filter((file) => /^phase[\da-z]+\.js$/.test(file))
     .sort((a, b) => {
       const getOrder = (f) => {
@@ -129,16 +147,119 @@ await check('Dữ liệu Networking', () => {
       };
       return getOrder(a) - getOrder(b);
     });
-  assert(files.length > 0, 'Không có file phase*.js trong data/network');
-  const parts = files.map((file) => {
+  assert(phaseFiles.length > 0, 'Không có file phase*.js trong data/network');
+  const phaseParts = phaseFiles.map((file) => {
     const key = file.replace(/^phase|\.js$/g, '').toUpperCase();
     const data = loadGlobalScript(`data/network/${file}`, `NET_PHASE${key}_DATA`);
     assert(data && Array.isArray(data.lessons), `data/network/${file} thiếu mảng lessons`);
     return { file, part: data };
   });
-  const ids = parts.flatMap(({ part }) => part.lessons.map((lesson) => lesson.id));
+
+  const allParts = [...basicParts, ...phaseParts];
+  const ids = allParts.flatMap(({ part }) => part.lessons.map((lesson) => lesson.id));
   assert(new Set(ids).size === ids.length, 'Có id bài Networking bị trùng');
-  return `${parts.length} giai đoạn / ${ids.length} bài`;
+
+  // Kiểm chứng chuẩn UI/UX & Schema cho toàn bộ bài học Networking (theo rules/05-quy-chuan-uiux-bai-hoc.md)
+  const forbiddenClasses = ['net-arch-diagram', 'net-arch-badge', 'code-block'];
+  for (const { file, part } of allParts) {
+    for (const lesson of part.lessons) {
+      const tag = `${file}#${lesson.id || 'unknown'}`;
+      assert(lesson.id && lesson.number && lesson.title, `${tag}: thiếu id/number/title`);
+      assert(Array.isArray(lesson.sections) && lesson.sections.length >= 1, `${tag}: thiếu sections`);
+      assert(Array.isArray(lesson.summary) && lesson.summary.length >= 1, `${tag}: thiếu summary`);
+
+      const secIds = lesson.sections.map((s) => s.id).filter(Boolean);
+      assert(secIds.length === lesson.sections.length, `${tag}: có section thiếu id`);
+      assert(new Set(secIds).size === secIds.length, `${tag}: bị trùng section.id`);
+
+      const htmlBlob = [
+        lesson.intuition?.visualHtml || '',
+        ...lesson.sections.map((s) => s.content || '')
+      ].join('\n');
+      assert(!/<script\b/i.test(htmlBlob), `${tag}: cấm nhúng thẻ <script> trong nội dung bài học`);
+      for (const badCls of forbiddenClasses) {
+        assert(!htmlBlob.includes(badCls), `${tag}: dùng class không tồn tại '.${badCls}' (xem rules/05)`);
+      }
+    }
+  }
+
+  // Kiểm chứng các bài học đã biên soạn hoàn chỉnh ở Học phần II (phase*.js có > 1 section)
+  let fullHp2Count = 0;
+  for (const { file, part } of phaseParts) {
+    for (const lesson of part.lessons) {
+      if (lesson.sections.length <= 1 && !lesson.intuition) continue; // Bài khung chờ triển khai
+      fullHp2Count += 1;
+      const tag = `${file}#${lesson.id}`;
+      assert(Array.isArray(lesson.objectives) && lesson.objectives.length >= 3, `${tag}: thiếu objectives`);
+      assert(
+        lesson.intuition &&
+          typeof lesson.intuition.visualHtml === 'string' &&
+          lesson.intuition.visualHtml.includes('net-arch-box'),
+        `${tag}: intuition.visualHtml phải dùng .net-arch-box`
+      );
+      assert(Array.isArray(lesson.exercises) && lesson.exercises.length >= 3, `${tag}: thiếu exercises`);
+      assert(lesson.summary.length >= 5, `${tag}: summary phải đủ 5 dòng`);
+    }
+  }
+
+  // Kiểm chứng nghiêm ngặt khuôn mẫu 9 phần UI/UX riêng cho Học phần I (basic-mod*.js)
+  for (const { file, part } of basicParts) {
+    for (const lesson of part.lessons) {
+      const tag = `${file}#${lesson.id}`;
+      assert(
+        lesson.intuition &&
+          lesson.intuition.title &&
+          (lesson.intuition.metaphor || lesson.intuition.analogy) &&
+          lesson.intuition.boundary &&
+          typeof lesson.intuition.visualHtml === 'string' &&
+          lesson.intuition.visualHtml.includes('net-arch-box'),
+        `${tag}: intuition phải đủ title, metaphor, boundary và visualHtml (.net-arch-box)`
+      );
+      assert(
+        !lesson.pitfalls && !lesson.tips && !lesson.diagram,
+        `${tag}: không đặt pitfalls/tips/diagram ở cấp cao nhất (phải lồng trong callouts)`
+      );
+      assert(
+        lesson.callouts &&
+          Array.isArray(lesson.callouts.pitfalls) &&
+          lesson.callouts.pitfalls.length >= 2 &&
+          Array.isArray(lesson.callouts.tips) &&
+          lesson.callouts.tips.length >= 1,
+        `${tag}: callouts phải có đủ mảng pitfalls và tips`
+      );
+      assert(
+        Array.isArray(lesson.exercises) && lesson.exercises.length >= 3,
+        `${tag}: phải có tối thiểu 3 bài tập tự luyện (exercises)`
+      );
+      for (const ex of lesson.exercises) {
+        assert(
+          ex.title && ex.level && ex.problem && (ex.solutionCode || ex.solution) && ex.explanation,
+          `${tag}: bài tập '${ex.title || ''}' thiếu trường bắt buộc (title/level/problem/solutionCode/explanation)`
+        );
+      }
+      assert(lesson.summary.length >= 5, `${tag}: summary phải đủ 5 dòng tóm tắt`);
+      assert(
+        Array.isArray(lesson.selfReviewQuestions) && lesson.selfReviewQuestions.length >= 3,
+        `${tag}: thiếu selfReviewQuestions`
+      );
+      assert(
+        lesson.reflectionQuestion && lesson.nextLessonPreview,
+        `${tag}: thiếu reflectionQuestion hoặc nextLessonPreview ở cấp bài học`
+      );
+      const secHtml = lesson.sections.map((s) => s.content || '').join('\n');
+      assert(
+        !secHtml.includes('net-reflection-box') && !secHtml.includes('net-next-bridge-card'),
+        `${tag}: không viết cứng net-reflection-box / net-next-bridge-card trong sections[].content`
+      );
+    }
+  }
+
+  const basicLessonCount = basicParts.flatMap(({ part }) => part.lessons).length;
+  const phaseLessonCount = phaseParts.flatMap(({ part }) => part.lessons).length;
+  if (basicParts.length > 0) {
+    return `HP1: ${basicParts.length} module (${basicLessonCount} bài) + HP2: ${phaseParts.length} giai đoạn (${phaseLessonCount} bài)`;
+  }
+  return `${phaseParts.length} giai đoạn / ${phaseLessonCount} bài`;
 });
 
 // 4. Đường dẫn nội bộ

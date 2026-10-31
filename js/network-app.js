@@ -6,20 +6,26 @@
 (function () {
   'use strict';
 
-  var PARTS = [];
-  if (window.NET_PHASE0_DATA) PARTS.push(window.NET_PHASE0_DATA);
-  if (window.NET_PHASE1_DATA) PARTS.push(window.NET_PHASE1_DATA);
-  if (window.NET_PHASE2_DATA) PARTS.push(window.NET_PHASE2_DATA);
-  if (window.NET_PHASE3A_DATA) PARTS.push(window.NET_PHASE3A_DATA);
-  if (window.NET_PHASE3B_DATA) PARTS.push(window.NET_PHASE3B_DATA);
-  if (window.NET_PHASE4_DATA) PARTS.push(window.NET_PHASE4_DATA);
-  if (window.NET_PHASE5_DATA) PARTS.push(window.NET_PHASE5_DATA);
-  if (window.NET_PHASE6_DATA) PARTS.push(window.NET_PHASE6_DATA);
-  if (window.NET_PHASE7_DATA) PARTS.push(window.NET_PHASE7_DATA);
-  if (window.NET_PHASE8_DATA) PARTS.push(window.NET_PHASE8_DATA);
-  if (window.NET_PHASE9_DATA) PARTS.push(window.NET_PHASE9_DATA);
-  if (window.NET_PHASE10_DATA) PARTS.push(window.NET_PHASE10_DATA);
-  if (window.NET_PHASE11_DATA) PARTS.push(window.NET_PHASE11_DATA);
+  var BASIC_PARTS = [];
+  for (var b = 0; b <= 10; b++) {
+    var key = 'NET_BASIC_MOD' + b + '_DATA';
+    if (window[key]) BASIC_PARTS.push(window[key]);
+  }
+
+  var ADVANCED_PARTS = [];
+  if (window.NET_PHASE0_DATA) ADVANCED_PARTS.push(window.NET_PHASE0_DATA);
+  if (window.NET_PHASE1_DATA) ADVANCED_PARTS.push(window.NET_PHASE1_DATA);
+  if (window.NET_PHASE2_DATA) ADVANCED_PARTS.push(window.NET_PHASE2_DATA);
+  if (window.NET_PHASE3A_DATA) ADVANCED_PARTS.push(window.NET_PHASE3A_DATA);
+  if (window.NET_PHASE3B_DATA) ADVANCED_PARTS.push(window.NET_PHASE3B_DATA);
+  if (window.NET_PHASE4_DATA) ADVANCED_PARTS.push(window.NET_PHASE4_DATA);
+  if (window.NET_PHASE5_DATA) ADVANCED_PARTS.push(window.NET_PHASE5_DATA);
+  if (window.NET_PHASE6_DATA) ADVANCED_PARTS.push(window.NET_PHASE6_DATA);
+  if (window.NET_PHASE7_DATA) ADVANCED_PARTS.push(window.NET_PHASE7_DATA);
+  if (window.NET_PHASE8_DATA) ADVANCED_PARTS.push(window.NET_PHASE8_DATA);
+  if (window.NET_PHASE9_DATA) ADVANCED_PARTS.push(window.NET_PHASE9_DATA);
+  if (window.NET_PHASE10_DATA) ADVANCED_PARTS.push(window.NET_PHASE10_DATA);
+  if (window.NET_PHASE11_DATA) ADVANCED_PARTS.push(window.NET_PHASE11_DATA);
 
   var extraSectionsHtml = '' +
     '<section id="sec-lab-guide" class="net-lab-section">' +
@@ -109,11 +115,43 @@
   window.TopicEngine.createApp({
     topicId: 'network',
     topicPrefix: 'net',
-    topicTitle: 'Networking Chuyên Sâu trên Linux',
+    topicTitle: 'Chuyên đề Networking Toàn diện',
     storageKey: 'py314_net_course_state_v1',
-    parts: PARTS,
+    courses: [
+      {
+        id: 'course-net-hp1',
+        number: 'Học phần I',
+        title: 'Networking Cơ Bản',
+        icon: '🌐',
+        badge: '11 Module',
+        customClass: 'network-basic-banner',
+        desc: 'Giáo trình Mạng máy tính căn bản cho người mới bắt đầu từ con số 0: đi từ trực giác đời thường, giải mã bản chất các tầng mạng OSI/TCP-IP, tính toán Subnetting từng bước bằng tay, chẩn đoán lỗi mạng bằng lệnh CLI và thực hành Wireshark / Cisco Packet Tracer.',
+        parts: BASIC_PARTS
+      },
+      {
+        id: 'course-net-hp2',
+        number: 'Học phần II',
+        title: 'Networking Chuyên Sâu trên Linux',
+        icon: '🐧',
+        badge: '13 Giai đoạn',
+        customClass: 'network-banner',
+        desc: 'Giáo trình hạ tầng mạng chuyên sâu: lấy Linux Network Stack làm phòng thí nghiệm quan sát. Tự tay mổ xẻ sk_buff, Linux Bridge, VLAN 802.1Q, định tuyến động OSPF với FRR, máy trạng thái TCP, Netfilter & nftables, TLS 1.3, WireGuard VPN và Socket Python.',
+        parts: ADVANCED_PARTS
+      }
+    ],
     pillPrefix: 'net',
     partIcons: {
+      'part-net-b-0': '🌐',
+      'part-net-b-1': '📶',
+      'part-net-b-2': '🔌',
+      'part-net-b-3': '🔢',
+      'part-net-b-4': '✂️',
+      'part-net-b-5': '🧭',
+      'part-net-b-6': '🚚',
+      'part-net-b-7': '🌍',
+      'part-net-b-8': '🏢',
+      'part-net-b-9': '🛡️',
+      'part-net-b-10': '🩺',
       'part-net-0': '🔌',
       'part-net-1': '📦',
       'part-net-2': '🔀',
@@ -131,17 +169,20 @@
     hero: {
       accentColor: '#0284c7',
       eyebrowStyle: 'background:rgba(2,132,199,0.14);color:#0284c7;border-color:rgba(2,132,199,0.35);',
-      eyebrow: '<span>🌐 Chuyên đề Hạ tầng Mạng &amp; Kỹ thuật Hệ thống</span> <span>•</span> <span>Từ Socket Kernel đến Mạng Doanh Nghiệp</span>',
-      title: 'Làm chủ Networking Chuyên Sâu trên Linux',
-      desc: 'Giáo trình đào tạo hạ tầng mạng thực chiến theo triết lý First-Principles: lấy Linux Network Stack làm phòng thí nghiệm quan sát. Tự tay mổ xẻ cấu trúc sk_buff, dựng switch ảo bằng Linux Bridge, cô lập VLAN 802.1Q, phân tích MTU/Fragmentation, định tuyến động OSPF với FRR, máy trạng thái TCP, Netfilter &amp; nftables, DNS phân cấp, TLS 1.3, WireGuard VPN, mạng container Docker/K8s CNI và lập trình Socket Python không chặn.',
+      eyebrow: '<span>🌐 Chuyên đề Networking Toàn diện</span> <span>•</span> <span>Từ Căn Bản Trực Giác đến Kỹ Thuật Hệ Thống Linux</span>',
+      title: 'Làm chủ Mạng Máy Tính & Networking Chuyên Sâu',
+      desc: 'Lộ trình đào tạo mạng máy tính hoàn chỉnh hai học phần: Học phần I (Networking Cơ Bản) dành cho người mới bắt đầu từ trực giác đến công cụ dòng lệnh/Wireshark; Học phần II (Networking Chuyên Sâu trên Linux) đào sâu vào Linux Network Stack, Kernel Socket, Linux Bridge, VLAN, OSPF, Netfilter và WireGuard.',
       buttons: [
-        { id: 'hero-lab-guide-btn', text: '🧪 Hướng dẫn Phòng Lab Thực hành An toàn', scrollTarget: '#sec-lab-guide' }
+        { id: 'hero-hp1-btn', text: '🌐 Lộ trình Học phần I (Cơ bản)', scrollTarget: '#home-course-net-hp1' },
+        { id: 'hero-hp2-btn', text: '🐧 Lộ trình Học phần II (Chuyên sâu)', scrollTarget: '#home-course-net-hp2' },
+        { id: 'hero-lab-guide-btn', text: '🧪 Triết lý Thực hành An toàn', scrollTarget: '#sec-lab-guide' }
       ],
       stats: [
-        { value: '13 Giai đoạn', label: '70 Bài học Chuyên sâu' },
-        { value: '100% Thực chiến', label: 'Linux Namespaces & Containerlab' }
+        { value: 'Học phần I & II', label: 'Căn bản & Chuyên sâu' },
+        { value: '24 Module/GĐ', label: 'Lộ trình Thực chiến' },
+        { value: '100% Thực hành', label: 'CLI, Wireshark & Kernel' }
       ],
-      roadmapTitle: 'Lộ trình 13 Giai đoạn: Từ Socket đến Mạng Doanh Nghiệp'
+      roadmapTitle: 'Lộ trình Đào tạo Mạng Toàn diện'
     },
     overviewExtraSections: extraSectionsHtml,
     overviewExtraTocItems: [

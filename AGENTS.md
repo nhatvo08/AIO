@@ -37,7 +37,8 @@ Kiểm tra thủ công sau khi sửa UI: mở 3 trang, sidebar phải có **209 
 | `data/methods.js` | 47 phương thức `str` | Dùng cho widget tương tác |
 | `data/github/level1..3.js` | Dữ liệu chuyên đề GitHub | Gán `window.GH_LEVELn_DATA`; level3 còn có `GH_REFERENCE_DATA` |
 | `data/linux/level1..4.js` | Dữ liệu chuyên đề Linux | Gán `window.LX_LEVELn_DATA` |
-| `data/network/phase*.js` | Dữ liệu chuyên đề Networking Linux | Gán `window.NET_PHASEn_DATA` (13 giai đoạn / 70 bài) |
+| `data/network/basic-mod*.js`, `phase*.js` | Dữ liệu chuyên đề Networking (HP1 Cơ bản + HP2 Chuyên sâu Linux) | Gán `window.NET_BASIC_MODn_DATA` & `window.NET_PHASEn_DATA` |
+| `rules/05-quy-chuan-uiux-bai-hoc.md` | **Bộ quy tắc thiết kế UI/UX riêng cho `network.html`** | Chiếu theo tài liệu này khi mở rộng bài học Networking |
 | `tools/verify-all.mjs` | Kiểm tra toàn vẹn, không cần thư viện | Chạy sau mọi thay đổi |
 | `tools/build-fallback.mjs` | Sinh lại `js/file-fallback.js` (Node.js) | Đa nền tảng, không phụ thuộc PowerShell |
 | `tools/build_fallback_all.ps1` | Script sinh fallback bằng PowerShell | Script phụ trợ cho môi trường Windows |
@@ -65,9 +66,9 @@ Số lượng hiện tại: 219 bài Python, 18 bài GitHub + 2 tra cứu, 41 b�
 4. Sinh lại bundle: `node tools/build-fallback.mjs`.
 5. `node tools/verify-all.mjs` → phải 6/6.
 
-**GitHub / Linux / Chuyên đề mới**
+**GitHub / Linux / Networking / Chuyên đề mới**
 
-Thêm object bài vào mảng `lessons` của file `data/<topic>/levelN.js`; không cần sửa HTML. Sau đó chạy `node tools/verify-all.mjs`.
+Thêm object bài vào mảng `lessons` của file `data/<topic>/levelN.js` (hoặc `data/network/basic-modN.js` / `phaseN.js`). Riêng trang **Networking (`network.html`)**, bắt buộc tuân thủ quy chuẩn UI/UX và khuôn mẫu component tại `rules/05-quy-chuan-uiux-bai-hoc.md`. Sau đó chạy `node tools/verify-all.mjs`.
 
 ## 5. Quy ước code (giữ đúng như hiện trạng)
 
