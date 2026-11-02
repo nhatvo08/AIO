@@ -28,7 +28,7 @@ Truy cập nhanh thông qua thanh Header điều hướng trên cùng hoặc m�
 
 | Chuyên đề | File vào | Quy mô | Nội dung chính |
 |---|---|---|---|
-| **🐍 Python Chuyên Sâu** | [`index.html`](index.html) | 219 bài | Nền tảng, tư duy thuật toán, bản chất kiểu số/chuỗi, OOP và nội bộ CPython (Mark Lutz). |
+| **🐍 Python Chuyên Sâu** | [`index.html`](index.html) | 242 bài | Nền tảng, kiểu số/chuỗi, OOP, CPython (Mark Lutz) & Python for Data (NumPy, Pandas, EDA, API, Validation, Pipeline). |
 | **🐙 Git & GitHub** | [`github.html`](github.html) | 20 bài | Chu trình 3 trạng thái, phân nhánh, rebase, giải quyết conflict, CI/CD và Git Cheat Sheet. |
 | **🐧 Linux Thực Chiến** | [`linux.html`](linux.html) | 41 bài | Dòng lệnh CLI, quản trị tiến trình & systemd, Docker, Nginx đến kiến trúc Nhân (Kernel). |
 

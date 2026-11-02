@@ -1,0 +1,238 @@
+/* ==========================================================================
+   Data & AI Libraries Course Specific Styles
+   Tất cả bộ chọn sử dụng tiền tố .data-ai- hoặc nằm trong .data-ai-page
+   Tái sử dụng toàn diện CSS Variables từ variables.css & layout.css
+   ========================================================================== */
+
+:root {
+  --topic-data: #059669;
+  --topic-data-hover: #047857;
+  --topic-data-soft: #d1fae5;
+  --topic-data-border: #a7f3d0;
+  --topic-data-badge: #065f46;
+}
+
+[data-theme="dark"] {
+  --topic-data: #10b981;
+  --topic-data-hover: #34d399;
+  --topic-data-soft: rgba(16, 185, 129, 0.16);
+  --topic-data-border: rgba(16, 185, 129, 0.35);
+  --topic-data-badge: #6ee7b7;
+}
+
+/* 1. Header Navigation Tab Data & AI */
+.header-nav-tab[data-page="data-ai"].active {
+  color: var(--topic-data);
+}
+
+[data-theme="dark"] .header-nav-tab[data-page="data-ai"].active {
+  color: var(--topic-data);
+}
+
+/* 2. Brand Link & Badges */
+.brand-logo-data-ai {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.brand-badge-data-ai {
+  background: var(--topic-data-soft);
+  color: var(--topic-data);
+  border: 1px solid var(--topic-data-border);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+}
+
+/* 3. Hero & Banner Custom Theme */
+.data-ai-banner {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(14, 165, 233, 0.08) 100%);
+  border-left: 4px solid var(--topic-data);
+}
+
+.data-ai-theme {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.06) 0%, rgba(16, 185, 129, 0.04) 100%);
+  border: 1px solid var(--topic-data-border);
+}
+
+.data-ai-badge {
+  background: var(--topic-data);
+  color: #ffffff;
+}
+
+.data-ai-fill {
+  background: linear-gradient(90deg, #059669, #0ea5e9);
+}
+
+.data-ai-nav-pill-mini {
+  margin-left: auto;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background: var(--topic-data-soft);
+  color: var(--topic-data);
+  border: 1px solid var(--topic-data-border);
+}
+
+/* 4. Ecosystem & Comparison Grids */
+.eco-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  margin: var(--space-5) 0;
+}
+
+.eco-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.eco-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--topic-data);
+  box-shadow: var(--shadow-sm);
+}
+
+.eco-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.eco-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eco-card-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-alt);
+  color: var(--text-secondary);
+}
+
+.eco-card-desc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.eco-card-deps {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px dashed var(--border-subtle);
+  padding-top: var(--space-2);
+}
+
+/* 5. Visual Diagrams (Shape, Strides, DAG, Memory Layout) */
+.data-viz-container {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
+  overflow-x: auto;
+}
+
+.data-viz-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.memory-block-diagram {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+
+.memory-cell {
+  border: 1px solid var(--topic-data);
+  background: var(--topic-data-soft);
+  color: var(--text-primary);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  text-align: center;
+  min-width: 44px;
+}
+
+.memory-cell.highlight {
+  background: var(--topic-data);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.memory-cell-meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+/* 6. Comparison Table */
+.data-compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin: var(--space-4) 0;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+}
+
+.data-compare-table th {
+  background: var(--bg-surface-alt);
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 700;
+  border-bottom: 2px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+
+.data-compare-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.data-compare-table tr:hover td {
+  background: var(--bg-surface-hover);
+}
+
+.decision-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.decision-yes { background: #dcfce7; color: #15803d; }
+.decision-no { background: #fee2e2; color: #b91c1c; }
+.decision-maybe { background: #fef3c7; color: #b45309; }

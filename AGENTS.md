@@ -16,33 +16,35 @@ node tools/verify-all.mjs
 node tools/build-fallback.mjs
 ```
 
-`verify-all.mjs` (không cần thư viện) kiểm 6 mục: mục lục curriculum khớp `data/lessons/`, nạp được cả 219 bài, dữ liệu GitHub/Linux hợp lệ, mọi đường dẫn nội bộ trong HTML/JS tồn tại, bundle `file://` phủ đúng danh sách bài. Mã thoát `0` = đạt, `1` = có mục hỏng.
+`verify-all.mjs` (không cần thư viện) kiểm 7 mục: mục lục curriculum khớp `data/lessons/`, nạp được cả 229 bài, dữ liệu GitHub/Linux/Python Data hợp lệ, mọi đường dẫn nội bộ trong HTML/JS tồn tại, bundle `file://` phủ đúng danh sách bài. Mã thoát `0` = đạt, `1` = có mục hỏng.
 
-Kiểm tra thủ công sau khi sửa UI: mở 3 trang hoạt động, sidebar phải có **219 / 20 / 41** mục (Python / GitHub / Linux), bấm một bài bất kỳ phải render, Console **0 lỗi**.
+Kiểm tra thủ công sau khi sửa UI: mở các trang hoạt động, sidebar phải có **229 / 39 / 20 / 41** mục (Python / Python Data / GitHub / Linux), bấm một bài bất kỳ phải render, Console **0 lỗi**.
 
 ## 2. Bản đồ file
 
 | Đường dẫn | Vai trò | Ghi chú |
 |---|---|---|
 | `index.html` | Trang khóa Python | Điểm vào, **không di chuyển** |
+| `python-data.html` | Chuyên đề Python for Data (Cốt lõi - 13 Module) | Điểm vào, chạy TopicEngine trên `file://` và HTTP |
 | `github.html`, `linux.html` | 2 chuyên đề bổ trợ | Điểm vào, **không di chuyển** |
-| `css/` | `variables` → `layout` → `components` → `widgets` → `responsive`, cộng `github.css`, `linux.css` | Thứ tự nạp quan trọng: biến phải trước |
+| `css/` | `variables` → `layout` → `components` → `widgets` → `responsive`, cộng `github.css`, `linux.css`, `python-data.css` | Thứ tự nạp quan trọng: biến phải trước |
 | `js/app.js` | Controller + renderer khóa Python (ESM) | Nạp bài bằng `import(\`../data/lessons/${id}.js\`)` |
 | `js/topic-engine.js` | Engine lõi dùng chung cho các chuyên đề | IIFE, cung cấp renderer, sidebar accordion, TOC, quiz, theme sync |
-| `js/github-app.js`, `js/linux-app.js` | Cấu hình chuyên đề Git & Linux | IIFE cấu hình mỏng gọi `window.TopicEngine.createApp`, chạy mượt trên `file://` |
+| `js/github-app.js`, `js/linux-app.js`, `js/python-data-app.js` | Cấu hình chuyên đề Git, Linux & Python Data | IIFE cấu hình mỏng gọi `window.TopicEngine.createApp`, chạy mượt trên `file://` |
 | `js/widgets.js`, `storage.js`, `highlighter.js` | Widget bài học, localStorage, tô sáng mã | Dùng chung cho khóa Python |
-| `js/file-fallback.js` | **Sinh tự động** — bundle 219 bài cho chế độ `file://` | Không sửa tay; sinh lại bằng `node tools/build-fallback.mjs` |
-| `data/curriculum.js` | Mục lục 219 bài Python: học phần → phần → bài | Nguồn sự thật về `id` bài học |
+| `js/file-fallback.js` | **Sinh tự động** — bundle 229 bài cho chế độ `file://` | Không sửa tay; sinh lại bằng `node tools/build-fallback.mjs` |
+| `data/curriculum.js` | Mục lục 229 bài Python: học phần → phần → bài | Nguồn sự thật về `id` bài học |
 | `data/lessons/<id>.js` | Nội dung từng bài (`export default {...}`) | **Tên file = id**, không đổi tên tùy ý |
 | `data/methods.js` | 47 phương thức `str` | Dùng cho widget tương tác |
 | `data/github/level1..3.js` | Dữ liệu chuyên đề GitHub | Gán `window.GH_LEVELn_DATA`; level3 còn có `GH_REFERENCE_DATA` |
 | `data/linux/level1..4.js` | Dữ liệu chuyên đề Linux | Gán `window.LX_LEVELn_DATA` |
+| `data/python-data/group1..4.js` | Dữ liệu 13 Module Python for Data | Gán `window.PYDATA_GROUPn_PARTS` |
 | `tools/verify-all.mjs` | Kiểm tra toàn vẹn, không cần thư viện | Chạy sau mọi thay đổi |
 | `tools/build-fallback.mjs` | Sinh lại `js/file-fallback.js` (Node.js) | Đa nền tảng, không phụ thuộc PowerShell |
 | `tools/build_fallback_all.ps1` | Script sinh fallback bằng PowerShell | Script phụ trợ cho môi trường Windows |
 | `tools/calc_sri.mjs` | Tính hash SRI khi nâng phiên bản KaTeX | Dùng một lần khi đổi CDN |
 
-Số lượng hiện tại: 219 bài Python, 18 bài GitHub + 2 tra cứu, 41 bài Linux.
+Số lượng hiện tại: 229 bài Python, 39 bài Python for Data (13 Module), 18 bài GitHub + 2 tra cứu, 41 bài Linux.
 
 ## 3. Bất biến — không được vi phạm
 

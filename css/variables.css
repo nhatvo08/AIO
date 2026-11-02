@@ -69,6 +69,8 @@
   --topic-linux-soft: #fef3c7;
   --topic-linux-bg: rgba(245, 158, 11, 0.14);
   --topic-linux-border: rgba(245, 158, 11, 0.35);
+  --topic-pydata: #0284c7;
+  --topic-pydata-soft: #e0f2fe;
 
   /* Màu điểm nhấn Python vàng/xanh cho huy hiệu 3.14 */
   --py-gold: #d97706;
@@ -190,6 +192,8 @@
   --topic-linux-soft: rgba(245, 158, 11, 0.16);
   --topic-linux-bg: rgba(245, 158, 11, 0.14);
   --topic-linux-border: rgba(245, 158, 11, 0.35);
+  --topic-pydata: #38bdf8;
+  --topic-pydata-soft: rgba(56, 189, 248, 0.16);
 
   --py-gold: #fbbf24;
   --py-gold-bg: rgba(245, 158, 11, 0.15);

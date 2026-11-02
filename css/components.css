@@ -481,6 +481,12 @@ code:not(pre code) {
   border-color: var(--deep-border);
 }
 
+.breadcrumb-course-badge.course-python-for-data {
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284c7;
+  border-color: rgba(2, 132, 199, 0.3);
+}
+
 .sr-course-badge {
   display: inline-block;
   font-size: 0.65rem;

@@ -814,7 +814,7 @@
       // Exercises
       var exercisesHtml = (lesson.exercises || []).map(function (ex, exIdx) {
         var exTitle = ex.title || ('Thử thách thực hành ' + (exIdx + 1));
-        var exProblem = ex.problem || ex.question || ex.task || ex.prompt || '';
+        var exProblem = ex.problem || ex.description || ex.question || ex.task || ex.prompt || '';
 
         var rawCode = ex.solutionCode || ex.command || '';
         if (!rawCode && ex.solution) {
@@ -830,7 +830,7 @@
 
         var exOutput = ex.solutionOutput || (ex.solution && ex.solution.output) || '';
         var exLevel = ex.level || 'Vừa';
-        var exExplanation = ex.explanation || (ex.solution && ex.solution.explanation) || (ex.solution && typeof ex.solution.desc === 'string' ? ex.solution.desc : '');
+        var exExplanation = ex.explanation || ex.thoughtProcess || (ex.solution && ex.solution.explanation) || (ex.solution && typeof ex.solution.desc === 'string' ? ex.solution.desc : '');
         var exHint = ex.hint || '';
         var exCodeId = topicPrefix + '-sol-' + lesson.id + '-' + exIdx;
 
@@ -952,7 +952,13 @@
       }).join('');
 
       // Summary + Câu hỏi tự kiểm tra (selfReviewQuestions)
-      var summaryHtml = (lesson.summary || []).map(function (line) {
+      var rawSummary = lesson.summary;
+      var summaryList = Array.isArray(rawSummary)
+        ? rawSummary
+        : (typeof rawSummary === 'string' && rawSummary.trim()
+            ? rawSummary.split(/\r?\n|\\n/).map(function (s) { return s.replace(/^\d+\.\s*/, '').trim(); }).filter(Boolean)
+            : []);
+      var summaryHtml = summaryList.map(function (line) {
         return '<li>' + formatInlineCode(line) + '</li>';
       }).join('');
       var selfReviewHtml = '';

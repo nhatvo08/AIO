@@ -118,6 +118,25 @@ await check('Dữ liệu Linux', () => {
   return `${parts.length} cấp / ${ids.length} bài`;
 });
 
+await check('Dữ liệu Python Data', () => {
+  const sandbox = { window: {}, console };
+  vm.createContext(sandbox);
+  ['group1-foundation.js', 'group2-wrangling.js', 'group3-analysis.js', 'group4-engineering.js'].forEach((file) => {
+    vm.runInContext(read(`data/python-data/${file}`), sandbox, { filename: file });
+  });
+  const parts = [
+    ...(sandbox.window.PYDATA_GROUP1_PARTS || []),
+    ...(sandbox.window.PYDATA_GROUP2_PARTS || []),
+    ...(sandbox.window.PYDATA_GROUP3_PARTS || []),
+    ...(sandbox.window.PYDATA_GROUP4_PARTS || [])
+  ];
+  assert(parts.length === 13, `Cần đúng 13 Module nhưng có ${parts.length}`);
+  const ids = parts.flatMap((p) => p.lessons.map((lesson) => lesson.id));
+  assert(new Set(ids).size === ids.length, 'Có id bài Python Data bị trùng');
+  assert(ids.length === 39, `Cần đúng 39 bài học nhưng có ${ids.length}`);
+  return `${parts.length} module / ${ids.length} bài`;
+});
+
 // 4. Đường dẫn nội bộ
 const brokenRefs = [];
 let refCount = 0;

@@ -70679,6 +70679,16 @@ function bootApp() {
   backdrop?.addEventListener('click', closeMobileDrawer);
   document.getElementById('sidebar-close-btn')?.addEventListener('click', closeMobileDrawer);
 
+  // Chuyển tiếp sự kiện cuộn chuột (wheel) từ toàn bộ vùng Sidebar sang Mục lục
+  const treeEl = document.getElementById('curriculum-tree');
+  if (sidebarLeft && treeEl) {
+    sidebarLeft.addEventListener('wheel', (e) => {
+      if (!treeEl.contains(e.target)) {
+        treeEl.scrollTop += e.deltaY;
+      }
+    }, { passive: true });
+  }
+
   // Đồng bộ route từ URL hash (hỗ trợ hash ban đầu và nút Back/Forward)
   function handleRouteFromHash(isInitial = false) {
     const hash = window.location.hash || '';

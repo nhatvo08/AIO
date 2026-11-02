@@ -1,0 +1,226 @@
+/* ==========================================================================
+   Python for Data Course Specific Styles — Chuyên đề Python for Data (Cốt lõi)
+   Prefix: .pd- (hoặc scoped trong .python-data-page)
+   Tận dụng toàn bộ CSS Variables và Design Tokens hiện có của hệ thống
+   ========================================================================== */
+
+:root {
+  --topic-pydata: #0284c7;
+  --topic-pydata-dark: #38bdf8;
+  --topic-pydata-subtle: rgba(2, 132, 199, 0.12);
+  --topic-pydata-border: rgba(2, 132, 199, 0.35);
+}
+
+[data-theme="dark"] {
+  --topic-pydata: #38bdf8;
+  --topic-pydata-dark: #7dd3fc;
+  --topic-pydata-subtle: rgba(56, 189, 248, 0.15);
+  --topic-pydata-border: rgba(56, 189, 248, 0.35);
+}
+
+/* 1. Header Nav Tab Active State */
+.header-nav-tab.active[data-page="python-data"],
+.header-nav-tab#top-nav-python-data.active {
+  background: var(--topic-pydata-subtle);
+  color: var(--topic-pydata);
+  border-color: var(--topic-pydata-border);
+}
+
+/* 2. Overview Button Active */
+.python-data-page #nav-overview-btn.active {
+  background: var(--topic-pydata-subtle);
+  color: var(--topic-pydata);
+  border-color: var(--topic-pydata-border);
+}
+
+/* 3. TechMart Case Study Grid */
+.pd-context-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin: 20px 0;
+}
+
+.pd-context-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.pd-context-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.12);
+  border-color: var(--topic-pydata);
+}
+
+.pd-context-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+
+.pd-context-icon {
+  font-size: 1.4rem;
+}
+
+.pd-context-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* 4. 3-Tier Knowledge Pyramid */
+.pd-pyramid-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.pd-pyramid-tier {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.pd-pyramid-tier::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.pd-tier-1::before { background: #10b981; }
+.pd-tier-2::before { background: #f59e0b; }
+.pd-tier-3::before { background: #0284c7; }
+
+.pd-tier-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.pd-tier-1 .pd-tier-badge { background: rgba(16, 185, 129, 0.15); color: #059669; }
+.pd-tier-2 .pd-tier-badge { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+.pd-tier-3 .pd-tier-badge { background: rgba(2, 132, 199, 0.15); color: #0284c7; }
+
+.pd-tier-content h4 {
+  margin: 0 0 6px 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pd-tier-content p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* 5. Memory & Performance Visual Grid */
+.pd-perf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.pd-perf-box {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.pd-perf-metric {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--topic-pydata);
+  margin-bottom: 4px;
+}
+
+.pd-perf-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* 6. Table styling adjustments for math & comparisons */
+.python-data-page .table-styled td strong {
+  color: var(--topic-pydata);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pd-context-grid {
+    grid-template-columns: 1fr;
+  }
+  .pd-pyramid-tier {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* 7. Sidebar and Curriculum Tree Scrolling Enhancements */
+.python-data-page .curriculum-tree {
+  scrollbar-gutter: stable;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.python-data-page .curriculum-tree .part-group {
+  flex-shrink: 0;
+}
+
+.python-data-page .curriculum-tree .part-lessons {
+  flex-shrink: 0;
+}
+
+.python-data-page .lesson-nav-btn {
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .python-data-page .sidebar-left {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .python-data-page .curriculum-tree {
+    overflow-y: visible !important;
+    flex: none !important;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 901px) {
+  .python-data-page .sidebar-left {
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .python-data-page .curriculum-tree {
+    flex: none;
+    overflow-y: visible;
+  }
+}
