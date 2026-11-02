@@ -110,7 +110,7 @@ async function runAllChecks() {
     }
 
     assert(chData.callouts && Array.isArray(chData.callouts.pitfalls) && chData.callouts.pitfalls.length >= 2, `Thiếu cạm bẫy thường gặp trong callouts (${chId})`);
-    assert(chData.callouts && chData.callouts.warning, `Thiếu cảnh báo bảo mật trong callouts (${chId})`);
+    assert(chData.callouts && chData.callouts.warning && chData.callouts.warning.title && chData.callouts.warning.content, `Thiếu cảnh báo bảo mật hợp lệ (cần title và content) trong callouts (${chId})`);
     assert(Array.isArray(chData.exercises) && chData.exercises.length >= 3, `Thiếu bài tập thực hành (${chId}, cần >= 3 bài)`);
     assert(Array.isArray(chData.quiz) && chData.quiz.length >= 3, `Thiếu câu hỏi quiz trắc nghiệm (${chId}, cần >= 3 câu)`);
     assert(Array.isArray(chData.summary) && chData.summary.length >= 3, `Thiếu tóm tắt bài học (${chId})`);
@@ -178,6 +178,81 @@ async function runAllChecks() {
   await check('Nạp Chương Đã Phát Hành (Ch.12)', () => {
     const ch12 = loadScript('data/curl/chapters/ch12.js', 'CURL_CHAPTER_CH12_DATA');
     return verifyChapterStructure(ch12, 'ch12', 'CURL_CHAPTER_CH12_DATA');
+  });
+
+  await check('Nạp Chương Đã Phát Hành (Ch.13)', () => {
+    const ch13 = loadScript('data/curl/chapters/ch13.js', 'CURL_CHAPTER_CH13_DATA');
+    return verifyChapterStructure(ch13, 'ch13', 'CURL_CHAPTER_CH13_DATA');
+  });
+
+  await check('Nạp Chương Đã Phát Hành (Ch.14)', () => {
+    const ch14 = loadScript('data/curl/chapters/ch14.js', 'CURL_CHAPTER_CH14_DATA');
+    return verifyChapterStructure(ch14, 'ch14', 'CURL_CHAPTER_CH14_DATA');
+  });
+
+  await check('Nạp Chương Đã Phát Hành (Ch.15)', () => {
+    const ch15 = loadScript('data/curl/chapters/ch15.js', 'CURL_CHAPTER_CH15_DATA');
+    return verifyChapterStructure(ch15, 'ch15', 'CURL_CHAPTER_CH15_DATA');
+  });
+
+  await check('Nạp Chương Đã Phát Hành (Ch.16)', () => {
+    const ch16 = loadScript('data/curl/chapters/ch16.js', 'CURL_CHAPTER_CH16_DATA');
+    return verifyChapterStructure(ch16, 'ch16', 'CURL_CHAPTER_CH16_DATA');
+  });
+
+  await check('Nạp Chương Đã Phát Hành (Ch.17)', () => {
+    const ch17 = loadScript('data/curl/chapters/ch17.js', 'CURL_CHAPTER_CH17_DATA');
+    return verifyChapterStructure(ch17, 'ch17', 'CURL_CHAPTER_CH17_DATA');
+  });
+
+  await check('Nạp Chương Đã Phát Hành (Ch.18)', () => {
+    const ch18 = loadScript('data/curl/chapters/ch18.js', 'CURL_CHAPTER_CH18_DATA');
+    return verifyChapterStructure(ch18, 'ch18', 'CURL_CHAPTER_CH18_DATA');
+  });
+
+  await check('Nạp Chương Đã Phát Hành (Ch.19)', () => {
+    const ch19 = loadScript('data/curl/chapters/ch19.js', 'CURL_CHAPTER_CH19_DATA');
+    return verifyChapterStructure(ch19, 'ch19', 'CURL_CHAPTER_CH19_DATA');
+  });
+
+  await check('Nạp Chương Đã Phát Hành (Ch.20)', () => {
+    const ch20 = loadScript('data/curl/chapters/ch20.js', 'CURL_CHAPTER_CH20_DATA');
+    return verifyChapterStructure(ch20, 'ch20', 'CURL_CHAPTER_CH20_DATA');
+  });
+
+  await check('Nạp Phụ Lục Đã Phát Hành (App-A)', () => {
+    const appA = loadScript('data/curl/appendices/app-a.js', 'CURL_CHAPTER_APP_A_DATA');
+    return verifyChapterStructure(appA, 'app-a', 'CURL_CHAPTER_APP_A_DATA');
+  });
+
+  await check('Nạp Phụ Lục Đã Phát Hành (App-B)', () => {
+    const appB = loadScript('data/curl/appendices/app-b.js', 'CURL_CHAPTER_APP_B_DATA');
+    return verifyChapterStructure(appB, 'app-b', 'CURL_CHAPTER_APP_B_DATA');
+  });
+
+  await check('Nạp Phụ Lục Đã Phát Hành (App-C)', () => {
+    const appC = loadScript('data/curl/appendices/app-c.js', 'CURL_CHAPTER_APP_C_DATA');
+    return verifyChapterStructure(appC, 'app-c', 'CURL_CHAPTER_APP_C_DATA');
+  });
+
+  await check('Nạp Phụ Lục Đã Phát Hành (App-D)', () => {
+    const appD = loadScript('data/curl/appendices/app-d.js', 'CURL_CHAPTER_APP_D_DATA');
+    return verifyChapterStructure(appD, 'app-d', 'CURL_CHAPTER_APP_D_DATA');
+  });
+
+  await check('Nạp Phụ Lục Đã Phát Hành (App-E)', () => {
+    const appE = loadScript('data/curl/appendices/app-e.js', 'CURL_CHAPTER_APP_E_DATA');
+    return verifyChapterStructure(appE, 'app-e', 'CURL_CHAPTER_APP_E_DATA');
+  });
+
+  await check('Nạp Phụ Lục Đã Phát Hành (App-F)', () => {
+    const appF = loadScript('data/curl/appendices/app-f.js', 'CURL_CHAPTER_APP_F_DATA');
+    return verifyChapterStructure(appF, 'app-f', 'CURL_CHAPTER_APP_F_DATA');
+  });
+
+  await check('Nạp Phụ Lục Đã Phát Hành (App-G)', () => {
+    const appG = loadScript('data/curl/appendices/app-g.js', 'CURL_CHAPTER_APP_G_DATA');
+    return verifyChapterStructure(appG, 'app-g', 'CURL_CHAPTER_APP_G_DATA');
   });
 
   // 4. Kiểm tra Tài nguyên Frontend

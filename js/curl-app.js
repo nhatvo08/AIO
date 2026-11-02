@@ -515,12 +515,17 @@
       ].join('\n');
     }).join('\n');
 
-    var warningHtml = warningData ? [
-      '<div class="callout-box callout-warning">',
-      '  <div class="callout-header"><span>🛡️ Lưu ý bảo mật:</span> <span>' + formatInlineCode(warningData.title) + '</span></div>',
-      '  <div class="callout-body"><p>' + formatInlineCode(warningData.content) + '</p></div>',
-      '</div>'
-    ].join('\n') : '';
+    var warningHtml = '';
+    if (warningData) {
+      var wTitle = (typeof warningData === 'object' && warningData.title) ? warningData.title : 'Cảnh báo an ninh & bảo mật';
+      var wContent = (typeof warningData === 'object' && warningData.content) ? warningData.content : String(warningData);
+      warningHtml = [
+        '<div class="callout-box callout-warning">',
+        '  <div class="callout-header"><span>🛡️ Lưu ý bảo mật:</span> <span>' + formatInlineCode(wTitle) + '</span></div>',
+        '  <div class="callout-body"><p>' + formatInlineCode(wContent) + '</p></div>',
+        '</div>'
+      ].join('\n');
+    }
 
     var deepDiveHtml = deepDiveData ? [
       '<details class="deep-dive-details">',

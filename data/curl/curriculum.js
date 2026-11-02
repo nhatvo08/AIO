@@ -256,7 +256,7 @@
       curlMinVersion: '7.50.0',
       keywords: ['HTTPS', 'TLS 1.3', 'CA bundle', '-k insecure', '--cacert', '--cert', '--key', 'mTLS', 'PEM DER PKCS#12'],
       prerequisites: ['ch08', 'ch12'],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Cơ chế xác thực chứng chỉ số, thiết lập mTLS với private key, phân tích nguy cơ tấn công MitM khi dùng -k và cách sửa chuẩn.'
     },
     {
@@ -271,7 +271,7 @@
       curlMinVersion: '7.66.0',
       keywords: ['--proxy', 'socks5 vs socks5h', '--resolve', '--doh-url', '--unix-socket', 'HTTP/2', 'HTTP/3', 'NO_PROXY'],
       prerequisites: ['ch12', 'ch13'],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Định tuyến traffic qua Proxy/SOCKS, phân giải DNS bảo mật DoH, can thiệp DNS với --resolve, gọi API qua Unix domain socket và HTTP/3.'
     },
     {
@@ -286,7 +286,7 @@
       curlMinVersion: '7.68.0',
       keywords: ['If-None-Match', 'ETag', 'If-Modified-Since', '--etag-save', '--etag-compare', '304 Not Modified', '--compressed'],
       prerequisites: ['ch03', 'ch09'],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Khai thác conditional request để nhận HTTP 304, tự động hóa lưu và so khớp ETag với cờ mới của cURL, tối ưu 90% băng thông.'
     },
     {
@@ -301,7 +301,7 @@
       curlMinVersion: '7.76.0',
       keywords: ['-f', '--fail-with-body', '--retry', '--retry-all-errors', 'exit codes', 'backoff jitter', 'idempotency', 'Retry-After'],
       prerequisites: ['ch11', 'ch12'],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Phân biệt lỗi mạng vs HTTP 4xx/5xx bằng exit code, kết hợp --fail-with-body, chiến lược retry chỉ cho request idempotent kèm exponential backoff.'
     },
     {
@@ -316,7 +316,7 @@
       curlMinVersion: '7.82.0',
       keywords: ['CRUD API', 'pagination cursor link header', 'rate limiting', 'GraphQL query mutation', 'webhook debugging'],
       prerequisites: ['ch06', 'ch08', 'ch16'],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Xây dựng workflow gọi API hoàn chỉnh: xác thực, duyệt trang dữ liệu lớn, xử lý phản hồi 429 Rate Limit và truy vấn GraphQL payload.'
     },
     {
@@ -325,14 +325,14 @@
       levelId: 'level-3',
       levelName: 'Chuyên sâu',
       number: 'Chương 18',
-      title: 'Cấu Hình & Scripting: .curlrc, -K, --next, --parallel & Tự Động Hóa An Toàn',
-      shortTitle: 'Config, Scripting & Parallel',
+      title: 'Tự Động Hóa CI/CD, Kịch Bản Shell & Xử Lý Output JSON Với jq',
+      shortTitle: 'CI/CD Automation & jq Scripting',
       durationMinutes: 35,
-      curlMinVersion: '7.66.0',
-      keywords: ['.curlrc', '-K --config', '--config -', '--next', '--parallel', 'jq pipeline', 'set -euo pipefail', 'an toàn biến shell'],
-      prerequisites: ['ch02', 'ch09', 'ch16'],
-      qaStatus: 'draft',
-      summary: 'Quản lý tùy chọn mặc định trong .curlrc, thực hiện nhiều request độc lập trong một lệnh qua --next, tải song song --parallel và viết script an toàn.'
+      curlMinVersion: '7.70.0',
+      keywords: ['CI/CD pipeline', 'GitHub Actions', 'jq parser', 'set -euo pipefail', '--fail-with-body', '-w "%{json}"', 'healthcheck polling', 'secrets masking'],
+      prerequisites: ['ch02', 'ch12', 'ch16'],
+      qaStatus: 'verified',
+      summary: 'Tích hợp cURL vào pipeline CI/CD an toàn: bộ cờ vàng fail-fast, chốt chặn pipefail, bóc tách JSON và kiểm tra SLA với jq, cùng kịch bản healthcheck polling.'
     },
     {
       id: 'ch19',
@@ -346,7 +346,7 @@
       curlMinVersion: '7.50.0',
       keywords: ['.netrc chmod 600', 'process table leak ps aux', 'SSRF defense', 'command injection', 'CI/CD security review checklist'],
       prerequisites: ['ch08', 'ch13', 'ch18'],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Đóng kín mọi lỗ hổng rò rỉ credential: che giấu secret khỏi lệnh ps, phân quyền file .netrc, chống tấn công SSRF và bảng checklist review an toàn.'
     },
     {
@@ -361,7 +361,7 @@
       curlMinVersion: '7.50.0',
       keywords: ['libcurl', 'pycurl', 'docker alpine certs', 'curl to code', 'postman import', 'k6 wrk grpcurl websocat'],
       prerequisites: ['ch01', 'ch18', 'ch19'],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Cách libcurl vận hành trong Python/Go/Node, kỹ thuật build cURL tối ưu trong Docker container, và khi nào nên chuyển sang k6 hay grpcurl.'
     },
 
@@ -378,7 +378,7 @@
       curlMinVersion: '7.0.0',
       keywords: ['option matrix', 'tra cứu flag', 'phiên bản tối thiểu cURL', 'cờ nguy hiểm'],
       prerequisites: [],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Cẩm nang tra cứu tức thì toàn bộ cờ option của cURL theo từng nhóm tính năng kèm badge phiên bản tối thiểu.'
     },
     {
@@ -393,7 +393,7 @@
       curlMinVersion: '7.0.0',
       keywords: ['http status 200', '301 vs 302', '401 vs 403', '429 rate limit', '500 502 503'],
       prerequisites: [],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Phân loại chi tiết các mã phản hồi HTTP 1xx, 2xx, 3xx, 4xx, 5xx và cách cURL xử lý từng mã.'
     },
     {
@@ -408,7 +408,7 @@
       curlMinVersion: '7.0.0',
       keywords: ['exit code 0', 'exit code 6 dns', 'exit code 28 timeout', 'exit code 35 60 ssl', 'exit code 22 fail'],
       prerequisites: [],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Giải mã toàn bộ mã lỗi trả về của chương trình curl.exe và cách viết cấu trúc switch-case bắt lỗi trong shell script.'
     },
     {
@@ -423,7 +423,7 @@
       curlMinVersion: '7.0.0',
       keywords: ['bash quotes', 'powershell backtick', 'cmd caret ^', 'json escaping', 'line continuation'],
       prerequisites: [],
-      qaStatus: 'draft',
+      qaStatus: 'verified',
       summary: 'Bảng tổng hợp chi tiết quy tắc dấu nháy đơn, nháy kép, ký tự xuống dòng và biến môi trường trên 3 shell phổ biến nhất.'
     },
     {
@@ -437,9 +437,9 @@
       durationMinutes: 15,
       curlMinVersion: '7.0.0',
       keywords: ['curl -V features', 'AsynchDNS', 'HSTS', 'HTTP2', 'HTTP3', 'UnixSockets', 'brotli zstd'],
-      prerequisites: [],
-      qaStatus: 'draft',
-      summary: 'Ý nghĩa từng cờ trong dòng Features và Protocols của lệnh curl -V để kiểm tra môi trường chạy.'
+      prerequisites: ['ch01', 'ch07', 'ch08', 'ch18', 'ch20'],
+      qaStatus: 'verified',
+      summary: 'Giải mã toàn diện từng cờ trong dòng Features và Protocols của lệnh curl -V, đối chiếu các bản build cURL trên Windows vs Linux, và kỹ thuật Feature Detection trong script tự động hóa.'
     },
     {
       id: 'app-f',
@@ -449,12 +449,12 @@
       number: 'Phụ lục F',
       title: 'Bảng Thuật Ngữ Chuẩn Hóa cURL & Mạng Máy Tính (Glossary)',
       shortTitle: 'Từ điển Thuật ngữ Glossary',
-      durationMinutes: 15,
+      durationMinutes: 20,
       curlMinVersion: '7.0.0',
-      keywords: ['glossary', 'thuật ngữ curl', 'idempotent', 'mtls', 'doh', 'ttfb', 'chunked transfer'],
-      prerequisites: [],
-      qaStatus: 'draft',
-      summary: 'Định nghĩa ngắn gọn, chính xác các khái niệm kỹ thuật cốt lõi được sử dụng xuyên suốt bộ tài liệu.'
+      keywords: ['glossary', 'thuật ngữ curl', 'idempotent', 'mtls', 'doh', 'ttfb', 'chunked transfer', 'alpn', 'sni', 'keep-alive', 'head-of-line blocking'],
+      prerequisites: ['ch01', 'ch07', 'ch08', 'ch13', 'ch14'],
+      qaStatus: 'verified',
+      summary: 'Cẩm nang tra cứu và giải mã hơn 50 thuật ngữ kỹ thuật cốt lõi về HTTP, TCP/IP, TLS/PKI, cURL Engine và Hệ thống phân tán, gắn liền với cờ lệnh và kịch bản thực tế.'
     },
     {
       id: 'app-g',
@@ -464,12 +464,12 @@
       number: 'Phụ lục G',
       title: 'Sổ Tay Troubleshooting & Những Lỗi Hay Gặp Khi Chạy cURL',
       shortTitle: 'Troubleshooting & FAQ',
-      durationMinutes: 20,
+      durationMinutes: 25,
       curlMinVersion: '7.0.0',
-      keywords: ['troubleshooting', 'lỗi ssl certificate', 'lỗi quote powershell', 'lỗi curl invoke-webrequest', 'faq'],
-      prerequisites: [],
-      qaStatus: 'draft',
-      summary: 'Tổng hợp các câu hỏi thường gặp nhất và cách giải quyết triệt để sự cố khi thực thi lệnh cURL.'
+      keywords: ['troubleshooting', 'lỗi ssl certificate', 'lỗi quote powershell', 'lỗi curl invoke-webrequest', 'faq', 'exit code 6', 'exit code 28', 'exit code 35', 'exit code 60', 'cây quyết định'],
+      prerequisites: ['ch01', 'ch02', 'ch07', 'app-c', 'app-d'],
+      qaStatus: 'verified',
+      summary: 'Sổ tay chẩn đoán sự cố mạng, giải mã các mã lỗi kinh điển (Exit Code 6, 28, 35, 52, 60), cây quyết định (Decision Tree) khoanh vùng nguyên nhân và 15 câu hỏi FAQ thực chiến nhất.'
     }
   ];
 

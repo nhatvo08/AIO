@@ -91,6 +91,30 @@
       syntax: '--retry-connrefused',
       docsUrl: 'https://curl.se/docs/manpage.html#--retry-connrefused'
     },
+    '--retry': {
+      minVersion: '7.12.3',
+      releaseDate: '2004-12-20',
+      category: 'Error & Retry',
+      description: 'Số lần thử lại tối đa khi gặp lỗi tạm thời (Transient error: 408, 500, 502, 503, 504 hoặc lỗi mạng)',
+      syntax: '--retry <num>',
+      docsUrl: 'https://curl.se/docs/manpage.html#--retry'
+    },
+    '--retry-delay': {
+      minVersion: '7.12.3',
+      releaseDate: '2004-12-20',
+      category: 'Error & Retry',
+      description: 'Khoảng thời gian chờ (giây) giữa các lần thử lại thay vì dùng Exponential Backoff tự động',
+      syntax: '--retry-delay <seconds>',
+      docsUrl: 'https://curl.se/docs/manpage.html#--retry-delay'
+    },
+    '--retry-max-time': {
+      minVersion: '7.12.3',
+      releaseDate: '2004-12-20',
+      category: 'Error & Retry',
+      description: 'Tổng thời gian tối đa (giây) cho phép toàn bộ chu trình thử lại (ngăn chặn kẹt tiến trình)',
+      syntax: '--retry-max-time <seconds>',
+      docsUrl: 'https://curl.se/docs/manpage.html#--retry-max-time'
+    },
 
     // 2b. Redirect & Timeout
     '--connect-timeout': {
@@ -136,6 +160,14 @@
       description: 'Yêu cầu nén response (gzip, deflate, br, zstd) và tự động giải nén trong suốt',
       syntax: '--compressed',
       docsUrl: 'https://curl.se/docs/manpage.html#--compressed'
+    },
+    '--time-cond': {
+      minVersion: '7.1.0',
+      releaseDate: '2000-08-07',
+      category: 'Caching',
+      description: 'Gửi request có điều kiện theo thời gian sửa đổi Last-Modified (hoặc so sánh mtime của tệp tin cục bộ)',
+      syntax: '-z, --time-cond <time|file>',
+      docsUrl: 'https://curl.se/docs/manpage.html#-z'
     },
 
     // 4. Output, File & Directory
@@ -215,6 +247,31 @@
       syntax: '--resolve <host:port:address[,address]...>',
       docsUrl: 'https://curl.se/docs/manpage.html#--resolve'
     },
+    '--proxy': {
+      minVersion: '7.1.0',
+      releaseDate: '2000-08-07',
+      category: 'Network & Proxy',
+      description: 'Định tuyến lưu lượng qua máy chủ Proxy chỉ định (HTTP, HTTPS, SOCKS4, SOCKS5)',
+      syntax: '-x, --proxy [protocol://]host[:port]',
+      docsUrl: 'https://curl.se/docs/manpage.html#-x'
+    },
+    '--noproxy': {
+      minVersion: '7.19.4',
+      releaseDate: '2009-03-03',
+      category: 'Network & Proxy',
+      description: 'Danh sách các tên miền hoặc IP không đi qua proxy (loại trừ proxy cho localhost và mạng nội bộ)',
+      syntax: '--noproxy <list>',
+      docsUrl: 'https://curl.se/docs/manpage.html#--noproxy'
+    },
+    '--socks5-hostname': {
+      minVersion: '7.18.0',
+      releaseDate: '2008-01-28',
+      category: 'Network & Proxy',
+      description: 'Sử dụng SOCKS5 Proxy và yêu cầu phân giải DNS từ xa tại máy chủ Proxy (chống rò rỉ DNS Leak)',
+      syntax: '--socks5-hostname <host[:port]>',
+      safeNote: 'Khuyến nghị dùng để chống rò rỉ lịch sử truy cập DNS tại mạng nội bộ.',
+      docsUrl: 'https://curl.se/docs/manpage.html#--socks5-hostname'
+    },
     '--unix-socket': {
       minVersion: '7.40.0',
       releaseDate: '2015-01-08',
@@ -236,6 +293,50 @@
       safeNote: 'CẤM DÙNG TRÊN PRODUCTION. Cho phép tấn công Man-in-the-Middle (MitM) đánh cắp toàn bộ dữ liệu và token.',
       docsUrl: 'https://curl.se/docs/manpage.html#--insecure'
     },
+    '--cacert': {
+      minVersion: '7.4.2',
+      releaseDate: '2000-10-11',
+      category: 'Security & TLS',
+      description: 'Chỉ định đường dẫn tệp CA bundle (X.509 PEM) để xác minh chứng chỉ máy chủ an toàn thay vì dùng -k',
+      syntax: '--cacert <file>',
+      safeNote: 'Giải pháp chuẩn Production để tin cậy CA nội bộ trong môi trường Staging/Corporate.',
+      docsUrl: 'https://curl.se/docs/manpage.html#--cacert'
+    },
+    '--cert': {
+      minVersion: '7.1.0',
+      releaseDate: '2000-08-07',
+      category: 'Security & TLS',
+      description: 'Chỉ định tệp chứng chỉ của client (Client Certificate) cho xác thực hai chiều mTLS',
+      syntax: '-E, --cert <certificate[:password]>',
+      safeNote: 'Bảo vệ danh tính client trong kiến trúc Zero-Trust.',
+      docsUrl: 'https://curl.se/docs/manpage.html#--cert'
+    },
+    '--key': {
+      minVersion: '7.9.3',
+      releaseDate: '2002-01-23',
+      category: 'Security & TLS',
+      description: 'Chỉ định tệp khóa riêng tư (Private Key) tương ứng với client certificate trong mTLS',
+      syntax: '--key <key>',
+      safeNote: 'Private Key phải được bảo mật tuyệt đối, phân quyền chmod 600, không commit lên Git.',
+      docsUrl: 'https://curl.se/docs/manpage.html#--key'
+    },
+    '--pinnedpubkey': {
+      minVersion: '7.39.0',
+      releaseDate: '2014-11-05',
+      category: 'Security & TLS',
+      description: 'Ghim khóa công khai bằng mã băm SHA-256 (hoặc tệp) để phòng chống tấn công mạo danh ngay cả khi CA bị thỏa hiệp',
+      syntax: '--pinnedpubkey <hashes>',
+      safeNote: 'Cực hạn bảo mật cho các ứng dụng tài chính nhạy cảm.',
+      docsUrl: 'https://curl.se/docs/manpage.html#--pinnedpubkey'
+    },
+    '--tls-max': {
+      minVersion: '7.54.0',
+      releaseDate: '2017-04-19',
+      category: 'Security & TLS',
+      description: 'Giới hạn phiên bản TLS tối đa cho phép thương lượng với máy chủ (1.2, 1.3)',
+      syntax: '--tls-max <VERSION>',
+      docsUrl: 'https://curl.se/docs/manpage.html#--tls-max'
+    },
     '--location-trusted': {
       minVersion: '7.10.4',
       releaseDate: '2003-03-31',
@@ -246,6 +347,38 @@
       riskLevel: 'CRITICAL',
       safeNote: 'RỦI RO RÒ RỈ SECRET: Nếu redirect dẫn tới domain của bên thứ ba, token sẽ bị lộ hoàn toàn.',
       docsUrl: 'https://curl.se/docs/manpage.html#--location-trusted'
+    },
+    '--proto': {
+      minVersion: '7.19.4',
+      releaseDate: '2009-03-03',
+      category: 'Security & SSRF Defense',
+      description: 'Giới hạn danh sách giao thức mạng được phép kết nối (phòng thủ SSRF tối quan trọng, ví dụ: =http,https)',
+      syntax: '--proto <protocols>',
+      docsUrl: 'https://curl.se/docs/manpage.html#--proto'
+    },
+    '--proto-redir': {
+      minVersion: '7.20.0',
+      releaseDate: '2010-02-09',
+      category: 'Security & SSRF Defense',
+      description: 'Giới hạn danh sách giao thức mạng được phép chuyển hướng tới khi theo dõi redirect (ngăn chặn SSRF pivot sang file:// hoặc gopher://)',
+      syntax: '--proto-redir <protocols>',
+      docsUrl: 'https://curl.se/docs/manpage.html#--proto-redir'
+    },
+    '--libcurl': {
+      minVersion: '7.16.1',
+      releaseDate: '2007-01-29',
+      category: 'Code Generation',
+      description: 'Tự động sinh mã nguồn ngôn ngữ C (sử dụng thư viện libcurl) tương đương với câu lệnh cURL CLI vừa thực thi',
+      syntax: '--libcurl <filename.c>',
+      docsUrl: 'https://curl.se/docs/manpage.html#--libcurl'
+    },
+    '--help': {
+      minVersion: '7.73.0',
+      releaseDate: '2020-10-14',
+      category: 'Discovery & Manual',
+      description: 'Tra cứu danh mục trợ giúp phân loại theo chủ đề (ví dụ: --help tls, --help proxy, --help http)',
+      syntax: '--help [category]',
+      docsUrl: 'https://curl.se/docs/manpage.html#--help'
     }
   };
 
