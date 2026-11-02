@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark" data-font-size="medium">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Chuyên đề cURL Toàn Diện &amp; Thực Chiến: Từ dòng lệnh cơ bản, đa môi trường shell (Bash, PowerShell, CMD), REST API, debug mạng, TLS/mTLS, scripting CI/CD tới bảo mật production." />
+  <title>cURL Thực Chiến &amp; Tối Ưu Mạng Toàn Diện | Hệ Thống Học Tập Lập Trình</title>
+  <link rel="icon" type="image/png" href="assets/icon-192.png" />
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('app_theme_v1') || localStorage.getItem('curl_theme_v1') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        var savedFont = localStorage.getItem('app_font_size_v1') || 'medium';
+        document.documentElement.setAttribute('data-font-size', savedFont);
+      } catch (_e) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="./css/variables.css" />
+  <link rel="stylesheet" href="./css/layout.css" />
+  <link rel="stylesheet" href="./css/components.css" />
+  <link rel="stylesheet" href="./css/widgets.css" />
+  <link rel="stylesheet" href="./css/responsive.css" />
+  <link rel="stylesheet" href="./css/curl.css" />
+  <!-- KaTeX CSS (pinned version 0.16.11) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous" />
+  <!-- KaTeX JS & Auto-render extension (pinned version 0.16.11) -->
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+</head>
+<body class="curl-page">
+  <a href="#main-content" class="skip-link">Chuyển thẳng tới nội dung chính</a>
+
+  <!-- Thanh điều hướng trên cùng (Top Header) -->
+  <header class="top-header" role="banner">
+    <div class="header-left">
+      <button
+        type="button"
+        id="menu-toggle-btn"
+        class="menu-toggle-btn"
+        aria-label="Mở hoặc đóng danh mục bài học cURL"
+      >
+        ☰
+      </button>
+      <a href="#home" id="brand-home-link" class="brand-link" title="Về tổng quan lộ trình cURL Thực chiến">
+        <span class="brand-logo brand-logo-curl" aria-hidden="true">🌐</span>
+        <span class="brand-subtitle">cURL</span>
+        <span class="brand-badge brand-badge-curl">cURL 8.21.0</span>
+      </a>
+    </div>
+
+    <nav class="header-center" aria-label="Điều hướng chuyên đề">
+      <div class="header-nav-tabs">
+        <a href="./index.html" class="header-nav-tab" id="top-nav-python" data-page="python" title="Khóa học Lập trình Python (229 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🐍</span>
+          <span class="nav-tab-label">Python</span>
+        </a>
+        <a href="./python-data.html" class="header-nav-tab" id="top-nav-python-data" data-page="python-data" title="Chuyên đề Python for Data (Cốt lõi - 13 Module)">
+          <span class="nav-tab-icon" aria-hidden="true">📊</span>
+          <span class="nav-tab-label">Python Data</span>
+        </a>
+        <a href="./github.html" class="header-nav-tab" id="top-nav-github" data-page="github" title="Chuyên đề Git &amp; GitHub Thực chiến (20 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🐙</span>
+          <span class="nav-tab-label">GitHub</span>
+        </a>
+        <a href="./linux.html" class="header-nav-tab" id="top-nav-linux" data-page="linux" title="Chuyên đề Linux Thực chiến &amp; Nội bộ Hệ điều hành (41 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🐧</span>
+          <span class="nav-tab-label">Linux</span>
+        </a>
+        <a href="./data-ai.html" class="header-nav-tab" id="top-nav-data-ai" data-page="data-ai" title="Chuyên đề Thư viện Python cho Dữ liệu &amp; AI (72 bài)">
+          <span class="nav-tab-icon" aria-hidden="true">🧠</span>
+          <span class="nav-tab-label">Data &amp; AI</span>
+        </a>
+        <a href="./curl.html" class="header-nav-tab active" id="top-nav-curl" data-page="curl" aria-current="page" title="Chuyên đề cURL Toàn diện &amp; Thực chiến (20 chương + 7 phụ lục)">
+          <span class="nav-tab-icon" aria-hidden="true">🌐</span>
+          <span class="nav-tab-label">cURL</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="header-right">
+      <div class="font-size-controls" role="group" aria-label="Chỉnh cỡ chữ">
+        <button type="button" class="font-btn" data-size="small" title="Chữ nhỏ" aria-label="Cỡ chữ nhỏ">A-</button>
+        <button type="button" class="font-btn active" data-size="medium" title="Chữ vừa" aria-label="Cỡ chữ vừa">A</button>
+        <button type="button" class="font-btn" data-size="large" title="Chữ lớn" aria-label="Cỡ chữ lớn">A+</button>
+      </div>
+      <button
+        type="button"
+        id="theme-toggle-btn"
+        class="icon-btn"
+        aria-label="Chuyển sang giao diện Sáng"
+      >
+        <span>☀️</span> <span class="btn-label">Sáng</span>
+      </button>
+    </div>
+
+    <!-- Thanh tiến độ đọc toàn bài -->
+    <div class="reading-progress-track" aria-hidden="true">
+      <div id="reading-progress-fill" class="reading-progress-fill"></div>
+    </div>
+  </header>
+
+  <!-- Lớp nền mờ cho ngăn kéo trên thiết bị di động -->
+  <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+  <!-- Khung bố cục 3 cột (Desktop) / 1 cột (Mobile) -->
+  <div class="app-shell">
+    <!-- Cột 1: Cây mục lục chuyên đề cURL -->
+    <aside id="sidebar-left" class="sidebar-left" aria-label="Mục lục chuyên đề cURL">
+      <button
+        type="button"
+        id="sidebar-close-btn"
+        class="sidebar-close-btn"
+        aria-label="Đóng danh mục bài học"
+      >
+        ✕
+      </button>
+      <div class="progress-card" aria-live="polite">
+        <div class="progress-header">
+          <span>Tiến độ chuyên đề</span>
+          <span id="sidebar-progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+          <div id="sidebar-progress-fill" class="progress-bar-fill" style="width: 0%; background: linear-gradient(90deg, #0284c7, #10b981);"></div>
+        </div>
+        <div id="sidebar-progress-stats" class="progress-stats">
+          <span>Đã hoàn thành: <strong>0/27</strong> mục</span>
+        </div>
+      </div>
+
+      <!-- Bộ lọc Cấp độ trong Sidebar -->
+      <div class="sidebar-course-tabs" id="sidebar-course-tabs" role="tablist" aria-label="Lọc cấp độ hiển thị">
+        <button type="button" class="course-tab-btn active" data-course-filter="all">Tất cả</button>
+        <button type="button" class="course-tab-btn" data-course-filter="level-1">🌱 Cấp 1</button>
+        <button type="button" class="course-tab-btn" data-course-filter="level-2">🌿 Cấp 2</button>
+        <button type="button" class="course-tab-btn" data-course-filter="level-3">🔬 Cấp 3</button>
+        <button type="button" class="course-tab-btn" data-course-filter="level-appendix">📚 Phụ lục</button>
+      </div>
+
+      <nav id="curriculum-tree" class="curriculum-tree" aria-label="Danh sách chương học cURL"></nav>
+    </aside>
+
+    <!-- Cột 2: Nội dung bài học chính -->
+    <div class="main-content-wrapper">
+      <main id="main-content" class="main-content" tabindex="-1"></main>
+    </div>
+
+    <!-- Cột 3: Mục lục 'Trong bài này' -->
+    <aside class="sidebar-right" aria-label="Mục lục trong bài học hiện tại">
+      <nav id="toc-container" class="toc-container"></nav>
+    </aside>
+  </div>
+
+  <!-- Nạp dữ liệu và Controller (hoạt động độc lập cả qua HTTP lẫn file://) -->
+  <script src="./data/curl/version-matrix.js"></script>
+  <script src="./data/curl/curriculum.js"></script>
+  <script src="./data/curl/qa-records.js"></script>
+  <script src="./data/curl/chapters/ch01.js"></script>
+  <script src="./data/curl/chapters/ch02.js"></script>
+  <script src="./data/curl/chapters/ch03.js"></script>
+  <script src="./data/curl/chapters/ch04.js"></script>
+  <script src="./data/curl/chapters/ch05.js"></script>
+  <script src="./data/curl/chapters/ch06.js"></script>
+  <script src="./data/curl/chapters/ch07.js"></script>
+  <script src="./data/curl/chapters/ch08.js"></script>
+  <script src="./data/curl/chapters/ch09.js"></script>
+  <script src="./data/curl/chapters/ch10.js"></script>
+  <script src="./data/curl/chapters/ch11.js"></script>
+  <script src="./data/curl/chapters/ch12.js"></script>
+  <script src="./js/curl-codeblock.js"></script>
+  <script src="./js/curl-app.js"></script>
+  <button type="button" id="back-to-top-btn" class="back-to-top-btn" aria-label="Cuộn lên đầu trang" title="Lên đầu trang">
+    <span aria-hidden="true">↑</span>
+  </button>
+</body>
+</html>

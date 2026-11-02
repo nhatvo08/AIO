@@ -1,0 +1,1050 @@
+/**
+ * cURL Mastery Documentation Stylesheet (css/curl.css)
+ * Kế thừa hệ thống design token từ css/variables.css
+ * Bổ sung giao diện chuyên biệt cho Đa Shell tabs, Code block tương tác,
+ * Bảng điểm QA 8 Cổng, Timeline Visualizer và Cảnh báo an ninh mạng.
+ */
+
+/* ==========================================================================
+   1. Brand Badge & Navigation Theme cho cURL
+   ========================================================================== */
+.brand-logo-curl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  filter: drop-shadow(0 2px 4px rgba(14, 165, 233, 0.25));
+}
+
+.brand-badge-curl {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin-left: 6px;
+}
+
+/* ==========================================================================
+   2. Shell Switcher Tabs (Bash vs PowerShell vs CMD)
+   ========================================================================== */
+.curl-code-container {
+  margin: 1.25rem 0 1.75rem 0;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.curl-code-container:hover {
+  border-color: var(--topic-curl, #0284c7);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12);
+}
+
+.curl-code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: var(--bg-surface-alt);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.curl-shell-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.curl-shell-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.curl-shell-tab-btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-surface-hover);
+}
+
+.curl-shell-tab-btn.active {
+  background-color: var(--bg-surface);
+  color: var(--topic-curl, #0284c7);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-xs);
+}
+
+[data-theme="dark"] .curl-shell-tab-btn.active {
+  background-color: var(--bg-surface);
+  color: var(--topic-curl, #38bdf8);
+  border-color: var(--border-strong);
+}
+
+.curl-code-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Version badge & Verified badge */
+.badge-curl-version {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  font-family: var(--font-mono, monospace);
+}
+
+[data-theme="dark"] .badge-curl-version {
+  background-color: rgba(30, 58, 138, 0.4);
+  color: #93c5fd;
+  border-color: #1e40af;
+}
+
+.badge-verified-real {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+[data-theme="dark"] .badge-verified-real {
+  background-color: rgba(6, 78, 59, 0.4);
+  color: #6ee7b7;
+  border-color: #065f46;
+}
+
+.badge-unverified {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background-color: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+[data-theme="dark"] .badge-unverified {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fde047;
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+.curl-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.curl-copy-btn:hover {
+  background-color: var(--bg-surface-hover);
+  color: var(--topic-curl, #0284c7);
+  border-color: var(--topic-curl, #0284c7);
+}
+
+.curl-copy-btn.copied {
+  background-color: var(--success);
+  color: #ffffff;
+  border-color: var(--success);
+}
+
+/* Shell pane content */
+.curl-shell-pane {
+  display: none;
+  margin: 0;
+  padding: 14px 16px;
+  background-color: var(--bg-code, #090d16);
+  color: #f8fafc;
+  font-family: var(--font-mono, Consolas, Monaco, monospace);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  overflow-x: auto;
+}
+
+.curl-shell-pane.active {
+  display: block;
+}
+
+.curl-shell-pane code {
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+  padding: 0;
+}
+
+/* Output collapsible drawer */
+.curl-output-drawer {
+  border-top: 1px dashed var(--border-strong);
+  background-color: var(--bg-surface-alt);
+}
+
+.curl-output-toggle-btn {
+  width: 100%;
+  text-align: left;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.curl-output-toggle-btn:hover {
+  color: var(--text-primary);
+}
+
+.curl-output-content {
+  display: none;
+  padding: 12px 14px;
+  margin: 0;
+  background-color: var(--bg-output, #050811);
+  color: #bae6fd;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  border-top: 1px solid var(--border-subtle);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.curl-output-content.open {
+  display: block;
+}
+
+/* Token explanations */
+.curl-token-breakdown {
+  padding: 10px 14px;
+  border-top: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
+}
+
+.curl-token-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.curl-token-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+}
+
+.curl-token-chip {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background-color: var(--bg-surface-alt);
+  color: #0369a1;
+  border: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .curl-token-chip {
+  background-color: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+/* ==========================================================================
+   3. 11 Mục Chuẩn Trong Chương
+   ========================================================================== */
+.chapter-hero {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.chapter-number-pill {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--topic-curl, #0284c7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .chapter-number-pill {
+  color: var(--topic-curl, #38bdf8);
+}
+
+.chapter-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.3;
+  margin: 0 0 0.75rem 0;
+}
+
+.chapter-desc {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+}
+
+.chapter-meta-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.chapter-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Section Containers */
+.doc-section {
+  margin: 2.25rem 0;
+  scroll-margin-top: 80px;
+}
+
+.doc-section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(2, 132, 199, 0.2);
+}
+
+[data-theme="dark"] .doc-section-title {
+  border-bottom-color: rgba(56, 189, 248, 0.25);
+}
+
+/* 1. Objectives Card */
+.objectives-card {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+[data-theme="dark"] .objectives-card {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.25) 0%, rgba(6, 95, 70, 0.15) 100%);
+  border-color: #065f46;
+}
+
+.objectives-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 8px;
+}
+
+.objective-item strong {
+  color: #15803d;
+}
+
+[data-theme="dark"] .objective-item strong {
+  color: #4ade80;
+}
+
+/* 2. Prerequisites */
+.prereq-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.prereq-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: var(--bg-surface-alt);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid var(--border-subtle);
+  transition: all 0.15s ease;
+}
+
+.prereq-pill:hover {
+  border-color: var(--topic-curl, #0284c7);
+  color: var(--topic-curl, #0284c7);
+}
+
+/* 3. Concept Analogy Box */
+.concept-analogy-box {
+  background-color: #fefce8;
+  border-left: 4px solid #eab308;
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.25rem 0;
+}
+
+[data-theme="dark"] .concept-analogy-box {
+  background-color: rgba(113, 63, 18, 0.2);
+  border-left-color: #facc15;
+}
+
+.concept-analogy-title {
+  font-weight: 700;
+  color: #a16207;
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+[data-theme="dark"] .concept-analogy-title {
+  color: #fde047;
+}
+
+/* 4. Options Table */
+.options-table-wrapper {
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background-color: var(--bg-surface);
+}
+
+.options-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  text-align: left;
+}
+
+.options-table th {
+  background-color: var(--bg-surface-alt);
+  color: var(--text-primary);
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+
+.options-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.options-table tr:last-child td {
+  border-bottom: none;
+}
+
+.options-table tr:hover td {
+  background-color: var(--bg-surface-hover);
+}
+
+.flag-code {
+  font-family: var(--font-mono, monospace);
+  font-weight: 700;
+  color: var(--topic-curl, #0284c7);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .flag-code {
+  color: var(--topic-curl, #38bdf8);
+}
+
+/* 6. Pitfalls: Comparison Cards */
+.pitfall-card {
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  overflow: hidden;
+}
+
+.pitfall-header {
+  padding: 10px 14px;
+  background-color: #fef2f2;
+  border-bottom: 1px solid #fee2e2;
+  color: #991b1b;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+[data-theme="dark"] .pitfall-header {
+  background-color: rgba(153, 27, 27, 0.25);
+  border-bottom-color: rgba(153, 27, 27, 0.45);
+  color: #fca5a5;
+}
+
+.pitfall-body {
+  padding: 12px 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.pitfall-bad {
+  background-color: rgba(239, 68, 68, 0.08);
+  border-left: 3px solid #ef4444;
+  padding: 8px 12px;
+  border-radius: 0 4px 4px 0;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+}
+
+.pitfall-good {
+  background-color: rgba(16, 185, 129, 0.08);
+  border-left: 3px solid #10b981;
+  padding: 8px 12px;
+  border-radius: 0 4px 4px 0;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+}
+
+/* 7. Security Alert Card */
+.security-alert-card {
+  border-left: 4px solid #dc2626;
+  background-color: #fff5f5;
+  border-radius: 0 8px 8px 0;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+}
+
+[data-theme="dark"] .security-alert-card {
+  background-color: rgba(185, 28, 28, 0.18);
+  border-left-color: #ef4444;
+}
+
+.security-alert-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b91c1c;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+[data-theme="dark"] .security-alert-header {
+  color: #f87171;
+}
+
+/* 8. Exercises Card */
+.exercise-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  background-color: var(--bg-surface);
+}
+
+.exercise-header {
+  padding: 10px 14px;
+  background-color: var(--bg-surface-alt);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.exercise-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.exercise-diff-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.diff-easy { background-color: #dcfce7; color: #15803d; }
+.diff-medium { background-color: #fef9c3; color: #a16207; }
+.diff-hard { background-color: #fee2e2; color: #b91c1c; }
+
+[data-theme="dark"] .diff-easy {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+[data-theme="dark"] .diff-medium {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fde047;
+}
+
+[data-theme="dark"] .diff-hard {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.exercise-body {
+  padding: 14px;
+}
+
+.exercise-solution-drawer {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border-strong);
+  padding-top: 10px;
+}
+
+.exercise-solution-content {
+  display: none;
+  margin-top: 8px;
+}
+
+.exercise-solution-content.open {
+  display: block;
+}
+
+/* 11. QA Record Dashboard */
+.qa-record-card {
+  border: 2px solid var(--topic-curl, #0284c7);
+  border-radius: 8px;
+  background-color: var(--bg-surface);
+  padding: 1.5rem;
+  margin: 2.5rem 0 1rem 0;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.08);
+}
+
+[data-theme="dark"] .qa-record-card {
+  border-color: var(--topic-curl, #38bdf8);
+  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.1);
+}
+
+.qa-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.qa-score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 1rem 0;
+}
+
+.qa-gate-item {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background-color: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+}
+
+.qa-gate-name {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.qa-gate-val {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--topic-curl, #0284c7);
+}
+
+[data-theme="dark"] .qa-gate-val {
+  color: var(--topic-curl, #38bdf8);
+}
+
+.qa-verdict-stamp {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.stamp-pass { background-color: #10b981; color: #ffffff; }
+.stamp-conditional { background-color: #f59e0b; color: #ffffff; }
+.stamp-pending { background-color: #64748b; color: #ffffff; }
+
+/* ==========================================================================
+   4. Write-out Visualizer (Timing Breakdown)
+   ========================================================================== */
+.timing-visualizer-card {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+}
+
+.timing-bar-track {
+  height: 28px;
+  width: 100%;
+  border-radius: 6px;
+  background-color: var(--bg-surface-alt);
+  display: flex;
+  overflow: hidden;
+  margin: 12px 0 8px 0;
+}
+
+.timing-phase {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+
+.phase-dns { background-color: #3b82f6; }
+.phase-tcp { background-color: #10b981; }
+.phase-tls { background-color: #8b5cf6; }
+.phase-ttfb { background-color: #f59e0b; }
+.phase-transfer { background-color: #ec4899; }
+
+.timing-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.78rem;
+  margin-top: 8px;
+}
+
+.timing-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* ==========================================================================
+   5. Tương đồng định dạng với Hệ thống Bài học Python
+   ========================================================================== */
+.sidebar-course-banner.curl-banner {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.08) 0%, rgba(3, 105, 161, 0.03) 100%);
+  border-left: 3px solid #0284c7;
+}
+
+[data-theme="dark"] .sidebar-course-banner.curl-banner {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.12) 0%, rgba(2, 132, 199, 0.04) 100%);
+  border-left-color: #38bdf8;
+}
+
+.course-section-header-lg.curl-theme {
+  border-left: 4px solid var(--topic-curl, #0284c7);
+}
+
+.course-number-badge.curl-badge {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+}
+
+[data-theme="dark"] .course-number-badge.curl-badge {
+  background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+}
+
+.course-prog-fill.curl-fill {
+  background: linear-gradient(90deg, #0284c7 0%, #10b981 100%);
+}
+
+.breadcrumb-course-badge.level-1 {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.breadcrumb-course-badge.level-2 {
+  background: #f0f9ff;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+.breadcrumb-course-badge.level-3 {
+  background: #faf5ff;
+  color: #7e22ce;
+  border-color: #e9d5ff;
+}
+
+.breadcrumb-course-badge.level-appendix {
+  background: #fefce8;
+  color: #a16207;
+  border-color: #fef08a;
+}
+
+[data-theme="dark"] .breadcrumb-course-badge.level-1 {
+  background: rgba(34, 197, 94, 0.16);
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+[data-theme="dark"] .breadcrumb-course-badge.level-2 {
+  background: rgba(56, 189, 248, 0.16);
+  color: #7dd3fc;
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+[data-theme="dark"] .breadcrumb-course-badge.level-3 {
+  background: rgba(168, 85, 247, 0.16);
+  color: #d8b4fe;
+  border-color: rgba(168, 85, 247, 0.35);
+}
+
+[data-theme="dark"] .breadcrumb-course-badge.level-appendix {
+  background: rgba(245, 158, 11, 0.16);
+  color: #fde047;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.btn-complete-lesson.completed {
+  background: #10b981;
+  border-color: #059669;
+  color: #ffffff;
+}
+
+.btn-complete-lesson.completed:hover {
+  background: #059669;
+}
+
+/* ==========================================================================
+   6. Các Khối Cấu Trúc Bổ Trợ Chuẩn Hóa Toàn Diện
+   ========================================================================== */
+
+/* 2. Khung Kiến thức tiên quyết */
+.prereq-box {
+  background-color: var(--bg-surface-alt);
+  border-left: 4px solid var(--accent-primary);
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  margin: 1.5rem 0;
+}
+
+.prereq-box-title {
+  font-weight: 700;
+  color: var(--accent-text);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+[data-theme="dark"] .prereq-box-title {
+  color: #93c5fd;
+}
+
+.prereq-box-content {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 4. Khung Bảng Tra Cứu Options */
+.options-badge-version {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: rgba(2, 132, 199, 0.1);
+  color: var(--topic-curl, #0284c7);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .options-badge-version {
+  background-color: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+/* Tiêu chí tự đánh giá bài tập */
+.exercise-criteria {
+  background-color: rgba(16, 185, 129, 0.06);
+  border-left: 3px solid #10b981;
+  padding: 8px 12px;
+  margin: 10px 0;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.exercise-criteria strong {
+  color: var(--success);
+}
+
+/* 9. Khung Cheat Sheet */
+.cheatsheet-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background-color: var(--bg-surface);
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.cheatsheet-header {
+  padding: 10px 14px;
+  background-color: var(--bg-surface-alt);
+  border-bottom: 1px solid var(--border-subtle);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cheatsheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.cheatsheet-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+
+.cheatsheet-table td:first-child {
+  width: 50%;
+  min-width: 260px;
+}
+
+.cheatsheet-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cheatsheet-cmd {
+  font-family: var(--font-mono, monospace);
+  color: var(--topic-curl, #0284c7);
+  font-weight: 700;
+  white-space: pre-wrap;
+  word-break: break-word;
+  display: inline-block;
+  background: var(--bg-surface-alt);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
+  line-height: 1.45;
+}
+
+[data-theme="dark"] .cheatsheet-cmd {
+  color: #38bdf8;
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(56, 189, 248, 0.2);
+}
+
+/* 10. Khung Tài liệu tham khảo */
+.references-box {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.75rem 0;
+}
+
+.references-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.references-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.reference-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.88rem;
+}
+
+.reference-link {
+  color: var(--topic-curl, #0284c7);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .reference-link {
+  color: #38bdf8;
+}
+
+.reference-desc {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
