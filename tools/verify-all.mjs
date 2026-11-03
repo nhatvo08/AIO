@@ -137,6 +137,43 @@ await check('Dữ liệu Python Data', () => {
   return `${parts.length} module / ${ids.length} bài`;
 });
 
+await check('Dữ liệu SQL', () => {
+  const sandbox = { window: {}, console };
+  vm.createContext(sandbox);
+  const sqlFiles = [
+    'dataset-schema.js',
+    'level0-foundations.js',
+    'level1-basic.js',
+    'level2-intermediate.js',
+    'level3-advanced.js',
+    'level4-design.js',
+    'level5-transactions.js',
+    'level6-performance.js',
+    'level7-advanced-tooling.js',
+    'level8-practice.js'
+  ];
+  sqlFiles.forEach((file) => {
+    vm.runInContext(read(`data/sql/${file}`), sandbox, { filename: file });
+  });
+  const parts = [
+    sandbox.window.SQL_META_PART,
+    sandbox.window.SQL_LEVEL0_PART,
+    sandbox.window.SQL_LEVEL1_PART,
+    sandbox.window.SQL_LEVEL2_PART,
+    sandbox.window.SQL_LEVEL3_PART,
+    sandbox.window.SQL_LEVEL4_PART,
+    sandbox.window.SQL_LEVEL5_PART,
+    sandbox.window.SQL_LEVEL6_PART,
+    sandbox.window.SQL_LEVEL7_PART,
+    sandbox.window.SQL_LEVEL8_PART
+  ].filter(Boolean);
+  assert(parts.length === 10, `Cần đúng 10 phần SQL nhưng có ${parts.length}`);
+  const ids = parts.flatMap((p) => p.lessons.map((lesson) => lesson.id));
+  assert(new Set(ids).size === ids.length, 'Có id bài SQL bị trùng');
+  assert(ids.length === 47, `Cần đúng 47 bài học SQL nhưng có ${ids.length}`);
+  return `${parts.length} phần / ${ids.length} bài`;
+});
+
 // 4. Đường dẫn nội bộ
 const brokenRefs = [];
 let refCount = 0;

@@ -85,6 +85,7 @@
 
     // Thu thập danh sách phẳng tất cả bài học
     var ALL_LESSONS = [];
+    var codeHighlighter = typeof config.highlightCode === 'function' ? config.highlightCode : null;
     PARTS.forEach(function (part) {
       var partLessons = part.lessons || [];
       partLessons.forEach(function (lesson, lIdx) {
@@ -244,8 +245,19 @@
         var lessonsHtml = partLessons.map(function (l) {
           var isDone = isLessonDone(l.id);
           var isActive = currentView === l.id;
-          var isRef = l.id.includes('-ref-');
-          var badgeHtml = isRef ? '<span class="' + topicPrefix + '-nav-pill-mini">Tra cứu</span>' : '';
+          var isRef = l.id.includes('-ref-') || l.id.startsWith('sql-map-') || l.id.startsWith('sql-sample-');
+          var badgeHtml = '';
+          if (isRef) {
+            badgeHtml = '<span class="' + topicPrefix + '-nav-pill-mini">Tra cứu</span>';
+          } else if (l.circuit === 'dq' || (l.title && l.title.includes('[DQ]'))) {
+            badgeHtml = '<span class="circuit-badge circuit-badge-dq" style="font-size:0.65rem;padding:1px 5px;margin-left:auto;margin-right:0;">DQ</span>';
+          } else if (l.circuit === 'fe' || (l.title && l.title.includes('[FE]'))) {
+            badgeHtml = '<span class="circuit-badge circuit-badge-fe" style="font-size:0.65rem;padding:1px 5px;margin-left:auto;margin-right:0;">FE</span>';
+          } else if (l.circuit === 'scale' || (l.title && l.title.includes('[SCALE]'))) {
+            badgeHtml = '<span class="circuit-badge circuit-badge-scale" style="font-size:0.65rem;padding:1px 5px;margin-left:auto;margin-right:0;">SCALE</span>';
+          } else if (l.badge) {
+            badgeHtml = '<span class="' + topicPrefix + '-nav-pill-mini">' + escapeHtml(l.badge) + '</span>';
+          }
 
           return '' +
             '<li>' +
@@ -719,9 +731,14 @@
         var examplesHtml = (sec.codeExamples || []).map(function (ex) {
           codeCounter++;
           var codeId = topicPrefix + '-code-' + lesson.id + '-' + sIdx + '-' + codeCounter;
-          var lines = (ex.code || '').split('\n').map(function (line, lineIdx) {
-            return '<div class="code-line"><span class="line-num">' + (lineIdx + 1) + '</span><span class="line-content">' + escapeHtml(line) + '</span></div>';
-          }).join('');
+          var lines = '';
+          if (codeHighlighter) {
+            lines = codeHighlighter(ex.code || '', ex.lang || 'SQL');
+          } else {
+            lines = (ex.code || '').split('\n').map(function (line, lineIdx) {
+              return '<div class="code-line"><span class="line-num">' + (lineIdx + 1) + '</span><span class="line-content">' + escapeHtml(line) + '</span></div>';
+            }).join('');
+          }
 
           var annotationsHtml = '';
           if (Array.isArray(ex.annotations) && ex.annotations.length > 0) {
@@ -834,9 +851,16 @@
         var exHint = ex.hint || '';
         var exCodeId = topicPrefix + '-sol-' + lesson.id + '-' + exIdx;
 
-        var solLines = exCode ? exCode.split('\n').map(function (l, idx) {
-          return '<div class="code-line"><span class="line-num">' + (idx + 1) + '</span><span class="line-content">' + escapeHtml(l) + '</span></div>';
-        }).join('') : '';
+        var solLines = '';
+        if (exCode) {
+          if (codeHighlighter) {
+            solLines = codeHighlighter(exCode, 'SQL');
+          } else {
+            solLines = exCode.split('\n').map(function (l, idx) {
+              return '<div class="code-line"><span class="line-num">' + (idx + 1) + '</span><span class="line-content">' + escapeHtml(l) + '</span></div>';
+            }).join('');
+          }
+        }
 
         var solCard = solLines ? ('' +
           '<div class="code-example-card" style="margin:10px 0;">' +
@@ -1090,6 +1114,10 @@
               '<span class="part-breadcrumb">' + breadcrumbHtml + '</span>' +
               '<span class="level-badge ' + getLevelBadgeClass(lesson.level) + '">' + escapeHtml(lesson.level) + '</span>' +
               '<span class="level-badge" style="background:var(--bg-surface-alt);color:var(--text-secondary);">⏱ ' + escapeHtml(lesson.duration || '30 phút') + '</span>' +
+              ((lesson.circuit === 'dq' || (lesson.title && lesson.title.includes('[DQ]'))) ? '<span class="circuit-badge circuit-badge-dq">[DQ]</span>' : '') +
+              ((lesson.circuit === 'fe' || (lesson.title && lesson.title.includes('[FE]'))) ? '<span class="circuit-badge circuit-badge-fe">[FE]</span>' : '') +
+              ((lesson.circuit === 'scale' || (lesson.title && lesson.title.includes('[SCALE]'))) ? '<span class="circuit-badge circuit-badge-scale">[SCALE]</span>' : '') +
+              (lesson.verifiedEngines ? '<span class="level-badge" style="background:rgba(37,99,235,0.08);color:var(--topic-sql, #2563eb);border:1px solid rgba(37,99,235,0.25);font-size:0.75rem;" title="' + escapeHtml(lesson.verifiedEngines) + '">✓ ' + escapeHtml(lesson.verifiedEngines.split('(')[0].trim()) + '</span>' : '') +
             '</div>' +
             '<h1>Bài ' + escapeHtml(lesson.number) + ': ' + escapeHtml(lesson.title) + '</h1>' +
             (lesson.subtitle ? '<p class="lesson-subtitle">' + escapeHtml(lesson.subtitle) + '</p>' : '') +

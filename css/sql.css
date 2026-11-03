@@ -1,0 +1,1147 @@
+/* ==========================================================================
+   SQL Master & Data Engineering Specific Styles — Chuyên đề SQL Toàn Diện
+   Prefix: .sql- (hoặc scoped trong .sql-page)
+   Tận dụng toàn bộ CSS Variables và Design Tokens hiện có của hệ thống
+   ========================================================================== */
+
+:root {
+  --topic-sql: #2563eb;
+  --topic-sql-dark: #60a5fa;
+  --topic-sql-subtle: rgba(37, 99, 235, 0.12);
+  --topic-sql-border: rgba(37, 99, 235, 0.35);
+
+  /* Màu đặc trưng cho 3 mạch xuyên suốt */
+  --circuit-dq: #059669;        /* Xanh ngọc - Data Quality */
+  --circuit-dq-subtle: rgba(5, 150, 105, 0.12);
+  --circuit-dq-border: rgba(5, 150, 105, 0.35);
+
+  --circuit-fe: #d97706;        /* Vàng hổ phách - Feature Engineering */
+  --circuit-fe-subtle: rgba(217, 119, 6, 0.12);
+  --circuit-fe-border: rgba(217, 119, 6, 0.35);
+
+  --circuit-scale: #7c3aed;     /* Tím - Large Scale & Tooling */
+  --circuit-scale-subtle: rgba(124, 58, 237, 0.12);
+  --circuit-scale-border: rgba(124, 58, 237, 0.35);
+}
+
+[data-theme="dark"] {
+  --topic-sql: #60a5fa;
+  --topic-sql-dark: #93c5fd;
+  --topic-sql-subtle: rgba(96, 165, 250, 0.18);
+  --topic-sql-border: rgba(96, 165, 250, 0.35);
+
+  --circuit-dq: #34d399;
+  --circuit-dq-subtle: rgba(52, 211, 153, 0.18);
+  --circuit-dq-border: rgba(52, 211, 153, 0.35);
+
+  --circuit-fe: #fbbf24;
+  --circuit-fe-subtle: rgba(251, 191, 36, 0.18);
+  --circuit-fe-border: rgba(251, 191, 36, 0.35);
+
+  --circuit-scale: #a78bfa;
+  --circuit-scale-subtle: rgba(167, 139, 250, 0.18);
+  --circuit-scale-border: rgba(167, 139, 250, 0.35);
+}
+
+/* 1. Header Nav Tab Active State */
+.header-nav-tab.active[data-page="sql"],
+.header-nav-tab#top-nav-sql.active {
+  background: var(--topic-sql-subtle);
+  color: var(--topic-sql);
+  border-color: var(--topic-sql-border);
+}
+
+/* 2. SQL Brand Logo & Badge */
+.brand-logo-sql {
+  background: var(--topic-sql-subtle);
+  color: var(--topic-sql);
+}
+
+.brand-badge-sql {
+  background: var(--topic-sql-subtle);
+  color: var(--topic-sql);
+  border: 1px solid var(--topic-sql-border);
+}
+
+/* 3. Huy hiệu 3 Mạch Xuyên Suốt [DQ], [FE], [SCALE] */
+.circuit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: var(--radius-xs);
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.circuit-badge-dq {
+  background: var(--circuit-dq-subtle);
+  color: var(--circuit-dq);
+  border: 1px solid var(--circuit-dq-border);
+}
+
+.circuit-badge-fe {
+  background: var(--circuit-fe-subtle);
+  color: var(--circuit-fe);
+  border: 1px solid var(--circuit-fe-border);
+}
+
+.circuit-badge-scale {
+  background: var(--circuit-scale-subtle);
+  color: var(--circuit-scale);
+  border: 1px solid var(--circuit-scale-border);
+}
+
+/* 4. Hộp "Cần biết trước (ngoài SQL)" */
+.prereq-box {
+  margin: 18px 0;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border-left: 4px solid var(--topic-sql);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.prereq-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--topic-sql);
+  margin-bottom: 8px;
+}
+
+.prereq-review {
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: var(--bg-surface-alt);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* 5. Hộp "Khác biệt giữa các hệ quản trị" (DBMS Differences) */
+.dbms-diff-box {
+  margin: 20px 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.dbms-diff-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--bg-surface-alt);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.dbms-diff-body {
+  padding: 14px 18px;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* 5.5. Bảng so sánh lý thuyết & Đối chiếu kiến trúc (Comparison Table) */
+.comparison-table,
+.data-table,
+.lesson-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.comparison-table th,
+.data-table th,
+.lesson-table th {
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 2px solid var(--border-subtle);
+  vertical-align: middle;
+}
+
+.comparison-table td,
+.data-table td,
+.lesson-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: top;
+  line-height: 1.6;
+  white-space: normal;
+  word-break: normal;
+}
+
+.comparison-table th[scope="row"] {
+  font-weight: 600;
+  color: var(--text-primary);
+  background: rgba(37, 99, 235, 0.04);
+  vertical-align: top;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+}
+
+.comparison-table tr:last-child td,
+.comparison-table tr:last-child th[scope="row"] {
+  border-bottom: none;
+}
+
+.comparison-table tr:hover td,
+.comparison-table tr:hover th[scope="row"] {
+  background: var(--bg-surface-hover);
+}
+
+.comparison-table code,
+.data-table code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88em;
+  background: var(--bg-surface-alt);
+  color: var(--topic-sql);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
+}
+
+/* 6. Bảng kết quả truy vấn SQL tĩnh (SQL Result Table) */
+.sql-result-container {
+  margin: 14px 0 20px 0;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+}
+
+.sql-result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--bg-surface-alt);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sql-result-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.sql-result-table th {
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  font-weight: 700;
+  padding: 8px 14px;
+  border-bottom: 2px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.sql-result-table td {
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.sql-result-table tr:last-child td {
+  border-bottom: none;
+}
+
+.sql-result-table tr:hover td {
+  background: var(--bg-surface-hover);
+}
+
+.sql-result-table .null-val {
+  color: var(--danger);
+  font-style: italic;
+  font-weight: 600;
+}
+
+.sql-result-table .highlight-val {
+  background: var(--topic-sql-subtle);
+  color: var(--topic-sql);
+  font-weight: 700;
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+
+.sql-result-table .dirty-val {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  font-weight: 700;
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+
+/* 7. So sánh Trực quan & Sơ đồ ER */
+.er-diagram-card {
+  margin: 20px 0;
+  padding: 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+}
+
+.er-diagram-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.er-table-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.er-table-box {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-alt);
+  overflow: hidden;
+}
+
+.er-table-header {
+  padding: 8px 12px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  background: var(--topic-sql-subtle);
+  color: var(--topic-sql);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.er-table-col-list {
+  padding: 8px 12px;
+  list-style: none;
+  margin: 0;
+  font-size: 0.82rem;
+  font-family: var(--font-mono, monospace);
+  line-height: 1.6;
+}
+
+.er-col-pk {
+  color: #d97706;
+  font-weight: 700;
+}
+
+.er-col-fk {
+  color: #2563eb;
+  font-weight: 700;
+}
+
+/* 8. Bản đồ 3 Mạch Xuyên Suốt (Circuits Map View) */
+.circuits-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 28px 0;
+}
+
+.circuit-card {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.circuit-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.circuit-card-dq .circuit-card-header {
+  background: var(--circuit-dq-subtle);
+  border-color: var(--circuit-dq-border);
+}
+
+.circuit-card-fe .circuit-card-header {
+  background: var(--circuit-fe-subtle);
+  border-color: var(--circuit-fe-border);
+}
+
+.circuit-card-scale .circuit-card-header {
+  background: var(--circuit-scale-subtle);
+  border-color: var(--circuit-scale-border);
+}
+
+.circuit-title-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.circuit-card-body {
+  padding: 18px 20px;
+}
+
+.circuit-lessons-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.circuit-lesson-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.2s ease;
+}
+
+.circuit-lesson-item:hover {
+  border-color: var(--topic-sql);
+  background: var(--bg-surface-hover);
+}
+
+.circuit-lesson-tier {
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.circuit-lesson-link {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+
+.circuit-lesson-link:hover {
+  color: var(--topic-sql);
+  text-decoration: underline;
+}
+
+.circuit-lesson-summary {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* 9. Theme banner cho SQL Roadmap & 4 Giai đoạn tương đồng Python */
+.sql-theme {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(5, 150, 105, 0.05) 100%);
+  border-left: 4px solid var(--topic-sql);
+}
+
+.sql-badge {
+  background: var(--topic-sql-subtle);
+  color: var(--topic-sql);
+  border: 1px solid var(--topic-sql-border);
+}
+
+.sql-fill {
+  background: linear-gradient(90deg, var(--topic-sql), #059669);
+}
+
+/* Stage 1: Nền tảng & DQ */
+.sql-stage1-banner,
+.sql-stage1-theme {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(5, 150, 105, 0.08) 100%);
+  border-left: 4px solid #2563eb;
+}
+.sql-stage1-badge {
+  background: rgba(37, 99, 235, 0.15);
+  color: #2563eb;
+  border: 1px solid rgba(37, 99, 235, 0.35);
+}
+.sql-stage1-fill {
+  background: linear-gradient(90deg, #2563eb, #059669);
+}
+
+/* Stage 2: JOIN & FE */
+.sql-stage2-banner,
+.sql-stage2-theme {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.1) 0%, rgba(245, 158, 11, 0.06) 100%);
+  border-left: 4px solid #d97706;
+}
+.sql-stage2-badge {
+  background: rgba(217, 119, 6, 0.15);
+  color: #d97706;
+  border: 1px solid rgba(217, 119, 6, 0.35);
+}
+.sql-stage2-fill {
+  background: linear-gradient(90deg, #d97706, #f59e0b);
+}
+
+/* Stage 3: Thiết kế & ACID */
+.sql-stage3-banner,
+.sql-stage3-theme {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(124, 58, 237, 0.06) 100%);
+  border-left: 4px solid #4f46e5;
+}
+.sql-stage3-badge {
+  background: rgba(79, 70, 229, 0.15);
+  color: #4f46e5;
+  border: 1px solid rgba(79, 70, 229, 0.35);
+}
+.sql-stage3-fill {
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+}
+
+/* Stage 4: Tối ưu & SCALE */
+.sql-stage4-banner,
+.sql-stage4-theme {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(14, 165, 233, 0.08) 100%);
+  border-left: 4px solid #7c3aed;
+}
+.sql-stage4-badge {
+  background: rgba(124, 58, 237, 0.15);
+  color: #7c3aed;
+  border: 1px solid rgba(124, 58, 237, 0.35);
+}
+.sql-stage4-fill {
+  background: linear-gradient(90deg, #7c3aed, #0ea5e9);
+}
+
+/* Course breadcrumbs in lesson header */
+.breadcrumb-course-badge.course-course-sql-1 {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+  border: 1px solid rgba(37, 99, 235, 0.3);
+}
+.breadcrumb-course-badge.course-course-sql-2 {
+  background: rgba(217, 119, 6, 0.12);
+  color: #d97706;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+}
+.breadcrumb-course-badge.course-course-sql-3 {
+  background: rgba(79, 70, 229, 0.12);
+  color: #4f46e5;
+  border: 1px solid rgba(79, 70, 229, 0.3);
+}
+.breadcrumb-course-badge.course-course-sql-4 {
+  background: rgba(124, 58, 237, 0.12);
+  color: #7c3aed;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+/* Sơ đồ Trực quan (Intuition Visual) cho SQL tương đồng Python */
+.sql-intuition-visual {
+  margin-top: 14px;
+  padding: 16px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  overflow-x: auto;
+}
+
+.sql-diagram-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.88rem;
+}
+
+.sql-diagram-node {
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.sql-diagram-node-highlight {
+  border-color: var(--topic-sql);
+  background: var(--topic-sql-subtle);
+  color: var(--topic-sql);
+  font-weight: 700;
+}
+
+.sql-diagram-arrow {
+  color: var(--text-muted);
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+/* ==========================================================================
+   10. Nâng cấp Giao diện: Ba Mạch Xuyên Suốt & TechMart Schema Showcase
+   ========================================================================== */
+
+/* Chung cho các section nâng cấp trên trang Overview */
+.sql-overview-section {
+  margin: 40px 0;
+  padding: 0;
+}
+
+.sql-section-intro {
+  margin-bottom: 22px;
+}
+
+.sql-section-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--topic-sql-subtle);
+  color: var(--topic-sql);
+  border: 1px solid var(--topic-sql-border);
+  margin-bottom: 10px;
+}
+
+.sql-section-title {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.sql-section-desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+  max-width: 900px;
+}
+
+/* --- Phân hệ 1: Ba Mạch Xuyên Suốt (.sql-circuit-deck) --- */
+.sql-circuit-deck {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 22px;
+  margin-top: 22px;
+}
+
+.sql-circuit-card {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  overflow: hidden;
+}
+
+.sql-circuit-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--topic-sql);
+  transition: height 0.2s ease;
+}
+
+.sql-circuit-card:hover {
+  transform: translateY(-4px);
+}
+
+.sql-circuit-card:hover::before {
+  height: 6px;
+}
+
+/* Card [DQ] */
+.sql-circuit-card--dq::before {
+  background: linear-gradient(90deg, var(--circuit-dq), #10b981);
+}
+.sql-circuit-card--dq:hover {
+  border-color: var(--circuit-dq);
+  box-shadow: 0 12px 28px rgba(5, 150, 105, 0.15);
+}
+
+/* Card [FE] */
+.sql-circuit-card--fe::before {
+  background: linear-gradient(90deg, var(--circuit-fe), #f59e0b);
+}
+.sql-circuit-card--fe:hover {
+  border-color: var(--circuit-fe);
+  box-shadow: 0 12px 28px rgba(217, 119, 6, 0.15);
+}
+
+/* Card [SCALE] */
+.sql-circuit-card--scale::before {
+  background: linear-gradient(90deg, var(--circuit-scale), #8b5cf6);
+}
+.sql-circuit-card--scale:hover {
+  border-color: var(--circuit-scale);
+  box-shadow: 0 12px 28px rgba(124, 58, 237, 0.15);
+}
+
+/* Card Header */
+.sql-circuit-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.sql-circuit-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sql-circuit-tier-pill {
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-alt);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.sql-circuit-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.45rem;
+  flex-shrink: 0;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+}
+
+.sql-circuit-card--dq .sql-circuit-icon-box {
+  background: var(--circuit-dq-subtle);
+  border-color: var(--circuit-dq-border);
+}
+
+.sql-circuit-card--fe .sql-circuit-icon-box {
+  background: var(--circuit-fe-subtle);
+  border-color: var(--circuit-fe-border);
+}
+
+.sql-circuit-card--scale .sql-circuit-icon-box {
+  background: var(--circuit-scale-subtle);
+  border-color: var(--circuit-scale-border);
+}
+
+.sql-circuit-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+  line-height: 1.35;
+}
+
+.sql-circuit-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+/* Khối Trọng tâm kỹ năng (Key Pillars) */
+.sql-circuit-pillars {
+  margin: 16px 0 20px 0;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.sql-circuit-pillars-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.sql-pillar-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sql-pillar-tag {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.sql-pillar-tag:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--topic-sql);
+}
+
+/* Nút CTA của Card */
+.sql-circuit-footer {
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.sql-circuit-cta-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sql-circuit-cta-btn:hover {
+  background: var(--topic-sql);
+  color: #ffffff;
+  border-color: var(--topic-sql);
+}
+
+.sql-circuit-card--dq .sql-circuit-cta-btn:hover {
+  background: var(--circuit-dq);
+  border-color: var(--circuit-dq);
+}
+
+.sql-circuit-card--fe .sql-circuit-cta-btn:hover {
+  background: var(--circuit-fe);
+  border-color: var(--circuit-fe);
+}
+
+.sql-circuit-card--scale .sql-circuit-cta-btn:hover {
+  background: var(--circuit-scale);
+  border-color: var(--circuit-scale);
+}
+
+.sql-circuit-cta-btn .arrow-icon {
+  transition: transform 0.2s ease;
+}
+
+.sql-circuit-cta-btn:hover .arrow-icon {
+  transform: translateX(4px);
+}
+
+/* Banner kết nối dưới 3 mạch */
+.sql-circuits-map-banner {
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--bg-surface-alt) 0%, var(--bg-surface) 100%);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.sql-circuits-map-banner-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sql-circuits-map-banner-icon {
+  font-size: 1.5rem;
+}
+
+.sql-circuits-map-banner-text {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+}
+
+.sql-circuits-map-banner-text strong {
+  color: var(--text-primary);
+}
+
+
+/* --- Phân hệ 2: TechMart Schema Showcase (.sql-schema-showcase) --- */
+.sql-schema-showcase {
+  margin-top: 22px;
+}
+
+/* Dải engine matrix bar */
+.sql-engine-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 20px;
+}
+
+.sql-engine-chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sql-engine-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+}
+
+.sql-engine-chip-status {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.sql-engine-verified-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--topic-sql);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Grid 4 khối Schema */
+.sql-schema-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.sql-schema-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+
+.sql-schema-box:hover {
+  transform: translateY(-2px);
+  border-color: var(--topic-sql);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.08);
+}
+
+.sql-schema-box-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sql-schema-box-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sql-schema-box-icon {
+  font-size: 1.25rem;
+}
+
+.sql-schema-box-title {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.sql-schema-box-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-surface-alt);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.sql-schema-table-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.sql-schema-table-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-surface-alt);
+  font-size: 0.82rem;
+}
+
+.sql-schema-table-name {
+  font-family: var(--font-mono, monospace);
+  font-weight: 600;
+  color: var(--topic-sql);
+}
+
+.sql-schema-table-meta {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.sql-schema-box-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+/* Callout Action Banner ở cuối */
+.sql-schema-action-banner {
+  padding: 22px 24px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(5, 150, 105, 0.05) 100%);
+  border: 1px solid var(--topic-sql-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.sql-schema-action-left {
+  max-width: 680px;
+}
+
+.sql-schema-action-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sql-schema-action-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.sql-schema-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  background: var(--topic-sql);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.sql-schema-action-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+
+@media (max-width: 768px) {
+  .sql-circuit-deck,
+  .sql-schema-grid {
+    grid-template-columns: 1fr;
+  }
+  .sql-schema-action-banner,
+  .sql-circuits-map-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .sql-schema-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
