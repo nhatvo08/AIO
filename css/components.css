@@ -746,6 +746,7 @@ code:not(pre code) {
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
   overflow: hidden;
+  contain: layout paint;
   background: var(--bg-code);
   box-shadow: var(--shadow-sm);
 }
@@ -1202,6 +1203,7 @@ code:not(pre code) {
 .solution-accordion-inner {
   min-height: 0;
   overflow: hidden;
+  contain: layout paint;
 }
 
 .solution-details {
@@ -1543,7 +1545,6 @@ code:not(pre code) {
   height: 100%;
   border-radius: var(--radius-pill);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease, box-shadow 0.4s ease;
-  will-change: width;
 }
 
 /* Tier 1 (< 25%): Xanh dương hạ tầng */

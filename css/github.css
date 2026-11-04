@@ -477,7 +477,6 @@
 /* Reading progress & Back to top topic override */
 .reading-progress-fill {
   background: var(--gradient-github, #f05032);
-  box-shadow: 0 0 8px rgba(240, 80, 50, 0.45);
 }
 
 .back-to-top-btn:hover {

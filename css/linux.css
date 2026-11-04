@@ -1112,7 +1112,6 @@
 
 .reading-progress-fill {
   background: var(--gradient-linux, #d97706);
-  box-shadow: 0 0 8px rgba(217, 119, 6, 0.45);
 }
 
 .back-to-top-btn:hover {

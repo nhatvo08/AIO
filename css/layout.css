@@ -13,7 +13,7 @@ html {
   font-family: var(--font-sans);
   color: var(--text-primary);
   background-color: var(--bg-app);
-  scroll-behavior: smooth;
+  /* Không bật scroll-behavior: smooth toàn cục trên html để tránh xung đột quán tính cuộn chuột/bàn phím; các nút neo TOC đã gọi smooth tường minh trong JS */
   scroll-padding-top: calc(var(--header-height) + 20px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -81,8 +81,8 @@ a:hover {
   z-index: 100;
   height: var(--header-height);
   background-color: var(--bg-glass);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border-glass);
   box-shadow: var(--shadow-xs);
   display: flex;
@@ -90,16 +90,17 @@ a:hover {
   justify-content: space-between;
   padding: 0 20px;
   gap: 16px;
+  transform: translateZ(0);
   transition: background-color 0.2s, border-color 0.2s;
 }
 
-@supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
+@supports not ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
   .top-header {
     background-color: var(--bg-surface);
   }
 }
 
-/* Thanh tiến độ đọc bài học (Reading Progress Bar) */
+/* Thanh tiến độ đọc bài học (Reading Progress Bar — chạy trên GPU bằng scaleX, 0 tốn Layout/Paint) */
 .reading-progress-track {
   position: absolute;
   bottom: 0;
@@ -108,15 +109,17 @@ a:hover {
   height: 2.5px;
   background: transparent;
   pointer-events: none;
+  overflow: hidden;
   z-index: 101;
 }
 
 .reading-progress-fill {
   height: 100%;
-  width: 0%;
+  width: 100%;
   background: var(--gradient-primary);
-  box-shadow: 0 0 8px rgba(37, 99, 235, 0.45);
-  transition: width 0.08s ease-out;
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
 }
 
 /* Nút cuộn lên đầu trang (Back to top) */
@@ -405,6 +408,7 @@ a.brand-link:hover {
   height: calc(100vh - var(--header-height));
   max-height: calc(100vh - var(--header-height));
   overflow: hidden;
+  contain: layout style;
   background-color: var(--bg-surface);
   border-right: 1px solid var(--border-subtle);
   padding: 18px 14px 0;
@@ -415,20 +419,11 @@ a.brand-link:hover {
 
 .progress-card {
   flex-shrink: 0;
-  background: var(--bg-glass);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--border-glass);
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   padding: 14px 16px;
   box-shadow: var(--shadow-xs);
-}
-
-@supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
-  .progress-card {
-    background: var(--bg-surface-alt);
-    border-color: var(--border-subtle);
-  }
 }
 
 .progress-header {
@@ -691,7 +686,6 @@ a.brand-link:hover {
   min-height: 0;
   overflow-y: auto !important;
   overflow-x: hidden !important;
-  scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -897,6 +891,8 @@ h4[id] {
   top: var(--header-height);
   height: calc(100vh - var(--header-height));
   overflow-y: auto;
+  overscroll-behavior: contain;
+  contain: layout style;
   padding: 28px 18px 40px 12px;
   border-left: 1px solid var(--border-subtle);
 }

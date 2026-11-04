@@ -69425,6 +69425,28 @@ const flatLessons = getFlatLessons();
 let currentView = 'home'; // 'home' | lessonId
 let activeCourseFilter = 'all'; // 'all' | 'course-python' | 'course-str' | 'course-learning-python' | 'course-learning-python-part3'
 let tocObserver = null;
+let setActiveTocFn = null;
+let lastTocTargetId = '';
+let tocClickLockUntil = 0;
+
+/**
+ * Cuộn nội bộ khung .sidebar-right khi mục lục tràn chiều cao; không gọi scrollIntoView() để tránh cướp cuộn của window
+ */
+function scrollTocLinkIntoSidebar(linkEl) {
+  if (!linkEl) return;
+  const sidebarRight = linkEl.closest('.sidebar-right');
+  if (!sidebarRight || sidebarRight.clientHeight <= 0 || sidebarRight.scrollHeight <= sidebarRight.clientHeight) {
+    return;
+  }
+  const containerRect = sidebarRight.getBoundingClientRect();
+  const linkRect = linkEl.getBoundingClientRect();
+  const pad = 24;
+  if (linkRect.top < containerRect.top + pad) {
+    sidebarRight.scrollTop += (linkRect.top - containerRect.top - pad);
+  } else if (linkRect.bottom > containerRect.bottom - pad) {
+    sidebarRight.scrollTop += (linkRect.bottom - containerRect.bottom + pad);
+  }
+}
 
 /**
  * Tự động gọi KaTeX renderMathInElement cho một vùng chứa DOM cụ thể
@@ -69855,6 +69877,9 @@ function renderHomeView() {
       tocObserver.disconnect();
       tocObserver = null;
     }
+    setActiveTocFn = null;
+    lastTocTargetId = '';
+    tocClickLockUntil = 0;
 
     tocEl.innerHTML = `
       <div class="toc-heading">Lộ trình Khóa học</div>
@@ -69875,15 +69900,39 @@ function renderHomeView() {
       `).join('')}
     `;
 
-    tocEl.querySelectorAll('.toc-link').forEach((link) => {
+    const homeTocLinks = Array.from(tocEl.querySelectorAll('.toc-link'));
+    let activeHomeTocId = '';
+
+    function setActiveHomeToc(activeId) {
+      if (!activeId || activeId === activeHomeTocId) return;
+      activeHomeTocId = activeId;
+      let matchedLink = null;
+      for (const a of homeTocLinks) {
+        const targetId = (a.getAttribute('href') || '').replace('#', '');
+        const isMatch = targetId === activeId;
+        a.classList.toggle('active', isMatch);
+        if (isMatch) matchedLink = a;
+      }
+      if (matchedLink) {
+        scrollTocLinkIntoSidebar(matchedLink);
+      }
+    }
+
+    setActiveTocFn = setActiveHomeToc;
+    if (homeTocLinks.length > 0) {
+      lastTocTargetId = (homeTocLinks[homeTocLinks.length - 1].getAttribute('href') || '').replace('#', '');
+    }
+
+    homeTocLinks.forEach((link) => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
         const href = link.getAttribute('href') || '';
         const targetId = href.replace('#', '');
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
+          tocClickLockUntil = Date.now() + 700;
+          setActiveHomeToc(targetId);
           targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          tocEl.querySelectorAll('.toc-link').forEach((a) => a.classList.toggle('active', a === link));
         }
       });
     });
@@ -69891,20 +69940,21 @@ function renderHomeView() {
     if ('IntersectionObserver' in window) {
       tocObserver = new IntersectionObserver(
         (entries) => {
+          if (Date.now() < tocClickLockUntil) return;
+          let nextActiveId = null;
           for (const entry of entries) {
             if (entry.isIntersecting) {
-              const activeId = entry.target.id;
-              tocEl.querySelectorAll('.toc-link').forEach((a) => {
-                const targetId = (a.getAttribute('href') || '').replace('#', '');
-                a.classList.toggle('active', targetId === activeId);
-              });
+              nextActiveId = entry.target.id;
             }
           }
+          if (nextActiveId) {
+            setActiveHomeToc(nextActiveId);
+          }
         },
-        { rootMargin: '-70px 0px -70% 0px', threshold: 0.05 }
+        { rootMargin: '-70px 0px -70% 0px', threshold: 0 }
       );
 
-      tocEl.querySelectorAll('.toc-link').forEach((link) => {
+      homeTocLinks.forEach((link) => {
         const targetId = (link.getAttribute('href') || '').replace('#', '');
         const el = document.getElementById(targetId);
         if (el) tocObserver.observe(el);
@@ -70431,6 +70481,9 @@ function renderRightToc(lesson) {
     tocObserver.disconnect();
     tocObserver = null;
   }
+  setActiveTocFn = null;
+  lastTocTargetId = '';
+  tocClickLockUntil = 0;
 
   const tocItems = [
     { id: 'sec-objectives', label: '1. Mục tiêu bài học' },
@@ -70443,7 +70496,7 @@ function renderRightToc(lesson) {
     { id: 'sec-exercises', label: 'Bài tập thực hành' },
     { id: 'sec-quiz', label: 'Câu hỏi Quiz' },
     { id: 'sec-summary', label: 'Tóm tắt bài học' }
-  ];
+  ].filter((item) => Boolean(document.getElementById(item.id)));
 
   tocEl.innerHTML = `
     <div class="toc-heading">Trong bài này</div>
@@ -70462,12 +70515,34 @@ function renderRightToc(lesson) {
     </ul>
   `;
 
-  tocEl.querySelectorAll('.toc-link').forEach((link) => {
+  const tocLinks = Array.from(tocEl.querySelectorAll('.toc-link'));
+  let activeTocId = '';
+
+  function setActiveToc(activeId) {
+    if (!activeId || activeId === activeTocId) return;
+    activeTocId = activeId;
+    let matchedLink = null;
+    for (const a of tocLinks) {
+      const isMatch = a.dataset.tocTarget === activeId;
+      a.classList.toggle('active', isMatch);
+      if (isMatch) matchedLink = a;
+    }
+    if (matchedLink) {
+      scrollTocLinkIntoSidebar(matchedLink);
+    }
+  }
+
+  setActiveTocFn = setActiveToc;
+  lastTocTargetId = tocItems.length > 0 ? tocItems[tocItems.length - 1].id : '';
+
+  tocLinks.forEach((link) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const targetId = link.dataset.tocTarget;
       const targetEl = document.getElementById(targetId);
       if (targetEl) {
+        tocClickLockUntil = Date.now() + 700;
+        setActiveToc(targetId);
         targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
@@ -70476,16 +70551,18 @@ function renderRightToc(lesson) {
   if ('IntersectionObserver' in window) {
     tocObserver = new IntersectionObserver(
       (entries) => {
+        if (Date.now() < tocClickLockUntil) return;
+        let nextActiveId = null;
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            const activeId = entry.target.id;
-            tocEl.querySelectorAll('.toc-link').forEach((a) => {
-              a.classList.toggle('active', a.dataset.tocTarget === activeId);
-            });
+            nextActiveId = entry.target.id;
           }
         }
+        if (nextActiveId) {
+          setActiveToc(nextActiveId);
+        }
       },
-      { rootMargin: '-80px 0px -70% 0px', threshold: 0.05 }
+      { rootMargin: '-80px 0px -70% 0px', threshold: 0 }
     );
 
     tocItems.forEach((item) => {
@@ -70587,24 +70664,49 @@ function initThemeAndFontControls() {
 /**
  * Khởi động toàn bộ ứng dụng
  */
+let scrollTicking = false;
+let lastProgressRatio = -1;
+let lastBackToTopVisible = false;
+
 function updateScrollIndicators() {
+  scrollTicking = false;
   const progressFill = document.getElementById('reading-progress-fill');
   const backToTopBtn = document.getElementById('back-to-top-btn');
+  const scrollY = window.scrollY || window.pageYOffset || 0;
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 
   if (progressFill) {
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    if (maxScroll <= 0) {
-      progressFill.style.width = '0%';
-    } else {
-      const pct = Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100));
-      progressFill.style.width = pct.toFixed(1) + '%';
+    const ratio = maxScroll > 0 ? Math.min(1, Math.max(0, scrollY / maxScroll)) : 0;
+    if (
+      Math.abs(ratio - lastProgressRatio) > 0.0005 ||
+      (ratio === 0 && lastProgressRatio !== 0) ||
+      (ratio === 1 && lastProgressRatio !== 1)
+    ) {
+      progressFill.style.transform = `scaleX(${ratio.toFixed(4)})`;
+      lastProgressRatio = ratio;
     }
   }
+
   if (backToTopBtn) {
-    if (window.scrollY > 300) {
-      backToTopBtn.classList.add('visible');
+    const shouldShow = scrollY > 300;
+    if (shouldShow !== lastBackToTopVisible) {
+      backToTopBtn.classList.toggle('visible', shouldShow);
+      lastBackToTopVisible = shouldShow;
+    }
+  }
+
+  if (maxScroll > 0 && scrollY >= maxScroll - 25 && setActiveTocFn && lastTocTargetId && Date.now() >= tocClickLockUntil) {
+    setActiveTocFn(lastTocTargetId);
+  }
+}
+
+function scheduleScrollIndicators() {
+  if (!scrollTicking) {
+    scrollTicking = true;
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(updateScrollIndicators);
     } else {
-      backToTopBtn.classList.remove('visible');
+      updateScrollIndicators();
     }
   }
 }
@@ -70613,7 +70715,10 @@ function bootApp() {
   initThemeAndFontControls();
 
   const backToTopBtn = document.getElementById('back-to-top-btn');
-  window.addEventListener('scroll', updateScrollIndicators, { passive: true });
+  window.addEventListener('scroll', scheduleScrollIndicators, { passive: true });
+  window.addEventListener('resize', scheduleScrollIndicators, { passive: true });
+  window.addEventListener('wheel', () => { tocClickLockUntil = 0; }, { passive: true });
+  window.addEventListener('touchmove', () => { tocClickLockUntil = 0; }, { passive: true });
 
   backToTopBtn?.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -70684,7 +70789,7 @@ function bootApp() {
   const treeEl = document.getElementById('curriculum-tree');
   if (sidebarLeft && treeEl) {
     sidebarLeft.addEventListener('wheel', (e) => {
-      if (!treeEl.contains(e.target)) {
+      if (!treeEl.contains(e.target) && e.deltaY !== 0) {
         treeEl.scrollTop += e.deltaY;
       }
     }, { passive: true });

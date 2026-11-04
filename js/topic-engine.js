@@ -176,8 +176,28 @@
     var currentView = null;
     var activeFilter = 'all';
     var tocObserver = null;
+    var setActiveTocFn = null;
+    var lastTocTargetId = '';
+    var tocClickLockUntil = 0;
     var partOpenState = {};
     var searchQuery = '';
+
+    // Cuộn nội bộ khung .sidebar-right khi mục lục tràn chiều cao; không gọi scrollIntoView() để tránh cướp cuộn của window
+    function scrollTocLinkIntoSidebar(linkEl) {
+      if (!linkEl) return;
+      var sidebarRight = linkEl.closest('.sidebar-right');
+      if (!sidebarRight || sidebarRight.clientHeight <= 0 || sidebarRight.scrollHeight <= sidebarRight.clientHeight) {
+        return;
+      }
+      var containerRect = sidebarRight.getBoundingClientRect();
+      var linkRect = linkEl.getBoundingClientRect();
+      var pad = 24;
+      if (linkRect.top < containerRect.top + pad) {
+        sidebarRight.scrollTop += (linkRect.top - containerRect.top - pad);
+      } else if (linkRect.bottom > containerRect.bottom - pad) {
+        sidebarRight.scrollTop += (linkRect.bottom - containerRect.bottom + pad);
+      }
+    }
 
     function normalizeSearch(str) {
       return (str || '')
@@ -479,6 +499,9 @@
         tocObserver.disconnect();
         tocObserver = null;
       }
+      setActiveTocFn = null;
+      lastTocTargetId = '';
+      tocClickLockUntil = 0;
       if (initialDocTitle) {
         document.title = initialDocTitle;
       }
@@ -1560,16 +1583,18 @@
         });
       });
 
-      // Tương tác Mục lục nhanh trên Mobile
+      // Tương tác Mục lục nhanh trên Mobile (đóng hộp details trước khi đo vị trí cuộn để không bị lệch chiều cao dropdown)
       mainEl.querySelectorAll('.mobile-toc-link').forEach(function (link) {
         link.addEventListener('click', function (e) {
           e.preventDefault();
           var targetId = link.dataset.tocTarget;
           var targetEl = document.getElementById(targetId);
           if (targetEl) {
-            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
             var detailsEl = link.closest('.mobile-toc-details');
             if (detailsEl) detailsEl.removeAttribute('open');
+            tocClickLockUntil = Date.now() + 700;
+            if (setActiveTocFn) setActiveTocFn(targetId);
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
             try {
               window.history.replaceState(null, '', '#' + targetId);
             } catch (_e) {}
@@ -1599,21 +1624,9 @@
           tocObserver.disconnect();
           tocObserver = null;
         }
-
-        function setActiveToc(activeId) {
-          if (!activeId) return;
-          var matchedLink = null;
-          tocEl.querySelectorAll('.toc-link').forEach(function (a) {
-            var isMatch = a.dataset.tocTarget === activeId;
-            a.classList.toggle('active', isMatch);
-            if (isMatch) matchedLink = a;
-          });
-          if (matchedLink) {
-            try {
-              matchedLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-            } catch (_e) {}
-          }
-        }
+        setActiveTocFn = null;
+        lastTocTargetId = tocList.length > 0 ? tocList[tocList.length - 1].id : '';
+        tocClickLockUntil = 0;
 
         tocEl.innerHTML = '' +
           '<div class="toc-heading">Trong bài này</div>' +
@@ -1623,14 +1636,35 @@
             }).join('') +
           '</ul>';
 
-        tocEl.querySelectorAll('.toc-link').forEach(function (link) {
+        var tocLinks = Array.prototype.slice.call(tocEl.querySelectorAll('.toc-link'));
+        var activeTocId = '';
+
+        function setActiveToc(activeId) {
+          if (!activeId || activeId === activeTocId) return;
+          activeTocId = activeId;
+          var matchedLink = null;
+          for (var i = 0; i < tocLinks.length; i++) {
+            var a = tocLinks[i];
+            var isMatch = a.dataset.tocTarget === activeId;
+            a.classList.toggle('active', isMatch);
+            if (isMatch) matchedLink = a;
+          }
+          if (matchedLink) {
+            scrollTocLinkIntoSidebar(matchedLink);
+          }
+        }
+
+        setActiveTocFn = setActiveToc;
+
+        tocLinks.forEach(function (link) {
           link.addEventListener('click', function (e) {
             e.preventDefault();
             var targetId = link.dataset.tocTarget;
             var targetEl = document.getElementById(targetId);
             if (targetEl) {
-              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              tocClickLockUntil = Date.now() + 700;
               setActiveToc(targetId);
+              targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
               try {
                 window.history.replaceState(null, '', '#' + targetId);
               } catch (_e) {}
@@ -1640,12 +1674,17 @@
 
         if ('IntersectionObserver' in window) {
           tocObserver = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-              if (entry.isIntersecting) {
-                setActiveToc(entry.target.id);
+            if (Date.now() < tocClickLockUntil) return;
+            var nextActiveId = null;
+            for (var i = 0; i < entries.length; i++) {
+              if (entries[i].isIntersecting) {
+                nextActiveId = entries[i].target.id;
               }
-            });
-          }, { rootMargin: '-75px 0px -65% 0px', threshold: 0.05 });
+            }
+            if (nextActiveId) {
+              setActiveToc(nextActiveId);
+            }
+          }, { rootMargin: '-75px 0px -65% 0px', threshold: 0 });
 
           tocList.forEach(function (item) {
             var el = document.getElementById(item.id);
@@ -1722,25 +1761,11 @@
       renderSidebar();
       renderLessonView(targetId);
 
-      // Đảm bảo trình duyệt luôn cuộn lên đầu bài học mới
+      // Đảm bảo trình duyệt luôn cuộn lên đầu bài học mới ngay lập tức
       window.scrollTo({ top: 0, behavior: 'auto' });
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
-      if (typeof requestAnimationFrame === 'function') {
-        requestAnimationFrame(function () {
-          window.scrollTo({ top: 0, behavior: 'auto' });
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-          updateScrollIndicators();
-        });
-      } else {
-        setTimeout(function () {
-          window.scrollTo({ top: 0, behavior: 'auto' });
-          document.documentElement.scrollTop = 0;
-          document.body.scrollTop = 0;
-          updateScrollIndicators();
-        }, 0);
-      }
+      updateScrollIndicators();
     }
 
     function closeDrawer() {
@@ -1831,44 +1856,58 @@
 
       var progressFill = document.getElementById('reading-progress-fill');
       var backToTopBtn = document.getElementById('back-to-top-btn');
+      var scrollTicking = false;
+      var lastProgressRatio = -1;
+      var lastBackToTopVisible = false;
 
-      updateScrollIndicators = function () {
+      function flushScrollIndicators() {
+        scrollTicking = false;
+        var scrollY = window.scrollY || window.pageYOffset || 0;
+        var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
         if (progressFill) {
-          var maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-          if (maxScroll <= 0) {
-            progressFill.style.width = '0%';
-          } else {
-            var pct = Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100));
-            progressFill.style.width = pct.toFixed(1) + '%';
+          var ratio = maxScroll > 0 ? Math.min(1, Math.max(0, scrollY / maxScroll)) : 0;
+          if (
+            Math.abs(ratio - lastProgressRatio) > 0.0005 ||
+            (ratio === 0 && lastProgressRatio !== 0) ||
+            (ratio === 1 && lastProgressRatio !== 1)
+          ) {
+            progressFill.style.transform = 'scaleX(' + ratio.toFixed(4) + ')';
+            lastProgressRatio = ratio;
           }
         }
+
         if (backToTopBtn) {
-          if (window.scrollY > 300) {
-            backToTopBtn.classList.add('visible');
-          } else {
-            backToTopBtn.classList.remove('visible');
+          var shouldShow = scrollY > 300;
+          if (shouldShow !== lastBackToTopVisible) {
+            backToTopBtn.classList.toggle('visible', shouldShow);
+            lastBackToTopVisible = shouldShow;
           }
         }
-        // Xử lý kích hoạt mục cuối cùng trong mục lục khi cuộn tới cuối trang
-        if (maxScroll > 0 && window.scrollY >= (maxScroll - 25)) {
-          var tocEl = document.getElementById('toc-container');
-          if (tocEl) {
-            var links = tocEl.querySelectorAll('.toc-link');
-            if (links.length > 0) {
-              var lastLink = links[links.length - 1];
-              if (!lastLink.classList.contains('active')) {
-                links.forEach(function (l) { l.classList.remove('active'); });
-                lastLink.classList.add('active');
-                try {
-                  lastLink.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-                } catch (_e) {}
-              }
-            }
+
+        // Kích hoạt đề mục cuối cùng trong mục lục khi cuộn chạm đáy trang (không gọi scrollIntoView trên window)
+        if (maxScroll > 0 && scrollY >= (maxScroll - 25) && setActiveTocFn && lastTocTargetId && Date.now() >= tocClickLockUntil) {
+          setActiveTocFn(lastTocTargetId);
+        }
+      }
+
+      function scheduleScrollIndicators() {
+        if (!scrollTicking) {
+          scrollTicking = true;
+          if (typeof window.requestAnimationFrame === 'function') {
+            window.requestAnimationFrame(flushScrollIndicators);
+          } else {
+            flushScrollIndicators();
           }
         }
       }
 
-      window.addEventListener('scroll', updateScrollIndicators, { passive: true });
+      updateScrollIndicators = flushScrollIndicators;
+
+      window.addEventListener('scroll', scheduleScrollIndicators, { passive: true });
+      window.addEventListener('resize', scheduleScrollIndicators, { passive: true });
+      window.addEventListener('wheel', function () { tocClickLockUntil = 0; }, { passive: true });
+      window.addEventListener('touchmove', function () { tocClickLockUntil = 0; }, { passive: true });
 
       if (backToTopBtn) {
         backToTopBtn.addEventListener('click', function () {
@@ -2013,7 +2052,7 @@
       var treeEl = document.getElementById('curriculum-tree');
       if (sidebar && treeEl) {
         sidebar.addEventListener('wheel', function (e) {
-          if (!treeEl.contains(e.target)) {
+          if (!treeEl.contains(e.target) && e.deltaY !== 0) {
             treeEl.scrollTop += e.deltaY;
           }
         }, { passive: true });
