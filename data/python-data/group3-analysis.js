@@ -128,34 +128,34 @@ window.PYDATA_GROUP3_PARTS = [
           {
             "question": "Trong kiến trúc hướng đối tượng của Matplotlib, đối tượng nào đại diện cho toàn bộ vùng vẽ 2D chứa các trục tọa độ, đường nét và nhãn dữ liệu?",
             "options": [
-              "(Recommended) Axes",
+              "Axes",
               "Figure",
               "Axis",
               "Canvas"
             ],
-            "correctAnswer": "(Recommended) Axes",
+            "correctIndex": 0,
             "explanation": "Trong Matplotlib, 'Figure' là khung tranh tổng thể bao ngoài cùng; 'Axes' mới là đối tượng đại diện cho một vùng vẽ 2D hoàn chỉnh chứa hệ trục tọa độ, nhãn và các hình vẽ; còn 'Axis' là thước đo từng trục X hoặc Y."
           },
           {
             "question": "Lợi ích cốt lõi của việc sử dụng 'axes.flatten()' khi làm việc với 'fig, axes = plt.subplots(3, 4)' là gì?",
             "options": [
-              "(Recommended) Chuyển đổi mảng 2 chiều kích thước (3, 4) thành mảng 1 chiều 12 phần tử để dễ dàng duyệt bằng một vòng lặp for đơn giản.",
               "Tự động tính giá trị trung bình của toàn bộ 12 biểu đồ.",
+              "Chuyển đổi mảng 2 chiều kích thước (3, 4) thành mảng 1 chiều 12 phần tử để dễ dàng duyệt bằng một vòng lặp for đơn giản.",
               "Làm phẳng màu nền của biểu đồ thành màu trắng thuần khiết.",
               "Nén dung lượng bộ nhớ của Figure xuống 50%."
             ],
-            "correctAnswer": "(Recommended) Chuyển đổi mảng 2 chiều kích thước (3, 4) thành mảng 1 chiều 12 phần tử để dễ dàng duyệt bằng một vòng lặp for đơn giản.",
+            "correctIndex": 1,
             "explanation": "axes.flatten() duỗi thẳng ma trận con thành mảng 1D, giúp lập trình viên lặp qua danh sách biến dữ liệu và vẽ tự động vào từng ô mà không cần viết 2 vòng lặp lồng nhau phức tạp."
           },
           {
             "question": "Khi xuất đồ thị ra tệp ảnh để in ấn báo cáo, tham số nào sau đây đảm bảo khung viền được cắt sát mép và tiêu đề không bị mất góc?",
             "options": [
-              "(Recommended) bbox_inches='tight'",
               "dpi=300",
               "transparent=True",
+              "bbox_inches='tight'",
               "format='png'"
             ],
-            "correctAnswer": "(Recommended) bbox_inches='tight'",
+            "correctIndex": 2,
             "explanation": "bbox_inches='tight' yêu cầu Matplotlib tính toán lại vùng hộp bao quanh (bounding box) chứa tất cả các đối tượng vẽ bao gồm nhãn ngoài rìa, tự động cắt bỏ viền thừa và chống xén chữ."
           }
         ],
@@ -283,34 +283,34 @@ window.PYDATA_GROUP3_PARTS = [
           {
             "question": "Điều gì sẽ xảy ra nếu bạn cố gắng truyền tham số 'ax=my_axis' vào một hàm cấp Figure như sns.relplot() hoặc sns.catplot()?",
             "options": [
-              "(Recommended) Bị lỗi hoặc tham số ax bị bỏ qua, vì các hàm cấp Figure tự khởi tạo khung tranh FacetGrid riêng và không thể vẽ vào một Axes có sẵn.",
               "Hàm tự động chuyển thành hàm cấp Axes và vẽ bình thường.",
+              "Bị lỗi hoặc tham số ax bị bỏ qua, vì các hàm cấp Figure tự khởi tạo khung tranh FacetGrid riêng và không thể vẽ vào một Axes có sẵn.",
               "Toàn bộ chương trình Python bị crash và rò rỉ bộ nhớ RAM.",
               "Đồ thị được vẽ đè lên tất cả các trục khác trong màn hình."
             ],
-            "correctAnswer": "(Recommended) Bị lỗi hoặc tham số ax bị bỏ qua, vì các hàm cấp Figure tự khởi tạo khung tranh FacetGrid riêng và không thể vẽ vào một Axes có sẵn.",
+            "correctIndex": 1,
             "explanation": "Các hàm cấp Figure (Figure-level functions) như relplot, catplot, displot tự động quản trị toàn bộ vòng đời của Figure thông qua lớp FacetGrid, do đó chúng không nhận tham số ax để nhúng vào Axes có sẵn. Để nhúng vào Axes, bạn bắt buộc phải dùng các hàm tương ứng ở cấp Axes như scatterplot, boxplot, histplot."
           },
           {
             "question": "Ưu điểm vượt trội của Violinplot so với Boxplot khi phân tích dữ liệu phân phối là gì?",
             "options": [
-              "(Recommended) Violinplot phơi bày được cấu trúc phân phối đa đỉnh (bimodal/multimodal) nhờ kết hợp đường cong mật độ KDE, điều mà Boxplot hoàn toàn che giấu.",
               "Violinplot tính toán nhanh hơn Boxplot gấp 10 lần trên tập dữ liệu lớn.",
               "Violinplot không bị ảnh hưởng bởi các giá trị ngoại lai cực đoan.",
+              "Violinplot phơi bày được cấu trúc phân phối đa đỉnh (bimodal/multimodal) nhờ kết hợp đường cong mật độ KDE, điều mà Boxplot hoàn toàn che giấu.",
               "Violinplot có thể vẽ được trên các biến kiểu chuỗi văn bản không có thứ tự."
             ],
-            "correctAnswer": "(Recommended) Violinplot phơi bày được cấu trúc phân phối đa đỉnh (bimodal/multimodal) nhờ kết hợp đường cong mật độ KDE, điều mà Boxplot hoàn toàn che giấu.",
+            "correctIndex": 2,
             "explanation": "Boxplot chỉ thể hiện 5 giá trị tóm tắt (Min, Q1, Median, Q3, Max), do đó một phân phối đều, phân phối chuẩn hay phân phối 2 đỉnh có thể cho ra một hình hộp Boxplot y hệt nhau. Violinplot bọc đường cong KDE ở hai bên, giúp người phân tích lập tức nhìn thấy các đỉnh mật độ ẩn giấu."
           },
           {
             "question": "Tại sao trong báo cáo khoa học dữ liệu chuyên nghiệp, người ta luôn dùng lệnh 'mask = np.triu(np.ones_like(corr, dtype=bool))' khi vẽ ma trận tương quan Heatmap?",
             "options": [
-              "(Recommended) Để che giấu nửa tam giác trên đối xứng vốn chứa thông tin trùng lặp 100%, nâng cao tỷ lệ Data-Ink theo khuyến nghị của Edward Tufte.",
               "Để tăng tốc độ tính toán ma trận tương quan của NumPy.",
               "Để biến các giá trị tương quan âm thành giá trị tuyệt đối dương.",
-              "Để tự động loại bỏ các biến số có tương quan bằng 0."
+              "Để tự động loại bỏ các biến số có tương quan bằng 0.",
+              "Để che giấu nửa tam giác trên đối xứng vốn chứa thông tin trùng lặp 100%, nâng cao tỷ lệ Data-Ink theo khuyến nghị của Edward Tufte."
             ],
-            "correctAnswer": "(Recommended) Để che giấu nửa tam giác trên đối xứng vốn chứa thông tin trùng lặp 100%, nâng cao tỷ lệ Data-Ink theo khuyến nghị của Edward Tufte.",
+            "correctIndex": 3,
             "explanation": "Ma trận tương quan luôn đối xứng qua đường chéo chính (corr[A, B] = corr[B, A]). Việc hiển thị cả hai nửa tam giác vừa gây nhiễu thị giác vừa vi phạm nguyên tắc tối ưu tỷ lệ Data-Ink. Dùng mask np.triu sẽ che sạch nửa trên, giúp bảng báo cáo gọn gàng, trang nhã và chuyên nghiệp."
           }
         ],
@@ -423,34 +423,34 @@ window.PYDATA_GROUP3_PARTS = [
           {
             "question": "Theo thang đo nhận thức thị giác của William Cleveland và Robert McGill (1984), yếu tố thị giác nào giúp não người giải mã độ lớn với sai số thấp nhất?",
             "options": [
-              "(Recommended) Vị trí trên cùng một trục chuẩn (Position along a common scale).",
               "Góc quạt của hình tròn (Angle).",
               "Diện tích của hình đa giác (Area).",
+              "Vị trí trên cùng một trục chuẩn (Position along a common scale).",
               "Độ bão hòa của màu sắc (Color saturation)."
             ],
-            "correctAnswer": "(Recommended) Vị trí trên cùng một trục chuẩn (Position along a common scale).",
+            "correctIndex": 2,
             "explanation": "Nghiên cứu thực nghiệm tâm vật lý của Cleveland & McGill chứng minh rằng việc đánh giá vị trí điểm trên một trục thang đo chung (như trong Bar chart hay Scatter plot) có độ chính xác cao nhất và ít sai số nhận thức nhất trong mọi yếu tố thị giác."
           },
           {
             "question": "Tại sao trong biểu đồ cột (Bar Chart), việc bắt đầu trục Y từ một giá trị khác 0 (Truncated Y-axis) lại bị coi là hành vi thao túng dữ liệu nghiêm trọng theo Alberto Cairo?",
             "options": [
-              "(Recommended) Vì mắt người so sánh chiều cao và diện tích của toàn bộ thân cột để suy luận tỷ lệ độ lớn; cắt cụt trục Y sẽ phóng đại mức biến động nhỏ thành một sự chênh lệch khổng lồ giả tạo.",
               "Vì nó làm cho máy in tiêu tốn nhiều mực in hơn.",
               "Vì thư viện Matplotlib sẽ tự động báo lỗi cú pháp khi vẽ.",
-              "Vì nó khiến cho biểu đồ không thể chuyển đổi sang định dạng vector SVG."
+              "Vì nó khiến cho biểu đồ không thể chuyển đổi sang định dạng vector SVG.",
+              "Vì mắt người so sánh chiều cao và diện tích của toàn bộ thân cột để suy luận tỷ lệ độ lớn; cắt cụt trục Y sẽ phóng đại mức biến động nhỏ thành một sự chênh lệch khổng lồ giả tạo."
             ],
-            "correctAnswer": "(Recommended) Vì mắt người so sánh chiều cao và diện tích của toàn bộ thân cột để suy luận tỷ lệ độ lớn; cắt cụt trục Y sẽ phóng đại mức biến động nhỏ thành một sự chênh lệch khổng lồ giả tạo.",
+            "correctIndex": 3,
             "explanation": "Trong Bar chart, độ dài của cột mã hóa trực tiếp cho độ lớn của số liệu. Cắt ngắn trục Y phá vỡ tỷ lệ hình học này, khiến một mức tăng vài phần trăm trông giống như tăng gấp nhiều lần, đánh lừa nhận thức của người xem."
           },
           {
             "question": "Để tuân thủ tiêu chí 1.4.1 của chuẩn WCAG 2.2 khi vẽ đồ thị có nhiều đường xu hướng, phương pháp tiếp cận nào sau đây là ĐÚNG ĐẮN NHẤT?",
             "options": [
-              "(Recommended) Sử dụng kết hợp màu sắc với các kiểu nét vẽ khác nhau (nét liền, nét đứt), hình dạng marker khác nhau (tròn, vuông) và gắn nhãn trực tiếp (Direct labeling).",
+              "Sử dụng kết hợp màu sắc với các kiểu nét vẽ khác nhau (nét liền, nét đứt), hình dạng marker khác nhau (tròn, vuông) và gắn nhãn trực tiếp (Direct labeling).",
               "Chỉ sử dụng hai màu duy nhất là Đỏ tươi và Xanh lá cây.",
               "Chỉ vẽ một đường xu hướng duy nhất trên mỗi biểu đồ.",
               "Chuyển đổi toàn bộ biểu đồ sang bảng số liệu văn bản thuần túy."
             ],
-            "correctAnswer": "(Recommended) Sử dụng kết hợp màu sắc với các kiểu nét vẽ khác nhau (nét liền, nét đứt), hình dạng marker khác nhau (tròn, vuông) và gắn nhãn trực tiếp (Direct labeling).",
+            "correctIndex": 0,
             "explanation": "Tiêu chí 1.4.1 của WCAG yêu cầu không được dùng màu sắc làm kênh thông tin duy nhất. Việc kết hợp nét đứt/nét liền, hình dạng điểm (marker) và nhãn trực tiếp đảm bảo người khiếm thị sắc giác hoặc người in tài liệu đen trắng vẫn đọc hiểu trọn vẹn thông điệp."
           }
         ],
@@ -576,34 +576,34 @@ window.PYDATA_GROUP3_PARTS = [
           {
             "question": "Thông điệp cốt lõi sâu sắc nhất mà Bộ tứ Anscombe (Anscombe's Quartet, 1973) gửi đến cộng đồng phân tích dữ liệu là gì?",
             "options": [
-              "(Recommended) Các chỉ số thống kê tóm tắt định lượng (Mean, Std, Corr) có thể che giấu hoàn toàn các cấu trúc phân phối dị biệt; việc trực quan hóa đồ họa là bắt buộc trước khi kết luận.",
               "Mọi mối quan hệ trong tự nhiên đều tuân theo hàm phân phối chuẩn Gaussian.",
               "Hệ số tương quan r > 0.8 luôn đảm bảo mô hình hồi quy tuyến tính OLS hoạt động chính xác.",
-              "Nên loại bỏ tất cả các điểm ngoại lai trước khi tính giá trị trung bình."
+              "Nên loại bỏ tất cả các điểm ngoại lai trước khi tính giá trị trung bình.",
+              "Các chỉ số thống kê tóm tắt định lượng (Mean, Std, Corr) có thể che giấu hoàn toàn các cấu trúc phân phối dị biệt; việc trực quan hóa đồ họa là bắt buộc trước khi kết luận."
             ],
-            "correctAnswer": "(Recommended) Các chỉ số thống kê tóm tắt định lượng (Mean, Std, Corr) có thể che giấu hoàn toàn các cấu trúc phân phối dị biệt; việc trực quan hóa đồ họa là bắt buộc trước khi kết luận.",
+            "correctIndex": 3,
             "explanation": "Anscombe tạo ra 4 tập dữ liệu có cùng các con số tóm tắt (mean, variance, correlation, regression) nhưng đồ thị lại hoàn toàn khác nhau: một parabol, một đường thẳng có ngoại lai, một đường đòn bẩy. Bài học bất biến: Không bao giờ tin tưởng con số tóm tắt nếu chưa trực quan hóa dữ liệu."
           },
           {
             "question": "Nguyên nhân toán học căn bản dẫn đến Nghịch lý Simpson (Simpson's Paradox) là gì?",
             "options": [
-              "(Recommended) Sự tồn tại của một biến ẩn gây nhiễu (Lurking/Confounder variable) phân bổ không đồng đều giữa các nhóm nghiên cứu.",
+              "Sự tồn tại của một biến ẩn gây nhiễu (Lurking/Confounder variable) phân bổ không đồng đều giữa các nhóm nghiên cứu.",
               "Do kích thước mẫu quá nhỏ (dưới 30 quan sát).",
               "Do các biến số được đo lường bằng các đơn vị đo lường khác nhau.",
               "Do sai số làm tròn số thập phân trong máy tính."
             ],
-            "correctAnswer": "(Recommended) Sự tồn tại của một biến ẩn gây nhiễu (Lurking/Confounder variable) phân bổ không đồng đều giữa các nhóm nghiên cứu.",
+            "correctIndex": 0,
             "explanation": "Nghịch lý Simpson xảy ra khi một biến thứ ba (biến gây nhiễu - ví dụ như mức độ nghiêm trọng của bệnh nhân, hoặc loại thiết bị truy cập) liên kết mạnh mẽ với cả biến độc lập lẫn biến phụ thuộc, tạo ra trọng số chênh lệch làm đảo ngược xu hướng khi gộp dữ liệu."
           },
           {
             "question": "Theo John Tukey, sự khác biệt lớn nhất giữa Phân tích Khám phá (EDA) và Phân tích Khẳng định (CDA) nằm ở điều gì?",
             "options": [
-              "(Recommended) EDA tiếp cận dữ liệu với tâm thế mở của một thám tử để tìm kiếm mẫu hình và đặt giả thuyết mới; CDA tiếp cận như một thẩm phán để kiểm định và bác bỏ giả thuyết có sẵn.",
               "EDA chỉ dùng cho dữ liệu văn bản, còn CDA chỉ dùng cho dữ liệu số.",
+              "EDA tiếp cận dữ liệu với tâm thế mở của một thám tử để tìm kiếm mẫu hình và đặt giả thuyết mới; CDA tiếp cận như một thẩm phán để kiểm định và bác bỏ giả thuyết có sẵn.",
               "EDA bắt buộc phải dùng mô hình học sâu Deep Learning.",
               "CDA không sử dụng bất kỳ công thức toán học nào."
             ],
-            "correctAnswer": "(Recommended) EDA tiếp cận dữ liệu với tâm thế mở của một thám tử để tìm kiếm mẫu hình và đặt giả thuyết mới; CDA tiếp cận như một thẩm phán để kiểm định và bác bỏ giả thuyết có sẵn.",
+            "correctIndex": 1,
             "explanation": "John Tukey ví EDA như người thám tử thu thập mọi manh mối tại hiện trường mà không định kiến trước kết quả. CDA là bước sau đó, đóng vai trò công tố viên/thẩm phán sử dụng các kiểm định thống kê chính quy để xác thực hoặc bác bỏ manh mối đó."
           }
         ],
@@ -730,34 +730,34 @@ window.PYDATA_GROUP3_PARTS = [
           {
             "question": "Trong một tập dữ liệu có phân phối lệch phải nghiêm trọng (Right-skewed distribution), mối quan hệ thứ tự độ lớn giữa Mean, Median và Mode (Yếu vị) thường là gì?",
             "options": [
-              "(Recommended) Mode < Median < Mean",
+              "Mode < Median < Mean",
               "Mean < Median < Mode",
               "Mean = Median = Mode",
               "Median < Mode < Mean"
             ],
-            "correctAnswer": "(Recommended) Mode < Median < Mean",
+            "correctIndex": 0,
             "explanation": "Trong phân phối lệch phải, đỉnh cao nhất (Mode) nằm ở vùng giá trị nhỏ bên trái, tiếp theo là giá trị trung vị Median, và Mean bị kéo lệch xa nhất về phía bên phải bởi chiếc đuôi dài của các giá trị ngoại lai khổng lồ."
           },
           {
             "question": "Tại sao trong thực hành Tiền xử lý Dữ liệu, người ta luôn ưu tiên sử dụng 'np.log1p(x)' thay vì 'np.log(x)' khi thực hiện biến đổi Logarithm?",
             "options": [
-              "(Recommended) Vì np.log1p(x) tính ln(1 + x), giúp tránh được lỗi toán học chết người log(0) = -infinity khi thuộc tính có giá trị bằng 0.",
               "Vì np.log1p chạy nhanh hơn np.log gấp 10 lần nhờ tối ưu C-buffer.",
+              "Vì np.log1p(x) tính ln(1 + x), giúp tránh được lỗi toán học chết người log(0) = -infinity khi thuộc tính có giá trị bằng 0.",
               "Vì np.log1p tự động chuyển dữ liệu sang kiểu số nguyên int64.",
               "Vì np.log1p chỉ áp dụng được cho dữ liệu chuỗi thời gian."
             ],
-            "correctAnswer": "(Recommended) Vì np.log1p(x) tính ln(1 + x), giúp tránh được lỗi toán học chết người log(0) = -infinity khi thuộc tính có giá trị bằng 0.",
+            "correctIndex": 1,
             "explanation": "Khi dữ liệu chứa số 0 (ví dụ đơn hàng 0 đồng, số lần vi phạm = 0), np.log(0) sẽ sinh ra -inf làm hỏng toàn bộ pipeline máy học. np.log1p(0) cho kết quả là ln(1 + 0) = 0, đảm bảo đường ống dữ liệu luôn an toàn và liên tục."
           },
           {
             "question": "Khái niệm 'Điểm gãy kháng nhiễu' (Breakdown Point) của giá trị Trung vị (Median) bằng 50% mang ý nghĩa thống kê là gì?",
             "options": [
-              "(Recommended) Tập dữ liệu phải có ít nhất 50% số điểm bị phá hủy hoặc kéo tới vô cùng thì giá trị Median mới bị kéo lệch vô hạn.",
               "Median chỉ tính toán được trên 50% số dòng đầu tiên của bảng.",
               "Độ chính xác của Median luôn là 50%.",
+              "Tập dữ liệu phải có ít nhất 50% số điểm bị phá hủy hoặc kéo tới vô cùng thì giá trị Median mới bị kéo lệch vô hạn.",
               "Median luôn cắt đôi phương sai của tập dữ liệu."
             ],
-            "correctAnswer": "(Recommended) Tập dữ liệu phải có ít nhất 50% số điểm bị phá hủy hoặc kéo tới vô cùng thì giá trị Median mới bị kéo lệch vô hạn.",
+            "correctIndex": 2,
             "explanation": "Breakdown point đo lường tỷ lệ dữ liệu bị nhiễm độc tối thiểu cần thiết để làm hỏng một ước lượng thống kê. Mean có breakdown point = 0% (chỉ cần 1 điểm vô cùng là hỏng), trong khi Median có breakdown point tối đa đạt 50%."
           }
         ],
@@ -880,34 +880,34 @@ window.PYDATA_GROUP3_PARTS = [
           {
             "question": "Trong bài học lịch sử của Abraham Wald về việc gia cố giáp máy bay ném bom trong Thế chiến II, tại sao việc bọc giáp vào những vị trí dính nhiều vết đạn nhất lại là một sai lầm chết người?",
             "options": [
-              "(Recommended) Vì dữ liệu quan sát chỉ gồm những chiếc máy bay sống sót quay về; những chiếc bị bắn vào động cơ hay buồng lái đã bị rơi mất tích và không có trong tập dữ liệu (Thiên kiến kẻ sống sót).",
               "Vì bọc thêm giáp sẽ làm máy bay quá nặng không thể cất cánh.",
+              "Vì dữ liệu quan sát chỉ gồm những chiếc máy bay sống sót quay về; những chiếc bị bắn vào động cơ hay buồng lái đã bị rơi mất tích và không có trong tập dữ liệu (Thiên kiến kẻ sống sót).",
               "Vì quân địch sẽ đổi hướng bắn vào vị trí khác.",
               "Vì các vết đạn trên máy bay sống sót là do đồng đội vô tình bắn nhầm."
             ],
-            "correctAnswer": "(Recommended) Vì dữ liệu quan sát chỉ gồm những chiếc máy bay sống sót quay về; những chiếc bị bắn vào động cơ hay buồng lái đã bị rơi mất tích và không có trong tập dữ liệu (Thiên kiến kẻ sống sót).",
+            "correctIndex": 1,
             "explanation": "Abraham Wald nhận ra rằng những chiếc máy bay quay về được với chi chít vết đạn ở cánh chứng tỏ cánh là bộ phận không chí mạng. Những chiếc bị bắn vào động cơ không bao giờ quay về được để được đếm. Bỏ qua các thực thể thất bại là bản chất của Survivorship bias."
           },
           {
             "question": "Ưu điểm vượt trội của phương pháp ước lượng Khoảng tin cậy bằng Bootstrapping so với công thức truyền thống (dựa trên phân phối Student t hoặc Normal) là gì?",
             "options": [
-              "(Recommended) Bootstrapping là phương pháp phi tham số, không đòi hỏi bất kỳ giả định nào về việc dữ liệu phải tuân theo phân phối chuẩn Gaussian.",
               "Bootstrapping luôn cho ra khoảng tin cậy hẹp hơn công thức truyền thống.",
               "Bootstrapping không cần sử dụng máy tính để tính toán.",
+              "Bootstrapping là phương pháp phi tham số, không đòi hỏi bất kỳ giả định nào về việc dữ liệu phải tuân theo phân phối chuẩn Gaussian.",
               "Bootstrapping có thể áp dụng ngay cả khi kích thước mẫu N = 1."
             ],
-            "correctAnswer": "(Recommended) Bootstrapping là phương pháp phi tham số, không đòi hỏi bất kỳ giả định nào về việc dữ liệu phải tuân theo phân phối chuẩn Gaussian.",
+            "correctIndex": 2,
             "explanation": "Công thức truyền thống x_bar +/- t * s / sqrt(n) dựa trên giả định định lý giới hạn trung tâm và phân phối đối xứng. Bootstrapping dựa trên việc tái lấy mẫu thực nghiệm từ chính dữ liệu hiện có, áp dụng tuyệt vời cho các phân phối lệch, bất đối xứng hoặc có cấu trúc phức tạp."
           },
           {
             "question": "Theo tuyên bố chính thức của Hiệp hội Thống kê Hoa Kỳ (ASA, 2016), phát biểu nào sau đây về giá trị P (P-Value) là ĐÚNG ĐẮN?",
             "options": [
-              "(Recommended) P-value không đo lường xác suất giả thuyết nghiên cứu là đúng; các quyết định khoa học và kinh doanh không được chỉ dựa vào việc p có nhỏ hơn 0.05 hay không.",
               "Giá trị p < 0.05 chứng minh 100% rằng tính năng mới có tác dụng làm tăng doanh thu.",
               "Giá trị p càng nhỏ thì quy mô tác động (Effect Size) trong kinh doanh càng lớn.",
-              "Nếu p > 0.05, điều đó đồng nghĩa với việc giả thuyết H0 hoàn toàn đúng sự thật."
+              "Nếu p > 0.05, điều đó đồng nghĩa với việc giả thuyết H0 hoàn toàn đúng sự thật.",
+              "P-value không đo lường xác suất giả thuyết nghiên cứu là đúng; các quyết định khoa học và kinh doanh không được chỉ dựa vào việc p có nhỏ hơn 0.05 hay không."
             ],
-            "correctAnswer": "(Recommended) P-value không đo lường xác suất giả thuyết nghiên cứu là đúng; các quyết định khoa học và kinh doanh không được chỉ dựa vào việc p có nhỏ hơn 0.05 hay không.",
+            "correctIndex": 3,
             "explanation": "ASA khẳng định P-value chỉ là một thước đo mức độ không tương thích giữa dữ liệu và giả thuyết H0, không đo lường độ lớn tác động và không bao giờ được dùng như một công tắc nhị phân để khẳng định chân lý."
           }
         ],
@@ -1039,34 +1039,34 @@ window.PYDATA_GROUP3_PARTS = [
           {
             "question": "Theo chuẩn đặc tả RFC 9110, tại sao việc tự động gửi lại (Auto-Retry) một request POST khi gặp lỗi Timeout mạng lại là một hành vi cực kỳ rủi ro?",
             "options": [
-              "(Recommended) Vì POST là phương thức Không Lũy Đẳng (Non-idempotent); request đầu tiên có thể đã được server xử lý nhưng phản hồi bị thất lạc trên đường truyền, việc gửi lại sẽ tạo ra tài nguyên bị trùng lặp hoặc trừ tiền hai lần.",
               "Vì phương thức POST không hỗ trợ mã hóa bảo mật SSL/TLS.",
               "Vì server luôn tự động trả về mã lỗi 405 Method Not Allowed khi nhận lại lệnh POST.",
+              "Vì POST là phương thức Không Lũy Đẳng (Non-idempotent); request đầu tiên có thể đã được server xử lý nhưng phản hồi bị thất lạc trên đường truyền, việc gửi lại sẽ tạo ra tài nguyên bị trùng lặp hoặc trừ tiền hai lần.",
               "Vì thư viện requests sẽ tự động ném ra ngoại lệ SyntaxError."
             ],
-            "correctAnswer": "(Recommended) Vì POST là phương thức Không Lũy Đẳng (Non-idempotent); request đầu tiên có thể đã được server xử lý nhưng phản hồi bị thất lạc trên đường truyền, việc gửi lại sẽ tạo ra tài nguyên bị trùng lặp hoặc trừ tiền hai lần.",
+            "correctIndex": 2,
             "explanation": "Khái niệm Idempotence là yếu tố then chốt: Một phương thức chỉ được retry tự động khi việc thực thi nhiều lần không gây thêm tác dụng phụ. POST không lũy đẳng, nên việc thử lại mà không có Idempotency Key sẽ gây nguy cơ nhân bản đơn hàng hoặc sai lệch tài khoản."
           },
           {
             "question": "Mã trạng thái HTTP 304 (Not Modified) mang lại lợi ích gì lớn nhất cho hệ thống thu thập dữ liệu định kỳ?",
             "options": [
-              "(Recommended) Giúp tiết kiệm tối đa băng thông và thời gian xử lý: Server báo cho Client biết dữ liệu chưa thay đổi kể từ lần quét trước, do đó không cần tải lại nội dung Body.",
               "Tự động xóa sạch toàn bộ các bản ghi bị trùng lặp trong cơ sở dữ liệu.",
               "Báo hiệu rằng máy chủ đối tác đã bị sập nguồn.",
-              "Yêu cầu Client phải nâng cấp lên phiên bản HTTP/3."
+              "Yêu cầu Client phải nâng cấp lên phiên bản HTTP/3.",
+              "Giúp tiết kiệm tối đa băng thông và thời gian xử lý: Server báo cho Client biết dữ liệu chưa thay đổi kể từ lần quét trước, do đó không cần tải lại nội dung Body."
             ],
-            "correctAnswer": "(Recommended) Giúp tiết kiệm tối đa băng thông và thời gian xử lý: Server báo cho Client biết dữ liệu chưa thay đổi kể từ lần quét trước, do đó không cần tải lại nội dung Body.",
+            "correctIndex": 3,
             "explanation": "Khi Client gửi kèm header ETag hoặc If-Modified-Since, nếu dữ liệu chưa có gì mới, server phản hồi mã 304 không có phần thân Body. Pipeline nhận biết ngay dữ liệu vẫn tươi mới mà không mất công truyền tải hàng chục Megabyte dữ liệu qua mạng."
           },
           {
             "question": "Cơ chế kỹ thuật nào giúp 'requests.Session()' tăng tốc độ thu thập dữ liệu từ 3x đến 5x so với việc gọi 'requests.get()' độc lập trong vòng lặp?",
             "options": [
-              "(Recommended) Tái sử dụng TCP Connection Pool thông qua tính năng HTTP Keep-Alive, loại bỏ chi phí bắt tay TCP và trao đổi khóa mã hóa TLS lặp đi lặp lại ở mỗi request.",
+              "Tái sử dụng TCP Connection Pool thông qua tính năng HTTP Keep-Alive, loại bỏ chi phí bắt tay TCP và trao đổi khóa mã hóa TLS lặp đi lặp lại ở mỗi request.",
               "Tự động nén dung lượng ảnh tải về thành định dạng WebP.",
               "Chạy song song hàng nghìn luồng xử lý cùng một lúc mà không tốn CPU.",
               "Bỏ qua bước phân giải tên miền DNS."
             ],
-            "correctAnswer": "(Recommended) Tái sử dụng TCP Connection Pool thông qua tính năng HTTP Keep-Alive, loại bỏ chi phí bắt tay TCP và trao đổi khóa mã hóa TLS lặp đi lặp lại ở mỗi request.",
+            "correctIndex": 0,
             "explanation": "Mỗi lần tạo kết nối mới đòi hỏi bắt tay TCP (3 gói tin) và mã hóa TLS (thêm 2-4 gói tin trao đổi khóa). Session giữ cho kết nối socket luôn mở và tái sử dụng, giúp các request kế tiếp truyền thẳng dữ liệu ngay lập tức."
           }
         ],
@@ -1203,34 +1203,34 @@ window.PYDATA_GROUP3_PARTS = [
           {
             "question": "Trong thuật toán thử lại Exponential Backoff khi gọi API, tại sao việc bổ sung yếu tố ngẫu nhiên (Jitter) lại là bắt buộc trong môi trường chịu tải cao?",
             "options": [
-              "(Recommended) Để xé lẻ và phân tán thời gian thử lại của hàng ngàn máy khách, ngăn chặn hiện tượng bão truy vấn đồng thời (Thundering Herd) làm sập máy chủ vừa hồi phục.",
               "Để làm cho dữ liệu gửi lên được mã hóa bảo mật hơn.",
               "Để giảm thiểu sai số làm tròn số thực trong ngôn ngữ Python.",
-              "Để tự động biến phương thức POST thành phương thức GET."
+              "Để tự động biến phương thức POST thành phương thức GET.",
+              "Để xé lẻ và phân tán thời gian thử lại của hàng ngàn máy khách, ngăn chặn hiện tượng bão truy vấn đồng thời (Thundering Herd) làm sập máy chủ vừa hồi phục."
             ],
-            "correctAnswer": "(Recommended) Để xé lẻ và phân tán thời gian thử lại của hàng ngàn máy khách, ngăn chặn hiện tượng bão truy vấn đồng thời (Thundering Herd) làm sập máy chủ vừa hồi phục.",
+            "correctIndex": 3,
             "explanation": "Nếu không có Jitter, mọi máy khách gặp lỗi cùng lúc sẽ đợi cùng một khoảng thời gian số mũ cố định và đồng loạt tấn công lại máy chủ ở cùng một tích tắc. Full Jitter rải đều các truy vấn này trên toàn bộ khoảng thời gian, giúp máy chủ hạ nhiệt và xử lý êm ái."
           },
           {
             "question": "Ưu điểm cốt lõi của phương pháp phân trang Cursor-based Pagination so với Offset-based Pagination khi xử lý tập dữ liệu lớn là gì?",
             "options": [
-              "(Recommended) Tốc độ truy vấn luôn ổn định ở mức O(1) do sử dụng chỉ mục trực tiếp, và miễn nhiễm tuyệt đối với việc dữ liệu bị dịch chuyển/trùng lặp khi có bản ghi mới chèn vào.",
+              "Tốc độ truy vấn luôn ổn định ở mức O(1) do sử dụng chỉ mục trực tiếp, và miễn nhiễm tuyệt đối với việc dữ liệu bị dịch chuyển/trùng lặp khi có bản ghi mới chèn vào.",
               "Cho phép người dùng bấm nhảy cóc trực tiếp đến trang số 10.000 ngay lập tức.",
               "Tự động dịch mã hóa JSON sang định dạng tệp CSV.",
               "Không đòi hỏi máy chủ phải có cơ sở dữ liệu quan hệ SQL."
             ],
-            "correctAnswer": "(Recommended) Tốc độ truy vấn luôn ổn định ở mức O(1) do sử dụng chỉ mục trực tiếp, và miễn nhiễm tuyệt đối với việc dữ liệu bị dịch chuyển/trùng lặp khi có bản ghi mới chèn vào.",
+            "correctIndex": 0,
             "explanation": "Offset-based (OFFSET 1000000) buộc CSDL phải đọc và bỏ qua 1 triệu dòng trước đó rất chậm, đồng thời dễ làm sót/trùng dòng nếu có dữ liệu mới chèn vào đầu bảng. Cursor-based dùng con trỏ định danh (WHERE id > cursor) duy trì tốc độ tức thì và tính toàn vẹn phân trang hoàn hảo."
           },
           {
             "question": "Theo nguyên tắc số III của Twelve-Factor App, việc lưu trữ khóa API bí mật (API Secret Keys) ở đâu sau đây là ĐÚNG ĐẮN VÀ AN TOÀN NHẤT?",
             "options": [
-              "(Recommended) Trong các biến môi trường của hệ thống (Environment Variables) hoặc tệp .env được thêm vào .gitignore.",
               "Ghi cứng trực tiếp vào một biến toàn cục trong tệp config.py và commit lên GitHub riêng tư.",
+              "Trong các biến môi trường của hệ thống (Environment Variables) hoặc tệp .env được thêm vào .gitignore.",
               "Lưu trong một bảng cơ sở dữ liệu không cần mật khẩu bảo vệ.",
               "In khóa ra tệp log của ứng dụng để dễ dàng tra cứu khi cần."
             ],
-            "correctAnswer": "(Recommended) Trong các biến môi trường của hệ thống (Environment Variables) hoặc tệp .env được thêm vào .gitignore.",
+            "correctIndex": 1,
             "explanation": "Twelve-Factor yêu cầu cấu hình bí mật phải hoàn toàn tách biệt khỏi mã nguồn ứng dụng và được lưu trữ trong môi trường thực thi (Environment). Việc lưu trong .env và đưa vào .gitignore ngăn ngừa triệt để nguy cơ lộ khóa trên kho lưu trữ mã nguồn Git."
           }
         ],
@@ -1347,34 +1347,34 @@ window.PYDATA_GROUP3_PARTS = [
           {
             "question": "Theo chuẩn đặc tả chính thức RFC 9309 (Robots Exclusion Protocol, 2022), tệp 'robots.txt' phải luôn được đặt tại vị trí nào trên một trang web?",
             "options": [
-              "(Recommended) Tại thư mục gốc (Root path) của tên miền, ví dụ: https://example.com/robots.txt",
+              "Tại thư mục gốc (Root path) của tên miền, ví dụ: https://example.com/robots.txt",
               "Nằm bên trong thư mục /admin/robots.txt",
               "Được nhúng dưới dạng thẻ meta bên trong phần tử <head> của trang chủ.",
               "Tùy ý theo cấu hình của quản trị viên web."
             ],
-            "correctAnswer": "(Recommended) Tại thư mục gốc (Root path) của tên miền, ví dụ: https://example.com/robots.txt",
+            "correctIndex": 0,
             "explanation": "RFC 9309 quy định rõ ràng rằng tệp robots.txt bắt buộc phải nằm tại thư mục gốc của trang web (Root directory: /.well-known/robots.txt hoặc /robots.txt). Mọi bot khi truy cập một tên miền mới đều phải quét vị trí gốc này đầu tiên."
           },
           {
             "question": "Theo Nghị định 13/2023/NĐ-CP của Việt Nam và đạo luật GDPR của Châu Âu, hành vi nào sau đây khi thu thập dữ liệu web bị coi là VI PHẠM PHÁP LUẬT?",
             "options": [
-              "(Recommended) Tự động cào và lưu trữ danh sách số điện thoại, họ tên và địa chỉ nhà riêng của khách hàng từ các diễn đàn mà không có sự đồng thuận của chủ thể dữ liệu.",
               "Cào thông tin giá bán và thông số kỹ thuật công khai của sản phẩm điện máy.",
+              "Tự động cào và lưu trữ danh sách số điện thoại, họ tên và địa chỉ nhà riêng của khách hàng từ các diễn đàn mà không có sự đồng thuận của chủ thể dữ liệu.",
               "Tải tệp sitemap.xml của một trang web tin tức.",
               "Gửi request có đính kèm chuỗi User-Agent minh bạch."
             ],
-            "correctAnswer": "(Recommended) Tự động cào và lưu trữ danh sách số điện thoại, họ tên và địa chỉ nhà riêng của khách hàng từ các diễn đàn mà không có sự đồng thuận của chủ thể dữ liệu.",
+            "correctIndex": 1,
             "explanation": "Số điện thoại, họ tên, địa chỉ nhà là Dữ liệu cá nhân (PII). Việc thu thập, lưu trữ và khai thác dữ liệu cá nhân mà không có sự đồng thuận minh bạch của chủ thể là hành vi vi phạm pháp luật về bảo vệ quyền riêng tư."
           },
           {
             "question": "Tại sao một 'Polite Web Crawler' luôn cần phải thiết lập chuỗi User-Agent chi tiết và rõ ràng thay vì để giá trị mặc định của thư viện requests?",
             "options": [
-              "(Recommended) Để định danh minh bạch danh tính của bot, mục đích nghiên cứu và cung cấp thông tin liên hệ cho quản trị viên web khi có sự cố phát sinh.",
               "Để tăng tốc độ tải trang lên gấp đôi.",
               "Để vượt qua các hệ thống tường lửa Cloudflare mà không bị phát hiện.",
+              "Để định danh minh bạch danh tính của bot, mục đích nghiên cứu và cung cấp thông tin liên hệ cho quản trị viên web khi có sự cố phát sinh.",
               "Để máy chủ tự động chuyển dữ liệu sang định dạng JSON."
             ],
-            "correctAnswer": "(Recommended) Để định danh minh bạch danh tính của bot, mục đích nghiên cứu và cung cấp thông tin liên hệ cho quản trị viên web khi có sự cố phát sinh.",
+            "correctIndex": 2,
             "explanation": "User-Agent mặc định 'python-requests/2.x' thường bị các máy chủ chặn ngay lập tức vì bị coi là bot ẩn danh nguy hiểm. Một bot có đạo đức luôn khai báo rõ tên tổ chức, mục đích và URL/email liên hệ trong User-Agent."
           }
         ],

@@ -545,6 +545,7 @@
         { id: 'hero-schema-btn', text: '🗄️ Sơ đồ Schema & Kịch bản TechMart', scrollTarget: '#sec-techmart-sql-context' }
       ]
     },
-    overviewExtraSections: extraSectionsHtml
+    overviewExtraSections: extraSectionsHtml,
+    topNavId: 'top-nav-sql'
   });
 })();

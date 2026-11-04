@@ -236,7 +236,7 @@ print("b sau khi gán b[0] = 99:", b)`,
         'Ánh xạ (Mappings)',
         'Con trỏ thủ công (Pointers)'
       ],
-      answer: 3,
+      correctIndex: 3,
       explanation: 'Python có ba phân loại kiểu chính: Số, Dãy tuần tự, và Ánh xạ. Python không có kiểu con trỏ thủ công cấp thấp.'
     },
     {
@@ -247,7 +247,7 @@ print("b sau khi gán b[0] = 99:", b)`,
         'str, list, bytearray',
         'set, dict, tuple'
       ],
-      answer: 0,
+      correctIndex: 0,
       explanation: 'int, str, tuple và frozenset đều là các kiểu bất biến — không hỗ trợ bất kỳ thao tác sửa đổi nội dung tại chỗ nào.'
     }
   ],

@@ -6,6 +6,108 @@
 (function () {
   'use strict';
 
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  var BASH_KEYWORDS = {
+    'if': 1, 'then': 1, 'else': 1, 'elif': 1, 'fi': 1, 'case': 1, 'esac': 1,
+    'for': 1, 'while': 1, 'until': 1, 'do': 1, 'done': 1, 'in': 1, 'select': 1,
+    'time': 1, 'function': 1, 'return': 1, 'exit': 1, 'local': 1, 'export': 1,
+    'source': 1, 'eval': 1, 'set': 1, 'unset': 1, 'shift': 1, 'trap': 1, 'wait': 1
+  };
+
+  var BASH_BUILTINS = {
+    'sudo': 1, 'systemctl': 1, 'journalctl': 1, 'apt': 1, 'apt-get': 1, 'dnf': 1,
+    'yum': 1, 'pacman': 1, 'grep': 1, 'egrep': 1, 'fgrep': 1, 'sed': 1, 'awk': 1,
+    'find': 1, 'xargs': 1, 'cat': 1, 'less': 1, 'head': 1, 'tail': 1, 'chmod': 1,
+    'chown': 1, 'chgrp': 1, 'umask': 1, 'mkdir': 1, 'rm': 1, 'cp': 1, 'mv': 1,
+    'ln': 1, 'pwd': 1, 'ls': 1, 'cd': 1, 'echo': 1, 'printf': 1, 'read': 1,
+    'curl': 1, 'wget': 1, 'ssh': 1, 'scp': 1, 'rsync': 1, 'tar': 1, 'gzip': 1,
+    'gunzip': 1, 'xz': 1, 'zip': 1, 'unzip': 1, 'df': 1, 'du': 1, 'mount': 1,
+    'umount': 1, 'lsblk': 1, 'fdisk': 1, 'gdisk': 1, 'mkfs': 1, 'pvcreate': 1,
+    'vgcreate': 1, 'lvcreate': 1, 'lvextend': 1, 'ps': 1, 'top': 1, 'htop': 1,
+    'kill': 1, 'pkill': 1, 'killall': 1, 'jobs': 1, 'fg': 1, 'bg': 1, 'nohup': 1,
+    'flock': 1, 'crontab': 1, 'ip': 1, 'ss': 1, 'netstat': 1, 'ping': 1, 'traceroute': 1,
+    'dig': 1, 'nslookup': 1, 'ufw': 1, 'iptables': 1, 'nft': 1, 'nftables': 1,
+    'fail2ban-client': 1, 'auditctl': 1, 'ausearch': 1, 'nginx': 1, 'docker': 1,
+    'podman': 1, 'ansible': 1, 'ansible-playbook': 1, 'strace': 1, 'ltrace': 1,
+    'vmstat': 1, 'iostat': 1, 'mpstat': 1, 'free': 1, 'uname': 1, 'dmesg': 1,
+    'sysctl': 1, 'modprobe': 1, 'lsmod': 1, 'insmod': 1, 'rmmod': 1, 'semanage': 1,
+    'restorecon': 1, 'getenforce': 1, 'setenforce': 1, 'chroot': 1, 'unshare': 1, 'nsenter': 1
+  };
+
+  function highlightBashLine(line) {
+    var len = line.length;
+    var i = 0;
+    var out = '';
+
+    while (i < len) {
+      if (line[i] === '#') {
+        out += '<span class="tok-cmt">' + escapeHtml(line.slice(i)) + '</span>';
+        break;
+      }
+      if (line[i] === "'") {
+        var j = i + 1;
+        while (j < len && line[j] !== "'") j++;
+        if (j < len) j++;
+        out += '<span class="tok-str">' + escapeHtml(line.slice(i, j)) + '</span>';
+        i = j;
+        continue;
+      }
+      if (line[i] === '"') {
+        var j = i + 1;
+        while (j < len) {
+          if (line[j] === '\\') { j += 2; continue; }
+          if (line[j] === '"') { j++; break; }
+          j++;
+        }
+        out += '<span class="tok-str">' + escapeHtml(line.slice(i, j)) + '</span>';
+        i = j;
+        continue;
+      }
+      if (line[i] === '$') {
+        var j = i + 1;
+        if (j < len && line[j] === '{') {
+          while (j < len && line[j] !== '}') j++;
+          if (j < len) j++;
+        } else {
+          while (j < len && /[a-zA-Z0-9_?#$!]/.test(line[j])) j++;
+        }
+        out += '<span class="tok-interp">' + escapeHtml(line.slice(i, j)) + '</span>';
+        i = j;
+        continue;
+      }
+      if (/[a-zA-Z0-9_-]/.test(line[i])) {
+        var start = i;
+        while (i < len && /[a-zA-Z0-9_.-]/.test(line[i])) i++;
+        var word = line.slice(start, i);
+        if (BASH_KEYWORDS[word]) {
+          out += '<span class="tok-kw">' + escapeHtml(word) + '</span>';
+        } else if (BASH_BUILTINS[word]) {
+          out += '<span class="tok-bi">' + escapeHtml(word) + '</span>';
+        } else {
+          out += escapeHtml(word);
+        }
+        continue;
+      }
+      out += escapeHtml(line[i]);
+      i++;
+    }
+    return out;
+  }
+
+  function highlightBashCode(code) {
+    return String(code || '').split('\n').map(function (line, idx) {
+      return '<div class="code-line"><span class="line-num">' + (idx + 1) + '</span><span class="line-content">' + highlightBashLine(line) + '</span></div>';
+    }).join('');
+  }
+
   var PARTS = [];
   if (window.LX_LEVEL1_DATA) PARTS.push(window.LX_LEVEL1_DATA);
   if (window.LX_LEVEL2_DATA) PARTS.push(window.LX_LEVEL2_DATA);
@@ -84,6 +186,7 @@
     topicTitle: 'Linux Thực chiến & Nội bộ Hệ điều hành',
     storageKey: 'py314_lx_course_state_v1',
     parts: PARTS,
+    highlightCode: highlightBashCode,
     pillPrefix: 'lx',
     partIcons: {
       'part-lx-1': '🌱',

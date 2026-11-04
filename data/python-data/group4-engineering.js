@@ -107,34 +107,34 @@ window.PYDATA_GROUP4_PARTS = [
           {
             "question": "Tại sao biểu thức '(df1 == df2).all().all()' luôn trả về False ngay cả khi df1 và df2 có cấu trúc và nội dung hoàn toàn giống hệt nhau nhưng có chứa giá trị NaN?",
             "options": [
-              "(Recommended) Vì theo quy ước chuẩn IEEE 754 về dấu phẩy động, biểu thức 'np.nan == np.nan' luôn luôn được định nghĩa là False.",
               "Vì Pandas không hỗ trợ toán tử so sánh trên dữ liệu số thực.",
+              "Vì theo quy ước chuẩn IEEE 754 về dấu phẩy động, biểu thức 'np.nan == np.nan' luôn luôn được định nghĩa là False.",
               "Vì hàm .all() chỉ áp dụng được cho kiểu dữ liệu boolean nguyên thủy.",
               "Vì dữ liệu chứa NaN tự động bị xóa khỏi bộ nhớ RAM."
             ],
-            "correctAnswer": "(Recommended) Vì theo quy ước chuẩn IEEE 754 về dấu phẩy động, biểu thức 'np.nan == np.nan' luôn luôn được định nghĩa là False.",
+            "correctIndex": 1,
             "explanation": "Chuẩn quốc tế IEEE 754 quy định NaN đại diện cho một giá trị không thể xác định, do đó nó không thể bằng bất kỳ thứ gì, kể cả chính nó (NaN == NaN là False). Việc dùng toán tử == sẽ phá hỏng phép so sánh bảng có giá trị thiếu."
           },
           {
             "question": "Khi sử dụng hàm 'pd.testing.assert_frame_equal', tham số nào cho phép bạn bỏ qua các sai số vi mô do biểu diễn số thực trên máy tính (ví dụ: 0.1 + 0.2 = 0.30000000000000004)?",
             "options": [
-              "(Recommended) check_exact=False kết hợp với rtol (Relative tolerance) và atol (Absolute tolerance).",
               "check_dtype=False",
               "check_like=True",
+              "check_exact=False kết hợp với rtol (Relative tolerance) và atol (Absolute tolerance).",
               "obj='DataFrame'"
             ],
-            "correctAnswer": "(Recommended) check_exact=False kết hợp với rtol (Relative tolerance) và atol (Absolute tolerance).",
+            "correctIndex": 2,
             "explanation": "Khi đặt check_exact=False, Pandas cho phép hai số thực x và y được coi là bằng nhau nếu |x - y| <= atol + rtol * |y|, giúp các bài Unit Test vượt qua các sai số làm tròn số thực của phần cứng."
           },
           {
             "question": "Thuật ngữ 'Silent Data Corruption' (Lỗi ngầm) trong Kỹ nghệ Dữ liệu mang ý nghĩa gì?",
             "options": [
-              "(Recommended) Trạng thái chương trình chạy trơn tru từ đầu đến cuối với mã thoát exit code: 0 không hề crash, nhưng dữ liệu tính toán bị sai lệch âm thầm gây thiệt hại kinh doanh mà không ai phát hiện.",
               "Ổ cứng máy chủ bị hỏng vật lý làm mất điện đột ngột.",
               "Máy chủ bị hacker tấn công chiếm quyền điều khiển bằng mã độc tống tiền.",
-              "Toàn bộ màn hình điều khiển biến thành màu đen im lặng."
+              "Toàn bộ màn hình điều khiển biến thành màu đen im lặng.",
+              "Trạng thái chương trình chạy trơn tru từ đầu đến cuối với mã thoát exit code: 0 không hề crash, nhưng dữ liệu tính toán bị sai lệch âm thầm gây thiệt hại kinh doanh mà không ai phát hiện."
             ],
-            "correctAnswer": "(Recommended) Trạng thái chương trình chạy trơn tru từ đầu đến cuối với mã thoát exit code: 0 không hề crash, nhưng dữ liệu tính toán bị sai lệch âm thầm gây thiệt hại kinh doanh mà không ai phát hiện.",
+            "correctIndex": 3,
             "explanation": "Silent Bug là cơn ác mộng lớn nhất vì nó không phát sinh Exception dừng chương trình, làm số liệu sai lệch âm thầm lọt vào báo cáo quản trị hoặc mô hình máy học mà không có bất kỳ tiếng chuông cảnh báo nào."
           }
         ],
@@ -242,34 +242,34 @@ window.PYDATA_GROUP4_PARTS = [
           {
             "question": "Theo tiêu chuẩn thiết kế kiểm thử ISTQB, tại sao phương pháp Phân tích giá trị biên (Boundary Value Analysis) lại có tỷ lệ phát hiện lỗi phần mềm cao nhất?",
             "options": [
-              "(Recommended) Vì trong thực tế, các lỗi lập trình logic và sai số off-by-one hầu như luôn tập trung tại các ranh giới điều kiện (như nhầm lẫn giữa '>' và '>=').",
               "Vì nó kiểm tra tất cả các số thực trong vũ trụ số học.",
               "Vì nó chỉ áp dụng được cho cơ sở dữ liệu quan hệ SQL.",
+              "Vì trong thực tế, các lỗi lập trình logic và sai số off-by-one hầu như luôn tập trung tại các ranh giới điều kiện (như nhầm lẫn giữa '>' và '>=').",
               "Vì nó tự động sinh ra mã nguồn kiểm thử mà không cần con người."
             ],
-            "correctAnswer": "(Recommended) Vì trong thực tế, các lỗi lập trình logic và sai số off-by-one hầu như luôn tập trung tại các ranh giới điều kiện (như nhầm lẫn giữa '>' và '>=').",
+            "correctIndex": 2,
             "explanation": "Kinh nghiệm thực chứng của ngành phần mềm khẳng định lỗi lập trình thường phát sinh tại các điểm biên của dải giá trị. BVA tập trung tối đa nguồn lực vào việc kiểm tra các mép ranh giới này."
           },
           {
             "question": "Tính năng '@pytest.mark.parametrize' trong framework Pytest mang lại lợi ích nổi bật gì cho kỹ sư dữ liệu?",
             "options": [
-              "(Recommended) Cho phép thực thi cùng một hàm kiểm thử trên hàng loạt bộ dữ liệu đầu vào và kết quả kỳ vọng khác nhau mà không cần viết lại mã nguồn lặp đi lặp lại.",
               "Tự động tăng tốc độ CPU của máy tính lên 200%.",
               "Tự động gửi email thông báo kết quả kiểm thử cho ban giám đốc.",
-              "Tự động sửa lỗi cú pháp Python trong chương trình."
+              "Tự động sửa lỗi cú pháp Python trong chương trình.",
+              "Cho phép thực thi cùng một hàm kiểm thử trên hàng loạt bộ dữ liệu đầu vào và kết quả kỳ vọng khác nhau mà không cần viết lại mã nguồn lặp đi lặp lại."
             ],
-            "correctAnswer": "(Recommended) Cho phép thực thi cùng một hàm kiểm thử trên hàng loạt bộ dữ liệu đầu vào và kết quả kỳ vọng khác nhau mà không cần viết lại mã nguồn lặp đi lặp lại.",
+            "correctIndex": 3,
             "explanation": "@pytest.mark.parametrize biến hàm test thành một bảng kịch bản kiểm thử hướng dữ liệu (Data-driven testing), giúp kiểm thử hàng chục trường hợp biên một cách thanh thoát, gọn gàng."
           },
           {
             "question": "Tại sao trong các bài Unit Test kiểm thử đường ống xử lý dữ liệu, việc kết nối tới một máy chủ API thật hoặc cơ sở dữ liệu production thật lại bị coi là phản mẫu (Anti-pattern)?",
             "options": [
-              "(Recommended) Vì nó làm bài test bị chậm, phụ thuộc vào đường truyền mạng chập chờn (Flaky Tests), và có thể vô tình làm thay đổi hoặc phá hủy dữ liệu sản xuất thật.",
+              "Vì nó làm bài test bị chậm, phụ thuộc vào đường truyền mạng chập chờn (Flaky Tests), và có thể vô tình làm thay đổi hoặc phá hủy dữ liệu sản xuất thật.",
               "Vì thư viện Pytest cấm mọi kết nối ra ngoài Internet.",
               "Vì mã nguồn Python không hỗ trợ giao thức HTTPS.",
               "Vì các máy chủ API luôn từ chối các kết nối từ chương trình kiểm thử."
             ],
-            "correctAnswer": "(Recommended) Vì nó làm bài test bị chậm, phụ thuộc vào đường truyền mạng chập chờn (Flaky Tests), và có thể vô tình làm thay đổi hoặc phá hủy dữ liệu sản xuất thật.",
+            "correctIndex": 0,
             "explanation": "Unit test bắt buộc phải nhanh, độc lập và tất định (Deterministic). Kết nối mạng thật tạo ra Flaky tests (lúc pass lúc fail do mạng) và có nguy cơ ghi đè dữ liệu sản xuất. Giải pháp chuẩn là dùng Mocking."
           }
         ],
@@ -387,34 +387,34 @@ window.PYDATA_GROUP4_PARTS = [
           {
             "question": "Lợi ích vượt trội của cơ chế Cách ly Kiểm dịch (Quarantine Routing) so với giải pháp ném ngoại lệ dừng chương trình (Fail-Stop) là gì?",
             "options": [
-              "(Recommended) Dữ liệu hợp lệ vẫn được xử lý thông suốt vào kho phân tích bảo đảm hệ thống vận hành liên tục; các dòng lỗi bị cô lập riêng kèm lý do vi phạm để đối soát mà không làm gián đoạn toàn bộ doanh nghiệp.",
               "Tự động biến đổi các dòng dữ liệu bị lỗi thành dữ liệu sạch đúng đắn.",
               "Loại bỏ hoàn toàn sự cần thiết của việc viết Unit Test.",
-              "Tăng gấp đôi dung lượng bộ nhớ RAM của máy chủ."
+              "Tăng gấp đôi dung lượng bộ nhớ RAM của máy chủ.",
+              "Dữ liệu hợp lệ vẫn được xử lý thông suốt vào kho phân tích bảo đảm hệ thống vận hành liên tục; các dòng lỗi bị cô lập riêng kèm lý do vi phạm để đối soát mà không làm gián đoạn toàn bộ doanh nghiệp."
             ],
-            "correctAnswer": "(Recommended) Dữ liệu hợp lệ vẫn được xử lý thông suốt vào kho phân tích bảo đảm hệ thống vận hành liên tục; các dòng lỗi bị cô lập riêng kèm lý do vi phạm để đối soát mà không làm gián đoạn toàn bộ doanh nghiệp.",
+            "correctIndex": 3,
             "explanation": "Trong môi trường sản xuất lớn, chỉ vì 5 dòng lỗi trong 1 triệu dòng mà làm sập toàn bộ đường ống là một thiết kế tồi. Quarantine Routing phân luồng dữ liệu sạch đi tiếp và cách ly dữ liệu lỗi để xử lý độc lập."
           },
           {
             "question": "Theo tiêu chuẩn ISO/IEC 25012, kiểm tra xem trường 'order_id' có bị null hoặc rỗng hay không thuộc về đặc tính chất lượng dữ liệu nào?",
             "options": [
-              "(Recommended) Tính Đầy Đủ (Completeness)",
+              "Tính Đầy Đủ (Completeness)",
               "Tính Chính Xác (Accuracy)",
               "Tính Nhất Quán (Consistency)",
               "Tính Kịp Thời (Currentness)"
             ],
-            "correctAnswer": "(Recommended) Tính Đầy Đủ (Completeness)",
+            "correctIndex": 0,
             "explanation": "Tính Đầy Đủ (Completeness) trong ISO/IEC 25012 đo lường mức độ mà tập dữ liệu có đủ mọi giá trị bắt buộc theo yêu cầu nghiệp vụ, không bị khuyết ô hay rỗng."
           },
           {
             "question": "Tại sao trong kiến trúc hồ dữ liệu (Data Lake), các tệp dữ liệu bị cách ly (Quarantine Data) tuyệt đối KHÔNG ĐƯỢC xóa bỏ?",
             "options": [
-              "(Recommended) Để bảo toàn tính bất biến của dữ liệu thô, phục vụ truy vết nguồn gốc (Traceability) và cung cấp bằng chứng cho việc kiểm toán/khiếu nại đối tác cung cấp dữ liệu.",
               "Vì hệ điều hành Linux không cho phép xóa tệp tin có chữ quarantine.",
+              "Để bảo toàn tính bất biến của dữ liệu thô, phục vụ truy vết nguồn gốc (Traceability) và cung cấp bằng chứng cho việc kiểm toán/khiếu nại đối tác cung cấp dữ liệu.",
               "Vì nếu xóa thì các tệp Parquet sạch khác sẽ bị lỗi theo.",
               "Để tăng doanh thu cho nhà cung cấp dịch vụ lưu trữ đám mây."
             ],
-            "correctAnswer": "(Recommended) Để bảo toàn tính bất biến của dữ liệu thô, phục vụ truy vết nguồn gốc (Traceability) và cung cấp bằng chứng cho việc kiểm toán/khiếu nại đối tác cung cấp dữ liệu.",
+            "correctIndex": 1,
             "explanation": "Nguyên tắc bất biến (Immutability) và khả năng truy vết (Traceability) yêu cầu lưu trữ bằng chứng dữ liệu lỗi để đối soát và bảo đảm tính minh bạch khoa học của toàn bộ quy trình."
           }
         ],
@@ -547,34 +547,34 @@ window.PYDATA_GROUP4_PARTS = [
           {
             "question": "Câu nói kinh điển của Donald Knuth: 'Premature optimization is the root of all evil' (Tối ưu hóa sớm là nguồn gốc của mọi tội lỗi) nhắc nhở kỹ sư dữ liệu điều gì?",
             "options": [
-              "(Recommended) Tuyệt đối không đoán mò để tối ưu những đoạn mã vụn vặt; luôn sử dụng công cụ đo lường cấu hình (Profiling) để tìm chính xác điểm nghẽn nghiêm trọng nhất trước khi tối ưu.",
+              "Tuyệt đối không đoán mò để tối ưu những đoạn mã vụn vặt; luôn sử dụng công cụ đo lường cấu hình (Profiling) để tìm chính xác điểm nghẽn nghiêm trọng nhất trước khi tối ưu.",
               "Không bao giờ được tối ưu hóa mã nguồn trong bất kỳ hoàn cảnh nào.",
               "Nên mua máy tính đắt tiền nhất thay vì viết mã nguồn tốt.",
               "Mọi chương trình Python đều chạy ở cùng một tốc độ như nhau."
             ],
-            "correctAnswer": "(Recommended) Tuyệt đối không đoán mò để tối ưu những đoạn mã vụn vặt; luôn sử dụng công cụ đo lường cấu hình (Profiling) để tìm chính xác điểm nghẽn nghiêm trọng nhất trước khi tối ưu.",
+            "correctIndex": 0,
             "explanation": "Knuth nhấn mạnh rằng lập trình viên thường lãng phí thời gian tối ưu hóa những đoạn mã không quan trọng. Quy trình khoa học là Profile -> Tìm đúng điểm nghẽn chiếm đa số thời gian -> Tối ưu đúng chỗ đó."
           },
           {
             "question": "Chỉ số 'tottime' trong báo cáo của module pstats khi sử dụng cProfile mang ý nghĩa là gì?",
             "options": [
-              "(Recommended) Tổng thời gian tiêu tốn bên trong chính thân hàm đó, không bao gồm thời gian thực thi của các hàm con mà nó gọi.",
               "Tổng thời gian máy tính khởi động hệ điều hành.",
+              "Tổng thời gian tiêu tốn bên trong chính thân hàm đó, không bao gồm thời gian thực thi của các hàm con mà nó gọi.",
               "Thời gian tải dữ liệu từ mạng Internet về ổ cứng.",
               "Số lần hàm đó bị lỗi cú pháp."
             ],
-            "correctAnswer": "(Recommended) Tổng thời gian tiêu tốn bên trong chính thân hàm đó, không bao gồm thời gian thực thi của các hàm con mà nó gọi.",
+            "correctIndex": 1,
             "explanation": "tottime (total time) phản ánh chính xác thời gian CPU dành riêng cho mã lệnh nội bộ của hàm. Đây là thước đo vàng để tìm ra hàm nào thực sự là thủ phạm gây nghẽn tốc độ."
           },
           {
             "question": "Theo tài liệu chính thức 'Scaling to large datasets' của Pandas, kỹ thuật 'Downcasting' giúp giảm dung lượng bộ nhớ RAM bằng cách nào?",
             "options": [
-              "(Recommended) Chuyển đổi các kiểu dữ liệu số mặc định (int64, float64) sang các kiểu có kích thước byte nhỏ hơn (int8, int16, float32) vừa đủ để chứa dải giá trị thực tế.",
               "Nén toàn bộ bảng dữ liệu thành tệp tin định dạng ZIP.",
               "Tự động xóa bỏ các dòng dữ liệu có số lẻ.",
+              "Chuyển đổi các kiểu dữ liệu số mặc định (int64, float64) sang các kiểu có kích thước byte nhỏ hơn (int8, int16, float32) vừa đủ để chứa dải giá trị thực tế.",
               "Lưu dữ liệu sang màn hình phụ."
             ],
-            "correctAnswer": "(Recommended) Chuyển đổi các kiểu dữ liệu số mặc định (int64, float64) sang các kiểu có kích thước byte nhỏ hơn (int8, int16, float32) vừa đủ để chứa dải giá trị thực tế.",
+            "correctIndex": 2,
             "explanation": "Mặc định Pandas cấp phát 8 byte (64 bit) cho mọi số nguyên và số thực. Nếu dữ liệu chỉ là số sao đánh giá từ 1 đến 5, việc ép kiểu về int8 (1 byte) giúp tiết kiệm ngay 87.5% bộ nhớ cho cột đó."
           }
         ],
@@ -686,34 +686,34 @@ window.PYDATA_GROUP4_PARTS = [
           {
             "question": "Theo nghiên cứu của Wilson et al. (2017) về các thực hành chuẩn mực trong tính toán khoa học, quy tắc nào sau đây là BẮT BUỘC ĐỐI VỚI DỮ LIỆU THÔ (Raw Data)?",
             "options": [
-              "(Recommended) Dữ liệu thô là bất biến (Immutable); tuyệt đối không bao giờ chỉnh sửa trực tiếp bằng tay trên tệp gốc, mọi biến đổi phải thực hiện bằng mã lệnh tự động lưu sang thư mục khác.",
               "Dữ liệu thô phải luôn được ghi đè ngay sau khi làm sạch để tiết kiệm dung lượng đĩa.",
+              "Dữ liệu thô là bất biến (Immutable); tuyệt đối không bao giờ chỉnh sửa trực tiếp bằng tay trên tệp gốc, mọi biến đổi phải thực hiện bằng mã lệnh tự động lưu sang thư mục khác.",
               "Dữ liệu thô phải được xóa bỏ ngay sau khi huấn luyện xong mô hình học máy.",
               "Dữ liệu thô phải được lưu trong thư mục notebooks/."
             ],
-            "correctAnswer": "(Recommended) Dữ liệu thô là bất biến (Immutable); tuyệt đối không bao giờ chỉnh sửa trực tiếp bằng tay trên tệp gốc, mọi biến đổi phải thực hiện bằng mã lệnh tự động lưu sang thư mục khác.",
+            "correctIndex": 1,
             "explanation": "Nguyên tắc bất biến của dữ liệu thô bảo đảm rằng bạn luôn có thể tái lập lại toàn bộ quá trình nghiên cứu từ điểm xuất phát ban đầu, đồng thời bảo toàn bằng chứng pháp lý khi cần kiểm toán dữ liệu."
           },
           {
             "question": "Trong cấu trúc dự án Cookiecutter Data Science, vai trò chuẩn mực của sổ tay Jupyter Notebooks (thư mục notebooks/) là gì?",
             "options": [
-              "(Recommended) Chỉ dùng cho việc khám phá ban đầu (Exploratory Data Analysis), thử nghiệm trực quan hóa và trình bày kết quả; toàn bộ mã logic cốt lõi phải được chuyển vào thư mục src/.",
               "Là nơi lưu trữ toàn bộ các hàm sản xuất tự động chạy định kỳ hàng đêm.",
               "Là nơi lưu trữ các tệp cơ sở dữ liệu nhị phân dung lượng lớn.",
+              "Chỉ dùng cho việc khám phá ban đầu (Exploratory Data Analysis), thử nghiệm trực quan hóa và trình bày kết quả; toàn bộ mã logic cốt lõi phải được chuyển vào thư mục src/.",
               "Là nơi cấu hình các khóa API bí mật của hệ thống."
             ],
-            "correctAnswer": "(Recommended) Chỉ dùng cho việc khám phá ban đầu (Exploratory Data Analysis), thử nghiệm trực quan hóa và trình bày kết quả; toàn bộ mã logic cốt lõi phải được chuyển vào thư mục src/.",
+            "correctIndex": 2,
             "explanation": "Notebooks rất tuyệt để khám phá dữ liệu tương tác, nhưng rất khó để Unit Test, khó kiểm soát phiên bản Git và dễ gây lỗi thứ tự chạy ô (Out-of-order execution). Mã sản xuất bắt buộc phải nằm trong các module của src/."
           },
           {
             "question": "Lợi ích nổi bật nhất của việc áp dụng Gợi ý kiểu dữ liệu (PEP 484 Type Hints) trong các hàm xử lý dữ liệu của Pandas là gì?",
             "options": [
-              "(Recommended) Tăng tính tự tài liệu hóa (Self-documenting code), cho phép các công cụ IDE và linter phát hiện sớm các lỗi sai kiểu dữ liệu tĩnh trước khi chạy mã nguồn.",
               "Tự động tăng tốc độ xử lý của CPU lên gấp 10 lần.",
               "Tự động sửa các lỗi thiếu dữ liệu NaN trong bảng.",
-              "Giảm kích thước file script Python xuống một nửa."
+              "Giảm kích thước file script Python xuống một nửa.",
+              "Tăng tính tự tài liệu hóa (Self-documenting code), cho phép các công cụ IDE và linter phát hiện sớm các lỗi sai kiểu dữ liệu tĩnh trước khi chạy mã nguồn."
             ],
-            "correctAnswer": "(Recommended) Tăng tính tự tài liệu hóa (Self-documenting code), cho phép các công cụ IDE và linter phát hiện sớm các lỗi sai kiểu dữ liệu tĩnh trước khi chạy mã nguồn.",
+            "correctIndex": 3,
             "explanation": "Type Hints không làm tăng tốc độ chạy của Python nhưng cung cấp hợp đồng giao diện rõ ràng cho đồng nghiệp, giúp IDE gợi ý cú pháp chuẩn xác và bắt lỗi sai tham số ngay khi đang gõ code."
           }
         ],
@@ -839,34 +839,34 @@ window.PYDATA_GROUP4_PARTS = [
           {
             "question": "Ưu thế lớn nhất của việc sử dụng phương thức 'df.pipe()' so với việc tạo hàng loạt các biến trung gian (df1, df2, df3) trong quá trình xử lý dữ liệu là gì?",
             "options": [
-              "(Recommended) Giữ cho dòng dữ liệu chảy liên tục và thanh thoát theo chiều đọc tự nhiên, loại bỏ hoàn toàn các biến trung gian rác làm ô nhiễm không gian tên và tiết kiệm bộ nhớ RAM.",
               "Tự động chuyển đổi ngôn ngữ Python sang mã máy C++.",
               "Tự động vẽ biểu đồ trực quan hóa dữ liệu.",
+              "Giữ cho dòng dữ liệu chảy liên tục và thanh thoát theo chiều đọc tự nhiên, loại bỏ hoàn toàn các biến trung gian rác làm ô nhiễm không gian tên và tiết kiệm bộ nhớ RAM.",
               "Không cho phép người dùng thay đổi dữ liệu."
             ],
-            "correctAnswer": "(Recommended) Giữ cho dòng dữ liệu chảy liên tục và thanh thoát theo chiều đọc tự nhiên, loại bỏ hoàn toàn các biến trung gian rác làm ô nhiễm không gian tên và tiết kiệm bộ nhớ RAM.",
+            "correctIndex": 2,
             "explanation": ".pipe() mang phong cách Lập trình Hàm (Functional Programming), giúp mã nguồn sạch sẽ, không tạo rác biến trung gian trong bộ nhớ và cực kỳ dễ theo dõi dòng chảy của dữ liệu."
           },
           {
             "question": "Quy tắc thiết kế BẮT BUỘC đối với một hàm để có thể sử dụng được bên trong phương thức 'df.pipe(my_func)' là gì?",
             "options": [
-              "(Recommended) Hàm đó bắt buộc phải nhận một DataFrame (hoặc Series) làm tham số đầu tiên, và phải trả về một DataFrame (hoặc Series) hợp lệ.",
               "Hàm đó phải được viết bằng ngôn ngữ C hoặc Cython.",
               "Hàm đó không được phép nhận bất kỳ tham số phụ nào khác.",
-              "Hàm đó bắt buộc phải có ít nhất 100 dòng mã lệnh."
+              "Hàm đó bắt buộc phải có ít nhất 100 dòng mã lệnh.",
+              "Hàm đó bắt buộc phải nhận một DataFrame (hoặc Series) làm tham số đầu tiên, và phải trả về một DataFrame (hoặc Series) hợp lệ."
             ],
-            "correctAnswer": "(Recommended) Hàm đó bắt buộc phải nhận một DataFrame (hoặc Series) làm tham số đầu tiên, và phải trả về một DataFrame (hoặc Series) hợp lệ.",
+            "correctIndex": 3,
             "explanation": "Pandas thiết kế .pipe(func) sao cho nó tự động truyền đối tượng DataFrame gọi nó vào vị trí đối số đầu tiên của func (tương tự như func(df)). Do đó, hàm phải nhận DataFrame đầu tiên và trả về DataFrame kết quả để tiếp tục chuỗi."
           },
           {
             "question": "Làm thế nào để truyền thêm các tham số bổ sung (như threshold=50, tax_rate=0.08) vào một hàm được gọi qua phương thức '.pipe()'?",
             "options": [
-              "(Recommended) Truyền trực tiếp các tham số đó vào ngay sau tên hàm bên trong dấu ngoặc của .pipe(), ví dụ: df.pipe(my_func, threshold=50, tax_rate=0.08).",
+              "Truyền trực tiếp các tham số đó vào ngay sau tên hàm bên trong dấu ngoặc của .pipe(), ví dụ: df.pipe(my_func, threshold=50, tax_rate=0.08).",
               "Tạo một biến toàn cục (Global variable) bên ngoài hàm.",
               "Bắt buộc phải sửa lại mã nguồn của thư viện Pandas.",
               "Phương thức .pipe() không hỗ trợ truyền thêm tham số phụ."
             ],
-            "correctAnswer": "(Recommended) Truyền trực tiếp các tham số đó vào ngay sau tên hàm bên trong dấu ngoặc của .pipe(), ví dụ: df.pipe(my_func, threshold=50, tax_rate=0.08).",
+            "correctIndex": 0,
             "explanation": "Cú pháp của .pipe() nhận *args và **kwargs: df.pipe(func, *args, **kwargs) sẽ tự động thực thi lệnh func(df, *args, **kwargs), cho phép truyền tham số phụ cực kỳ linh hoạt."
           }
         ],
@@ -994,34 +994,34 @@ window.PYDATA_GROUP4_PARTS = [
           {
             "question": "Giai đoạn đầu tiên và quan trọng nhất trong chu trình Khoa học Dữ liệu chuẩn quốc tế CRISP-DM là giai đoạn nào?",
             "options": [
-              "(Recommended) Business Understanding (Thấu hiểu mục tiêu và bài toán kinh doanh).",
               "Data Preparation (Làm sạch dữ liệu).",
               "Modeling (Huấn luyện mô hình học máy).",
-              "Deployment (Triển khai ứng dụng)."
+              "Deployment (Triển khai ứng dụng).",
+              "Business Understanding (Thấu hiểu mục tiêu và bài toán kinh doanh)."
             ],
-            "correctAnswer": "(Recommended) Business Understanding (Thấu hiểu mục tiêu và bài toán kinh doanh).",
+            "correctIndex": 3,
             "explanation": "CRISP-DM luôn bắt đầu từ Business Understanding. Nếu không hiểu rõ mục tiêu kinh doanh, bạn sẽ xây dựng một giải pháp hoàn hảo cho một vấn đề vô nghĩa."
           },
           {
             "question": "Tiêu chuẩn 'Datasheets for Datasets' của Timnit Gebru et al. (2021) đóng vai trò gì trong các dự án Kỹ nghệ Dữ liệu?",
             "options": [
-              "(Recommended) Cung cấp tài liệu minh bạch về nguồn gốc, động cơ thu thập, thành phần, quy trình xử lý và các giới hạn đạo đức/pháp lý của tập dữ liệu.",
+              "Cung cấp tài liệu minh bạch về nguồn gốc, động cơ thu thập, thành phần, quy trình xử lý và các giới hạn đạo đức/pháp lý của tập dữ liệu.",
               "Tự động tăng tốc độ truy vấn SQL của cơ sở dữ liệu.",
               "Thay thế hoàn toàn mã nguồn lập trình Python.",
               "Tự động nén dung lượng tệp CSV về 0 byte."
             ],
-            "correctAnswer": "(Recommended) Cung cấp tài liệu minh bạch về nguồn gốc, động cơ thu thập, thành phần, quy trình xử lý và các giới hạn đạo đức/pháp lý của tập dữ liệu.",
+            "correctIndex": 0,
             "explanation": "Datasheets for Datasets chuẩn hóa việc tài liệu hóa dữ liệu tương tự như bảng thông số phần cứng, giúp phòng ngừa các vi phạm đạo đức, thiên kiến chọn mẫu và rủi ro pháp lý."
           },
           {
             "question": "Tại sao trong cấu trúc Cookiecutter Data Science, tệp dữ liệu thô trong thư mục 'data/raw/' luôn được khuyến nghị đặt quyền chỉ đọc (Read-only)?",
             "options": [
-              "(Recommended) Để bảo vệ tính bất biến của dữ liệu thô nguyên bản (Raw Data Immutability), bảo đảm quá trình nghiên cứu luôn có thể tái lập từ đầu và giữ nguyên bằng chứng kiểm toán.",
               "Vì hệ điều hành cấm người dùng mở file CSV.",
+              "Để bảo vệ tính bất biến của dữ liệu thô nguyên bản (Raw Data Immutability), bảo đảm quá trình nghiên cứu luôn có thể tái lập từ đầu và giữ nguyên bằng chứng kiểm toán.",
               "Để ngăn chặn việc máy tính bị nhiễm virus.",
               "Vì dữ liệu thô không chứa thông tin quan trọng."
             ],
-            "correctAnswer": "(Recommended) Để bảo vệ tính bất biến của dữ liệu thô nguyên bản (Raw Data Immutability), bảo đảm quá trình nghiên cứu luôn có thể tái lập từ đầu và giữ nguyên bằng chứng kiểm toán.",
+            "correctIndex": 1,
             "explanation": "Dữ liệu thô là nguồn sự thật duy nhất (Single Source of Truth). Khóa quyền chỉ đọc ngăn chặn mọi can thiệp thủ công bằng tay, bảo đảm tính toàn vẹn khoa học tuyệt đối."
           }
         ],
@@ -1139,34 +1139,34 @@ window.PYDATA_GROUP4_PARTS = [
           {
             "question": "Trong hàm 'pd.merge(orders, customers, on=\"customer_id\", how=\"left\", validate=\"many_to_one\")', tham số 'validate=\"many_to_one\"' đóng vai trò kỹ thuật gì?",
             "options": [
-              "(Recommended) Đặt ra hợp đồng kiểm tra toàn vẹn: Yêu cầu customer_id phải là khóa duy nhất tuyệt đối ở bảng bên phải (customers); nếu có trùng lặp, Pandas lập tức ném lỗi MergeError để ngăn chặn thảm họa bùng nổ số dòng Cartesian Explosion.",
+              "Đặt ra hợp đồng kiểm tra toàn vẹn: Yêu cầu customer_id phải là khóa duy nhất tuyệt đối ở bảng bên phải (customers); nếu có trùng lặp, Pandas lập tức ném lỗi MergeError để ngăn chặn thảm họa bùng nổ số dòng Cartesian Explosion.",
               "Tự động xóa sạch toàn bộ các đơn hàng chưa thanh toán.",
               "Tăng tốc độ ghép bảng lên 100 lần.",
               "Tự động điền tên khách hàng vào các đơn hàng bị thiếu."
             ],
-            "correctAnswer": "(Recommended) Đặt ra hợp đồng kiểm tra toàn vẹn: Yêu cầu customer_id phải là khóa duy nhất tuyệt đối ở bảng bên phải (customers); nếu có trùng lặp, Pandas lập tức ném lỗi MergeError để ngăn chặn thảm họa bùng nổ số dòng Cartesian Explosion.",
+            "correctIndex": 0,
             "explanation": "validate='m:1' là chốt chặn phòng thủ sinh tử: Nếu bảng khách hàng có 2 dòng trùng ID, phép merge thông thường sẽ nhân đôi số dòng đơn hàng âm thầm. Có validate, Pandas sẽ báo lỗi ngay để ta làm sạch bảng khách hàng trước."
           },
           {
             "question": "Khi phát hiện một dòng giao dịch có chiết khấu discount_pct = 85% (trong khi quy định công ty tối đa là 50%), hành động nào sau đây là CHUẨN MỰC NHẤT theo kiến trúc Kỹ nghệ Dữ liệu hiện đại?",
             "options": [
-              "(Recommended) Tách dòng đó ra và đưa vào bảng cách ly kiểm dịch (Quarantine Routing) kèm nhãn lý do vi phạm để nhân viên nghiệp vụ đối soát, trong khi cho phép các đơn hàng hợp lệ khác tiếp tục đi vào kho phân tích.",
               "Ném ngoại lệ làm sập toàn bộ chương trình và dừng toàn bộ hệ thống phân tích của tập đoàn.",
+              "Tách dòng đó ra và đưa vào bảng cách ly kiểm dịch (Quarantine Routing) kèm nhãn lý do vi phạm để nhân viên nghiệp vụ đối soát, trong khi cho phép các đơn hàng hợp lệ khác tiếp tục đi vào kho phân tích.",
               "Âm thầm sửa con số 85% thành 50% mà không ghi lại bất kỳ nhật ký nào.",
               "Xóa vĩnh viễn dòng đó khỏi ổ cứng máy chủ."
             ],
-            "correctAnswer": "(Recommended) Tách dòng đó ra và đưa vào bảng cách ly kiểm dịch (Quarantine Routing) kèm nhãn lý do vi phạm để nhân viên nghiệp vụ đối soát, trong khi cho phép các đơn hàng hợp lệ khác tiếp tục đi vào kho phân tích.",
+            "correctIndex": 1,
             "explanation": "Quarantine Routing giữ cho đường ống vận hành liên tục cho 99% dữ liệu đúng, đồng thời lưu vết dòng lỗi để đối soát và bảo toàn tính toàn vẹn của dữ liệu thô."
           },
           {
             "question": "Tại sao trong chuỗi biến đổi dữ liệu với '.pipe()', các hàm thành phần bắt buộc phải tuân thủ nguyên tắc 'Hàm thuần khiết' (Pure Functions)?",
             "options": [
-              "(Recommended) Để không gây ra các tác dụng phụ làm biến dạng dữ liệu gốc ngoài ý muốn (In-place mutation) và bảo đảm từng hàm có thể được Unit Test độc lập và tái sử dụng an toàn.",
               "Để hàm chạy nhanh hơn vì không cần sử dụng bộ nhớ RAM.",
               "Vì ngôn ngữ Python bắt buộc mọi hàm phải có chữ 'pure'.",
+              "Để không gây ra các tác dụng phụ làm biến dạng dữ liệu gốc ngoài ý muốn (In-place mutation) và bảo đảm từng hàm có thể được Unit Test độc lập và tái sử dụng an toàn.",
               "Để tránh việc phải cài đặt thư viện Pandas."
             ],
-            "correctAnswer": "(Recommended) Để không gây ra các tác dụng phụ làm biến dạng dữ liệu gốc ngoài ý muốn (In-place mutation) và bảo đảm từng hàm có thể được Unit Test độc lập và tái sử dụng an toàn.",
+            "correctIndex": 2,
             "explanation": "Hàm thuần khiết luôn nhận đầu vào và trả về đầu ra mới mà không sửa đè lên biến ngoài. Điều này bảo vệ tính toàn vẹn của dữ liệu và cho phép viết các bài kiểm thử cô lập hoàn hảo."
           }
         ],
@@ -1274,34 +1274,34 @@ window.PYDATA_GROUP4_PARTS = [
           {
             "question": "Trong báo cáo thống kê chuyên nghiệp trước hội đồng quản trị, tại sao việc công bố 'Khoảng tin cậy 95% Bootstrap' lại có giá trị khoa học vượt trội so với việc chỉ nêu một con số Trung bình mẫu đơn thuần?",
             "options": [
-              "(Recommended) Vì nó định lượng rõ ràng độ bất định (Uncertainty) và biên độ dao động rủi ro của dữ liệu thực tế mà không cần áp đặt giả định sai lầm về phân phối chuẩn.",
               "Vì nó làm cho báo cáo dài hơn và trông phức tạp hơn.",
+              "Vì nó định lượng rõ ràng độ bất định (Uncertainty) và biên độ dao động rủi ro của dữ liệu thực tế mà không cần áp đặt giả định sai lầm về phân phối chuẩn.",
               "Vì ban giám đốc luôn yêu cầu phải có hai con số trong mọi báo cáo.",
               "Vì Bootstrap giúp làm tăng doanh thu thực tế của công ty."
             ],
-            "correctAnswer": "(Recommended) Vì nó định lượng rõ ràng độ bất định (Uncertainty) và biên độ dao động rủi ro của dữ liệu thực tế mà không cần áp đặt giả định sai lầm về phân phối chuẩn.",
+            "correctIndex": 1,
             "explanation": "Con số trung bình mẫu chỉ là một ước lượng điểm dễ bị chệch. Khoảng tin cậy 95% cung cấp dải giá trị mà tham số thực tế của quần thể nằm trong đó với độ tin cậy 95%, giúp các nhà lãnh đạo ra quyết định dựa trên mức độ rủi ro kiểm soát được."
           },
           {
             "question": "Để tuân thủ tiêu chí 1.4.1 của chuẩn tiếp cận WCAG 2.2 trên biểu đồ tán xạ (Scatter plot) có 3 nhóm chi nhánh, phương pháp thiết kế nào sau đây là BẮT BUỘC?",
             "options": [
-              "(Recommended) Kết hợp màu sắc thân thiện (như viridis) với các hình dạng điểm marker khác nhau (hình tròn, hình vuông, hình tam giác) và ghi chú nhãn rõ ràng.",
               "Chỉ dùng 3 sắc thái khác nhau của màu đỏ.",
               "Chỉ vẽ 1 nhóm chi nhánh duy nhất.",
+              "Kết hợp màu sắc thân thiện (như viridis) với các hình dạng điểm marker khác nhau (hình tròn, hình vuông, hình tam giác) và ghi chú nhãn rõ ràng.",
               "Xóa bỏ toàn bộ các điểm dữ liệu và chỉ vẽ đường thẳng."
             ],
-            "correctAnswer": "(Recommended) Kết hợp màu sắc thân thiện (như viridis) với các hình dạng điểm marker khác nhau (hình tròn, hình vuông, hình tam giác) và ghi chú nhãn rõ ràng.",
+            "correctIndex": 2,
             "explanation": "Nguyên lý Redundant Encoding yêu cầu mã hóa dữ liệu qua ít nhất 2 kênh cảm giác thị giác độc lập (màu sắc + hình dạng marker), bảo đảm người mù màu hoặc in đen trắng vẫn phân biệt chính xác 100% các nhóm."
           },
           {
             "question": "Một đồ án Khoa học Dữ liệu được coi là đạt chuẩn 'Sản xuất một dòng lệnh' (Production-Ready) khi nào?",
             "options": [
-              "(Recommended) Toàn bộ chu trình từ tiếp nhận dữ liệu, kiểm định biên, cách ly, làm sạch, phân tích đến xuất báo cáo có thể tự động chạy trọn vẹn chỉ bằng một câu lệnh duy nhất (ví dụ: python -m src.pipeline) mà không cần can thiệp thủ công.",
               "Khi mã nguồn có trên 100.000 dòng lệnh.",
               "Khi đồ án sử dụng ít nhất 20 thư viện khác nhau.",
-              "Khi đồ án được viết hoàn toàn trên một file Jupyter Notebook."
+              "Khi đồ án được viết hoàn toàn trên một file Jupyter Notebook.",
+              "Toàn bộ chu trình từ tiếp nhận dữ liệu, kiểm định biên, cách ly, làm sạch, phân tích đến xuất báo cáo có thể tự động chạy trọn vẹn chỉ bằng một câu lệnh duy nhất (ví dụ: python -m src.pipeline) mà không cần can thiệp thủ công."
             ],
-            "correctAnswer": "(Recommended) Toàn bộ chu trình từ tiếp nhận dữ liệu, kiểm định biên, cách ly, làm sạch, phân tích đến xuất báo cáo có thể tự động chạy trọn vẹn chỉ bằng một câu lệnh duy nhất (ví dụ: python -m src.pipeline) mà không cần can thiệp thủ công.",
+            "correctIndex": 3,
             "explanation": "Khả năng tự động hóa và tái lập chỉ với một dòng lệnh duy nhất là tiêu chuẩn cao nhất của Kỹ nghệ Dữ liệu, bảo đảm tính sẵn sàng tích hợp vào các hệ thống điều phối như Apache Airflow hay CI/CD."
           }
         ],

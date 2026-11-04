@@ -320,7 +320,7 @@ print(clean_and_format(raw_log))`,
         '4 ký tự',
         '12 ký tự'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'Chuỗi "\\t\\x41\\000\\n" chứa đúng 4 ký tự: \\t (tab, ord 9), \\x41 (chữ \'A\', ord 65), \\000 (byte 0 NUL, ord 0), và \\n (newline, ord 10).'
     },
     {
@@ -331,7 +331,7 @@ print(clean_and_format(raw_log))`,
         'Vì Python cấm dùng phương thức trên các đối tượng có nhiều hơn 1 phần tử.',
         'Vì slice chạy trên CPU còn phương thức chạy trên RAM.'
       ],
-      answer: 0,
+      correctIndex: 0,
       explanation: 'Biểu thức slice là thao tác tổng quát áp dụng cho mọi dãy tuần tự (str, list, tuple). Ngược lại, phương thức chuỗi như find() được định nghĩa riêng trong lớp str và chỉ hoạt động trên chuỗi.'
     }
   ],

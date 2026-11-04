@@ -254,7 +254,7 @@ print(f"{radius=:.2f}, {area=:.2f}")`,
         '=',
         '@'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'Ký tự = đứng sau biểu thức (ví dụ: f"{x=}") tự động gắn nhãn văn bản của biểu thức kèm một dấu = trước giá trị kết quả.'
     },
     {
@@ -265,7 +265,7 @@ print(f"{radius=:.2f}, {area=:.2f}")`,
         'Vì f-string không hỗ trợ bộ nhớ đệm khiến máy chủ hết RAM.',
         'Vì f-string không hỗ trợ bảng mã UTF-8.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Khác với % hay format coi bản mẫu là dữ liệu tĩnh an toàn, f-string là mã thực thi thời gian chạy. Nạp f-string từ tệp đòi hỏi chạy qua eval(), tạo ra lỗ hổng Code Injection chí mạng.'
     }
   ],

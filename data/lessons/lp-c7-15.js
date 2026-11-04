@@ -219,7 +219,7 @@ print(result)`,
         '%{keyname}s',
         '%$keyname$s'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Cú pháp chuẩn xác của mục tiêu chuyển đổi theo từ điển là %(keyname)typecode với tên khóa được đặt trong cặp dấu ngoặc đơn ().'
     },
     {
@@ -230,7 +230,7 @@ print(result)`,
         'Một từ điển (dictionary) chứa tất cả các biến đang tồn tại trong phạm vi hiện tại.',
         'Một chuỗi văn bản chứa mã nguồn.'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'vars() trả về một dictionary ánh xạ từ tên biến (chuỗi) sang giá trị hiện tại của biến đó trong phạm vi thực thi.'
     }
   ],

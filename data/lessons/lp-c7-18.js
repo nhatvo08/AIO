@@ -233,7 +233,7 @@ print(message)`,
         'F-string có thể được sử dụng làm docstring cho hàm và module để hệ thống trích xuất __doc__.',
         'F-string là biểu thức đánh giá tại thời gian chạy (runtime) và chỉ áp dụng cho chuỗi văn bản str, không áp dụng cho byte.'
       ],
-      answer: 3,
+      correctIndex: 3,
       explanation: 'F-string thực hiện tại thời gian chạy (runtime expression), tạo ra đối tượng str và không thể kết hợp với tiền tố b (byte).'
     },
     {
@@ -244,7 +244,7 @@ print(message)`,
         'Ngắt dòng và chèn dòng chú thích # bên trong cặp dấu {}.',
         'Tất cả các phương án trên đều đúng.'
       ],
-      answer: 3,
+      correctIndex: 3,
       explanation: 'PEP 701 trong Python 3.12 đã chính thức hóa bộ phân tích f-string, cho phép nháy lồng cùng loại, sử dụng ký tự thoát backslash, và xuống dòng kèm chú thích # tự do bên trong {}.'
     }
   ],

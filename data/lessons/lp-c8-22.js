@@ -425,7 +425,7 @@ print(process_inventory(inventory, 200))`,
         'L = list([] * 3)',
         'L = [[] + [] + []]'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'List comprehension [[] for _ in range(3)] tạo ra 3 đối tượng list con rỗng hoàn toàn độc lập ở 3 ô nhớ khác nhau. Phép nhân [[]] * 3 sẽ tạo ra 3 tham chiếu trỏ cùng vào một list duy nhất.'
     },
     {
@@ -436,7 +436,7 @@ print(process_inventory(inventory, 200))`,
         'Vì List được lưu trên ổ đĩa còn Dictionary được lưu trong bộ nhớ đệm CPU.',
         'Vì Python biên dịch trước mọi Dictionary thành mã máy nhị phân C.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Bảng băm cho phép tính toán hash code của khóa rồi định vị tức thì ô nhớ tương ứng với độ phức tạp thời gian trung bình O(1), không phụ thuộc vào kích thước hàng triệu phần tử của từ điển.'
     }
   ],

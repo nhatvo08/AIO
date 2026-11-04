@@ -64,12 +64,16 @@
     var topicTitle = config.topicTitle || 'Chuyên đề Thực chiến';
     var storageKey = config.storageKey || ('py314_' + topicPrefix + '_course_state_v1');
     var coursesConfig = config.courses || null;
+    var partIdToCourseId = {};
     var rawParts = config.parts || [];
     if (Array.isArray(coursesConfig) && coursesConfig.length > 0) {
       coursesConfig.forEach(function (c) {
         (c.parts || []).forEach(function (p) {
-          if (p && rawParts.indexOf(p) === -1) {
-            rawParts.push(p);
+          if (p) {
+            partIdToCourseId[p.id] = c.id;
+            if (rawParts.indexOf(p) === -1) {
+              rawParts.push(p);
+            }
           }
         });
       });
@@ -78,9 +82,13 @@
       rawParts.push(config.referenceData);
     }
     var PARTS = rawParts.filter(Boolean);
+    var standaloneParts = PARTS.filter(function (p) {
+      return !partIdToCourseId[p.id];
+    });
     var PART_ICONS = config.partIcons || {};
     var heroConfig = config.hero || {};
     var topNavId = config.topNavId || ('top-nav-' + topicId);
+    var initialDocTitle = (typeof document !== 'undefined' && document.title) ? document.title : topicTitle;
     var updateScrollIndicators = function () {};
 
     // Thu thập danh sách phẳng tất cả bài học
@@ -92,6 +100,7 @@
         ALL_LESSONS.push({
           part: part,
           partId: part.id,
+          courseId: partIdToCourseId[part.id] || null,
           partNumber: part.number,
           partTitle: part.title,
           partLevel: part.level,
@@ -100,6 +109,14 @@
         });
       });
     });
+
+    function doesItemMatchFilter(item, filterStr) {
+      if (!filterStr || filterStr === 'all') return true;
+      var allowed = filterStr.split(',').map(function (s) { return s.trim(); });
+      if (allowed.indexOf(item.partId) !== -1) return true;
+      if (item.courseId && allowed.indexOf(item.courseId) !== -1) return true;
+      return false;
+    }
 
     var memStorage = {
       completed: [],
@@ -156,7 +173,7 @@
       return nowDone;
     }
 
-    var currentView = 'overview';
+    var currentView = null;
     var activeFilter = 'all';
     var tocObserver = null;
     var partOpenState = {};
@@ -172,12 +189,9 @@
 
     function renderSidebar() {
       var state = loadState();
-      var coreLessons = ALL_LESSONS.filter(function (it) {
-        return !it.lesson.id.includes('-ref-');
-      });
-      var totalCount = coreLessons.length > 0 ? coreLessons.length : ALL_LESSONS.length;
-      var completedCount = state.completed.filter(function (id) {
-        return !id.includes('-ref-');
+      var totalCount = ALL_LESSONS.length;
+      var completedCount = ALL_LESSONS.filter(function (it) {
+        return state.completed.indexOf(it.lesson.id) !== -1;
       }).length;
       var pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
@@ -336,7 +350,45 @@
             '</div>';
         }).filter(Boolean).join('');
 
-        treeEl.innerHTML = coursesSidebarHtml;
+        var standaloneSidebarHtml = '';
+        if (standaloneParts.length > 0) {
+          var filteredStandalone = standaloneParts.filter(function (p) {
+            if (activeFilter === 'all') return true;
+            var allowed = activeFilter.split(',').map(function (s) { return s.trim(); });
+            return allowed.indexOf(p.id) !== -1;
+          });
+          if (filteredStandalone.length > 0) {
+            var standaloneTotal = 0;
+            var standaloneDone = 0;
+            standaloneParts.forEach(function (p) {
+              (p.lessons || []).forEach(function (l) {
+                standaloneTotal++;
+                if (isLessonDone(l.id)) standaloneDone++;
+              });
+            });
+            var renderedStandalone = filteredStandalone.map(renderSinglePartGroup).filter(Boolean).join('');
+            if (!q || renderedStandalone) {
+              var firstRef = filteredStandalone[0];
+              var refIcon = PART_ICONS[firstRef.id] || firstRef.icon || '📚';
+              standaloneSidebarHtml = '' +
+                '<div class="sidebar-course-section" data-course-id="' + escapeHtml(firstRef.id) + '">' +
+                  '<div class="sidebar-course-banner ' + topicPrefix + '-banner">' +
+                    '<div class="sidebar-course-banner-top">' +
+                      '<span class="sidebar-course-number-tag">' + escapeHtml(firstRef.number || 'Tra cứu') + '</span>' +
+                      '<span class="sidebar-course-count">' + standaloneDone + '/' + standaloneTotal + ' bài</span>' +
+                    '</div>' +
+                    '<div class="sidebar-course-title">' +
+                      '<span class="course-banner-icon" aria-hidden="true">' + refIcon + '</span>' +
+                      '<span>' + escapeHtml(firstRef.title || 'Tài liệu Tra cứu & Bản đồ') + '</span>' +
+                    '</div>' +
+                  '</div>' +
+                  renderedStandalone +
+                '</div>';
+            }
+          }
+        }
+
+        treeEl.innerHTML = coursesSidebarHtml + standaloneSidebarHtml;
       } else {
         var filteredParts = activeFilter === 'all'
           ? PARTS
@@ -423,10 +475,20 @@
       var tocEl = document.getElementById('toc-container');
       if (!mainEl) return;
 
+      if (tocObserver) {
+        tocObserver.disconnect();
+        tocObserver = null;
+      }
+      if (initialDocTitle) {
+        document.title = initialDocTitle;
+      }
+
       mainEl.classList.add('wide-view');
       var state = loadState();
-      var completedCount = state.completed.length;
       var totalCount = ALL_LESSONS.length;
+      var completedCount = ALL_LESSONS.filter(function (it) {
+        return state.completed.indexOf(it.lesson.id) !== -1;
+      }).length;
 
       var resumeItem = ALL_LESSONS.find(function (item) {
         return state.completed.indexOf(item.lesson.id) === -1;
@@ -567,6 +629,41 @@
               '<div class="roadmap-grid">' + courseParts.map(renderSinglePartCard).join('') + '</div>' +
             '</section>';
         }).join('');
+
+        if (standaloneParts.length > 0) {
+          var stTotal = 0;
+          var stDone = 0;
+          standaloneParts.forEach(function (p) {
+            (p.lessons || []).forEach(function (l) {
+              stTotal++;
+              if (isLessonDone(l.id)) stDone++;
+            });
+          });
+          var stPct = stTotal > 0 ? Math.round((stDone / stTotal) * 100) : 0;
+          var stFirst = standaloneParts[0];
+          var stIcon = PART_ICONS[stFirst.id] || stFirst.icon || '📚';
+          roadmapSectionHtml += '' +
+            '<section class="course-home-section" id="home-' + escapeHtml(stFirst.id) + '">' +
+              '<div class="course-section-header-lg ' + topicPrefix + '-theme">' +
+                '<div class="course-header-badge-row">' +
+                  '<span class="course-number-badge ' + topicPrefix + '-badge">' + escapeHtml(stFirst.number || 'Tra cứu') + '</span>' +
+                  '<span class="course-tag-badge">Tài liệu tham chiếu</span>' +
+                  '<span class="course-meta-badge">' + stTotal + ' Bài học</span>' +
+                '</div>' +
+                '<h2 class="course-title-lg">' +
+                  '<span>' + stIcon + '</span> ' +
+                  '<span>' + escapeHtml(stFirst.title || 'Tài liệu Tra cứu & Bản đồ') + '</span>' +
+                '</h2>' +
+                '<div class="course-progress-indicator">' +
+                  '<div class="course-prog-bar">' +
+                    '<div class="course-prog-fill ' + topicPrefix + '-fill" style="width:' + stPct + '%;"></div>' +
+                  '</div>' +
+                  '<span>Tiến độ: <strong>' + stDone + '/' + stTotal + '</strong> bài (' + stPct + '%)</span>' +
+                '</div>' +
+              '</div>' +
+              '<div class="roadmap-grid">' + standaloneParts.map(renderSinglePartCard).join('') + '</div>' +
+            '</section>';
+        }
       } else if (banner) {
         var bannerTheme = banner.customClass ? (banner.customClass.replace('-banner', '-theme')) : (topicPrefix + '-theme');
         var bannerBadge = banner.customClass ? (banner.customClass.replace('-banner', '-badge')) : (topicPrefix + '-badge');
@@ -644,6 +741,14 @@
                 }).join('') +
               '</ul>';
           }).join('');
+          if (standaloneParts.length > 0) {
+            coursesTocHtml += '' +
+              '<ul class="toc-list" style="margin-bottom:12px;">' +
+                standaloneParts.map(function (p) {
+                  return '<li><a class="toc-link" href="#part-card-' + p.id + '"><strong>' + escapeHtml(p.number) + ':</strong> ' + escapeHtml(p.title) + '</a></li>';
+                }).join('') +
+              '</ul>';
+          }
         }
 
         var bannerTocHtml = banner ? ('' +
@@ -726,8 +831,7 @@
 
       var codeCounter = 0;
 
-      // Render các sections nội dung
-      var sectionsHtml = (lesson.sections || []).map(function (sec, sIdx) {
+      function renderSectionItem(sec, sIdx) {
         var examplesHtml = (sec.codeExamples || []).map(function (ex) {
           codeCounter++;
           var codeId = topicPrefix + '-code-' + lesson.id + '-' + sIdx + '-' + codeCounter;
@@ -746,8 +850,32 @@
               '<div class="code-annotations">' +
                 '<div class="annotations-title">Giải thích từng thành phần của lệnh</div>' +
                 '<ul class="annotation-list">' +
-                  ex.annotations.map(function (ann) {
-                    return '<li class="annotation-item"><span class="ann-line-badge">Dòng ' + escapeHtml(String(ann.line)) + '</span><span>' + formatInlineCode(ann.text) + '</span></li>';
+                  ex.annotations.map(function (ann, annIdx) {
+                    var badgeLabel = '';
+                    var bodyText = '';
+                    if (typeof ann === 'string') {
+                      var colonIdx = ann.indexOf(':');
+                      if (colonIdx > 0 && colonIdx <= 48) {
+                        badgeLabel = ann.slice(0, colonIdx).trim();
+                        bodyText = ann.slice(colonIdx + 1).trim();
+                      } else {
+                        badgeLabel = 'Điểm #' + (annIdx + 1);
+                        bodyText = ann;
+                      }
+                    } else if (ann && typeof ann === 'object') {
+                      if (ann.line !== undefined && ann.line !== null && String(ann.line) !== '') {
+                        var lineStr = String(ann.line);
+                        var baseLine = /^dòng\b/i.test(lineStr) ? lineStr : ('Dòng ' + lineStr);
+                        var extraPart = String(ann.part || ann.token || ann.label || '').trim();
+                        badgeLabel = (extraPart && extraPart.length <= 36) ? (baseLine + ' · ' + extraPart) : baseLine;
+                      } else if (ann.part || ann.token || ann.label) {
+                        badgeLabel = String(ann.part || ann.token || ann.label);
+                      } else {
+                        badgeLabel = 'Điểm #' + (annIdx + 1);
+                      }
+                      bodyText = String(ann.text || ann.meaning || ann.desc || '');
+                    }
+                    return '<li class="annotation-item"><span class="ann-line-badge">' + escapeHtml(badgeLabel) + '</span><span>' + formatInlineCode(bodyText) + '</span></li>';
                   }).join('') +
                 '</ul>' +
                 (ex.explanation ? '<p style="margin:8px 0 0;font-size:0.88rem;color:var(--text-secondary);">' + formatInlineCode(ex.explanation) + '</p>' : '') +
@@ -787,17 +915,43 @@
             '</div>';
         }).join('');
 
+        var secId = sec.id || ('section-' + (sIdx + 1));
+        var hTag = (lesson.generalInfo && /^\d+\.\d+\s/.test(sec.title || '')) ? 'h3' : 'h2';
         return '' +
-          '<section id="' + escapeHtml(sec.id) + '" class="lesson-section">' +
-            '<h2>' + escapeHtml(sec.title) + '</h2>' +
+          '<section id="' + escapeHtml(secId) + '" class="lesson-section' + (hTag === 'h3' ? ' lx-subsection' : '') + '">' +
+            '<' + hTag + '>' + escapeHtml(sec.title) + '</' + hTag + '>' +
             '<div class="section-prose">' + (sec.content || '') + '</div>' +
             examplesHtml +
           '</section>';
+      }
+
+      // Render các sections nội dung (tách phần 11 & 12 về cuối bài khi áp dụng khung 12 phần)
+      var allLessonSections = (lesson.sections || []).map(function (sec, sIdx) {
+        return { sec: sec, sIdx: sIdx, id: sec.id || ('section-' + (sIdx + 1)), title: sec.title };
+      });
+      var coreSectionEntries = lesson.generalInfo
+        ? allLessonSections.filter(function (entry) { return entry.sec.id !== 'sec-resources' && entry.sec.id !== 'sec-appendix'; })
+        : allLessonSections;
+      var trailingSectionEntries = lesson.generalInfo
+        ? allLessonSections.filter(function (entry) { return entry.sec.id === 'sec-resources' || entry.sec.id === 'sec-appendix'; })
+        : [];
+
+      var sectionsHtml = coreSectionEntries.map(function (entry) {
+        return renderSectionItem(entry.sec, entry.sIdx);
+      }).join('');
+      var trailingSectionsHtml = trailingSectionEntries.map(function (entry) {
+        return renderSectionItem(entry.sec, entry.sIdx);
       }).join('');
 
       // Callouts (ưu tiên lesson.callouts.{pitfalls,tips}, tương thích dự phòng lesson.{pitfalls,tips})
       var callouts = lesson.callouts || {};
       var pitfallsList = callouts.pitfalls || lesson.pitfalls || [];
+      if (pitfallsList.length === 0 && Array.isArray(lesson.commonMistakes)) {
+        pitfallsList = lesson.commonMistakes.map(function (item, idx) {
+          if (typeof item === 'object' && item !== null) return item;
+          return { title: 'Cạm bẫy thực chiến #' + (idx + 1), content: String(item) };
+        });
+      }
       var tipsList = callouts.tips || lesson.tips || [];
       var pitfallsHtml = pitfallsList.map(function (p) {
         return '' +
@@ -851,10 +1005,11 @@
         var exHint = ex.hint || '';
         var exCodeId = topicPrefix + '-sol-' + lesson.id + '-' + exIdx;
 
+        var exLang = ex.lang || (topicPrefix === 'lx' ? 'bash' : 'SQL');
         var solLines = '';
         if (exCode) {
           if (codeHighlighter) {
-            solLines = codeHighlighter(exCode, 'SQL');
+            solLines = codeHighlighter(exCode, exLang);
           } else {
             solLines = exCode.split('\n').map(function (l, idx) {
               return '<div class="code-line"><span class="line-num">' + (idx + 1) + '</span><span class="line-content">' + escapeHtml(l) + '</span></div>';
@@ -886,6 +1041,26 @@
               '<strong>Giải thích:</strong>' +
               '<div style="margin-top:4px;">' + formatMultilineHtml(exExplanation) + '</div>' +
             '</div>';
+        }
+
+        var rubricHtml = '';
+        if (ex.rubric) {
+          if (Array.isArray(ex.rubric)) {
+            rubricHtml = '' +
+              '<div class="lx-rubric-box" style="margin-top:14px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--bg-surface-alt);border:1px solid var(--border-subtle);">' +
+                '<div style="font-weight:700;font-size:0.88rem;color:var(--text-primary);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><span>🎯</span> <span>Rubric Đánh Giá Năng Lực (Tiêu Chuẩn Quốc Tế)</span></div>' +
+                '<div class="table-responsive"><table class="lesson-table lx-rubric-table" style="font-size:0.85rem;margin:0;">' +
+                  '<thead><tr><th>Tiêu chí</th><th>Mức Đạt (Acceptable)</th><th>Mức Xuất sắc (Mastery)</th><th style="text-align:center;">Trọng số</th></tr></thead>' +
+                  '<tbody>' +
+                    ex.rubric.map(function (r) {
+                      return '<tr><td><strong>' + escapeHtml(r.criterion || '') + '</strong></td><td>' + formatInlineCode(r.pass || '') + '</td><td>' + formatInlineCode(r.excellent || '') + '</td><td style="text-align:center;"><span style="padding:2px 8px;border-radius:10px;background:var(--accent-soft);color:var(--accent-primary);font-weight:700;font-size:0.75rem;">' + escapeHtml(r.weight || '33%') + '</span></td></tr>';
+                    }).join('') +
+                  '</tbody>' +
+                '</table></div>' +
+              '</div>';
+          } else if (typeof ex.rubric === 'string') {
+            rubricHtml = '<div class="lx-rubric-box" style="margin-top:14px;">' + ex.rubric + '</div>';
+          }
         }
 
         if (!solCard && !explanationHtml && ex.solution) {
@@ -921,6 +1096,7 @@
                   '<div class="solution-body">' +
                     solCard +
                     explanationHtml +
+                    rubricHtml +
                   '</div>' +
                 '</div>' +
               '</div>' +
@@ -947,14 +1123,23 @@
       }
 
       var quizHtml = quizList.map(function (q, qIdx) {
+        var targetCorrect = 0;
+        if (typeof q.correctIndex === 'number') {
+          targetCorrect = q.correctIndex;
+        } else if (typeof q.answer === 'number') {
+          targetCorrect = q.answer;
+        } else if (typeof q.correctAnswer === 'string' && Array.isArray(q.options)) {
+          var foundAnsIdx = q.options.indexOf(q.correctAnswer);
+          if (foundAnsIdx !== -1) targetCorrect = foundAnsIdx;
+        }
         var savedAns = getSavedQuizAnswer(lesson.id, qIdx);
         var isAnswered = savedAns !== null && savedAns !== undefined;
-        var isCorrect = isAnswered && savedAns === q.correctIndex;
+        var isCorrect = isAnswered && savedAns === targetCorrect;
 
         var optionsHtml = (q.options || []).map(function (opt, oIdx) {
           var stateClass = '';
           if (isAnswered) {
-            if (oIdx === q.correctIndex) stateClass = 'correct';
+            if (oIdx === targetCorrect) stateClass = 'correct';
             else if (oIdx === savedAns) stateClass = 'wrong';
           }
           return '' +
@@ -965,7 +1150,7 @@
         }).join('');
 
         return '' +
-          '<div class="quiz-card" data-quiz-idx="' + qIdx + '" data-correct-idx="' + q.correctIndex + '">' +
+          '<div class="quiz-card" data-quiz-idx="' + qIdx + '" data-correct-idx="' + targetCorrect + '">' +
             '<div class="quiz-question">Câu ' + (qIdx + 1) + ': ' + formatInlineCode(q.question) + '</div>' +
             '<div class="quiz-options">' + optionsHtml + '</div>' +
             '<div class="quiz-explanation ' + (isAnswered ? 'visible' : '') + ' ' + (isAnswered ? (isCorrect ? 'is-correct' : 'is-wrong') : '') + '">' +
@@ -1048,7 +1233,7 @@
           '<section id="sec-intuition" class="intuition-box ' + topicPrefix + '-intuition-box">' +
             '<div class="intuition-header ' + topicPrefix + '-intuition-header">' +
               '<span class="' + topicPrefix + '-intuition-icon-pill" aria-hidden="true">💡</span>' +
-              '<span class="' + topicPrefix + '-intuition-title-text">2. Trực giác: ' + escapeHtml(intTitle) + '</span>' +
+              '<span class="' + topicPrefix + '-intuition-title-text">' + (lesson.generalInfo ? '3. Khởi động &amp; Trực giác: ' : '2. Trực giác: ') + escapeHtml(intTitle) + '</span>' +
             '</div>' +
             (intMetaphor ? '<p class="intuition-metaphor ' + topicPrefix + '-intuition-metaphor">' + formatInlineCode(intMetaphor) + '</p>' : '') +
             intBoundary +
@@ -1076,13 +1261,51 @@
 
       var breadcrumbHtml = breadcrumbCourseBadge + ' › ' + breadcrumbPartLink + ' › <span>Bài ' + escapeHtml(lesson.number) + '</span>';
 
-      var tocList = [
+      var generalInfoHtml = '';
+      if (lesson.generalInfo) {
+        var g = lesson.generalInfo;
+        generalInfoHtml = '' +
+          '<section class="lx-general-info-card" id="sec-general-info">' +
+            '<div class="lx-general-info-header">' +
+              '<span class="lx-info-icon" aria-hidden="true">📋</span>' +
+              '<span class="lx-info-title">1. Thông tin Chung của Bài học</span>' +
+            '</div>' +
+            '<div class="lx-info-grid">' +
+              '<div class="lx-info-item"><span class="lx-info-label">⏱️ Thời lượng dự kiến</span><span class="lx-info-val">' + escapeHtml(g.duration || lesson.duration || '40 phút') + '</span></div>' +
+              '<div class="lx-info-item"><span class="lx-info-label">👥 Đối tượng học viên</span><span class="lx-info-val">' + escapeHtml(g.targetAudience || 'Lập trình viên, DevOps, Kỹ sư hệ thống') + '</span></div>' +
+              '<div class="lx-info-item"><span class="lx-info-label">🔑 Kiến thức tiên quyết</span><span class="lx-info-val">' + formatInlineCode(g.prerequisites || 'Cơ bản về máy tính') + '</span></div>' +
+              '<div class="lx-info-item"><span class="lx-info-label">🖥️ Môi trường thực hành</span><span class="lx-info-val">' + formatInlineCode(g.environment || 'Ubuntu 22.04/24.04 LTS (VM / WSL2 / Docker)') + '</span></div>' +
+              '<div class="lx-info-item lx-info-full"><span class="lx-info-label">📚 Học liệu cần chuẩn bị</span><span class="lx-info-val">' + formatInlineCode(g.materials || 'Terminal emulator, quyền sudo máy ảo, kết nối Internet') + '</span></div>' +
+            '</div>' +
+          '</section>';
+      }
+
+      var tocList = lesson.generalInfo ? [
+        { id: 'sec-general-info', label: '1. Thông tin chung' },
+        { id: 'sec-objectives', label: '2. Mục tiêu học tập (Bloom)' },
+        ...(lesson.intuition ? [{ id: 'sec-intuition', label: '3. Khởi động & Trực giác' }] : []),
+        ...coreSectionEntries.map(function (entry) {
+          return {
+            id: entry.id,
+            label: entry.title,
+            sub: /^\d+\.\d+\s/.test(entry.title || '')
+          };
+        }),
+        ...(deepDiveHtml || pitfallsHtml || tipsHtml ? [{ id: 'sec-callouts', label: 'Lưu ý & Cạm bẫy thực tế' }] : []),
+        ...(summaryHtml ? [{ id: 'sec-summary', label: '9. Tóm tắt bài học' }] : []),
+        ...(exercisesHtml ? [{ id: 'sec-exercises', label: '10. Thử thách & Rubric' }] : []),
+        ...(quizHtml ? [{ id: 'sec-quiz', label: 'Câu hỏi Quiz' }] : []),
+        ...trailingSectionEntries.map(function (entry) {
+          return { id: entry.id, label: entry.title };
+        }),
+        ...(lesson.reflectionQuestion ? [{ id: 'sec-reflection', label: 'Thử thách bản chất' }] : [])
+      ] : [
         { id: 'sec-objectives', label: '1. Mục tiêu bài học' },
         ...(lesson.intuition ? [{ id: 'sec-intuition', label: '2. Trực giác' }] : []),
-        ...(lesson.sections || []).map(function (s) { return { id: s.id, label: s.title }; }),
+        ...(lesson.sections || []).map(function (s, idx) { return { id: s.id || ('section-' + (idx + 1)), label: s.title }; }),
         ...(deepDiveHtml || pitfallsHtml || tipsHtml ? [{ id: 'sec-callouts', label: 'Lưu ý & Chuyên sâu' }] : []),
         ...(exercisesHtml ? [{ id: 'sec-exercises', label: 'Bài tập thực hành' }] : []),
-        ...(quizHtml ? [{ id: 'sec-quiz', label: 'Câu hỏi trắc nghiệm' }] : []),
+        ...(quizHtml ? [{ id: 'sec-quiz', label: 'Câu hỏi Quiz' }] : []),
         ...(summaryHtml ? [{ id: 'sec-summary', label: 'Tóm tắt bài học' }] : []),
         ...(lesson.reflectionQuestion ? [{ id: 'sec-reflection', label: 'Thử thách bản chất' }] : [])
       ];
@@ -1100,12 +1323,46 @@
             '<div class="mobile-toc-dropdown">' +
               '<ul class="mobile-toc-list">' +
                 tocList.map(function (it) {
-                  return '<li><a class="mobile-toc-link" href="#' + escapeHtml(it.id) + '" data-toc-target="' + escapeHtml(it.id) + '">' + escapeHtml(it.label) + '</a></li>';
+                  return '<li><a class="mobile-toc-link' + (it.sub ? ' mobile-toc-link-sub' : '') + '" href="#' + escapeHtml(it.id) + '" data-toc-target="' + escapeHtml(it.id) + '">' + escapeHtml(it.label) + '</a></li>';
                 }).join('') +
               '</ul>' +
             '</div>' +
           '</details>' +
         '</nav>';
+
+      var summaryBlockHtml = summaryHtml ? (
+        '<section id="sec-summary" class="summary-box">' +
+          '<div class="summary-title"><span>📌</span> <span>' + (lesson.generalInfo ? '9. Tóm tắt Bài học &amp; Ghi nhớ Cốt lõi' : 'Tóm tắt Bài học') + '</span></div>' +
+          '<ul>' + summaryHtml + '</ul>' +
+          selfReviewHtml +
+        '</section>'
+      ) : '';
+
+      var exercisesBlockHtml = exercisesHtml ? (
+        '<section id="sec-exercises">' +
+          '<h2>' + (lesson.generalInfo ? '10. Thử thách Thực hành &amp; Rubric Đánh giá' : 'Bài tập &amp; Thử thách Thực chiến') + '</h2>' +
+          '<div class="exercises-container">' + exercisesHtml + '</div>' +
+        '</section>'
+      ) : '';
+
+      var quizBlockHtml = quizHtml ? (
+        '<section id="sec-quiz">' +
+          '<h2>' + escapeHtml(quizSectionTitle) + '</h2>' +
+          '<div class="quiz-container">' + quizHtml + '</div>' +
+        '</section>'
+      ) : '';
+
+      var linuxMetaPillsHtml = '';
+      if (typeof lesson.requiresRoot === 'boolean') {
+        linuxMetaPillsHtml += lesson.requiresRoot
+          ? '<span class="lx-meta-pill lx-meta-root" title="Bài học có thao tác yêu cầu quyền quản trị sudo/root">🔐 Cần sudo/root</span>'
+          : '<span class="lx-meta-pill lx-meta-user" title="Thực hành an toàn bằng tài khoản người dùng thường">👤 User thường</span>';
+      }
+      if (typeof lesson.requiresVM === 'boolean') {
+        linuxMetaPillsHtml += lesson.requiresVM
+          ? '<span class="lx-meta-pill lx-meta-vm-warn" title="Nên thực hành trên Máy ảo (VM) độc lập để bảo vệ máy thật">🖥️ Khuyên dùng VM</span>'
+          : '<span class="lx-meta-pill lx-meta-all-env" title="Tương thích đầy đủ trên VM, WSL2 và Container">✓ Mọi môi trường</span>';
+      }
 
       mainEl.innerHTML = '' +
         '<article class="lesson-article">' +
@@ -1114,6 +1371,7 @@
               '<span class="part-breadcrumb">' + breadcrumbHtml + '</span>' +
               '<span class="level-badge ' + getLevelBadgeClass(lesson.level) + '">' + escapeHtml(lesson.level) + '</span>' +
               '<span class="level-badge" style="background:var(--bg-surface-alt);color:var(--text-secondary);">⏱ ' + escapeHtml(lesson.duration || '30 phút') + '</span>' +
+              linuxMetaPillsHtml +
               ((lesson.circuit === 'dq' || (lesson.title && lesson.title.includes('[DQ]'))) ? '<span class="circuit-badge circuit-badge-dq">[DQ]</span>' : '') +
               ((lesson.circuit === 'fe' || (lesson.title && lesson.title.includes('[FE]'))) ? '<span class="circuit-badge circuit-badge-fe">[FE]</span>' : '') +
               ((lesson.circuit === 'scale' || (lesson.title && lesson.title.includes('[SCALE]'))) ? '<span class="circuit-badge circuit-badge-scale">[SCALE]</span>' : '') +
@@ -1123,8 +1381,10 @@
             (lesson.subtitle ? '<p class="lesson-subtitle">' + escapeHtml(lesson.subtitle) + '</p>' : '') +
           '</header>' +
 
+          generalInfoHtml +
+
           '<section class="objectives-box" id="sec-objectives">' +
-            '<div class="objectives-title"><span>🎯</span> <span>1. Mục tiêu bài học</span></div>' +
+            '<div class="objectives-title"><span>🎯</span> <span>' + (lesson.generalInfo ? '2. Mục tiêu học tập (Thang Bloom)' : '1. Mục tiêu bài học') + '</span></div>' +
             '<ul class="objectives-list">' +
               (lesson.objectives || []).map(function (obj) {
                 return '<li><span class="obj-check">✓</span> <span>' + formatInlineCode(obj) + '</span></li>';
@@ -1146,27 +1406,9 @@
             '</section>'
           ) : '') +
 
-          (exercisesHtml ? (
-            '<section id="sec-exercises">' +
-              '<h2>Bài tập &amp; Thử thách Thực chiến</h2>' +
-              '<div class="exercises-container">' + exercisesHtml + '</div>' +
-            '</section>'
-          ) : '') +
-
-          (quizHtml ? (
-            '<section id="sec-quiz">' +
-              '<h2>' + escapeHtml(quizSectionTitle) + '</h2>' +
-              '<div class="quiz-container">' + quizHtml + '</div>' +
-            '</section>'
-          ) : '') +
-
-          (summaryHtml ? (
-            '<section id="sec-summary" class="summary-box">' +
-              '<div class="summary-title"><span>📌</span> <span>Tóm tắt Bài học</span></div>' +
-              '<ul>' + summaryHtml + '</ul>' +
-              selfReviewHtml +
-            '</section>'
-          ) : '') +
+          (lesson.generalInfo
+            ? (summaryBlockHtml + exercisesBlockHtml + quizBlockHtml + trailingSectionsHtml)
+            : (exercisesBlockHtml + quizBlockHtml + summaryBlockHtml)) +
 
           reflectionHtml +
 
@@ -1377,7 +1619,7 @@
           '<div class="toc-heading">Trong bài này</div>' +
           '<ul class="toc-list">' +
             tocList.map(function (it) {
-              return '<li><a class="toc-link" href="#' + escapeHtml(it.id) + '" data-toc-target="' + escapeHtml(it.id) + '">' + escapeHtml(it.label) + '</a></li>';
+              return '<li><a class="toc-link' + (it.sub ? ' toc-link-sub' : '') + '" href="#' + escapeHtml(it.id) + '" data-toc-target="' + escapeHtml(it.id) + '">' + escapeHtml(it.label) + '</a></li>';
             }).join('') +
           '</ul>';
 
@@ -1437,7 +1679,7 @@
         var initialTargetId = window.location.hash.substring(1);
         setTimeout(function () {
           var targetEl = document.getElementById(initialTargetId);
-          if (targetEl) {
+          if (targetEl && typeof targetEl.scrollIntoView === 'function') {
             targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
             if (typeof setActiveToc === 'function') setActiveToc(initialTargetId);
           }
@@ -1467,7 +1709,7 @@
       var selectedItem = ALL_LESSONS.find(function (it) { return it.lesson.id === targetId; });
       if (selectedItem) {
         partOpenState[selectedItem.partId] = true;
-        if (activeFilter !== 'all' && selectedItem.partId !== activeFilter) {
+        if (activeFilter !== 'all' && !doesItemMatchFilter(selectedItem, activeFilter)) {
           activeFilter = 'all';
         }
       }
@@ -1777,18 +2019,48 @@
         }, { passive: true });
       }
 
-      function handleRouteFromHash() {
+      function handleRouteFromHash(isInitial) {
         var hash = window.location.hash || '';
         var match = hash.match(/lesson=([a-z0-9-]+)/i);
+        var directId = hash.replace(/^#/, '').trim();
+
+        // 1. Nếu hash là liên kết bài học (dạng #lesson=... hoặc #id_bai_hoc)
         if (match && ALL_LESSONS.some(function (it) { return it.lesson.id === match[1]; })) {
-          navigateTo(match[1]);
-        } else {
-          navigateTo('overview');
+          if (isInitial || currentView !== match[1]) {
+            navigateTo(match[1]);
+          }
+          return;
+        }
+        if (directId && ALL_LESSONS.some(function (it) { return it.lesson.id === directId; })) {
+          if (isInitial || currentView !== directId) {
+            navigateTo(directId);
+          }
+          return;
+        }
+
+        // 2. Nếu không phải lần nạp đầu tiên và hash là neo nội bộ trong trang đang mở (#sec-..., #part-card-..., #home-...)
+        if (!isInitial && currentView && (hash.indexOf('#sec-') === 0 || hash.indexOf('#part-card-') === 0 || hash.indexOf('#home-') === 0)) {
+          return;
+        }
+
+        // 3. Mặc định về trang Tổng quan (#overview)
+        if (isInitial || directId === 'overview' || directId === 'home' || !directId) {
+          if (isInitial || currentView !== 'overview') {
+            navigateTo('overview');
+            if (isInitial && directId && directId !== 'overview' && directId !== 'home') {
+              setTimeout(function () {
+                var anchorEl = document.getElementById(directId);
+                if (anchorEl && typeof anchorEl.scrollIntoView === 'function') {
+                  anchorEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }, 80);
+            }
+          }
         }
       }
 
-      window.addEventListener('hashchange', handleRouteFromHash);
-      handleRouteFromHash();
+      window.addEventListener('hashchange', function () { handleRouteFromHash(false); });
+      handleRouteFromHash(true);
     }
 
     if (document.readyState === 'loading') {

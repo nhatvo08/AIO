@@ -240,7 +240,7 @@ print(message)`,
         'Khi cần tính toán số mũ trong biểu thức toán học.',
         'Khi chạy trên phiên bản Python 3.12+.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Khi bản mẫu nạp từ file bên ngoài, biểu thức % và format() xử lý nó dưới dạng dữ liệu văn bản tĩnh an toàn, trong khi f-string đòi hỏi phải chạy qua eval() với rủi ro bảo mật nghiêm trọng.'
     },
     {
@@ -251,7 +251,7 @@ print(message)`,
         'Tiền tố dấu đô la $identifier hoặc \${identifier}',
         'Thẻ mở đóng <name></name>'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'string.Template sử dụng ký hiệu dấu đô la $ (ví dụ: $name hoặc \${name}) để định danh các vị trí thay thế.'
     }
   ],

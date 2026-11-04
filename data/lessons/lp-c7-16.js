@@ -265,7 +265,7 @@ print(message)`,
         'Cặp dấu [] chỉ dùng cho chuỗi, không thể dùng để truy xuất khóa từ điển.',
         'Cặp dấu [] bắt buộc phải có dấu nháy đơn bao quanh tên khóa, ví dụ {0[\'name\']}.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Về mặt cú pháp trong str.format(), dấu ngoặc vuông [] chỉ chấp nhận một độ lệch số nguyên dương duy nhất hoặc tên khóa không có nháy. Các biểu thức âm [-1] hay slice [:] không được hỗ trợ nội tuyến.'
     },
     {
@@ -276,7 +276,7 @@ print(message)`,
         '"{}, {1}".format(1, 2)',
         '"{first}, {0}".format(1, first=2)'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'Python cấm trộn lẫn việc đánh số tự động {} và đánh số thủ công {1} trong cùng một chuỗi định dạng (ValueError: cannot switch from automatic field numbering to manual field specification).'
     }
   ],

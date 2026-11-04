@@ -2320,34 +2320,34 @@ window.PYDATA_GROUP2_PARTS = [
           {
             "question": "Sau khi thực thi lệnh 'grp = df.groupby('category')', phát biểu nào sau đây mô tả đúng nhất trạng thái của biến grp?",
             "options": [
-              "(Recommended) grp là một đối tượng DataFrameGroupBy nắm giữ chỉ mục phân nhóm lười (lazy index map), chưa có phép tính số học nào được thực thi.",
               "grp là một DataFrame mới đã được sắp xếp tăng dần theo cột category.",
+              "grp là một đối tượng DataFrameGroupBy nắm giữ chỉ mục phân nhóm lười (lazy index map), chưa có phép tính số học nào được thực thi.",
               "grp là một từ điển chứa toàn bộ các bản sao (copies) dữ liệu được phân chia thành từng mảng riêng biệt.",
               "grp tự động tính toán giá trị trung bình của toàn bộ các cột số."
             ],
-            "correctAnswer": "(Recommended) grp là một đối tượng DataFrameGroupBy nắm giữ chỉ mục phân nhóm lười (lazy index map), chưa có phép tính số học nào được thực thi.",
+            "correctIndex": 1,
             "explanation": "df.groupby() hoạt động theo cơ chế lazy evaluation (thực thi lười). Nó chỉ lập bảng băm ánh xạ khóa nhóm sang các vị trí index trong bảng gốc mà không thực hiện phép tính hay sao chép dữ liệu, giúp tối ưu tối đa tài nguyên bộ nhớ."
           },
           {
             "question": "Sự khác biệt cốt lõi về hình dạng dữ liệu (shape) giữa .agg() và .transform() khi áp dụng trên một DataFrame có 1.000 dòng được chia thành 10 nhóm là gì?",
             "options": [
-              "(Recommended) .agg() trả về bảng gồm 10 dòng (1 dòng cho mỗi nhóm), trong khi .transform() trả về mảng gồm đúng 1.000 dòng bằng hình dạng bảng ban đầu.",
               ".agg() trả về bảng gồm 1.000 dòng, còn .transform() trả về bảng gồm 10 dòng.",
               "Cả hai phương thức đều trả về 10 dòng nhưng .transform() có thêm cột MultiIndex.",
+              ".agg() trả về bảng gồm 10 dòng (1 dòng cho mỗi nhóm), trong khi .transform() trả về mảng gồm đúng 1.000 dòng bằng hình dạng bảng ban đầu.",
               ".transform() chỉ áp dụng được trên một cột đơn lẻ, còn .agg() áp dụng được trên toàn bộ DataFrame."
             ],
-            "correctAnswer": "(Recommended) .agg() trả về bảng gồm 10 dòng (1 dòng cho mỗi nhóm), trong khi .transform() trả về mảng gồm đúng 1.000 dòng bằng hình dạng bảng ban đầu.",
+            "correctIndex": 2,
             "explanation": ".agg() thực hiện phép thu gọn chiều (aggregation/reduction) từ N dòng trong nhóm thành 1 đại diện. .transform() thực hiện phép biến đổi bảo toàn hình dạng (shape preservation) để kết quả có thể trực tiếp gán vào một cột mới trên bảng ban đầu."
           },
           {
             "question": "Tại sao việc lạm dụng .apply() với hàm Python tùy biến lại làm giảm nghiêm trọng hiệu năng xử lý dữ liệu lớn trong Pandas?",
             "options": [
-              "(Recommended) Vì .apply() phải chạy vòng lặp cấp độ Python thông dịch, liên tục tạo/hủy stack frame và mất đi toàn bộ ưu thế tối ưu hóa vector C/Cython.",
               "Vì .apply() bắt buộc phải ghi dữ liệu trung gian vào ổ cứng SSD trước khi gộp kết quả.",
               "Vì .apply() luôn tự động chuyển kiểu dữ liệu của toàn bộ các cột số sang chuỗi văn bản (object).",
-              "Vì .apply() không hỗ trợ xử lý giá trị khuyết (NaN/None)."
+              "Vì .apply() không hỗ trợ xử lý giá trị khuyết (NaN/None).",
+              "Vì .apply() phải chạy vòng lặp cấp độ Python thông dịch, liên tục tạo/hủy stack frame và mất đi toàn bộ ưu thế tối ưu hóa vector C/Cython."
             ],
-            "correctAnswer": "(Recommended) Vì .apply() phải chạy vòng lặp cấp độ Python thông dịch, liên tục tạo/hủy stack frame và mất đi toàn bộ ưu thế tối ưu hóa vector C/Cython.",
+            "correctIndex": 3,
             "explanation": ".apply() gọi hàm Python trên từng nhóm con. Do đó, nó bị kẹt trong vòng lặp thông dịch của CPython, tạo chi phí overhead khổng lồ so với các hàm C tối ưu sẵn trong .agg() và .transform()."
           }
         ],
@@ -2485,34 +2485,34 @@ window.PYDATA_GROUP2_PARTS = [
           {
             "question": "Điều gì sẽ xảy ra nếu bạn thực hiện pd.merge(df1, df2, on='key', how='inner') khi cột 'key' có 3 dòng giá trị 'A' ở df1 và 4 dòng giá trị 'A' ở df2?",
             "options": [
-              "(Recommended) Kết quả sẽ sinh ra 12 dòng (3 x 4) mang giá trị 'A' do hiệu ứng nhân chéo Cartesian Product.",
               "Pandas sẽ tự động lấy 3 dòng đầu tiên của df2 để khớp 1:1 và bỏ qua dòng thứ 4.",
               "Pandas sẽ báo lỗi KeyError vì khóa không duy nhất.",
+              "Kết quả sẽ sinh ra 12 dòng (3 x 4) mang giá trị 'A' do hiệu ứng nhân chéo Cartesian Product.",
               "Kết quả sẽ chỉ có đúng 1 dòng giá trị 'A' đại diện cho nhóm."
             ],
-            "correctAnswer": "(Recommended) Kết quả sẽ sinh ra 12 dòng (3 x 4) mang giá trị 'A' do hiệu ứng nhân chéo Cartesian Product.",
+            "correctIndex": 2,
             "explanation": "Trong đại số quan hệ, nếu một giá trị khóa xuất hiện M lần ở bảng trái và N lần ở bảng phải, phép Inner Join sẽ tạo ra M x N dòng kết hợp (tích Đề-các Cartesian). Đây chính là nguyên nhân gây ra bùng nổ dữ liệu ngoài ý muốn nếu khóa bị trùng lặp."
           },
           {
             "question": "Tại sao việc sử dụng tham số 'indicator=True' trong pd.merge() lại được coi là phương pháp chuẩn mực (best practice) trong kiểm định chất lượng dữ liệu?",
             "options": [
-              "(Recommended) Vì nó tạo ra cột '_merge' ghi nhận rõ dòng dữ liệu đến từ cả hai bảng (both), chỉ bảng trái (left_only) hay chỉ bảng phải (right_only), giúp kiểm toán dữ liệu mồ côi.",
               "Vì nó giúp tăng tốc độ join dữ liệu lên gấp 2 lần nhờ thuật toán chỉ mục hóa.",
               "Vì nó tự động điền giá trị trung bình vào các ô bị NaN sau khi join.",
-              "Vì nó ngăn chặn bảng kết quả không bị ghi đè lên bộ nhớ gốc."
+              "Vì nó ngăn chặn bảng kết quả không bị ghi đè lên bộ nhớ gốc.",
+              "Vì nó tạo ra cột '_merge' ghi nhận rõ dòng dữ liệu đến từ cả hai bảng (both), chỉ bảng trái (left_only) hay chỉ bảng phải (right_only), giúp kiểm toán dữ liệu mồ côi."
             ],
-            "correctAnswer": "(Recommended) Vì nó tạo ra cột '_merge' ghi nhận rõ dòng dữ liệu đến từ cả hai bảng (both), chỉ bảng trái (left_only) hay chỉ bảng phải (right_only), giúp kiểm toán dữ liệu mồ côi.",
+            "correctIndex": 3,
             "explanation": "indicator=True thêm cột phân loại _merge, cho phép kiểm toán viên dữ liệu lập tức nhận diện được các bản ghi không khớp (left_only, right_only) mà không cần phải viết thêm các câu lệnh lọc phức tạp."
           },
           {
             "question": "Khi nào bạn NÊN sử dụng pd.concat() thay vì pd.merge()?",
             "options": [
-              "(Recommended) Khi bạn muốn nối các bảng có cùng cấu trúc cột theo chiều dọc (ví dụ: gộp các file log theo ngày) hoặc dán các mảng theo trục vật lý mà không cần so sánh giá trị khóa.",
+              "Khi bạn muốn nối các bảng có cùng cấu trúc cột theo chiều dọc (ví dụ: gộp các file log theo ngày) hoặc dán các mảng theo trục vật lý mà không cần so sánh giá trị khóa.",
               "Khi bạn cần ghép hai bảng dựa trên mã khách hàng (Customer ID).",
               "Khi bạn muốn thực hiện phép Full Outer Join phức tạp giữa 3 bảng quan hệ.",
               "Khi bảng dữ liệu có kích thước vượt quá dung lượng RAM."
             ],
-            "correctAnswer": "(Recommended) Khi bạn muốn nối các bảng có cùng cấu trúc cột theo chiều dọc (ví dụ: gộp các file log theo ngày) hoặc dán các mảng theo trục vật lý mà không cần so sánh giá trị khóa.",
+            "correctIndex": 0,
             "explanation": "pd.concat() là phép nối hình học theo trục (axis 0 hoặc 1), phù hợp hoàn hảo để xếp chồng các file dữ liệu cùng schema theo thời gian mà không cần tính toán so khớp giá trị khóa logic như pd.merge()."
           }
         ],
@@ -2646,34 +2646,34 @@ window.PYDATA_GROUP2_PARTS = [
           {
             "question": "Phát biểu nào sau đây thể hiện ĐÚNG NHẤT nguyên tắc cốt lõi của Tidy Data theo định nghĩa của Hadley Wickham?",
             "options": [
-              "(Recommended) Mỗi biến tạo thành một cột riêng biệt, mỗi quan sát tạo thành một hàng riêng biệt, mỗi bảng là một đơn vị quan sát.",
               "Tất cả các giá trị số phải được chuẩn hóa về khoảng từ 0 đến 1.",
               "Bảng dữ liệu phải có số cột bằng đúng số hàng để tạo thành ma trận vuông.",
-              "Dữ liệu phải luôn được biểu diễn dưới dạng ma trận Wide để người xem dễ quan sát tổng thể."
+              "Dữ liệu phải luôn được biểu diễn dưới dạng ma trận Wide để người xem dễ quan sát tổng thể.",
+              "Mỗi biến tạo thành một cột riêng biệt, mỗi quan sát tạo thành một hàng riêng biệt, mỗi bảng là một đơn vị quan sát."
             ],
-            "correctAnswer": "(Recommended) Mỗi biến tạo thành một cột riêng biệt, mỗi quan sát tạo thành một hàng riêng biệt, mỗi bảng là một đơn vị quan sát.",
+            "correctIndex": 3,
             "explanation": "Tidy Data có 3 nguyên tắc nền tảng: (1) Mỗi biến là một cột, (2) Mỗi quan sát là một hàng, (3) Mỗi loại đơn vị quan sát tạo thành một bảng. Định dạng này giúp việc phân tích và trực quan hóa dữ liệu trở nên đồng nhất và tái lập."
           },
           {
             "question": "Khi áp dụng hàm .rolling(window=5).mean() trên một Series gồm 10 giá trị, nếu không thiết lập tham số 'min_periods', kết quả ở 4 dòng đầu tiên sẽ là gì?",
             "options": [
-              "(Recommended) Toàn bộ 4 dòng đầu tiên sẽ nhận giá trị NaN (Not a Number) vì chưa tích lũy đủ 5 quan sát tối thiểu.",
+              "Toàn bộ 4 dòng đầu tiên sẽ nhận giá trị NaN (Not a Number) vì chưa tích lũy đủ 5 quan sát tối thiểu.",
               "4 dòng đầu tiên sẽ nhận giá trị 0.",
               "Pandas sẽ báo lỗi ValueError vì không đủ dữ liệu.",
               "4 dòng đầu tiên sẽ tự động lấy trung bình của các giá trị hiện có từ đầu đến vị trí đó."
             ],
-            "correctAnswer": "(Recommended) Toàn bộ 4 dòng đầu tiên sẽ nhận giá trị NaN (Not a Number) vì chưa tích lũy đủ 5 quan sát tối thiểu.",
+            "correctIndex": 0,
             "explanation": "Mặc định, min_periods bằng kích thước window. Nếu cửa sổ là 5, các vị trí từ 0 đến 3 (4 dòng đầu) chưa đủ 5 giá trị nên hàm trả về NaN. Để khắc phục điều này và tính toán ngay từ dòng đầu tiên, ta cần đặt min_periods=1."
           },
           {
             "question": "Khi nào bạn BẮT BUỘC phải sử dụng pd.pivot_table() thay vì pd.pivot()?",
             "options": [
-              "(Recommended) Khi trong dữ liệu có nhiều dòng trùng lặp cùng một cặp giá trị (index, columns), đòi hỏi phải có hàm tổng hợp aggfunc (như sum, mean) để gộp lại.",
               "Khi bảng dữ liệu có nhiều hơn 3 cột.",
+              "Khi trong dữ liệu có nhiều dòng trùng lặp cùng một cặp giá trị (index, columns), đòi hỏi phải có hàm tổng hợp aggfunc (như sum, mean) để gộp lại.",
               "Khi bạn muốn xuất kết quả trực tiếp ra file Excel.",
               "Khi dữ liệu chứa các giá trị kiểu chuỗi văn bản."
             ],
-            "correctAnswer": "(Recommended) Khi trong dữ liệu có nhiều dòng trùng lặp cùng một cặp giá trị (index, columns), đòi hỏi phải có hàm tổng hợp aggfunc (như sum, mean) để gộp lại.",
+            "correctIndex": 1,
             "explanation": "pd.pivot() đòi hỏi mỗi cặp (index, columns) phải là duy nhất tuyệt đối; nếu có trùng lặp, nó sẽ ném ngoại lệ ValueError: Index contains duplicate entries. Ngược lại, pd.pivot_table() được thiết kế để xử lý trùng lặp thông qua hàm tổng hợp aggfunc (mặc định là mean)."
           }
         ],

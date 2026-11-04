@@ -218,7 +218,7 @@ print(c1 == c2 == c3)`,
         'Vì f-string làm chậm tốc độ chạy của Python đi gấp 3 lần.',
         'Vì Python bắt buộc phải bỏ toán tử % thì mới chạy được f-string.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Mark Lutz phê bình hiện tượng các công cụ mới xuất hiện hứa hẹn thay thế quá khứ nhưng không loại bỏ được công cụ cũ, dẫn đến việc N tùy chọn trùng lặp về mặt chức năng làm tăng gánh nặng học tập của người lập trình lên N lần.'
     },
     {
@@ -229,7 +229,7 @@ print(c1 == c2 == c3)`,
         'Hàm String.Format() trong C# .NET.',
         'Cú pháp template string trong JavaScript ES6.'
       ],
-      answer: 0,
+      correctIndex: 0,
       explanation: 'Biểu thức % là công cụ nguyên bản từ thuở đầu của Python, được mô phỏng theo hàm printf kinh điển của ngôn ngữ C.'
     }
   ],

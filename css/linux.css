@@ -462,7 +462,15 @@
   box-shadow: var(--shadow-xs);
 }
 
-.lx-glossary-term {
+.lx-glossary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.lx-glossary-term,
+.lx-term-name {
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: 0.95rem;
@@ -472,7 +480,8 @@
   justify-content: space-between;
 }
 
-[data-theme="dark"] .lx-glossary-term {
+[data-theme="dark"] .lx-glossary-term,
+[data-theme="dark"] .lx-term-name {
   color: #fbbf24;
 }
 
@@ -484,12 +493,15 @@
   border-radius: var(--radius-xs);
   background: var(--bg-surface-alt);
   color: var(--text-muted);
+  flex-shrink: 0;
 }
 
-.lx-glossary-def {
+.lx-glossary-def,
+.lx-term-def {
   font-size: 0.85rem;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.55;
+  margin: 0;
 }
 
 /* 6. Command Breakdown Token Styles */
@@ -626,6 +638,24 @@
   margin-bottom: 12px;
 }
 
+.lx-intuition-boundary {
+  margin: 10px 0 14px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  border-left: 3px solid #d97706;
+  font-size: 0.88rem;
+  line-height: 1.62;
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .lx-intuition-boundary {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.28);
+  border-left-color: #fbbf24;
+}
+
 /* Giữ các cụm inline code ngắn liền mạch, không bị gãy đôi giữa 2 dòng */
 .lx-intuition-box code:not(pre code) {
   white-space: nowrap;
@@ -714,6 +744,347 @@
   border-left: 3px solid rgba(168, 85, 247, 0.6);
 }
 
+/* ==========================================================================
+   Khung Chuẩn Hóa 12 Phần Quốc Tế Cho Khóa Học Linux
+   ========================================================================== */
+
+/* 1. Thông tin Chung Bài học */
+.lx-general-info-card {
+  margin: 20px 0 28px;
+  padding: 18px 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--topic-linux, #d97706);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.lx-general-info-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 8px;
+}
+
+.lx-general-info-header .lx-info-icon {
+  font-size: 1.2rem;
+}
+
+.lx-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.lx-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.lx-info-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.lx-info-val {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.lx-info-full {
+  grid-column: 1 / -1;
+}
+
+/* 4. Bảng Lệnh Linux Tiêu Chuẩn 5 Cột */
+.lx-command-table th {
+  background: var(--bg-surface-alt);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lx-command-table td:nth-child(1) code {
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.lx-command-table td:nth-child(3) code {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .lx-command-table td:nth-child(3) code {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 5. Demo Lệnh & So Sánh Side-by-Side Đúng vs Sai */
+.lx-demo-card {
+  margin: 16px 0;
+  padding: 16px 18px;
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.lx-demo-card > h4:first-child {
+  margin-top: 0;
+}
+
+.lx-diff-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  margin: 16px 0 4px;
+}
+
+@media (max-width: 768px) {
+  .lx-diff-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.lx-diff-col,
+.lx-diff-card {
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lx-diff-col.wrong,
+.lx-diff-card.wrong {
+  border-left: 4px solid #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.lx-diff-col.correct,
+.lx-diff-card.correct {
+  border-left: 4px solid #10b981;
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.lx-diff-title,
+.lx-diff-col .diff-title,
+.lx-diff-card .diff-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lx-diff-col.wrong .lx-diff-title,
+.lx-diff-card.wrong .diff-title {
+  color: #dc2626;
+}
+
+.lx-diff-col.correct .lx-diff-title,
+.lx-diff-card.correct .diff-title {
+  color: #059669;
+}
+
+[data-theme="dark"] .lx-diff-col.wrong .lx-diff-title,
+[data-theme="dark"] .lx-diff-card.wrong .diff-title {
+  color: #f87171;
+}
+
+[data-theme="dark"] .lx-diff-col.correct .lx-diff-title,
+[data-theme="dark"] .lx-diff-card.correct .diff-title {
+  color: #34d399;
+}
+
+.lx-diff-col pre,
+.lx-diff-card pre {
+  margin: 6px 0 10px !important;
+  padding: 10px 12px !important;
+  font-size: 0.82rem !important;
+  border-radius: var(--radius-sm) !important;
+  max-width: 100%;
+}
+
+.lx-diff-desc,
+.lx-diff-col .diff-desc,
+.lx-diff-card .diff-desc {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 4px 0 0;
+}
+
+.lx-diff-col p:last-child {
+  margin-bottom: 0;
+}
+
+/* Mục con chuyên sâu 4.1 - 4.3, Tiêu đề phụ, Cảnh báo Nguy hiểm & Khung Bảo mật */
+.lx-page .lx-subsection > h3 {
+  font-size: 1.16rem;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 28px 0 12px;
+  padding: 2px 0 2px 12px;
+  border-left: 3px solid var(--topic-linux, #d97706);
+}
+
+.lx-page .toc-link.toc-link-sub {
+  padding-left: 22px;
+  font-size: 0.79rem;
+}
+
+.lx-page .mobile-toc-link.mobile-toc-link-sub {
+  padding-left: 24px;
+  font-size: 0.85rem;
+}
+
+.lx-h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 20px 0 10px;
+}
+
+.lx-callout-danger {
+  margin: 16px 0;
+  padding: 14px 16px;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-left: 4px solid #dc2626;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  line-height: 1.62;
+  color: var(--text-primary);
+}
+
+.lx-callout-danger strong {
+  color: #dc2626;
+}
+
+[data-theme="dark"] .lx-callout-danger {
+  background: rgba(220, 38, 38, 0.14);
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+[data-theme="dark"] .lx-callout-danger strong {
+  color: #f87171;
+}
+
+.lx-security-box {
+  margin: 14px 0 20px;
+  padding: 16px 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid #10b981;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+}
+
+.lx-security-box ul:last-child {
+  margin-bottom: 0;
+}
+
+.lx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.lx-table th {
+  background: var(--bg-surface-alt);
+  color: var(--text-primary);
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+
+.lx-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+/* 6. Khung Thực Hành Lab & Cảnh Báo An Toàn */
+.lx-lab-box {
+  margin: 20px 0;
+  padding: 18px 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid #2563eb;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.lx-lab-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+[data-theme="dark"] .lx-lab-badge {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+.lx-safety-notice {
+  margin: 14px 0;
+  padding: 12px 16px;
+  background: rgba(220, 38, 38, 0.08);
+  border-left: 4px solid #dc2626;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.lx-safety-notice strong {
+  color: #dc2626;
+}
+
+[data-theme="dark"] .lx-safety-notice {
+  background: rgba(220, 38, 38, 0.15);
+}
+
+[data-theme="dark"] .lx-safety-notice strong {
+  color: #f87171;
+}
+
+/* 10. Rubric Đánh Giá Thực Hành */
+.lx-rubric-table th {
+  background: var(--bg-surface-alt);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.lx-rubric-table td {
+  vertical-align: top;
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
 @media (max-width: 680px) {
   .lx-vs-grid {
     grid-template-columns: 1fr;
@@ -733,6 +1104,12 @@
 
 
 /* Reading progress & Back to top topic override */
+.lx-page .lesson-article {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
 .reading-progress-fill {
   background: var(--gradient-linux, #d97706);
   box-shadow: 0 0 8px rgba(217, 119, 6, 0.45);

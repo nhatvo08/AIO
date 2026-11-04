@@ -156,17 +156,31 @@
           var activePane = card.querySelector('.curl-shell-pane.active');
           if (activePane) {
             var textToCopy = activePane.textContent || '';
+            var showCopiedFeedback = function () {
+              copyBtn.classList.add('copied');
+              var copyText = copyBtn.querySelector('.copy-btn-text');
+              if (copyText) copyText.textContent = 'Đã chép!';
+              setTimeout(function () {
+                copyBtn.classList.remove('copied');
+                if (copyText) copyText.textContent = 'Sao chép';
+              }, 1800);
+            };
+            var fallbackCopy = function () {
+              var ta = document.createElement('textarea');
+              ta.value = textToCopy;
+              ta.setAttribute('readonly', '');
+              ta.style.position = 'fixed';
+              ta.style.opacity = '0';
+              document.body.appendChild(ta);
+              ta.select();
+              try { document.execCommand('copy'); } catch (_e) {}
+              document.body.removeChild(ta);
+              showCopiedFeedback();
+            };
             if (navigator.clipboard && navigator.clipboard.writeText) {
-              navigator.clipboard.writeText(textToCopy).then(function () {
-                var copyText = copyBtn.querySelector('.copy-btn-text');
-                var origText = copyText ? copyText.textContent : 'Sao chép';
-                if (copyText) copyText.textContent = 'Đã chép!';
-                setTimeout(function () {
-                  if (copyText) copyText.textContent = origText;
-                }, 2000);
-              }).catch(function () {
-                alert('Không thể sao chép, hãy chọn văn bản và nhấn Ctrl+C');
-              });
+              navigator.clipboard.writeText(textToCopy).then(showCopiedFeedback).catch(fallbackCopy);
+            } else {
+              fallbackCopy();
             }
           }
         }

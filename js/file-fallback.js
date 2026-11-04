@@ -26566,7 +26566,7 @@ print(c1 == c2 == c3)`,
         'Vì f-string làm chậm tốc độ chạy của Python đi gấp 3 lần.',
         'Vì Python bắt buộc phải bỏ toán tử % thì mới chạy được f-string.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Mark Lutz phê bình hiện tượng các công cụ mới xuất hiện hứa hẹn thay thế quá khứ nhưng không loại bỏ được công cụ cũ, dẫn đến việc N tùy chọn trùng lặp về mặt chức năng làm tăng gánh nặng học tập của người lập trình lên N lần.'
     },
     {
@@ -26577,7 +26577,7 @@ print(c1 == c2 == c3)`,
         'Hàm String.Format() trong C# .NET.',
         'Cú pháp template string trong JavaScript ES6.'
       ],
-      answer: 0,
+      correctIndex: 0,
       explanation: 'Biểu thức % là công cụ nguyên bản từ thuở đầu của Python, được mô phỏng theo hàm printf kinh điển của ngôn ngữ C.'
     }
   ],
@@ -26916,7 +26916,7 @@ print(format_str % (item, qty, price))`,
         'Một tập hợp (set).',
         'Một chuỗi ký tự nối bằng dấu phẩy.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Phía bên phải của toán tử % bắt buộc mong đợi một tuple khi có nhiều mục tiêu chuyển đổi (hoặc một từ điển nếu dùng tham chiếu theo tên khóa %(name)s).'
     },
     {
@@ -26927,7 +26927,7 @@ print(format_str % (item, qty, price))`,
         '%.$f',
         '%.auto_f'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Ký tự dấu hoa thị * trong cú pháp %.*f hoặc %*.*f báo hiệu cho Python lấy giá trị độ rộng hoặc độ chính xác từ phần tử tiếp theo trong tuple đầu vào.'
     }
   ],
@@ -27164,7 +27164,7 @@ print(result)`,
         '%{keyname}s',
         '%$keyname$s'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Cú pháp chuẩn xác của mục tiêu chuyển đổi theo từ điển là %(keyname)typecode với tên khóa được đặt trong cặp dấu ngoặc đơn ().'
     },
     {
@@ -27175,7 +27175,7 @@ print(result)`,
         'Một từ điển (dictionary) chứa tất cả các biến đang tồn tại trong phạm vi hiện tại.',
         'Một chuỗi văn bản chứa mã nguồn.'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'vars() trả về một dictionary ánh xạ từ tên biến (chuỗi) sang giá trị hiện tại của biến đó trong phạm vi thực thi.'
     }
   ],
@@ -27458,7 +27458,7 @@ print(message)`,
         'Cặp dấu [] chỉ dùng cho chuỗi, không thể dùng để truy xuất khóa từ điển.',
         'Cặp dấu [] bắt buộc phải có dấu nháy đơn bao quanh tên khóa, ví dụ {0[\'name\']}.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Về mặt cú pháp trong str.format(), dấu ngoặc vuông [] chỉ chấp nhận một độ lệch số nguyên dương duy nhất hoặc tên khóa không có nháy. Các biểu thức âm [-1] hay slice [:] không được hỗ trợ nội tuyến.'
     },
     {
@@ -27469,7 +27469,7 @@ print(message)`,
         '"{}, {1}".format(1, 2)',
         '"{first}, {0}".format(1, first=2)'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'Python cấm trộn lẫn việc đánh số tự động {} và đánh số thủ công {1} trong cùng một chuỗi định dạng (ValueError: cannot switch from automatic field numbering to manual field specification).'
     }
   ],
@@ -27744,7 +27744,7 @@ print(report)`,
         '=',
         '~'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Trong ngữ pháp formatspec của Python, dấu ^ đại diện cho việc căn lề chính giữa (center alignment) trong trường độ rộng quy định.'
     },
     {
@@ -27755,7 +27755,7 @@ print(report)`,
         '%{',
         '[[]]'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Trong chuỗi định dạng của format(), bạn thoát dấu ngoặc nhọn bằng cách viết đúp: {{ sinh ra { và }} sinh ra }.'
     }
   ],
@@ -28006,7 +28006,7 @@ print(message)`,
         'F-string có thể được sử dụng làm docstring cho hàm và module để hệ thống trích xuất __doc__.',
         'F-string là biểu thức đánh giá tại thời gian chạy (runtime) và chỉ áp dụng cho chuỗi văn bản str, không áp dụng cho byte.'
       ],
-      answer: 3,
+      correctIndex: 3,
       explanation: 'F-string thực hiện tại thời gian chạy (runtime expression), tạo ra đối tượng str và không thể kết hợp với tiền tố b (byte).'
     },
     {
@@ -28017,7 +28017,7 @@ print(message)`,
         'Ngắt dòng và chèn dòng chú thích # bên trong cặp dấu {}.',
         'Tất cả các phương án trên đều đúng.'
       ],
-      answer: 3,
+      correctIndex: 3,
       explanation: 'PEP 701 trong Python 3.12 đã chính thức hóa bộ phân tích f-string, cho phép nháy lồng cùng loại, sử dụng ký tự thoát backslash, và xuống dòng kèm chú thích # tự do bên trong {}.'
     }
   ],
@@ -28289,7 +28289,7 @@ print(f"{radius=:.2f}, {area=:.2f}")`,
         '=',
         '@'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'Ký tự = đứng sau biểu thức (ví dụ: f"{x=}") tự động gắn nhãn văn bản của biểu thức kèm một dấu = trước giá trị kết quả.'
     },
     {
@@ -28300,7 +28300,7 @@ print(f"{radius=:.2f}, {area=:.2f}")`,
         'Vì f-string không hỗ trợ bộ nhớ đệm khiến máy chủ hết RAM.',
         'Vì f-string không hỗ trợ bảng mã UTF-8.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Khác với % hay format coi bản mẫu là dữ liệu tĩnh an toàn, f-string là mã thực thi thời gian chạy. Nạp f-string từ tệp đòi hỏi chạy qua eval(), tạo ra lỗ hổng Code Injection chí mạng.'
     }
   ],
@@ -28559,7 +28559,7 @@ print(message)`,
         'Khi cần tính toán số mũ trong biểu thức toán học.',
         'Khi chạy trên phiên bản Python 3.12+.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Khi bản mẫu nạp từ file bên ngoài, biểu thức % và format() xử lý nó dưới dạng dữ liệu văn bản tĩnh an toàn, trong khi f-string đòi hỏi phải chạy qua eval() với rủi ro bảo mật nghiêm trọng.'
     },
     {
@@ -28570,7 +28570,7 @@ print(message)`,
         'Tiền tố dấu đô la $identifier hoặc \${identifier}',
         'Thẻ mở đóng <name></name>'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'string.Template sử dụng ký hiệu dấu đô la $ (ví dụ: $name hoặc \${name}) để định danh các vị trí thay thế.'
     }
   ],
@@ -28824,7 +28824,7 @@ print("b sau khi gán b[0] = 99:", b)`,
         'Ánh xạ (Mappings)',
         'Con trỏ thủ công (Pointers)'
       ],
-      answer: 3,
+      correctIndex: 3,
       explanation: 'Python có ba phân loại kiểu chính: Số, Dãy tuần tự, và Ánh xạ. Python không có kiểu con trỏ thủ công cấp thấp.'
     },
     {
@@ -28835,7 +28835,7 @@ print("b sau khi gán b[0] = 99:", b)`,
         'str, list, bytearray',
         'set, dict, tuple'
       ],
-      answer: 0,
+      correctIndex: 0,
       explanation: 'int, str, tuple và frozenset đều là các kiểu bất biến — không hỗ trợ bất kỳ thao tác sửa đổi nội dung tại chỗ nào.'
     }
   ],
@@ -29173,7 +29173,7 @@ print(clean_and_format(raw_log))`,
         '4 ký tự',
         '12 ký tự'
       ],
-      answer: 2,
+      correctIndex: 2,
       explanation: 'Chuỗi "\\t\\x41\\000\\n" chứa đúng 4 ký tự: \\t (tab, ord 9), \\x41 (chữ \'A\', ord 65), \\000 (byte 0 NUL, ord 0), và \\n (newline, ord 10).'
     },
     {
@@ -29184,7 +29184,7 @@ print(clean_and_format(raw_log))`,
         'Vì Python cấm dùng phương thức trên các đối tượng có nhiều hơn 1 phần tử.',
         'Vì slice chạy trên CPU còn phương thức chạy trên RAM.'
       ],
-      answer: 0,
+      correctIndex: 0,
       explanation: 'Biểu thức slice là thao tác tổng quát áp dụng cho mọi dãy tuần tự (str, list, tuple). Ngược lại, phương thức chuỗi như find() được định nghĩa riêng trong lớp str và chỉ hoạt động trên chuỗi.'
     }
   ],
@@ -35233,7 +35233,7 @@ print(process_inventory(inventory, 200))`,
         'L = list([] * 3)',
         'L = [[] + [] + []]'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'List comprehension [[] for _ in range(3)] tạo ra 3 đối tượng list con rỗng hoàn toàn độc lập ở 3 ô nhớ khác nhau. Phép nhân [[]] * 3 sẽ tạo ra 3 tham chiếu trỏ cùng vào một list duy nhất.'
     },
     {
@@ -35244,7 +35244,7 @@ print(process_inventory(inventory, 200))`,
         'Vì List được lưu trên ổ đĩa còn Dictionary được lưu trong bộ nhớ đệm CPU.',
         'Vì Python biên dịch trước mọi Dictionary thành mã máy nhị phân C.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Bảng băm cho phép tính toán hash code của khóa rồi định vị tức thì ô nhớ tương ứng với độ phức tạp thời gian trung bình O(1), không phụ thuộc vào kích thước hàng triệu phần tử của từ điển.'
     }
   ],
@@ -70114,19 +70114,20 @@ async function renderLessonView(lessonId) {
     const letters = ['A', 'B', 'C', 'D', 'E'];
     const quizHtml = (lesson.quiz || [])
       .map((q, qIdx) => {
+        const targetCorrect = typeof q.correctIndex === 'number' ? q.correctIndex : q.answer;
         const savedAns = getQuizAnswer(lesson.id, qIdx);
         const isAnswered = savedAns !== null && savedAns !== undefined;
-        const isUserCorrect = isAnswered && savedAns === q.correctIndex;
+        const isUserCorrect = isAnswered && savedAns === targetCorrect;
 
         return `
-          <div class="quiz-card" data-quiz-idx="${qIdx}" data-correct-idx="${q.correctIndex}">
+          <div class="quiz-card" data-quiz-idx="${qIdx}" data-correct-idx="${targetCorrect}">
             <div class="quiz-question">Câu ${qIdx + 1}: ${formatInlineCode(q.question)}</div>
             <div class="quiz-options">
               ${q.options
                 .map((opt, oIdx) => {
                   let stateClass = '';
                   if (isAnswered) {
-                    if (oIdx === q.correctIndex) stateClass = 'correct';
+                    if (oIdx === targetCorrect) stateClass = 'correct';
                     else if (oIdx === savedAns) stateClass = 'wrong';
                   }
                   return `
@@ -70516,7 +70517,7 @@ function navigateToLesson(lessonId) {
 
 function navigateHome() {
   currentView = 'home';
-  document.title = 'Python';
+  document.title = 'Lập trình Python 3.14.8 Chuyên Sâu | Hệ Thống Học Tập Lập Trình';
   closeMobileDrawer();
   try {
     window.history.replaceState(null, '', '#home');

@@ -718,19 +718,20 @@ async function renderLessonView(lessonId) {
     const letters = ['A', 'B', 'C', 'D', 'E'];
     const quizHtml = (lesson.quiz || [])
       .map((q, qIdx) => {
+        const targetCorrect = typeof q.correctIndex === 'number' ? q.correctIndex : q.answer;
         const savedAns = getQuizAnswer(lesson.id, qIdx);
         const isAnswered = savedAns !== null && savedAns !== undefined;
-        const isUserCorrect = isAnswered && savedAns === q.correctIndex;
+        const isUserCorrect = isAnswered && savedAns === targetCorrect;
 
         return `
-          <div class="quiz-card" data-quiz-idx="${qIdx}" data-correct-idx="${q.correctIndex}">
+          <div class="quiz-card" data-quiz-idx="${qIdx}" data-correct-idx="${targetCorrect}">
             <div class="quiz-question">Câu ${qIdx + 1}: ${formatInlineCode(q.question)}</div>
             <div class="quiz-options">
               ${q.options
                 .map((opt, oIdx) => {
                   let stateClass = '';
                   if (isAnswered) {
-                    if (oIdx === q.correctIndex) stateClass = 'correct';
+                    if (oIdx === targetCorrect) stateClass = 'correct';
                     else if (oIdx === savedAns) stateClass = 'wrong';
                   }
                   return `
@@ -1120,7 +1121,7 @@ export function navigateToLesson(lessonId) {
 
 export function navigateHome() {
   currentView = 'home';
-  document.title = 'Python';
+  document.title = 'Lập trình Python 3.14.8 Chuyên Sâu | Hệ Thống Học Tập Lập Trình';
   closeMobileDrawer();
   try {
     window.history.replaceState(null, '', '#home');

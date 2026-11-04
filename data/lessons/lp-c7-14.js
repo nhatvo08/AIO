@@ -321,7 +321,7 @@ print(format_str % (item, qty, price))`,
         'Một tập hợp (set).',
         'Một chuỗi ký tự nối bằng dấu phẩy.'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Phía bên phải của toán tử % bắt buộc mong đợi một tuple khi có nhiều mục tiêu chuyển đổi (hoặc một từ điển nếu dùng tham chiếu theo tên khóa %(name)s).'
     },
     {
@@ -332,7 +332,7 @@ print(format_str % (item, qty, price))`,
         '%.$f',
         '%.auto_f'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Ký tự dấu hoa thị * trong cú pháp %.*f hoặc %*.*f báo hiệu cho Python lấy giá trị độ rộng hoặc độ chính xác từ phần tử tiếp theo trong tuple đầu vào.'
     }
   ],

@@ -252,7 +252,7 @@
           <ul>
             <li><strong>Hiệu năng vượt trội:</strong> Không cần đi qua giao thức TCP/IP stack (không cần tính checksum, không cần TCP handshake), dữ liệu được truyền trực tiếp trong bộ nhớ Kernel.</li>
             <li><strong>Bảo mật tối đa:</strong> Kiểm soát quyền truy cập trực tiếp bằng cơ chế phân quyền tệp tin hệ điều hành (POSIX file permissions), không lo bị các tiến trình khác quét cổng mạng.</li>
-            <li><strong>Ví dụ kinh điển - Docker Daemon API:</strong> Docker chạy daemon tại socket <code>/var/run/docker.sock</code> (hoặc <code>\\\\.\\pipe\\docker_engine</code> trên Windows Named Pipe). Bạn có thể tương tác REST API trực tiếp với Docker:</p>
+            <li><strong>Ví dụ kinh điển - Docker Daemon API:</strong> Docker chạy daemon tại socket <code>/var/run/docker.sock</code> (hoặc <code>\\\\.\\pipe\\docker_engine</code> trên Windows Named Pipe). Bạn có thể tương tác REST API trực tiếp với Docker:</li>
           </ul>
           <pre class="code-pre" style="background:var(--bg-code);padding:10px;border-radius:4px;"><code>curl.exe --unix-socket /var/run/docker.sock "http://localhost/v1.43/containers/json"</code></pre>
         `,

@@ -257,7 +257,7 @@ print(report)`,
         '=',
         '~'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Trong ngữ pháp formatspec của Python, dấu ^ đại diện cho việc căn lề chính giữa (center alignment) trong trường độ rộng quy định.'
     },
     {
@@ -268,7 +268,7 @@ print(report)`,
         '%{',
         '[[]]'
       ],
-      answer: 1,
+      correctIndex: 1,
       explanation: 'Trong chuỗi định dạng của format(), bạn thoát dấu ngoặc nhọn bằng cách viết đúp: {{ sinh ra { và }} sinh ra }.'
     }
   ],

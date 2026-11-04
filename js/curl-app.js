@@ -527,6 +527,13 @@
       ].join('\n');
     }
 
+    var deepDiveFormatted = '';
+    if (deepDiveData && deepDiveData.content) {
+      var rawDd = String(deepDiveData.content);
+      var formattedDd = formatInlineCode(rawDd);
+      var hasBlockHtml = /<(p|ul|ol|div|table|h3|h4|pre)\b/i.test(rawDd.replace(/`[^`]*`/g, ''));
+      deepDiveFormatted = hasBlockHtml ? formattedDd : ('<p style="margin:0;line-height:1.68;">' + formattedDd + '</p>');
+    }
     var deepDiveHtml = deepDiveData ? [
       '<details class="deep-dive-details">',
       '  <summary class="deep-dive-summary">',
@@ -534,7 +541,7 @@
       '    <span class="deep-dive-toggle-hint">Bấm để mở rộng / thu gọn ▾</span>',
       '  </summary>',
       '  <div class="deep-dive-content" style="padding:14px 18px;">',
-      deepDiveData.content,
+      deepDiveFormatted,
       '  </div>',
       '</details>'
     ].join('\n') : '';
@@ -1067,8 +1074,29 @@
     updateScrollIndicators();
   }
 
+  var STORAGE_KEY_PYTHON = 'py314_str_course_state_v1';
+
+  function readSharedState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY_PYTHON);
+      return raw ? JSON.parse(raw) : {};
+    } catch (_e) {
+      return {};
+    }
+  }
+
+  function saveSharedState(partial) {
+    try {
+      var cur = readSharedState();
+      var next = Object.assign({}, cur, partial);
+      localStorage.setItem(STORAGE_KEY_PYTHON, JSON.stringify(next));
+    } catch (_e) {}
+  }
+
   function getPreferredTheme() {
     try {
+      var shared = readSharedState();
+      if (shared.theme === 'dark' || shared.theme === 'light') return shared.theme;
       var saved = localStorage.getItem(STORAGE_KEY_THEME);
       if (saved === 'dark' || saved === 'light') return saved;
       var general = localStorage.getItem('app_theme_v1');
@@ -1093,6 +1121,8 @@
 
   function getPreferredFontSize() {
     try {
+      var shared = readSharedState();
+      if (shared.fontSize) return shared.fontSize;
       return localStorage.getItem(STORAGE_KEY_FONT) || 'medium';
     } catch (_e) {
       return 'medium';
@@ -1138,6 +1168,7 @@
           localStorage.setItem(STORAGE_KEY_THEME, next);
           localStorage.setItem('app_theme_v1', next);
         } catch (_e) {}
+        saveSharedState({ theme: next });
         applyTheme(next);
       });
     }
@@ -1148,20 +1179,38 @@
         try {
           localStorage.setItem(STORAGE_KEY_FONT, size);
         } catch (_e) {}
+        saveSharedState({ fontSize: size });
         applyFontSize(size);
       });
     });
   }
 
+  function closeMobileDrawer() {
+    var sidebar = document.getElementById('sidebar-left');
+    var backdrop = document.getElementById('sidebar-backdrop');
+    if (sidebar) sidebar.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+    document.body.classList.remove('scroll-lock');
+  }
+
   function navigateTo(target) {
+    closeMobileDrawer();
     if (!target || target === 'home') {
       if (window.location.hash !== '#home') {
-        history.pushState(null, '', '#home');
+        try {
+          history.pushState(null, '', '#home');
+        } catch (_e) {
+          window.location.hash = 'home';
+        }
       }
       renderHomeView();
     } else {
       if (window.location.hash !== '#' + target) {
-        history.pushState(null, '', '#' + target);
+        try {
+          history.pushState(null, '', '#' + target);
+        } catch (_e) {
+          window.location.hash = target;
+        }
       }
       try { localStorage.setItem(STORAGE_KEY_LAST, target); } catch (_e) {}
       renderChapterView(target);
@@ -1171,6 +1220,7 @@
   function init() {
     window.addEventListener('hashchange', function () {
       var hash = (window.location.hash || '').replace('#', '');
+      if (hash.indexOf('sec-') === 0 || hash.indexOf('section-') === 0) return;
       if (!hash || hash === 'home') {
         renderHomeView();
       } else {
@@ -1180,18 +1230,39 @@
 
     // Phím tắt chuẩn Python: [ (trước) và ] (sau)
     window.addEventListener('keydown', function (e) {
-      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
-      if (!window.CURL_CURRICULUM || currentView === 'home') return;
+      var tag = document.activeElement ? document.activeElement.tagName : '';
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tag) || (document.activeElement && document.activeElement.isContentEditable)) return;
+      if (!window.CURL_CURRICULUM) return;
 
       var chapters = window.CURL_CURRICULUM.CHAPTERS;
+      if (currentView === 'home') {
+        if ((e.key === ']' || (e.altKey && e.key === 'ArrowRight')) && chapters.length > 0) {
+          e.preventDefault();
+          navigateTo(chapters[0].id);
+        }
+        return;
+      }
+
       var idx = chapters.findIndex(function (c) { return c.id === currentView; });
       if (idx === -1) return;
 
-      if ((e.key === '[' || e.key === 'ArrowLeft') && idx > 0) {
-        navigateTo(chapters[idx - 1].id);
-      } else if ((e.key === ']' || e.key === 'ArrowRight') && idx < chapters.length - 1) {
+      if (e.key === '[' || (e.altKey && e.key === 'ArrowLeft')) {
+        e.preventDefault();
+        if (idx > 0) navigateTo(chapters[idx - 1].id);
+        else navigateTo('home');
+      } else if ((e.key === ']' || (e.altKey && e.key === 'ArrowRight')) && idx < chapters.length - 1) {
+        e.preventDefault();
         navigateTo(chapters[idx + 1].id);
       }
+    });
+
+    document.getElementById('brand-home-link')?.addEventListener('click', function (e) {
+      e.preventDefault();
+      navigateTo('home');
+    });
+    document.getElementById('top-nav-curl')?.addEventListener('click', function (e) {
+      e.preventDefault();
+      navigateTo('home');
     });
 
     var menuBtn = document.getElementById('menu-toggle-btn');
@@ -1199,14 +1270,15 @@
     var backdrop = document.getElementById('sidebar-backdrop');
     var sidebar = document.getElementById('sidebar-left');
 
-    function toggleMobile(open) {
-      if (sidebar) sidebar.classList.toggle('mobile-open', open);
-      if (backdrop) backdrop.style.display = open ? 'block' : 'none';
+    if (menuBtn) {
+      menuBtn.addEventListener('click', function () {
+        var isOpen = sidebar ? sidebar.classList.toggle('open') : false;
+        if (backdrop) backdrop.classList.toggle('open', Boolean(isOpen));
+        document.body.classList.toggle('scroll-lock', Boolean(isOpen));
+      });
     }
-
-    if (menuBtn) menuBtn.addEventListener('click', function () { toggleMobile(true); });
-    if (closeBtn) closeBtn.addEventListener('click', function () { toggleMobile(false); });
-    if (backdrop) backdrop.addEventListener('click', function () { toggleMobile(false); });
+    if (closeBtn) closeBtn.addEventListener('click', closeMobileDrawer);
+    if (backdrop) backdrop.addEventListener('click', closeMobileDrawer);
 
     initThemeAndFontControls();
 
