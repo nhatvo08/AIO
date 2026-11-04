@@ -1272,12 +1272,21 @@
     });
   }
 
-  function closeMobileDrawer() {
+  function closeMobileDrawer(returnFocus) {
     var sidebar = document.getElementById('sidebar-left');
     var backdrop = document.getElementById('sidebar-backdrop');
+    var menuBtn = document.getElementById('menu-toggle-btn');
+    var wasOpen = sidebar && sidebar.classList.contains('open');
+
     if (sidebar) sidebar.classList.remove('open');
     if (backdrop) backdrop.classList.remove('open');
     document.body.classList.remove('scroll-lock');
+    if (menuBtn) {
+      menuBtn.setAttribute('aria-expanded', 'false');
+      if (returnFocus && wasOpen) {
+        menuBtn.focus();
+      }
+    }
   }
 
   function navigateTo(target) {
@@ -1362,10 +1371,20 @@
         var isOpen = sidebar ? sidebar.classList.toggle('open') : false;
         if (backdrop) backdrop.classList.toggle('open', Boolean(isOpen));
         document.body.classList.toggle('scroll-lock', Boolean(isOpen));
+        menuBtn.setAttribute('aria-expanded', Boolean(isOpen).toString());
+        if (isOpen && closeBtn) {
+          closeBtn.focus();
+        }
       });
     }
-    if (closeBtn) closeBtn.addEventListener('click', closeMobileDrawer);
-    if (backdrop) backdrop.addEventListener('click', closeMobileDrawer);
+    if (closeBtn) closeBtn.addEventListener('click', function () { closeMobileDrawer(true); });
+    if (backdrop) backdrop.addEventListener('click', function () { closeMobileDrawer(true); });
+
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+        closeMobileDrawer(true);
+      }
+    });
 
     var treeEl = document.getElementById('curriculum-tree');
     if (sidebar && treeEl) {

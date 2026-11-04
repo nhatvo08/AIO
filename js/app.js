@@ -1211,10 +1211,21 @@ export function navigateHome() {
   updateScrollIndicators();
 }
 
-function closeMobileDrawer() {
-  document.getElementById('sidebar-left')?.classList.remove('open');
-  document.getElementById('sidebar-backdrop')?.classList.remove('open');
+function closeMobileDrawer(returnFocus = true) {
+  const sidebar = document.getElementById('sidebar-left');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  const menuBtn = document.getElementById('menu-toggle-btn');
+  const wasOpen = sidebar?.classList.contains('open');
+
+  sidebar?.classList.remove('open');
+  backdrop?.classList.remove('open');
   document.body.classList.remove('scroll-lock');
+  if (menuBtn) {
+    menuBtn.setAttribute('aria-expanded', 'false');
+    if (returnFocus && wasOpen) {
+      menuBtn.focus();
+    }
+  }
 }
 
 /**
@@ -1385,9 +1396,20 @@ export function bootApp() {
     const isOpen = sidebarLeft?.classList.toggle('open');
     backdrop?.classList.toggle('open', Boolean(isOpen));
     document.body.classList.toggle('scroll-lock', Boolean(isOpen));
+    menuBtn.setAttribute('aria-expanded', Boolean(isOpen).toString());
+    if (isOpen) {
+      document.getElementById('sidebar-close-btn')?.focus();
+    }
   });
-  backdrop?.addEventListener('click', closeMobileDrawer);
-  document.getElementById('sidebar-close-btn')?.addEventListener('click', closeMobileDrawer);
+  backdrop?.addEventListener('click', () => closeMobileDrawer(true));
+  document.getElementById('sidebar-close-btn')?.addEventListener('click', () => closeMobileDrawer(true));
+
+  // Hỗ trợ phím Escape đóng ngăn kéo và trả focus về menu button
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sidebarLeft?.classList.contains('open')) {
+      closeMobileDrawer(true);
+    }
+  });
 
   // Chuyển tiếp sự kiện cuộn chuột (wheel) từ toàn bộ vùng Sidebar sang Mục lục
   const treeEl = document.getElementById('curriculum-tree');

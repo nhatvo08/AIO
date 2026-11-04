@@ -17,14 +17,18 @@ html {
   scroll-padding-top: calc(var(--header-height) + 20px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   line-height: var(--line-height-body);
   background-color: var(--bg-app);
   color: var(--text-primary);
   overflow-x: hidden;
+  overflow-wrap: break-word;
 }
 
 /* Focus state rõ ràng cho điều hướng bàn phím (WCAG AA) */
@@ -79,7 +83,7 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 100;
-  height: var(--header-height);
+  height: calc(var(--header-height) + var(--sat));
   background-color: var(--bg-glass);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -88,7 +92,7 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: var(--sat) max(20px, var(--sar)) 0 max(20px, var(--sal));
   gap: 16px;
   transform: translateZ(0);
   transition: background-color 0.2s, border-color 0.2s;
@@ -125,8 +129,8 @@ a:hover {
 /* Nút cuộn lên đầu trang (Back to top) */
 .back-to-top-btn {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
+  bottom: calc(24px + var(--sab));
+  right: calc(24px + var(--sar));
   width: 44px;
   height: 44px;
   border-radius: var(--radius-pill);
@@ -248,6 +252,13 @@ a.brand-link:hover {
   border-radius: var(--radius-pill);
   box-shadow: var(--shadow-xs);
   max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.header-nav-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .header-nav-tab {
@@ -265,6 +276,7 @@ a.brand-link:hover {
   transition: background-color 0.15s, color 0.15s, border-color 0.15s;
   white-space: nowrap;
   user-select: none;
+  flex-shrink: 0;
 }
 
 .header-nav-tab:hover {
@@ -399,6 +411,7 @@ a.brand-link:hover {
   max-width: 1640px;
   margin: 0 auto;
   min-height: calc(100vh - var(--header-height));
+  min-height: calc(100dvh - var(--header-height));
 }
 
 /* Cột 1: Sidebar Cây mục lục khóa học */
@@ -1117,7 +1130,9 @@ h4[id] {
     left: 0;
     bottom: 0;
     height: 100vh;
+    height: 100dvh;
     max-height: 100vh;
+    max-height: 100dvh;
     width: min(320px, 86vw);
     z-index: 200;
     transform: translateX(-100%);
@@ -1126,6 +1141,9 @@ h4[id] {
     overflow-y: auto !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch;
+    padding-top: max(16px, var(--sat));
+    padding-bottom: max(24px, var(--sab));
+    padding-left: max(14px, var(--sal));
   }
   .curriculum-tree {
     overflow-y: visible !important;

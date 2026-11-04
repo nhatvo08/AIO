@@ -138,9 +138,22 @@
 
   /* Kích thước bố cục */
   --header-height: 62px;
+  --header-height-mobile: 56px;
+  --header-height-landscape: 46px;
   --sidebar-width: 310px;
   --toc-width: 250px;
   --content-max-width: 72ch;
+
+  /* Vùng an toàn viền mép thiết bị (Safe Area Inset Tokens - iOS Notch / Dynamic Island / Android Gestures) */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+
+  /* Cỡ chữ linh hoạt (Fluid Typography Tokens với clamp) */
+  --font-fluid-h1: clamp(1.4rem, 3.2vw + 0.5rem, 1.95rem);
+  --font-fluid-h2: clamp(1.15rem, 2vw + 0.4rem, 1.4rem);
+  --font-fluid-hero: clamp(1.4rem, 4vw + 0.6rem, 2.15rem);
 
   /* Bo góc */
   --radius-xs: 4px;

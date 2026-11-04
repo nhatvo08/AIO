@@ -1768,12 +1768,21 @@
       updateScrollIndicators();
     }
 
-    function closeDrawer() {
+    function closeDrawer(returnFocus) {
       var sidebar = document.getElementById('sidebar-left');
       var backdrop = document.getElementById('sidebar-backdrop');
+      var menuBtn = document.getElementById('menu-toggle-btn');
+      var wasOpen = sidebar && sidebar.classList.contains('open');
+
       if (sidebar) sidebar.classList.remove('open');
       if (backdrop) backdrop.classList.remove('open');
       document.body.classList.remove('scroll-lock');
+      if (menuBtn) {
+        menuBtn.setAttribute('aria-expanded', 'false');
+        if (returnFocus && wasOpen) {
+          menuBtn.focus();
+        }
+      }
     }
 
     function initThemeAndFontSync() {
@@ -2041,13 +2050,23 @@
 
       if (menuBtn) {
         menuBtn.addEventListener('click', function () {
-          var isOpen = sidebar?.classList.toggle('open');
-          backdrop?.classList.toggle('open', Boolean(isOpen));
+          var isOpen = sidebar ? sidebar.classList.toggle('open') : false;
+          if (backdrop) backdrop.classList.toggle('open', Boolean(isOpen));
           document.body.classList.toggle('scroll-lock', Boolean(isOpen));
+          menuBtn.setAttribute('aria-expanded', Boolean(isOpen).toString());
+          if (isOpen && closeBtn) {
+            closeBtn.focus();
+          }
         });
       }
-      if (backdrop) backdrop.addEventListener('click', closeDrawer);
-      if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+      if (backdrop) backdrop.addEventListener('click', function () { closeDrawer(true); });
+      if (closeBtn) closeBtn.addEventListener('click', function () { closeDrawer(true); });
+
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+          closeDrawer(true);
+        }
+      });
 
       var treeEl = document.getElementById('curriculum-tree');
       if (sidebar && treeEl) {

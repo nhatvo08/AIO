@@ -1,6 +1,7 @@
 /* ==========================================================================
    Responsive Stylesheet — Mobile, Tablet & Adaptive Enhancements
    Tuân thủ nguyên tắc: Không thay đổi Desktop, chỉ áp dụng cho màn hình nhỏ
+   Chuẩn WCAG AA/AAA, Safe Area Insets, Dual Theme & Zero Regression
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
@@ -14,6 +15,13 @@ svg {
   height: auto;
 }
 
+iframe {
+  max-width: 100%;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
 /* Chống cuộn nền khi mở Drawer trên Mobile */
 body.scroll-lock {
   overflow: hidden;
@@ -24,6 +32,31 @@ body.scroll-lock {
   display: none;
 }
 
+/* Bảo vệ tràn ngang cho tất cả các phần tử Flex/Grid con trọng yếu */
+.app-shell > *,
+.main-content-wrapper,
+.main-content,
+.lesson-article,
+.table-responsive,
+.widget-box,
+.code-example-card,
+.code-terminal-box {
+  min-width: 0;
+}
+
+/* Ngắt dòng an toàn cho code inline, URL và liên kết dài */
+code:not(pre code) {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.lesson-article a,
+.callout-body a,
+.summary-box a {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
 /* Đảm bảo công thức toán inline không gây vỡ dòng hoặc tràn màn hình siêu nhỏ */
 .math-inline {
   max-width: 100%;
@@ -32,21 +65,147 @@ body.scroll-lock {
   vertical-align: middle;
 }
 
+/* Xử lý khối công thức toán KaTeX độc lập */
+.katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0;
+  margin: 12px 0;
+}
+
+/* Bảng dữ liệu: Cuộn ngang trong khung riêng với chỉ báo trực quan (Scroll Affordance) */
+.table-responsive,
+.section-prose > table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background-image: 
+    linear-gradient(to right, var(--bg-surface) 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(to right, rgba(255, 255, 255, 0), var(--bg-surface) 70%),
+    radial-gradient(farthest-side at 0 50%, rgba(15, 23, 42, 0.12), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 100% 50%, rgba(15, 23, 42, 0.12), rgba(0, 0, 0, 0));
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-color: var(--bg-surface);
+  background-size: 28px 100%, 28px 100%, 14px 100%, 14px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
+[data-theme="dark"] .table-responsive,
+[data-theme="dark"] .section-prose > table {
+  background-image: 
+    linear-gradient(to right, var(--bg-surface) 30%, rgba(17, 24, 39, 0)),
+    linear-gradient(to right, rgba(17, 24, 39, 0), var(--bg-surface) 70%),
+    radial-gradient(farthest-side at 0 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
+}
+
+/* Khối Code lệnh & Terminal: Cuộn ngang mượt mà */
+.code-pre,
+.lesson-article pre:not(.code-example-card pre),
+.code-terminal-box pre {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  tab-size: 2;
+  -moz-tab-size: 2;
+}
+
 /* --------------------------------------------------------------------------
-   2. Breakpoint: Laptop nhỏ & Tablet xoay ngang (<= 1200px)
+   2. Tách Hover Khỏi Chạm (Touch-First & Pointer Fine)
+   Tránh hiện tượng kẹt trạng thái :hover (Sticky Hover) trên điện thoại
    -------------------------------------------------------------------------- */
-@media (max-width: 1200px) {
-  /* Cột TOC phải đã được ẩn trong layout gốc; bổ sung bảo vệ tràn ngang */
-  .main-content {
-    max-width: 100%;
+@media (hover: hover) and (pointer: fine) {
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    filter: brightness(1.05);
+  }
+
+  .btn-secondary:hover {
+    background: var(--bg-surface-hover);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .part-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--border-strong);
+  }
+
+  .prev-next-card:hover {
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-xs);
+  }
+
+  .back-to-top-btn:hover {
+    background: var(--accent-primary);
+    color: #ffffff;
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+
+  .header-nav-tab:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-surface-hover);
+  }
+
+  .icon-btn:hover {
+    background: var(--bg-surface-hover);
+    border-color: var(--border-strong);
   }
 }
 
 /* --------------------------------------------------------------------------
-   3. Breakpoint: Máy tính bảng dọc & Màn hình gập (<= 900px)
+   3. Container Queries Hỗ Trợ Thành Phần Tự Trị (Có Fallback)
+   -------------------------------------------------------------------------- */
+@supports (container-type: inline-size) {
+  .widget-box,
+  .hero-banner,
+  .part-card,
+  .lesson-prev-next {
+    container-type: inline-size;
+  }
+
+  @container (max-width: 480px) {
+    .hero-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .hero-actions .btn-primary,
+    .hero-actions .btn-secondary {
+      width: 100%;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Breakpoint: Laptop nhỏ & Tablet xoay ngang (<= 1200px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1200px) {
+  .main-content {
+    max-width: 100%;
+  }
+
+  .main-content-wrapper {
+    padding-left: max(20px, var(--sal));
+    padding-right: max(20px, var(--sar));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Breakpoint: Máy tính bảng dọc & Màn hình gập (<= 900px)
    -------------------------------------------------------------------------- */
 @media (max-width: 900px) {
-  /* Touch target tối thiểu 44x44px cho nút Menu Hamburger */
+  /* Vùng chạm tối thiểu 44x44px cho nút Menu Hamburger (WCAG AAA) */
   .menu-toggle-btn {
     width: 44px;
     height: 44px;
@@ -61,7 +220,7 @@ body.scroll-lock {
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 12px;
+    top: max(12px, var(--sat));
     right: 12px;
     width: 44px;
     height: 44px;
@@ -86,7 +245,9 @@ body.scroll-lock {
 
   /* Tạo khoảng trống phía trên cho Sidebar Drawer để không bị nút đóng che */
   .sidebar-left {
-    padding-top: 16px;
+    padding-top: max(16px, var(--sat));
+    padding-bottom: max(24px, var(--sab));
+    padding-left: max(14px, var(--sal));
     position: fixed;
   }
 
@@ -96,18 +257,35 @@ body.scroll-lock {
 
   /* Tối ưu vùng chạm các đề mục bài học trong Sidebar */
   .lesson-nav-btn {
-    padding: 10px 10px;
-    min-height: 42px;
+    padding: 10px 12px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 
   .course-tab-btn {
-    padding: 8px 12px;
-    min-height: 38px;
+    padding: 8px 14px;
+    min-height: 42px;
   }
 
   .part-group-header {
     padding: 12px 14px;
     min-height: 44px;
+  }
+
+  /* Header nav tabs: thanh cuộn ngang mượt mà không vỡ header */
+  .header-center {
+    overflow: hidden;
+  }
+
+  .header-nav-tabs {
+    padding: 3px 6px;
+    gap: 6px;
+  }
+
+  .header-nav-tab {
+    padding: 6px 12px;
+    min-height: 38px;
   }
 
   /* Tiêu đề bài học bẻ chữ an toàn nếu gặp thuật ngữ dài */
@@ -120,7 +298,7 @@ body.scroll-lock {
 }
 
 /* --------------------------------------------------------------------------
-   4. Breakpoint: Phablet & Mobile xoay ngang (<= 768px)
+   6. Breakpoint: Phablet & Mobile xoay ngang (<= 768px)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   /* Triệt tiêu cuộn ngang: Co giãn lưới lộ trình khóa học */
@@ -132,6 +310,10 @@ body.scroll-lock {
   /* Triệt tiêu cuộn ngang: Kính hiển vi IEEE 754 và Unicode */
   .ieee-analysis-grid {
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  }
+
+  .methods-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
   }
 
   /* Giảm padding của hộp widget tương tác để tăng không gian hiển thị nội dung */
@@ -156,7 +338,9 @@ body.scroll-lock {
 
   .copy-code-btn {
     padding: 6px 12px;
-    min-height: 36px;
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
   }
 
   /* Tối ưu hiển thị bảng dữ liệu */
@@ -167,13 +351,26 @@ body.scroll-lock {
     padding: 8px 10px;
     font-size: 0.85rem;
   }
+
+  /* Accordion mục lục trên mobile */
+  .mobile-toc-summary {
+    min-height: 44px;
+    padding: 12px 14px;
+  }
+
+  .mobile-toc-link {
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+  }
 }
 
 /* --------------------------------------------------------------------------
-   5. Breakpoint: Smartphone tiêu chuẩn (<= 560px)
+   7. Breakpoint: Smartphone tiêu chuẩn (<= 600px - 560px)
    -------------------------------------------------------------------------- */
-@media (max-width: 560px) {
-  /* Vùng chạm tối thiểu 44x44px cho Theme button */
+@media (max-width: 600px) {
+  /* Vùng chạm tối thiểu 44x44px cho Theme button và các nút tiện ích */
   .icon-btn {
     min-width: 44px;
     min-height: 44px;
@@ -181,7 +378,14 @@ body.scroll-lock {
     justify-content: center;
   }
 
-  /* Chuẩn hóa cỡ chữ nội dung chính trên mobile (không nhỏ hơn ~16px) */
+  .font-btn {
+    min-width: 36px;
+    min-height: 38px;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+
+  /* Chuẩn hóa cỡ chữ nội dung chính trên mobile (đảm bảo độ dễ đọc) */
   .lesson-article p,
   .callout-body,
   .exercise-problem,
@@ -220,14 +424,33 @@ body.scroll-lock {
 
   /* Nút giải pháp bài tập */
   .solution-summary {
-    min-height: 40px;
+    min-height: 44px;
     display: inline-flex;
     align-items: center;
+    padding: 8px 12px;
+  }
+
+  /* Prev/Next buttons xếp chồng 1 cột */
+  .lesson-prev-next {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .prev-next-card {
+    min-height: 52px;
+  }
+
+  .hero-banner {
+    padding: 20px 16px;
+  }
+
+  .hero-title {
+    font-size: 1.6rem;
   }
 }
 
 /* --------------------------------------------------------------------------
-   6. Breakpoint: Smartphone màn hình hẹp (<= 400px bao gồm 320px)
+   8. Breakpoint: Smartphone màn hình hẹp (<= 400px bao gồm 320px)
    -------------------------------------------------------------------------- */
 @media (max-width: 400px) {
   /* Ẩn cụm chỉnh cỡ chữ A-/A/A+ trên thanh Header hẹp để ô tìm kiếm không bị ép bẹp */
@@ -237,7 +460,8 @@ body.scroll-lock {
 
   /* Thu gọn padding Header cho màn hình 320px - 360px */
   .top-header {
-    padding: 0 8px;
+    padding-left: max(8px, var(--sal));
+    padding-right: max(8px, var(--sar));
     gap: 6px;
   }
 
@@ -245,15 +469,18 @@ body.scroll-lock {
     gap: 6px;
   }
 
-  /* Thu gọn nhãn nút trên Header khi màn hình quá hẹp */
-  @media (max-width: 380px) {
-    .header-nav-tab .nav-tab-label {
-      display: none;
-    }
+  /* Thu gọn nhãn nút trên Header khi màn hình hẹp để tab bar cực kỳ gọn */
+  .header-nav-tab .nav-tab-label {
+    display: none;
+  }
+
+  .header-nav-tab {
+    padding: 6px 10px;
+    min-height: 38px;
   }
 
   .main-content-wrapper {
-    padding: 14px 10px 48px;
+    padding: 14px max(10px, var(--sal)) 48px max(10px, var(--sar));
   }
 
   /* Triệt tiêu 100% nguy cơ cuộn ngang trên màn hình 320px */
@@ -318,8 +545,78 @@ body.scroll-lock {
   }
 }
 
+/* --------------------------------------------------------------------------
+   9. Breakpoint: Thiết bị siêu hẹp (~280px - Galaxy Fold màn ngoài)
+   -------------------------------------------------------------------------- */
+@media (max-width: 320px) {
+  .top-header {
+    padding-left: max(4px, var(--sal));
+    padding-right: max(4px, var(--sar));
+    gap: 4px;
+  }
+
+  .brand-badge {
+    display: none !important;
+  }
+
+  .main-content-wrapper {
+    padding: 12px max(6px, var(--sal)) 40px max(6px, var(--sar));
+  }
+
+  .widget-box {
+    padding: 10px;
+  }
+
+  .code-pre,
+  .code-card-header {
+    padding: 8px 10px;
+  }
+
+  .lesson-article h1 {
+    font-size: 1.28rem;
+  }
+
+  .lesson-article h2 {
+    font-size: 1.12rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. Tối Ưu Điện Thoại Xoay Ngang (Landscape với Chiều Cao Thấp <= 480px)
+   -------------------------------------------------------------------------- */
+@media (max-height: 480px) and (orientation: landscape) {
+  .top-header {
+    height: calc(var(--header-height-landscape, 46px) + var(--sat));
+    padding-top: var(--sat);
+  }
+
+  .header-nav-tab {
+    padding: 3px 8px;
+    font-size: 0.8rem;
+  }
+
+  .main-content-wrapper {
+    padding-top: 12px;
+    padding-bottom: 36px;
+  }
+
+  .hero-banner {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-size: 1.35rem;
+  }
+
+  .sidebar-left {
+    padding-top: max(8px, var(--sat));
+    padding-bottom: max(16px, var(--sab));
+  }
+}
+
 /* ==========================================================================
-   Print Stylesheet — In ấn bài học sạch sẽ (PDF / Giấy)
+   11. Print Stylesheet — In ấn bài học sạch sẽ (PDF / Giấy)
    ========================================================================== */
 @media print {
   .top-header,
