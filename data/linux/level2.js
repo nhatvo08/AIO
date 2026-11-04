@@ -21,10 +21,10 @@ window.LX_LEVEL2_DATA = {
       "requiresRoot": false,
       "requiresVM": false,
       "objectives": [
-        "Làm chủ grep với regex mở rộng (-E, -i, -v, -n, -c, -o, -l) để bóc tách log lỗi chính xác.",
-        "Nắm vững nguyên lý chỉnh sửa dòng lệnh một chiều của sed (thay thế chuỗi, in chọn lọc, chỉnh sửa file an toàn với cờ sao lưu).",
-        "Hiểu mô hình Record/Field của awk và cấu trúc BEGIN { } { } END { } để tính toán dữ liệu dạng cột.",
-        "Kết hợp chuỗi đường ống pipe: cut, tr, sort, uniq, wc để thống kê tần suất truy cập máy chủ trong vài giây."
+        "Làm chủ grep với regex mở rộng (ERE) và phân biệt rõ ràng giữa BRE, ERE và PCRE để bóc tách log lỗi chính xác.",
+        "Nắm vững nguyên lý chỉnh sửa luồng dữ liệu của sed, kỹ thuật thay thế chuỗi và nguyên tắc sao lưu bắt buộc với cờ `-i.bak`.",
+        "Hiểu sâu mô hình Record/Field của awk, cấu trúc `BEGIN { } { } END { }` và các biến nội tại ($0, $1..$NF, NR, FS) để tính toán số liệu dạng cột.",
+        "Tối ưu hóa hiệu năng đường ống xử lý văn bản: kết hợp cut, sort, uniq, wc với thiết lập `LC_ALL=C` để phân tích log dung lượng lớn nhanh hơn gấp 10 lần."
       ],
       "intuition": {
         "title": "Nhà máy lọc dầu và Dây chuyền chiết tách tạp chất",
@@ -169,31 +169,36 @@ window.LX_LEVEL2_DATA = {
             "content": "Dấu chấm <code>.</code> trong regex khớp với BẤT KỲ ký tự nào! Khi tìm kiếm địa chỉ IP như <code>192.168.1.1</code>, nếu không dùng <code>grep -F</code> (tìm chuỗi thô) hoặc escape <code>192\\.168\\.1\\.1</code>, grep sẽ khớp cả <code>192X168Y1Z1</code>."
           },
           {
-            "title": "Lệnh tr không nhận chuỗi dài nhiều ký tự",
-            "content": "Lệnh <code>tr</code> chỉ dùng để dịch hoặc xóa TỪNG KÝ TỰ ĐƠN LẺ (1-to-1 character translation). Không dùng <code>tr 'word1' 'word2'</code> để đổi từ; với bài toán đổi từ, bắt buộc dùng <code>sed 's/word1/word2/g'</code>."
+            "title": "Cạm bẫy sed -i không tạo bản sao lưu trên file cấu hình sản xuất",
+            "content": "Khi dùng <code>sed -i 's/.../' file.conf</code>, nếu biểu thức regex bị sai, toàn bộ nội dung file sẽ bị ghi đè vĩnh viễn không thể khôi phục. Luôn truyền đuôi file sao lưu: <code>sed -i.bak 's/...' file.conf</code> để hệ thống tự động sinh ra tệp <code>file.conf.bak</code> nguyên bản trước khi sửa."
           }
         ],
         "tips": [
           {
-            "title": "Dùng grep --color=auto để tô màu kết quả nổi bật",
-            "content": "Thêm alias <code>alias grep='grep --color=auto'</code> vào file <code>~/.bashrc</code> giúp bạn dễ dàng nhận diện từ khóa cần tìm trong màn hình terminal."
+            "title": "Tăng tốc độ sort và grep gấp 10 lần với biến LC_ALL=C",
+            "content": "Mặc định lệnh <code>sort</code> và <code>grep</code> sắp xếp theo bảng mã ngôn ngữ địa phương (UTF-8 Collation) tốn rất nhiều CPU. Khi xử lý file log khổng lồ hàng Gigabytes, hãy thêm tiền tố: <code>LC_ALL=C sort file.log</code> để hệ thống so sánh trực tiếp theo byte nhị phân, tốc độ tăng gấp 5 đến 10 lần."
           },
           {
-            "title": "Dùng cut cho định dạng ngăn cách rõ ràng, dùng awk cho khoảng trắng bất quy tắc",
-            "content": "Với file CSV hay /etc/passwd ngăn cách bằng 1 ký tự cố định, <code>cut -d',' -f2</code> chạy rất nhanh. Nhưng với output của lệnh <code>ps aux</code> hay <code>ls -l</code> có nhiều khoảng trắng liền nhau, <code>awk '{print $2}'</code> xử lý chuẩn xác hơn nhiều."
+            "title": "Khai thác biến $NF trong awk để lấy cột cuối cùng",
+            "content": "Trong file log web có số lượng cột thay đổi tùy theo User-Agent, cột cuối cùng (như thời gian phản hồi response time) luôn được truy xuất chính xác bằng <code>$NF</code> (Number of Fields) thay vì phải đếm thủ công số thứ tự cột."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Lệnh nào sau đây dùng để đếm tổng số dòng mã nguồn trong tất cả các file .py của thư mục hiện tại (không tính thư mục con)?",
-          "command": "cat *.py | wc -l",
-          "explanation": "cat nối nội dung tất cả các file có đuôi .py rồi chuyển qua wc -l để đếm tổng số dòng. Nếu muốn tính đệ quy cả thư mục con, ta kết hợp find: find . -name '*.py' | xargs wc -l."
+          "question": "Viết câu lệnh kết hợp grep để đếm số lượng request bị lỗi HTTP 500 trong file /var/log/nginx/access.log mà không in nội dung ra terminal.",
+          "command": "grep -c ' 500 ' /var/log/nginx/access.log",
+          "explanation": "Cờ -c (count) yêu cầu grep chỉ đếm và in ra tổng số dòng khớp mẫu thay vì in từng dòng ra terminal, giúp tiết kiệm bộ nhớ và băng thông. Cách làm sai phổ biến: dùng 'grep ... | wc -l' vừa tốn thêm một tiến trình vừa chậm hơn."
         },
         {
-          "question": "Làm thế nào để đổi toàn bộ chữ hoa thành chữ thường trong một file text bằng lệnh tr?",
-          "command": "cat data.txt | tr '[:upper:]' '[:lower:]' > data_lower.txt",
-          "explanation": "tr '[:upper:]' '[:lower:]' dùng POSIX character classes để chuyển đổi chuẩn xác mọi ký tự in hoa thành chữ thường mà không bị ảnh hưởng bởi bảng mã cục bộ."
+          "question": "Sử dụng sed an toàn để thay đổi cổng dịch vụ trong file .env từ PORT=8000 thành PORT=8080, đồng thời tự động tạo file dự phòng .env.bak.",
+          "command": "sed -i.bak 's/PORT=8000/PORT=8080/g' .env\n# Tự kiểm tra kết quả:\ndiff .env .env.bak",
+          "explanation": "Cờ -i.bak thực hiện chỉnh sửa trực tiếp (in-place) và lưu bản gốc vào .env.bak. Dùng lệnh 'diff .env .env.bak' giúp kỹ sư kiểm tra trực quan sự khác biệt giữa hai bản trước khi triển khai tiếp."
+        },
+        {
+          "question": "Viết đường ống phân tích log Nginx để tìm ra Top 5 địa chỉ IP gửi nhiều request nhất đến máy chủ, hiển thị số lượng và IP theo thứ tự giảm dần.",
+          "command": "LC_ALL=C awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -nr | head -n 5\n# Kết quả mong đợi mẫu:\n# 14250 203.0.113.195\n#  8920 198.51.100.44\n#  3410 192.0.2.10",
+          "explanation": "Bước 1: awk '{print $1}' lấy cột IP. Bước 2: sort gom các IP giống nhau đứng cạnh nhau. Bước 3: uniq -c đếm số lần xuất hiện. Bước 4: sort -nr sắp xếp theo số lượng giảm dần. Bước 5: head -n 5 lấy 5 kết quả đầu. Tiền tố LC_ALL=C tăng tốc độ sắp xếp tối đa."
         }
       ],
       "summary": [
@@ -212,10 +217,10 @@ window.LX_LEVEL2_DATA = {
       "requiresRoot": false,
       "requiresVM": false,
       "objectives": [
-        "Làm chủ cú pháp lệnh find theo tên (-name, -iname), kích thước (-size), thời gian (-mtime, -mmin), phân quyền (-perm) và loại file (-type).",
-        "Hiểu bản chất khác biệt về hiệu năng và tài nguyên giữa find -exec ... {} + và find -exec ... {} \\;.",
-        "Nắm vững cơ chế gom đối số của xargs và giải quyết triệt để lỗi kinh điển với ký tự phân cách NULL: find -print0 | xargs -0.",
-        "Quy tắc an toàn sống còn: Cách phòng ngừa thảm họa xóa nhầm dữ liệu khi kết hợp find với lệnh xóa."
+        "Làm chủ lệnh find với các tiêu chí tìm kiếm đa chiều: theo tên (`-name`), kiểu tệp (`-type`), kích thước (`-size`), quyền hạn (`-perm`) và thời gian sửa đổi (`-mtime`, `-mmin`).",
+        "Phân biệt rõ ràng giữa `-exec {} +` (hiệu năng cao, gom nhóm đối số) và `-exec {} \\;` (sinh tiến trình riêng lẻ cho từng tệp).",
+        "Hiểu sâu cơ chế xử lý tệp có ký tự đặc biệt hoặc khoảng trắng bằng sự kết hợp giữa `find -print0` và `xargs -0`.",
+        "Áp dụng nguyên tắc kiểm tra thử nghiệm khô (Dry-run) an toàn trước khi thực hiện xóa hàng loạt với `-delete` hoặc `rm`."
       ],
       "intuition": {
         "title": "Chó săn đánh hơi và Xe tải vận chuyển hàng loạt",
@@ -311,26 +316,40 @@ window.LX_LEVEL2_DATA = {
       "callouts": {
         "pitfalls": [
           {
-            "title": "Lỗi cờ -delete phải đặt ở cuối cùng của lệnh find",
-            "content": "Nếu bạn đặt <code>find /data -delete -name \"*.tmp\"</code>, find thực thi từ trái sang phải! Nó sẽ xóa toàn bộ nội dung trong /data TRƯỚC KHI kịp kiểm tra điều kiện tên file! Luôn luôn đặt <code>-delete</code> ở vị trí CUỐI CÙNG của biểu thức."
+            "title": "Không dùng -print0 khi truyền danh sách file cho xargs",
+            "content": "Mặc định <code>xargs</code> coi khoảng trắng và dấu xuống dòng là ký tự phân tách đối số. Nếu một file có tên là <code>Bao cao quy 1.pdf</code>, lệnh <code>find . -name '*.pdf' | xargs rm</code> sẽ phân tách thành 4 đối số riêng biệt: <code>Bao</code>, <code>cao</code>, <code>quy</code>, <code>1.pdf</code> dẫn đến xóa nhầm file khác! Luôn dùng cặp bài trùng: <code>find ... -print0 | xargs -0 ...</code>."
           },
           {
-            "title": "Thiếu cờ -r trong xargs khi đầu vào rỗng",
-            "content": "Khi find không tìm thấy file nào, xargs mặc định vẫn có thể gọi lệnh một lần với đối số rỗng. Thêm cờ <code>xargs -r</code> (no-run-if-empty) để xargs tự động dừng lại nếu không có dữ liệu đầu vào."
+            "title": "Nhầm lẫn giữa cú pháp -mtime +7 và -mtime -7",
+            "content": "Trong lệnh find: <code>-mtime +7</code> nghĩa là tệp được sửa đổi cách đây <strong>HƠN 7 ngày</strong> (từ ngày thứ 8 trở về trước - phù hợp để xóa log cũ); còn <code>-mtime -7</code> nghĩa là tệp được sửa đổi trong vòng <strong>ÍT HƠN 7 ngày</strong> qua. Dùng nhầm dấu trừ <code>-7</code> khi xóa log sẽ xóa sạch toàn bộ log mới của tuần hiện tại!"
           }
         ],
         "tips": [
           {
-            "title": "Dùng -maxdepth để kiểm soát độ sâu quét",
-            "content": "Khi chỉ muốn tìm kiếm trong thư mục hiện tại mà không muốn find quét sâu vào hàng ngàn thư mục con bên dưới, hãy dùng <code>find . -maxdepth 1 -name \"*.py\"</code> để tăng tốc độ tìm kiếm."
+            "title": "Ưu tiên dùng -exec command {} + thay vì \\;",
+            "content": "Cú pháp <code>-exec cmd {} \\;</code> sẽ gọi tiến trình <code>cmd</code> hàng ngàn lần (mỗi file một tiến trình), làm CPU quá tải. Cú pháp <code>-exec cmd {} +</code> sẽ gom hàng trăm file vào một dòng lệnh duy nhất để chạy một lần, nhanh hơn gấp 50 lần."
+          },
+          {
+            "title": "Luôn chạy dry-run với -ls trước khi dùng -delete",
+            "content": "Cờ <code>-delete</code> của lệnh find sẽ xóa ngay lập tức không hỏi lại. Hãy luôn thay thế <code>-delete</code> bằng <code>-ls</code> hoặc <code>-print</code> trước để mắt bạn kiểm tra danh sách chính xác các file sắp bị xóa."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Lệnh nào sau đây dùng để tìm tất cả các file rỗng (kích thước 0 byte) trong thư mục /tmp và xóa chúng an toàn?",
-          "command": "find /tmp -type f -empty -print0 | xargs -0 -r rm -f",
-          "explanation": "Cờ -empty của find tự động lọc ra các file có kích thước bằng 0; kết hợp -print0 và xargs -0 -r rm -f giúp xóa an toàn không sợ lỗi file có dấu cách."
+          "question": "Viết lệnh tìm tất cả các file log (.log) trong thư mục /var/log có kích thước lớn hơn 100MB và in thông tin chi tiết kích thước ở định dạng dễ đọc.",
+          "command": "find /var/log -type f -name \"*.log\" -size +100M -exec ls -lh {} + 2>/dev/null\n# Kết quả mẫu:\n# -rw-r----- 1 syslog adm 142M Oct 28 09:00 /var/log/syslog.1",
+          "explanation": "Cờ -type f chỉ lọc tệp thông thường; -size +100M tìm file > 100 Megabytes; -exec ls -lh {} + gom danh sách tệp hiển thị chi tiết; 2>/dev/null loại bỏ thông báo lỗi truy cập."
+        },
+        {
+          "question": "Viết câu lệnh an toàn để tìm và xóa toàn bộ các thư mục rỗng trong thư mục /tmp/app_cache mà không gây lỗi khi tên thư mục có khoảng trắng.",
+          "command": "# Bước 1 (Dry-run xem trước):\nfind /tmp/app_cache -type d -empty -print\n# Bước 2 (Thực thi xóa an toàn):\nfind /tmp/app_cache -mindepth 1 -type d -empty -delete",
+          "explanation": "Cờ -mindepth 1 ngăn ngừa việc xóa nhầm chính thư mục gốc /tmp/app_cache; -type d chỉ nhắm vào thư mục; -empty lọc các thư mục rỗng; -delete xóa an toàn từ dưới lên trên."
+        },
+        {
+          "question": "Tìm tất cả các file mã nguồn Python (.py) trong dự án /home/ubuntu/src được sửa đổi trong vòng 24 giờ qua và sao chép an toàn sang thư mục /tmp/backup_recent/.",
+          "command": "mkdir -p /tmp/backup_recent\nfind /home/ubuntu/src -type f -name \"*.py\" -mtime -1 -print0 | xargs -0 -I {} cp -a \"{}\" /tmp/backup_recent/\n# Tự kiểm tra danh sách file đã copy:\nls -la /tmp/backup_recent/",
+          "explanation": "Cờ -mtime -1 lọc các file sửa đổi trong vòng 24 giờ qua; -print0 kết hợp xargs -0 bảo đảm an toàn với file có khoảng trắng; cờ -I {} của xargs cho phép đặt vị trí biến {} chính xác vào lệnh cp -a."
         }
       ],
       "summary": [
@@ -349,10 +368,10 @@ window.LX_LEVEL2_DATA = {
       "requiresRoot": false,
       "requiresVM": false,
       "objectives": [
-        "Hiểu tường tận 5 trạng thái tiến trình: Running (R), Interruptible Sleep (S), Uninterruptible Sleep (D), Zombie (Z), Stopped (T).",
-        "Đọc vị các thông số quan trọng của lệnh ps aux và bảng theo dõi thời gian thực top/htop: Load Average, VIRT vs RES.",
-        "Làm chủ các tín hiệu UNIX: SIGTERM (15), SIGKILL (9), SIGHUP (1), SIGINT (2) và nguyên lý Graceful Shutdown.",
-        "Điều khiển tác vụ chạy nền: toán tử &, nohup, jobs, fg, bg, disown để tiến trình không bị ngắt khi ngắt kết nối SSH."
+        "Nắm vững vòng đời tiến trình Linux: trạng thái Running (R), Sleeping (S/D), Stopped (T), Zombie (Z) và cách xử lý tiến trình mồ côi (Orphan).",
+        "Phân biệt rạch ròi cơ chế các tín hiệu Unix (Signals): SIGTERM (15) cho phép dọn dẹp tài nguyên vs SIGKILL (9) cưỡng chế hủy diệt lập tức, SIGHUP (1) nạp lại cấu hình.",
+        "Sử dụng thành thạo các công cụ giám sát tiến trình: ps aux, top, htop, pgrep, pkill và điều chỉnh độ ưu tiên với nice và renice.",
+        "Vận hành tác vụ nền chuyên nghiệp: phân biệt nohup, tmux và unit systemd; hiểu tầm quan trọng của cờ `python -u` khi ghi log nền."
       ],
       "intuition": {
         "title": "Quản đốc phân xưởng và Giấy triệu hồi công nhân",
@@ -483,26 +502,40 @@ window.LX_LEVEL2_DATA = {
       "callouts": {
         "pitfalls": [
           {
-            "title": "Thói quen tai hại: Hơi tí là gõ kill -9",
-            "content": "<code>kill -9</code> không cho tiến trình bất kỳ cơ hội nào để đóng file hay hoàn tất transaction database. Với các dịch vụ như MySQL hay PostgreSQL, kill -9 có thể dẫn tới hỏng cấu trúc dữ liệu table (Corrupted Data) và mất hàng giờ để recovery."
+            "title": "Thói quen lười biếng: Gõ ngay kill -9 thay vì thử SIGTERM trước",
+            "content": "Tín hiệu <code>SIGKILL (9)</code> không thể bị tiến trình chặn hoặc bắt (cannot be caught or ignored). Nhân Linux sẽ bắn hạ tiến trình ngay lập tức mà không cho nó cơ hội đóng kết nối database, giải phóng file lock hoặc hoàn tất ghi bộ đệm đĩa. Hậu quả là database bị hỏng tệp dữ liệu (Data Corruption) hoặc file tạm bị kẹt. Luôn luôn gửi <code>kill -15 (SIGTERM)</code> trước, đợi 5-10 giây, chỉ khi tiến trình bị treo cứng không phản hồi mới dùng <code>kill -9</code>."
           },
           {
-            "title": "Quên cờ -u trong python khi chạy ngầm bằng nohup",
-            "content": "Mặc định Python sẽ giữ lại output trong RAM buffer khi không nối với terminal TTY. Nếu thiếu cờ <code>python -u</code>, bạn mở file log sẽ thấy trắng trơn và lầm tưởng script chưa chạy."
+            "title": "Quên cờ python -u khi chạy script nền khiến file log không hiện dữ liệu",
+            "content": "Mặc định khi Python xuất dữ liệu ra một file trên đĩa (thay vì terminal), nó sẽ tự động bật chế độ đệm khối (Block Buffering - tích đủ 4KB hoặc 8KB mới ghi đĩa 1 lần). Nếu bạn chạy <code>nohup python3 app.py &gt; app.log &amp;</code>, bạn sẽ thấy file <code>app.log</code> trống rỗng trong nhiều phút! Luôn thêm cờ <code>-u</code> (Unbuffered): <code>nohup python3 -u app.py &gt; app.log 2&gt;&amp;1 &amp;</code>."
           }
         ],
         "tips": [
           {
-            "title": "Dùng htop thay cho top",
-            "content": "Cài đặt <code>htop</code> bằng <code>sudo apt install htop</code>: giao diện màu trực quan, hiển thị chi tiết từng lõi CPU, hỗ trợ cuộn chuột và tìm kiếm phím F3, lọc tiến trình F4 cực kỳ tiện lợi."
+            "title": "Nạp lại cấu hình dịch vụ không gián đoạn bằng tín hiệu SIGHUP (1)",
+            "content": "Nhiều dịch vụ sản xuất như Nginx, Gunicorn hay PostgreSQL hỗ trợ nạp lại cấu hình mới mà không làm rớt kết nối của khách hàng khi nhận tín hiệu SIGHUP: <code>sudo kill -HUP $(cat /var/run/nginx.pid)</code> hoặc <code>sudo systemctl reload nginx</code>."
+          },
+          {
+            "title": "Tra cứu nhanh tiến trình bằng pgrep thay vì grep qua ps aux",
+            "content": "Thay vì gõ đường ống dài dòng <code>ps aux | grep python | grep -v grep</code>, hãy dùng lệnh chuyên dụng: <code>pgrep -fl python</code>. Lệnh sẽ in trực tiếp PID và dòng lệnh khởi động mà không bị lẫn chính tiến trình grep."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Làm thế nào để tìm tất cả các tiến trình có tên chứa 'gunicorn' và gửi tín hiệu reload SIGHUP cho chúng cùng một lúc?",
-          "command": "pkill -HUP -f gunicorn",
-          "explanation": "pkill tìm kiếm theo tên hoặc toàn bộ dòng lệnh (-f) và gửi tín hiệu chỉ định (-HUP) tới tất cả các tiến trình khớp mẫu."
+          "question": "Viết câu lệnh tra cứu tất cả các tiến trình đang chạy script Python, hiển thị cả PID và đầy đủ dòng lệnh tham số khởi động.",
+          "command": "pgrep -a -l python\n# Kết quả mẫu:\n# 1245 python3 -u /opt/my-app/main.py --port 8000\n# 1890 python3 worker.py",
+          "explanation": "Lệnh pgrep -a hiển thị đầy đủ dòng lệnh dòng lệnh (full command line arguments) của tiến trình khớp từ khóa, chuẩn xác và nhanh hơn dùng ps aux | grep."
+        },
+        {
+          "question": "Một tiến trình có PID 4567 bị treo. Viết kịch bản lệnh an toàn: đầu tiên gửi tín hiệu xin dừng nhã nhặn SIGTERM, chờ 5 giây kiểm tra; nếu tiến trình vẫn còn sống thì mới cưỡng chế bằng SIGKILL.",
+          "command": "kill -15 4567\nsleep 5\nkill -0 4567 2>/dev/null && kill -9 4567\n# Ghi chú: kill -0 chỉ kiểm tra xem tiến trình còn tồn tại hay không mà không gửi tín hiệu hủy.",
+          "explanation": "Lệnh kill -0 là kỹ thuật kinh điển trong shell scripting để thăm dò sự sống của tiến trình. Nếu tiến trình đã kết thúc sau SIGTERM, kill -0 trả về exit code khác 0 và lệnh kill -9 phía sau sẽ không kích hoạt."
+        },
+        {
+          "question": "Khởi chạy một script Python nền độc lập không bị tắt khi ngắt kết nối SSH, xuất log không đệm (unbuffered) và chuyển hướng cả 2 luồng vào file app.log.",
+          "command": "nohup python3 -u /opt/my-app/worker.py >> /var/log/my-app/worker.log 2>&1 &\n# Kiểm tra PID của tiến trình vừa chạy nền:\necho \"PID tien trinh nen: $!\"\nps -p $! -o pid,ppid,stat,comm",
+          "explanation": "nohup bảo vệ tiến trình khỏi tín hiệu SIGHUP khi đóng SSH; python3 -u tắt bộ đệm giúp log xuất hiện ngay lập tức; toán tử & đưa tiến trình vào chạy nền; biến $! lưu PID của tiến trình nền vừa được kích hoạt."
         }
       ],
       "summary": [
@@ -517,14 +550,14 @@ window.LX_LEVEL2_DATA = {
       "title": "Phân quyền nâng cao, umask, Đặc quyền & ACL (umask, SUID/SGID/sticky bit, getfacl/setfacl)",
       "subtitle": "Kiểm soát truy cập đa tầng vượt ra khỏi giới hạn rwx truyền thống của owner/group/other",
       "level": "Trung cấp",
-      "duration": "45 phút",
+      "duration": "50 phút",
       "requiresRoot": true,
       "requiresVM": false,
       "objectives": [
-        "Hiểu bản chất phép trừ bit nhị phân của umask quyết định quyền mặc định khi file/thư mục mới sinh ra.",
-        "Làm chủ 3 quyền đặc biệt (Special Permissions): SUID (4xxx), SGID (2xxx), Sticky Bit (1xxx) và phân tích rủi ro bảo mật.",
-        "Ứng dụng SGID trên thư mục để tự động đồng bộ nhóm sở hữu cho mọi file mới tạo trong dự án nhóm.",
-        "Khai phá Access Control Lists (ACL) với getfacl và setfacl để phân quyền chi tiết cho từng người dùng riêng lẻ."
+        "Hiểu sâu cơ chế các bit quyền đặc biệt: SUID (Set User ID - 4000), SGID (Set Group ID - 2000) và Sticky Bit (1000).",
+        "Phân tích rủi ro an ninh thông tin của file SUID theo chuẩn CIS Benchmark và thực hành kỹ thuật rà soát quét toàn bộ file SUID trên hệ thống.",
+        "Ứng dụng SGID trên thư mục cộng tác nhóm để tự động kế thừa Group sở hữu cho mọi tệp con mới sinh ra.",
+        "Làm chủ Access Control Lists (POSIX ACLs) với `getfacl` và `setfacl` để phân quyền linh hoạt theo từng người dùng vượt qua giới hạn User-Group-Others cổ điển."
       ],
       "intuition": {
         "title": "Khu chung cư cao cấp và Thẻ từ phân tầng thang máy",
@@ -620,22 +653,40 @@ window.LX_LEVEL2_DATA = {
       "callouts": {
         "pitfalls": [
           {
-            "title": "Hiểu nhầm ý nghĩa của cờ Mask trong ACL",
-            "content": "Trong kết quả của <code>getfacl</code>, dòng <code>mask</code> quy định <strong>mức trần quyền hạn tối đa</strong> mà các user/group mở rộng có thể nhận được. Nếu mask là <code>r--</code> thì dù bạn setfacl <code>rwx</code>, người đó thực tế cũng chỉ có quyền đọc (effective: r)."
+            "title": "Ngộ nhận gán SUID cho Shell Script có thể cấp quyền root",
+            "content": "Vì lý do an ninh, nhân Linux hiện đại tự động BỎ QUA cờ SUID trên các file kịch bản có Shebang (như Bash, Python, Perl) để phòng ngừa tấn công chiếm quyền Shell. SUID chỉ có tác dụng trên các file thực thi nhị phân ELF đã biên dịch (như <code>/usr/bin/passwd</code>)."
+          },
+          {
+            "title": "Bối rối trước dấu cộng (+) ở cuối chuỗi quyền trong ls -l",
+            "content": "Khi một tệp có cấu hình ACL mở rộng, lệnh <code>ls -l</code> sẽ hiển thị dấu cộng ở cuối chuỗi quyền: <code>-rw-r--r--+</code>. Lúc này, chuỗi quyền hiển thị ở cột Group thực chất là <strong>ACL Mask</strong> (mức quyền tối đa cho phép) chứ không còn là quyền thực tế của Group! Hãy dùng <code>getfacl file</code> để xem quyền chính xác."
           }
         ],
         "tips": [
           {
-            "title": "Dùng getfacl để sao lưu và khôi phục phân quyền hàng loạt",
-            "content": "Bạn có thể sao lưu toàn bộ phân quyền của một cây thư mục bằng: <code>getfacl -R /var/www > perms.bak</code> và khôi phục chính xác từng file bằng: <code>setfacl --restore=perms.bak</code>."
+            "title": "Sao lưu và phục hồi toàn bộ bảng quyền ACL bằng getfacl",
+            "content": "Khi di chuyển dữ liệu có cấu hình ACL phức tạp, hãy sao lưu bảng quyền ra file: <code>getfacl -R /data > permissions.acl</code> và khôi phục lại bất kỳ lúc nào bằng lệnh: <code>setfacl --restore=permissions.acl</code>."
+          },
+          {
+            "title": "Rà soát định kỳ các file SUID bất thường theo chuẩn CIS Benchmark",
+            "content": "Kẻ tấn công sau khi xâm nhập thường tạo một backdoor bằng cách gán SUID cho <code>/bin/bash</code>. Luôn định kỳ chạy lệnh quét kiểm tra: <code>find / -perm -4000 -type f 2>/dev/null</code> để phát hiện sớm các file lạ."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Lệnh nào sau đây dùng để thiết lập quyền Sticky Bit trên thư mục /shared_cache?",
-          "command": "chmod +t /shared_cache",
-          "explanation": "chmod +t (hoặc chmod 1777) kích hoạt cờ Sticky Bit, đảm bảo chỉ có người tạo ra file hoặc root mới được phép xóa file đó trong thư mục chung."
+          "question": "Thiết lập thư mục chia sẻ cộng tác nhóm /opt/team_shared sao cho: Nhóm 'developers' có toàn quyền và mọi tệp mới tạo bên trong thư mục này đều tự động thuộc sở hữu của nhóm 'developers'.",
+          "command": "sudo chown :developers /opt/team_shared\nsudo chmod 2775 /opt/team_shared\n# Kiểm tra chữ 's' xuất hiện ở vị trí quyền Group:\nls -ld /opt/team_shared\n# Kết quả: drwxrwsr-x ...",
+          "explanation": "Số 2 ở đầu mã chmod 2775 kích hoạt cờ SGID (Set Group ID) trên thư mục. Mọi tệp hoặc thư mục con sinh ra bên trong sẽ tự động kế thừa group sở hữu 'developers' thay vì lấy group mặc định của người tạo."
+        },
+        {
+          "question": "Cấp quyền Đọc và Ghi (rw) cho riêng lập trình viên 'developer1' trên tệp cấu hình bí mật /opt/app/prod.env mà không cần thay đổi Owner hoặc Group của tệp.",
+          "command": "setfacl -m u:developer1:rw- /opt/app/prod.env\n# Tự kiểm tra bảng quyền ACL:\ngetfacl /opt/app/prod.env",
+          "explanation": "Lệnh setfacl -m (modify) thêm một mục kiểm soát truy cập riêng cho user chỉ định (u:developer1:rw-). File /opt/app/prod.env sẽ xuất hiện dấu cộng (+) trong ls -l."
+        },
+        {
+          "question": "Viết câu lệnh rà soát toàn bộ các file trên hệ thống có gắn cờ SUID thuộc sở hữu của root, xuất danh sách ra file /tmp/suid_audit.txt và loại bỏ các lỗi quyền truy cập.",
+          "command": "find / -perm -4000 -user root -type f 2>/dev/null > /tmp/suid_audit.txt\nhead -n 5 /tmp/suid_audit.txt",
+          "explanation": "Cờ -perm -4000 quét các file có bật bit 4 (SUID); -user root lọc riêng các file của root; 2>/dev/null loại bỏ lỗi từ chối truy cập trên các thư mục ảo như /proc."
         }
       ],
       "summary": [
@@ -650,14 +701,14 @@ window.LX_LEVEL2_DATA = {
       "title": "Lập trình Shell Script (Bash) thực chiến & Phân tích sâu set -euo pipefail",
       "subtitle": "Xây dựng kịch bản tự động hóa chuẩn phòng thủ công nghiệp, chặn đứng thảm họa rm -rf ngoài ý muốn",
       "level": "Trung cấp",
-      "duration": "55 phút",
+      "duration": "50 phút",
       "requiresRoot": false,
       "requiresVM": false,
       "objectives": [
-        "Nắm vững cấu trúc chuẩn của một Bash script chuyên nghiệp: Shebang, biến môi trường, tham số vị trí, câu lệnh điều kiện [[ ]] và vòng lặp.",
-        "Làm chủ hàm (functions), phạm vi biến cục bộ (local) và cơ chế mã thoát exit code (0 vs non-zero).",
-        "Mổ xẻ bản chất từng cờ trong 'bùa hộ mệnh' phòng thủ: set -euo pipefail và kỹ thuật bẫy lỗi tự động trap ERR.",
-        "Quy tắc cảnh báo đỏ sống còn: Mối nguy từ việc chạy script trực tiếp từ internet bằng curl | bash và quy tắc kiểm thử an toàn."
+        "Hiểu sâu ý nghĩa và các trường hợp ngoại lệ của bộ 4 cờ phòng vệ `set -euo pipefail` trong lập trình Shell Script chuyên nghiệp.",
+        "Xây dựng cơ chế dọn dẹp tài nguyên tự động bằng `trap` khi script bị ngắt đột ngột (SIGINT, SIGTERM) hoặc kết thúc bình thường (EXIT).",
+        "Làm chủ cú pháp điều kiện hiện đại của Bash: phân biệt `[[ ... ]]` (hỗ trợ regex, chống tách từ) vs `[ ... ]` (POSIX test cổ điển), và toán tử số học `(( ... ))`.",
+        "Sử dụng công cụ kiểm thử tĩnh ShellCheck để phát hiện và triệt tiêu các lỗi bảo mật và cạm bẫy cú pháp phổ biến trong script."
       ],
       "intuition": {
         "title": "Dây đai an toàn và Cầu dao tự ngắt Aptomat trong nhà máy",
@@ -763,22 +814,40 @@ window.LX_LEVEL2_DATA = {
       "callouts": {
         "pitfalls": [
           {
-            "title": "Quên khai báo readonly cho các biến hằng số cấu hình",
-            "content": "Nếu một biến quan trọng như <code>APP_PATH=\"/var/www/app\"</code> vô tình bị gán lại trong một vòng lặp thành rỗng, các lệnh xóa dữ liệu sau đó có thể gây hậu quả thảm khốc."
+            "title": "Bẫy dừng script bất ngờ của set -e khi dùng với grep hoặc test",
+            "content": "Cờ <code>set -e</code> dừng script khi một lệnh trả về exit code khác 0. Tuy nhiên, lệnh <code>grep</code> trả về mã 1 khi KHÔNG tìm thấy dòng nào (điều này hoàn toàn bình thường trong logic nghiệp vụ). Nếu viết <code>grep 'pattern' file.txt</code> trong script bật <code>set -e</code>, script sẽ lập tức bị bắn hạ! Cách phòng vệ: <code>grep 'pattern' file.txt || true</code>."
+          },
+          {
+            "title": "Quên nháy kép biến khi dùng lệnh kiểm tra POSIX [ ... ]",
+            "content": "Nếu bạn dùng lệnh cổ điển <code>[ $VAR = \"hello\" ]</code>: khi biến <code>$VAR</code> rỗng, lệnh biến thành <code>[ = \"hello\" ]</code> và ném lỗi cú pháp <em>unary operator expected</em>. Hãy luôn dùng cú pháp hiện đại của Bash: <code>[[ \"$VAR\" == \"hello\" ]]</code>."
           }
         ],
         "tips": [
           {
-            "title": "Sử dụng công cụ shellcheck để kiểm tra lỗi cú pháp",
-            "content": "Cài đặt <code>shellcheck</code> (<code>sudo apt install shellcheck</code>) và chạy <code>shellcheck myscript.sh</code> trước khi đưa script lên server để phát hiện sớm các bẫy lỗi tiềm ẩn."
+            "title": "Tích hợp ShellCheck vào quy trình kiểm thử trước khi commit code",
+            "content": "Cài đặt công cụ phân tích tĩnh: <code>sudo apt install shellcheck</code> và chạy <code>shellcheck my_script.sh</code>. ShellCheck sẽ chỉ ra chính xác từng dòng thiếu quoting, cạm bẫy logic và hướng dẫn cách sửa theo chuẩn POSIX/Bash."
+          },
+          {
+            "title": "Bật chế độ debug dòng lệnh linh hoạt với cờ -x",
+            "content": "Khi script gặp lỗi khó hiểu, hãy chạy script với cờ <code>bash -x my_script.sh</code> hoặc thêm <code>set -x</code> vào đoạn code cần soi. Bash sẽ in ra từng lệnh kèm các giá trị biến đã được giải mã trước khi thực thi."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Trong Bash script có set -e, tại sao lệnh grep không tìm thấy dòng lại làm sập script và cách xử lý an toàn là gì?",
-          "command": "grep 'pattern' file.txt || true",
-          "explanation": "Khi grep không tìm thấy kết quả, nó trả về exit code 1. set -e hiểu đây là lỗi và tự ngắt script. Thêm || true ép giá trị biểu thức luôn trả về 0 (thành công) để script tiếp tục chạy."
+          "question": "Viết khung sườn (boilerplate) phòng vệ tiêu chuẩn ở đầu một script Bash sản xuất, bao gồm shebang linh hoạt, bộ 4 cờ an toàn và khai báo hàm dọn dẹp bằng trap.",
+          "command": "#!/usr/bin/env bash\nset -euo pipefail\n\nTMP_DIR=$(mktemp -d)\ntrap 'rm -rf \"$TMP_DIR\"' EXIT INT TERM\necho \"Dang xu ly trong: $TMP_DIR\"",
+          "explanation": "set -euo pipefail ngăn chặn: dừng khi có lỗi (-e), báo lỗi khi dùng biến rỗng (-u), bắt lỗi xuyên qua pipe (-o pipefail). Cơ chế trap '...' EXIT INT TERM bảo đảm thư mục tạm luôn được xóa sạch dù script chạy xong hay bị ấn Ctrl+C ngắt giữa chừng."
+        },
+        {
+          "question": "Sử dụng cú pháp so sánh hiện đại [[ ... ]] để kiểm tra xem biến VERSION có khớp với định dạng phiên bản SemVer (ví dụ: v1.2.3 hoặc v2.0.0) bằng biểu thức chính quy (Regex) hay không.",
+          "command": "VERSION=\"v1.4.2\"\nif [[ \"$VERSION\" =~ ^v[0-9]+\\.[0-9]+\\.[0-9]+$ ]]; then\n  echo \"[OK] Phien ban hop le: $VERSION\"\nelse\n  echo \"[LOI] Dinh dang phien ban sai\"\nfi",
+          "explanation": "Toán tử =~ bên trong [[ ... ]] của Bash cho phép so sánh chuỗi trực tiếp với biểu thức chính quy mà không cần gọi tiến trình grep ngoài."
+        },
+        {
+          "question": "Viết câu lệnh phòng vệ cho lệnh grep bên trong script có bật cờ set -e để script không bị dừng khi từ khóa không xuất hiện trong file log.",
+          "command": "# Kỹ thuật phòng vệ dùng || true hoặc || test $? -eq 1\nERR_COUNT=$(grep -c 'CRITICAL' /var/log/app.log 2>/dev/null || true)\necho \"So loi Critical: ${ERR_COUNT:-0}\"",
+          "explanation": "Toán tử || true bảo đảm toàn bộ biểu thức luôn trả về exit code 0, ngăn cản cờ set -e bắn hạ script khi grep trả về exit code 1 (không tìm thấy kết quả)."
         }
       ],
       "summary": [
@@ -793,14 +862,14 @@ window.LX_LEVEL2_DATA = {
       "title": "Tự động hóa tác vụ định kỳ với cron (flock) & systemd cơ bản (systemctl, journalctl)",
       "subtitle": "Lập lịch chạy tác vụ tự động hằng đêm và quản lý trạng thái các dịch vụ cốt lõi của hệ điều hành",
       "level": "Trung cấp",
-      "duration": "45 phút",
+      "duration": "50 phút",
       "requiresRoot": true,
       "requiresVM": false,
       "objectives": [
-        "Làm chủ cú pháp 5 trường thời gian của crontab (phút, giờ, ngày trong tháng, tháng, ngày trong tuần).",
-        "Nhận diện và hóa giải 2 cạm bẫy lớn nhất của cron: thiếu biến môi trường PATH và nguy cơ chạy đè tiến trình (khắc phục bằng flock).",
-        "Làm quen với systemd: kiến trúc PID 1 và các lệnh systemctl kiểm soát trạng thái dịch vụ (start, stop, restart, enable, status).",
-        "Truy vấn và giám sát log dịch vụ thời gian thực với journalctl."
+        "Hiểu sâu môi trường thực thi tối giản của cron daemon (PATH tối giản, shell non-login, không có biến môi trường của user).",
+        "Sử dụng công cụ khóa file `flock` để ngăn chặn thảm họa tác vụ chạy chồng chéo (Job Overlapping) làm tê liệt máy chủ.",
+        "Chẩn đoán và kiểm tra nhật ký thực thi của cron thông qua `journalctl -u cron` và log hệ thống.",
+        "Làm quen với systemd Timers hiện đại: so sánh ưu điểm so với cron và sử dụng `systemd-analyze calendar` để kiểm tra lịch chạy."
       ],
       "intuition": {
         "title": "Đồng hồ báo thức cơ khí và Khóa chốt an toàn flock",
@@ -906,22 +975,40 @@ window.LX_LEVEL2_DATA = {
       "callouts": {
         "pitfalls": [
           {
-            "title": "Quên dòng xuống dòng trống ở cuối file crontab",
-            "content": "Một số phiên bản cron kinh điển (Vixie Cron) yêu cầu ký tự xuống dòng (Newline) ở cuối tệp. Nếu bạn viết dòng cron ở dòng cuối cùng mà không nhấn Enter xuống dòng, cron daemon có thể bỏ qua không chạy dòng đó mà không hề báo lỗi!"
+            "title": "Thảm họa Job Overlapping khi tác vụ cron chạy kéo dài quá chu kỳ",
+            "content": "Nếu bạn đặt một cron job sao lưu database chạy mỗi 10 phút, nhưng một ngày nọ dữ liệu lớn khiến tác vụ chạy mất 25 phút: cron sẽ liên tục sinh ra các tiến trình sao lưu mới đè lên tiến trình cũ. Hàng chục tiến trình tranh chấp CPU và RAM sẽ kéo sập hoàn toàn máy chủ! <strong>Giải pháp bắt buộc:</strong> Bọc lệnh trong <code>flock -n /var/lock/backup.lock ...</code> để ngăn chặn chạy trùng lặp."
+          },
+          {
+            "title": "Quên rằng môi trường của Cron không hề có các biến môi trường của bạn",
+            "content": "Khi chạy trên terminal cá nhân, lệnh <code>python3</code> hay <code>aws</code> chạy tốt vì bạn đã nạp biến trong <code>~/.bashrc</code>. Nhưng Cron chạy dưới một subshell tối giản với biến <code>PATH=/usr/bin:/bin</code>. Gọi lệnh ngoài PATH mà không dùng đường dẫn tuyệt đối sẽ thất bại âm thầm. Luôn khai báo <code>PATH=...</code> ở đầu file crontab."
           }
         ],
         "tips": [
           {
-            "title": "Kiểm tra cú pháp cron trực quan bằng crontab.guru",
-            "content": "Nếu bạn không chắc chắn biểu thức `0 3 * * 1-5` chạy vào thời điểm nào, hãy tra cứu nhanh trên trang web crontab.guru để xác nhận mô tả bằng tiếng người trước khi lưu vào server."
+            "title": "Kiểm tra tính hợp lệ của lịch định kỳ bằng systemd-analyze calendar",
+            "content": "Để biết chắc chắn lịch thời gian của bạn có chạy đúng vào thời điểm mong đợi hay không, hãy dùng lệnh: <code>systemd-analyze calendar 'Mon,Fri *-*-* 03:00:00'</code>. Hệ thống sẽ in ra thời điểm kích hoạt tiếp theo và độ trễ chính xác tới từng giây."
+          },
+          {
+            "title": "Thử nghiệm script trong môi trường sạch như Cron bằng env -i",
+            "content": "Trước khi đưa script vào crontab, hãy chạy thử lệnh: <code>env -i /path/to/script.sh</code>. Lệnh này sẽ xóa sạch toàn bộ các biến môi trường đang có, giả lập chính xác 100% môi trường khắc nghiệt của Cron daemon."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Biểu thức crontab nào sau đây sẽ chạy script vào lúc 04:00 sáng ngày mùng 1 hàng tháng?",
-          "command": "0 4 1 * * /path/to/script.sh",
-          "explanation": "Trường 1 (phút) = 0, Trường 2 (giờ) = 4, Trường 3 (ngày trong tháng) = 1, Trường 4 và 5 để dấu sao (*) tức chạy vào mỗi tháng và bất kể thứ mấy."
+          "question": "Viết dòng cấu hình crontab hoàn chỉnh cho tác vụ sao lưu chạy vào lúc 02:00 sáng mỗi ngày: có khai báo biến PATH, chuyển hướng cả 2 luồng log vào file backup.log.",
+          "command": "# Khai báo trong crontab (crontab -e):\nPATH=/usr/local/bin:/usr/bin:/bin\n0 2 * * * /opt/scripts/backup.sh >> /var/log/backup.log 2>&1",
+          "explanation": "Khai báo PATH ở đầu crontab giúp script tìm thấy các lệnh phụ trợ; 0 2 * * * xác định đúng 02:00 sáng hàng ngày; >> ... 2>&1 bảo đảm toàn bộ nhật ký thành công và lỗi đều được lưu vết."
+        },
+        {
+          "question": "Sử dụng lệnh flock để bảo vệ một script đồng bộ dữ liệu /opt/sync.sh chạy mỗi 5 phút, sao cho nếu tác vụ trước chưa chạy xong thì tác vụ sau lập tức bỏ qua (không chờ đợi) mà không báo lỗi.",
+          "command": "*/5 * * * * /usr/bin/flock -n /var/lock/sync.lock /opt/sync.sh >> /var/log/sync.log 2>&1",
+          "explanation": "Cờ -n (non-blocking) của flock: nếu lockfile /var/lock/sync.lock đang bị một tiến trình khác chiếm giữ, flock sẽ thoát ngay lập tức với exit code 1 mà không chạy đè lên tiến trình cũ."
+        },
+        {
+          "question": "Kiểm tra xem lịch chạy định kỳ 'mỗi 2 tiếng vào các ngày thứ Hai và thứ Sáu' được diễn giải như thế nào trong hệ thống thời gian chuẩn bằng công cụ systemd-analyze calendar.",
+          "command": "systemd-analyze calendar 'Mon,Fri *-*-* 00/2:00:00'\n# Quan sát dòng 'Next elapse' in ra thời điểm kích hoạt tiếp theo.",
+          "explanation": "Công cụ systemd-analyze calendar phân tích cú pháp thời gian và tính toán chính xác mốc thời gian chạy kế tiếp, giúp kỹ sư loại bỏ hoàn toàn các sai sót khi lên lịch bảo trì."
         }
       ],
       "summary": [
@@ -940,10 +1027,10 @@ window.LX_LEVEL2_DATA = {
       "requiresRoot": false,
       "requiresVM": false,
       "objectives": [
-        "Thay thế hoàn toàn các công cụ mạng cũ: dùng ip addr/ip route thay cho ifconfig/route, dùng ss thay cho netstat.",
-        "Sử dụng thành thạo bộ công cụ chẩn đoán: ping kiểm tra độ trễ, curl -I khảo sát HTTP header, traceroute kiểm tra nút mạng, dig/nslookup tra cứu DNS.",
-        "Khởi tạo và quản lý SSH Key thế hệ mới theo thuật toán mã hóa đường cong elip ed25519 (an toàn và nhẹ hơn RSA 2048 cũ).",
-        "Làm chủ tệp ~/.ssh/config để kết nối máy chủ phức tạp (đổi port, user, key, proxy jump) chỉ bằng một từ khóa ngắn gọn."
+        "Làm chủ bộ công cụ quản trị mạng hiện đại iproute2 (`ip addr`, `ip route`, `ip link`) thay thế hoàn toàn các lệnh cũ đã lỗi thời (ifconfig, route).",
+        "Khảo sát các cổng dịch vụ đang lắng nghe và các kết nối mạng thời gian thực bằng lệnh `ss -tulpn` thay cho `netstat`.",
+        "Thiết lập cơ chế xác thực SSH an toàn bằng cặp khóa mã hóa hiện đại Ed25519 (`ssh-keygen -t ed25519`), quản lý quyền file nghiêm ngặt trong thư mục `~/.ssh` (700/600).",
+        "Tối ưu hóa quy trình làm việc với tệp cấu hình `~/.ssh/config` và xử lý an toàn cảnh báo tấn công giả mạo máy chủ (Host Key Verification Failed)."
       ],
       "intuition": {
         "title": "Cổng hải quan sân bay và Hộ chiếu sinh trắc học",
@@ -1049,22 +1136,40 @@ window.LX_LEVEL2_DATA = {
       "callouts": {
         "pitfalls": [
           {
-            "title": "Lỗi phân quyền quá lỏng lẻo trên thư mục ~/.ssh",
-            "content": "SSH client rất nghiêm ngặt về bảo mật. Nếu thư mục <code>~/.ssh</code> hoặc file khóa riêng <code>id_ed25519</code> có quyền lớn hơn <code>600</code> (ví dụ: bị chmod 777), SSH sẽ lập tức từ chối kết nối với lỗi: <code>Permissions 0777 for 'id_ed25519' are too open</code>. Luôn nhớ: <code>chmod 700 ~/.ssh && chmod 600 ~/.ssh/id_*</code>."
+            "title": "Phân quyền thư mục ~/.ssh và file authorized_keys quá lỏng lẻo",
+            "content": "SSH daemon có cơ chế phòng thủ <code>StrictModes</code>: nếu thư mục <code>~/.ssh</code> có quyền ghi cho người ngoài (như 777 hay 755), hoặc file <code>authorized_keys</code> có quyền ghi cho group/others (như 664 hay 666), SSH daemon sẽ TỰ ĐỘNG TỪ CHỐI đăng nhập bằng khóa công khai vì nghi ngờ tài khoản bị can thiệp! Chuẩn bắt buộc: <code>chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys</code>."
+          },
+          {
+            "title": "Xóa bừa dòng trong known_hosts khi nhận cảnh báo Host Key Changed",
+            "content": "Khi thấy thông báo đỏ <code>WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED</code>, đừng vội vàng xóa dòng cảnh báo! Nếu bạn không hề cài lại máy chủ mà khóa máy chủ đột ngột thay đổi, có thể bạn đang bị tin tặc tấn công nghe lén Man-In-The-Middle (MITM). Hãy xác minh với kỹ sư hạ tầng trước khi dùng <code>ssh-keygen -R &lt;ip&gt;</code>."
           }
         ],
         "tips": [
           {
-            "title": "Tùy biến alias tiện dụng trong file ~/.bashrc",
-            "content": "Thêm các alias thông minh sau vào <code>~/.bashrc</code> để tăng năng suất làm việc: <code>alias ports='sudo ss -tulpn'</code>, <code>alias myip='curl -s ifconfig.me'</code>, <code>alias ll='ls -la --color=auto'</code>."
+            "title": "Cấu hình ~/.ssh/config để đăng nhập máy chủ trong 1 giây",
+            "content": "Thay vì phải gõ <code>ssh -i ~/.ssh/my_key.pem -p 2222 ubuntu@198.51.100.44</code>, hãy khai báo trong <code>~/.ssh/config</code>: <code>Host prod\\n  HostName 198.51.100.44\\n  User ubuntu\\n  Port 2222\\n  IdentityFile ~/.ssh/my_key.pem</code>. Sau đó bạn chỉ cần gõ: <code>ssh prod</code>!"
+          },
+          {
+            "title": "Bật chế độ Verbose để gỡ lỗi đăng nhập SSH",
+            "content": "Khi SSH bị treo hoặc từ chối kết nối không rõ lý do, hãy thêm cờ <code>-v</code> hoặc <code>-vvv</code> (ví dụ: <code>ssh -vvv user@host</code>). SSH client sẽ in chi tiết từng bước trao đổi thuật toán mật mã và đường dẫn file key đang thử nghiệm."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Lệnh nào sau đây kiểm tra xem dịch vụ SSH trên máy chủ từ xa có đang mở cổng 22 và phản hồi hay không mà không cần đăng nhập?",
-          "command": "nc -zv 203.0.113.50 22",
-          "explanation": "Lệnh netcat (nc -zv) kiểm tra kết nối TCP tới cổng chỉ định với chế độ zero-I/O (-z) và in chi tiết (-v) để biết port có đang mở hay bị tường lửa chặn."
+          "question": "Viết câu lệnh kiểm tra xem trên máy chủ hiện tại, tiến trình nào đang lắng nghe (LISTEN) trên các cổng TCP và hiển thị kèm số hiệu cổng (Port) và PID tiến trình.",
+          "command": "sudo ss -tulpn\n# Kết quả mẫu:\n# tcp LISTEN 0 128 0.0.0.0:80 0.0.0.0:* users:((\"nginx\",pid=1234,fd=6))\n# tcp LISTEN 0 128 0.0.0.0:22 0.0.0.0:* users:((\"sshd\",pid=890,fd=3))",
+          "explanation": "Cờ -t (TCP), -u (UDP), -l (Listening), -p (Process/PID), -n (Numeric - hiển thị số cổng thay vì tên dịch vụ). Lệnh ss nhanh và chính xác hơn nhiều so với netstat cũ."
+        },
+        {
+          "question": "Tạo một cặp khóa SSH mới sử dụng thuật toán hiện đại Ed25519 với bình luận là email cá nhân của bạn, không sử dụng mật khẩu bảo vệ (empty passphrase).",
+          "command": "ssh-keygen -t ed25519 -C \"devops@company.com\" -N \"\" -f ~/.ssh/id_ed25519\n# Kiểm tra 2 file sinh ra:\nls -l ~/.ssh/id_ed25519*",
+          "explanation": "Thuật toán ed25519 (Elliptic Curve) tạo ra khóa ngắn hơn, tốc độ xác thực nhanh hơn và độ bảo mật cao hơn nhiều so với thuật toán RSA cổ điển. File id_ed25519 là khóa riêng tư (Private key), file id_ed25519.pub là khóa công khai."
+        },
+        {
+          "question": "Máy chủ tại địa chỉ 192.168.1.100 vừa được cài đặt lại hệ điều hành, khiến SSH client ném cảnh báo 'Host key verification failed'. Viết lệnh xóa bỏ khóa cũ của IP này khỏi tệp known_hosts một cách chuẩn xác.",
+          "command": "ssh-keygen -R 192.168.1.100\n# Sau đó kết nối lại và xác nhận vân tay mới:\nssh ubuntu@192.168.1.100",
+          "explanation": "Lệnh 'ssh-keygen -R ip_or_hostname' tự động tìm và xóa đúng dòng băm của máy chủ đó trong ~/.ssh/known_hosts mà không cần bạn phải mở file sửa thủ công bằng nano/vim."
         }
       ],
       "summary": [
@@ -1079,14 +1184,14 @@ window.LX_LEVEL2_DATA = {
       "title": "Quản lý đĩa, Dung lượng & Hệ thống file cơ bản (df, du, mount, lsblk, xử lý cạn Inode)",
       "subtitle": "Chẩn đoán ổ đĩa đầy, giải quyết sự cố hiểm hóc đĩa báo đầy 100% nhưng df còn trống dung lượng",
       "level": "Trung cấp",
-      "duration": "45 phút",
+      "duration": "50 phút",
       "requiresRoot": true,
       "requiresVM": false,
       "objectives": [
-        "Khảo sát cấu trúc phân vùng ổ cứng với lsblk và kiểm tra UUID bằng blkid.",
-        "Phân tích dung lượng trống với df -h và truy tìm các thư mục khổng lồ với du -sh * | sort -h.",
-        "Hiểu bản chất bảng Inode: giải quyết triệt để sự cố đĩa còn hàng trăm GB nhưng không thể ghi thêm file do cạn Inode (df -i).",
-        "Nắm vững kỹ thuật mount/umount và phát hiện sự cố file đã xóa nhưng tiến trình vẫn giữ file descriptor (lsof | grep deleted)."
+        "Phân biệt bản chất giữa `df -h` (dung lượng filesystem của hệ điều hành) và `du -sh` (kích thước tệp/thư mục thực tế).",
+        "Chẩn đoán và khắc phục sự cố 'còn dung lượng đĩa nhưng báo No space left on device' do cạn kiệt số lượng Inode (`df -i`).",
+        "Xử lý tình huống file log lớn đã bị xóa bằng `rm` nhưng dung lượng đĩa không giảm do tiến trình ngầm vẫn đang giữ File Descriptor (`lsof +L1`).",
+        "Cấu hình gắn ổ đĩa tự động trong `/etc/fstab` an toàn bằng UUID, cờ `nofail` và nguyên tắc kiểm tra bắt buộc với `sudo mount -a` trước khi reboot."
       ],
       "intuition": {
         "title": "Bãi đỗ xe và Cuốn sổ ghi vé kiểm soát",
@@ -1187,22 +1292,40 @@ window.LX_LEVEL2_DATA = {
       "callouts": {
         "pitfalls": [
           {
-            "title": "Không bao giờ dùng lệnh rm để dọn file log đang ghi trực tiếp",
-            "content": "Thay vì <code>rm big_log.log</code>, hãy dùng lệnh làm rỗng an toàn: <code>truncate -s 0 big_log.log</code> hoặc <code>> big_log.log</code>. Dung lượng sẽ được giải phóng ngay lập tức mà không gây hiện tượng file ma (deleted file lock)."
+            "title": "Thảm họa khởi động máy chủ (Emergency Mode) do sửa ẩu file /etc/fstab",
+            "content": "Tệp <code>/etc/fstab</code> được hệ điều hành đọc ngay khi khởi động để mount các ổ đĩa. Nếu bạn viết sai cú pháp, nhầm UUID hoặc ổ đĩa mạng chưa sẵn sàng, hệ thống sẽ BỊ TREO và rơi vào màn hình đen cứu hộ Emergency Mode. <strong>Quy tắc sống còn:</strong> Luôn dùng cờ <code>nofail</code> cho các ổ đĩa phụ và BẮT BUỘC chạy <code>sudo mount -a</code> trước khi khởi động lại máy! Nếu <code>mount -a</code> không báo lỗi, bạn mới được phép reboot."
+          },
+          {
+            "title": "Xóa file log bằng rm nhưng ổ cứng vẫn báo đầy 100%",
+            "content": "Khi một tiến trình (như Nginx hay Python) đang mở một file log để ghi, nếu bạn gõ <code>rm access.log</code>, Linux chỉ xóa tên file khỏi thư mục chứ CHƯA GIẢI PHÓNG các khối đĩa chừng nào tiến trình đó chưa đóng File Descriptor! Lệnh <code>df -h</code> vẫn sẽ báo đầy. Hãy dùng lệnh <code>truncate -s 0 access.log</code> hoặc reload lại dịch vụ."
           }
         ],
         "tips": [
           {
-            "title": "Luôn kiểm tra cả df -h và df -i trong kịch bản cảnh báo",
-            "content": "Một script giám sát đĩa chuyên nghiệp phải luôn kiểm tra song song cả hai chỉ số: nếu dung lượng > 90% HOẶC Inode > 90% thì đều phải kích hoạt thông báo khẩn cấp."
+            "title": "Lấy mã định danh UUID chuẩn của ổ đĩa bằng lsblk -f",
+            "content": "Tuyệt đối không dùng tên thiết bị như <code>/dev/sdb1</code> trong <code>/etc/fstab</code> vì thứ tự ổ đĩa có thể bị tráo đổi khi cắm thêm ổ cứng mới. Luôn dùng lệnh: <code>lsblk -f</code> hoặc <code>blkid</code> để lấy chuỗi UUID cố định của phân vùng."
+          },
+          {
+            "title": "Làm rỗng file log đang bị tiến trình giữ mà không cần restart",
+            "content": "Thay vì xóa file log đang chạy, hãy làm rỗng nội dung của nó ngay lập tức bằng lệnh chuyển hướng: <code>: &gt; /var/log/my-app.log</code> hoặc <code>truncate -s 0 /var/log/my-app.log</code>. Dung lượng đĩa sẽ được giải phóng ngay trong tích tắc!"
           }
         ]
       },
       "exercises": [
         {
-          "question": "Lệnh nào sau đây dùng để hiển thị dung lượng đĩa của phân vùng hiện tại ở dạng Megabyte và Gigabyte dễ đọc?",
-          "command": "df -h .",
-          "explanation": "df -h . kiểm tra phân vùng gắn kết tại thư mục hiện tại và định dạng kết quả theo đơn vị K, M, G dễ đọc."
+          "question": "Kiểm tra tỉ lệ sử dụng Inode trên toàn bộ các phân vùng đĩa để phát hiện sớm nguy cơ cạn kiệt chỉ mục tệp.",
+          "command": "df -i -h /\n# Kết quả mẫu:\n# Filesystem     Inodes IUsed IFree IUse% Mounted on\n# /dev/sda1        3.2M  450K  2.8M   14% /",
+          "explanation": "Cờ -i (inodes) hiển thị số lượng inode đã dùng và còn trống thay vì số bytes dung lượng. Một phân vùng còn 50GB trống nhưng có 100% Inodes bị dùng hết (do hàng triệu file session rác) thì vẫn không thể tạo thêm file mới."
+        },
+        {
+          "question": "Truy tìm các file đã bị xóa (deleted) nhưng tiến trình vẫn đang mở giữ File Descriptor khiến dung lượng đĩa không được giải phóng.",
+          "command": "sudo lsof +L1\n# Hoặc lệnh tương đương:\nsudo lsof | grep '(deleted)' | head -n 5\n# Kết quả mẫu: gunicorn 1234 devops 3w REG 8,1 15728640000 0 /var/log/app.log (deleted)",
+          "explanation": "Lệnh lsof +L1 hiển thị các file mở có Link Count < 1 (tức là file đã bị xóa khỏi cây thư mục). Cột dung lượng sẽ chỉ ra tiến trình nào đang giam giữ hàng chục GB đĩa."
+        },
+        {
+          "question": "Viết dòng cấu hình an toàn trong /etc/fstab để tự động mount phân vùng có UUID 'a1b2c3d4-0000' vào thư mục /mnt/data với định dạng ext4, sao cho nếu ổ đĩa bị rút ra thì hệ điều hành vẫn khởi động bình thường không bị treo.",
+          "command": "# Dòng cấu hình thêm vào /etc/fstab:\nUUID=a1b2c3d4-0000 /mnt/data ext4 defaults,nofail 0 2\n# Kiểm tra cú pháp trước khi reboot (BẮT BUỘC):\nsudo mount -a",
+          "explanation": "Tùy chọn 'nofail' thông báo cho systemd bỏ qua lỗi nếu thiết bị không tồn tại lúc khởi động, ngăn chặn máy chủ rơi vào màn hình Emergency Mode. Lệnh sudo mount -a xác thực cú pháp fstab ngay lập tức."
         }
       ],
       "summary": [
@@ -1217,13 +1340,14 @@ window.LX_LEVEL2_DATA = {
       "title": "Dự án Thực hành Cấp 2: Script sao lưu tự động xoay vòng 7 ngày & 3 Kịch bản Sự cố",
       "subtitle": "Tích hợp toàn diện shell script, cron, find, tar và quản lý tiến trình vào một hệ thống bảo vệ dữ liệu tự động",
       "level": "Dự án",
-      "duration": "70 phút",
+      "duration": "60 phút",
       "requiresRoot": true,
       "requiresVM": false,
       "objectives": [
-        "Xây dựng script sao lưu dự án công nghiệp: kiểm tra dung lượng ổ đĩa, nén tar.gz gắn mác ngày giờ, ghi log chuẩn mực và tự dọn dẹp bản sao lưu cũ.",
-        "Tự động hóa kịch bản chạy hằng đêm bằng cron kết hợp khóa chống chạy đè flock.",
-        "Tự tay chẩn đoán và khắc phục 3 kịch bản sự cố vận hành thực tế thường gặp nhất của các kỹ sư hệ thống."
+        "Xây dựng kịch bản Shell Script hoàn chỉnh thực hiện sao lưu tự động và xoay vòng 7 ngày (7-day retention) chuẩn môi trường sản xuất.",
+        "Tích hợp cơ chế khóa file an toàn bằng `flock` chống chạy chồng chéo và cơ chế xử lý tín hiệu thoát hiểm với `trap`.",
+        "Tạo gói sao lưu nén tar.gz, sinh con dấu kiểm định SHA-256 và tự động dọn dẹp các bản backup cũ hơn 7 ngày bằng `find -mtime +7 -delete`.",
+        "Thực hiện quy trình kiểm thử khôi phục tự động (Automated Recovery Drill) để chứng minh bản backup có thể phục hồi dữ liệu hoàn chỉnh."
       ],
       "intuition": {
         "title": "Hộp đen cứu nạn và Diễn tập phòng cháy chữa cháy",
@@ -1279,26 +1403,48 @@ window.LX_LEVEL2_DATA = {
       ],
       "exercises": [
         {
-          "question": "SỰ CỐ 1: Phân vùng /var báo đầy 100% dung lượng nhưng lệnh du -sh /var/* cộng lại chỉ thấy dùng 5GB trên tổng số 100GB. Nguyên nhân là gì và cách xử lý dứt điểm?",
-          "command": "sudo lsof +L1 /var | grep '(deleted)'",
-          "explanation": "NGUYÊN NHÂN: Một file log lớn đã bị xóa bằng lệnh rm nhưng tiến trình dịch vụ (như Nginx, Gunicorn) vẫn đang mở giữ file descriptor, khiến Kernel chưa thể giải phóng các block đĩa.\nCÁCH XỬ LÝ: Chạy lệnh 'sudo lsof +L1 /var' để tìm PID của tiến trình đang giữ file ma, sau đó reload dịch vụ (sudo systemctl reload nginx) hoặc làm rỗng file trực tiếp qua proc (/proc/[PID]/fd/[FD])."
+          "question": "Viết đoạn lệnh Bash sử dụng find để tự động tìm và xóa sạch các file sao lưu có đuôi .tar.gz trong thư mục /var/backups cũ hơn đúng 7 ngày.",
+          "command": "# Bước 1 (Dry-run xem trước danh sách file sắp xóa):\nfind /var/backups -type f -name \"backup-*.tar.gz\" -mtime +7 -ls\n# Bước 2 (Thực thi xóa):\nfind /var/backups -type f -name \"backup-*.tar.gz\" -mtime +7 -delete",
+          "explanation": "Cờ -mtime +7 lọc chính xác các file có thời gian sửa đổi cách đây hơn 7 ngày (từ ngày thứ 8 trở đi), bảo toàn nguyên vẹn 7 bản backup gần nhất của tuần hiện tại."
         },
         {
-          "question": "SỰ CỐ 2: Script sao lưu chạy trực tiếp từ dòng lệnh terminal thì thành công mỹ mãn, nhưng khi để cron chạy tự động hằng đêm thì file log báo lỗi: 'python3: command not found'. Tại sao?",
-          "command": "which python3",
-          "explanation": "NGUYÊN NHÂN: cron khởi chạy với biến môi trường PATH cực kỳ tối giản (chỉ có /usr/bin:/bin), không có đường dẫn tới thư mục chứa python3 của bạn (ví dụ /usr/local/bin hoặc môi trường ảo pyenv).\nCÁCH XỬ LÝ: Khai báo dòng PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin ở đầu file crontab, hoặc sử dụng đường dẫn tuyệt đối /usr/local/bin/python3 trong script."
+          "question": "Viết đoạn mã lồng lệnh flock bên trong chính script backup để script tự bảo vệ không bị chạy trùng lặp mà không cần cấu hình ngoài crontab.",
+          "command": "# Kỹ thuật tự khóa file bên trong script bằng exec và flock:\nexec 200>/var/lock/backup_daily.lock\nflock -n 200 || { echo \"[CANH BAO] Tien trinh backup khac dang chay!\"; exit 1; }\necho \"Bat dau sao luu doc quyen...\"",
+          "explanation": "Mở File Descriptor 200 trỏ vào lockfile và áp dụng flock -n. Nếu một phiên bản script khác đang chạy, lệnh flock sẽ thất bại và script thoát ngay lập tức với mã lỗi 1."
         },
         {
-          "question": "SỰ CỐ 3: Ứng dụng web Python khởi động báo lỗi 'OSError: [Errno 98] Address already in use: 0.0.0.0:8000'. Làm sao tìm và giải phóng cổng 8000 ngay lập tức?",
-          "command": "sudo ss -tulpn | grep ':8000'\n# Lấy PID tìm được và tắt tiến trình:\nsudo kill -15 [PID]",
-          "explanation": "NGUYÊN NHÂN: Một phiên bản tiến trình cũ của ứng dụng chưa được tắt hẳn và vẫn đang chiếm dụng socket cổng 8000.\nCÁCH XỬ LÝ: Dùng 'sudo ss -tulpn | grep :8000' để tìm chính xác PID đang chiếm cổng, sau đó gửi tín hiệu 'sudo kill -15 [PID]'. Nếu sau 5 giây vẫn không nhả port mới dùng 'sudo kill -9 [PID]'."
+          "question": "Viết kịch bản kiểm thử khôi phục tự động (Recovery Test Drill): giải nén bản backup mới nhất vào thư mục tạm /tmp/restore_test, kiểm tra mã băm SHA-256 và dọn sạch thư mục tạm sau khi test xong.",
+          "command": "LATEST_PKG=$(ls -t /var/backups/backup-*.tar.gz | head -n 1)\nTEST_DIR=$(mktemp -d /tmp/restore_drill_XXXXXX)\ntrap 'rm -rf \"$TEST_DIR\"' EXIT\n\nif sha256sum -c \"$LATEST_PKG.sha256\"; then\n  tar -xzf \"$LATEST_PKG\" -C \"$TEST_DIR\"\n  echo \"[OK] Kiem thu khoi phuc thanh cong tren: $LATEST_PKG\"\nelse\n  echo \"[LOI] Ban backup bi hong hoc hoac sai checksum!\" >&2; exit 1\nfi",
+          "explanation": "Đây là tiêu chuẩn vàng của kỹ sư DevOps: tự động xác thực mã băm và kiểm tra bung nén thực tế vào thư mục mktemp tạm thời, bảo đảm dữ liệu luôn trong trạng thái sẵn sàng phục hồi."
         }
       ],
       "summary": [
         "Dự án sao lưu tự động tích hợp trọn vẹn set -euo pipefail, trap ERR, nén tar.gz và xoay vòng 7 ngày bằng find.",
         "Luôn bảo vệ các tác vụ cron định kỳ bằng khóa flock để loại trừ nguy cơ chồng chéo tiến trình làm treo server.",
         "Luyện tập kỹ năng bắt bệnh sự cố thực tế với lsof +L1, phân tích môi trường PATH và giải phóng cổng mạng bằng ss."
-      ]
+      ],
+      "callouts": {
+        "pitfalls": [
+          {
+            "title": "Chỉ sao lưu mà không bao giờ kiểm thử khôi phục (Restore Drill)",
+            "content": "Nguyên lý bất biến của Kỹ sư Vận hành: <em>'Một bản sao lưu chưa từng được khôi phục thử nghiệm thì không được coi là bản sao lưu!'</em> Rất nhiều doanh nghiệp chỉ phát hiện bản backup bị lỗi mã hóa hoặc thiếu file khi thảm họa xảy ra. Luôn tự động hóa bước giải nén kiểm tra định kỳ."
+          },
+          {
+            "title": "Lưu file backup trên cùng một ổ đĩa vật lý với dữ liệu gốc",
+            "content": "Nếu ổ đĩa cứng của máy chủ bị cháy phần cứng (Hardware Failure), việc lưu file backup tại <code>/backup/</code> trên cùng ổ đĩa đó sẽ khiến cả dữ liệu gốc lẫn dữ liệu sao lưu mất sạch. Backup chuẩn phải được đẩy sang một ổ đĩa mạng NAS, S3 hoặc server độc lập khác."
+          }
+        ],
+        "tips": [
+          {
+            "title": "Đặt tên file backup theo chuẩn thời gian ISO 8601",
+            "content": "Luôn định dạng tên tệp theo cú pháp: <code>backup-$(date +%Y%m%d_%H%M%S).tar.gz</code>. Cách đặt tên này giúp các lệnh <code>ls</code> và <code>sort</code> tự động sắp xếp bản sao lưu theo đúng trình tự thời gian tuyệt đối."
+          },
+          {
+            "title": "Tách bạch log sao lưu thành tệp riêng",
+            "content": "Ghi toàn bộ lịch sử sao lưu vào <code>/var/log/backup_service.log</code> kèm dấu mốc thời gian để dễ dàng tích hợp vào hệ thống giám sát cảnh báo Prometheus/Zabbix."
+          }
+        ]
+      }
     },
     {
       "id": "lx-2-10",
@@ -1306,14 +1452,14 @@ window.LX_LEVEL2_DATA = {
       "title": "Bảng tra cứu Lệnh & Thuật ngữ Cấp 2 (Cheat Sheet & Glossary)",
       "subtitle": "Sổ tay tra cứu nhanh toàn diện các lệnh xử lý văn bản, shell script, quản lý tiến trình, mạng và lưu trữ",
       "level": "Tra cứu",
-      "duration": "25 phút",
+      "duration": "30 phút",
       "requiresRoot": false,
       "requiresVM": false,
       "objectives": [
-        "Tra cứu tức thì cú pháp và cờ thông dụng của bộ công cụ xử lý văn bản (grep, sed, awk, sort, uniq, cut, tr, wc).",
-        "Nắm vững bảng lệnh quản lý tiến trình, tín hiệu UNIX, lập lịch cron và quản lý dịch vụ systemctl/journalctl.",
-        "Tra cứu bảng phím tắt quản trị mạng, SSH và hệ thống file Inode.",
-        "Hệ thống hóa từ điển thuật ngữ cốt lõi của Cấp 2: Inode, umask, ACL, SUID, SGID, Sticky Bit, Graceful Shutdown, flock."
+        "Tra cứu nhanh chóng 100% cú pháp lệnh Quản trị Trung cấp & Vận hành Dịch vụ của Cấp 2 trong 5 giây.",
+        "Nhận biết các cờ tùy chọn nhạy cảm và rủi ro vận hành (kill -9, sed -i không backup, fstab lỗi) thông qua bảng đối chiếu an toàn.",
+        "Nắm vững định nghĩa chuẩn của 16 thuật ngữ nâng cao (Regex, Inode, SUID, SGID, ACL, Flock, Ed25519, Fstab, Systemd Timers) kèm bài học đối chiếu.",
+        "Tự đánh giá phản xạ xử lý sự cố thực tế thông qua các bài kiểm tra tình huống dòng lệnh trước khi bước lên Cấp 3."
       ],
       "intuition": {
         "title": "Túi đồ nghề cứu hộ của kỹ sư hệ thống",
@@ -1337,12 +1483,50 @@ window.LX_LEVEL2_DATA = {
           "content": "\n                  <div class=\"lx-glossary-grid\">\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">Inode (Index Node)</span>\n                        <span class=\"lx-glossary-cat\">Filesystem</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Cấu trúc dữ liệu của hệ thống file lưu trữ toàn bộ metadata của một tệp tin (phân quyền, chủ sở hữu, mốc thời gian, vị trí con trỏ trỏ tới các khối dữ liệu thực tế trên đĩa). Tên file không nằm trong inode mà nằm trong dentry.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">umask</span>\n                        <span class=\"lx-glossary-cat\">Security</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Mặt nạ nhị phân quy định các quyền hạn bị loại bỏ mặc định khi một file (666 - umask) hoặc thư mục (777 - umask) mới được tạo ra trên hệ thống.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">ACL (Access Control Lists)</span>\n                        <span class=\"lx-glossary-cat\">Security</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Cơ chế phân quyền nâng cao vượt qua giới hạn 3 lớp Owner/Group/Other của chuẩn POSIX, cho phép gán quyền đọc/ghi/thực thi chi tiết cho từng người dùng hoặc nhóm cụ thể.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">Graceful Shutdown</span>\n                        <span class=\"lx-glossary-cat\">Process</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Quy trình kết thúc tiến trình êm đẹp khi nhận tín hiệu SIGTERM (15): ứng dụng hoàn thành nốt các request dở dang, đóng kết nối database, giải phóng socket mạng rồi mới thoát, ngăn chặn hỏng dữ liệu.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">flock (File Lock)</span>\n                        <span class=\"lx-glossary-cat\">Automation</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Cơ chế khóa tệp ở cấp độ hệ điều hành dùng để đồng bộ hóa, đảm bảo tại một thời điểm chỉ có duy nhất một tiến trình được phép chạy, ngăn chặn tác vụ cron định kỳ bị chồng chéo nhau.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">Zombie Process</span>\n                        <span class=\"lx-glossary-cat\">Kernel</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Tiến trình con đã kết thúc thực thi nhưng tiến trình cha chưa gọi hàm wait() để giải phóng cấu trúc task_struct khỏi bảng tiến trình của Kernel. Ký hiệu trạng thái là Z.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">RES vs VIRT</span>\n                        <span class=\"lx-glossary-cat\">Memory</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">VIRT (Virtual Memory) là tổng không gian địa chỉ ảo tiến trình đăng ký; RES (Resident Set Size) là dung lượng bộ nhớ RAM vật lý thực tế mà tiến trình đang chiếm giữ trong chip nhớ.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">Open File Descriptor</span>\n                        <span class=\"lx-glossary-cat\">Kernel I/O</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Mã số nguyên do Kernel cấp phát khi một tiến trình mở tệp. Nếu tệp bị xóa bằng rm nhưng file descriptor vẫn mở, Kernel sẽ giữ nguyên dữ liệu trên đĩa cho tới khi tiến trình đóng file.</p>\n                    </div>\n                  </div>\n                "
         }
       ],
-      "exercises": [],
+      "exercises": [
+        {
+          "question": "Khi bạn cần tìm tất cả các file có đuôi .log trong /var/log nặng hơn 50MB và sửa đổi trong 3 ngày qua, câu lệnh nào sau đây là chuẩn xác nhất?",
+          "command": "find /var/log -type f -name \"*.log\" -size +50M -mtime -3 2>/dev/null",
+          "explanation": "Cờ -type f lọc tệp; -name '*.log' lọc đuôi; -size +50M lọc kích thước > 50MB; -mtime -3 lọc file trong 3 ngày gần nhất; 2>/dev/null loại bỏ lỗi quyền hạn."
+        },
+        {
+          "question": "Lệnh nào sau đây dùng để kiểm tra xem một tệp cấu hình bí mật có thiết lập POSIX Access Control List (ACL) mở rộng hay không?",
+          "command": "getfacl /path/to/file\n# Hoặc quan sát dấu cộng (+) ở cuối chuỗi quyền: ls -l /path/to/file",
+          "explanation": "Lệnh getfacl đọc trực tiếp bảng điều khiển truy cập mở rộng của tệp. Dấu cộng (+) ở cuối cột quyền trong ls -l là dấu hiệu trực quan báo hiệu file có cấu hình ACL."
+        },
+        {
+          "question": "Viết câu lệnh một dòng kết hợp awk để tính tổng dung lượng (cột thứ 5 trong ls -l) của toàn bộ các file trong thư mục /var/log và in ra kết quả bằng đơn vị Megabytes.",
+          "command": "ls -l /var/log | awk 'NR > 1 {sum += $5} END {printf \"Tong dung luong: %.2f MB\\n\", sum / (1024*1024)}'",
+          "explanation": "awk bỏ qua dòng đầu tiên (NR > 1), cộng dồn giá trị byte ở cột 5 vào biến sum, và tại khối END thực hiện phép chia cho 1024*1024 để in ra số MB với 2 chữ số thập phân."
+        }
+      ],
       "summary": [
         "Bảng tra cứu nhanh Cấp 2 giúp kỹ sư hệ thống tra cứu thần tốc cú pháp regex, đường ống pipe và lệnh socket.",
         "Nắm vững các thuật ngữ cốt lõi: Inode, umask, ACL, SUID/SGID, Graceful Shutdown và Open File Descriptor.",
         "Tích hợp các kỹ năng Cấp 2 để vận hành dịch vụ máy chủ ổn định, an toàn và tự động hóa cao."
-      ]
+      ],
+      "callouts": {
+        "pitfalls": [
+          {
+            "title": "Chạy sed -i trên file symlink làm biến liên kết thành file thường",
+            "content": "Mặc định <code>sed -i</code> sẽ xóa file symlink và tạo ra một file vật lý mới độc lập cùng tên! Điều này làm đứt gãy kiến trúc liên kết symlink trong hệ thống. Luôn truyền thêm cờ <code>--follow-symlinks</code> nếu bạn muốn sửa trực tiếp file đích thông qua symlink."
+          },
+          {
+            "title": "Khởi động lại máy chủ ngay sau khi sửa file /etc/fstab",
+            "content": "Không bao giờ được phép reboot máy chủ khi vừa sửa fstab mà chưa chạy lệnh <code>sudo mount -a</code>. Một lỗi cú pháp nhỏ sẽ khiến máy chủ không thể khởi động lại qua mạng và bạn sẽ mất quyền truy cập SSH."
+          }
+        ],
+        "tips": [
+          {
+            "title": "Sử dụng tldr để tra cứu nhanh cờ lệnh xargs, find, awk",
+            "content": "Khi quên cú pháp phức tạp của awk hay xargs, gõ <code>tldr xargs</code> hoặc <code>tldr find</code> để nhận ngay các ví dụ thực chiến thông dụng nhất."
+          },
+          {
+            "title": "Tạo snapshot VM trước khi bước sang Cấp 3",
+            "content": "Kết thúc Cấp 2, bạn đã nắm vững quản trị hệ thống và shell scripting. Hãy tạo một Snapshot VM mang tên 'Cap2-Completed' để chuẩn bị cho Cấp 3 học về LVM, Tường lửa nftables và SELinux/AppArmor."
+          }
+        ]
+      }
     }
   ]
 };

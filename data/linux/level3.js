@@ -1,8 +1,3 @@
-/**
- * Dữ liệu Giáo trình Linux Thực chiến & Nội bộ HĐH: CẤP 3 – NÂNG CAO (QUẢN TRỊ THỰC CHIẾN)
- * Thiết kế cho lập trình viên Python & kỹ sư vận hành hệ thống (DevOps/SysAdmin/SRE)
- */
-
 window.LX_LEVEL3_DATA = {
   "id": "part-lx-3",
   "number": "Cấp 3",
@@ -15,1263 +10,1249 @@ window.LX_LEVEL3_DATA = {
       "id": "lx-3-01",
       "number": "3.1",
       "title": "Quản trị Dịch vụ chuyên sâu với systemd: Viết Service Unit & Timer Unit thay thế Cron",
-      "subtitle": "Chuyển đổi toàn diện sang kiến trúc quản lý dịch vụ hiện đại, tự khởi động lại khi crash, quản lý phụ thuộc và lập lịch chuẩn xác",
+      "subtitle": "Làm chủ init system tiêu chuẩn của Linux: Đóng gói ứng dụng Python chuẩn production, cô lập sandbox bảo mật và tự động hóa tác vụ định kỳ",
       "level": "Nâng cao",
       "duration": "55 phút",
       "requiresRoot": true,
       "requiresVM": true,
       "objectives": [
-        "Viết tệp Service Unit hoàn chỉnh (/etc/systemd/system/myapp.service): cấu hình Type, ExecStart, Restart, User, EnvironmentFile.",
-        "Làm chủ các cơ chế bảo mật sandbox tích hợp của systemd: ProtectSystem, ProtectHome, PrivateTmp, NoNewPrivileges để cô lập dịch vụ.",
-        "Thiết lập Timer Unit (OnCalendar) thay thế toàn diện Cron với khả năng ghi log tập trung qua journald và cơ chế bù phiên lỡ (Persistent=true).",
-        "Nắm vững các câu lệnh quản trị: systemctl daemon-reload, list-timers, edit, reset-failed."
+        "Viết tệp Service Unit hoàn chỉnh (/etc/systemd/system/myapp.service): cấu hình chính xác Type, ExecStart, Restart, User, EnvironmentFile và thứ tự phụ thuộc After/Requires.",
+        "Làm chủ các cơ chế sandbox bảo mật tích hợp của systemd: ProtectSystem=strict, ProtectHome=yes, PrivateTmp=yes, NoNewPrivileges=yes nhằm giới hạn đặc quyền dịch vụ theo chuẩn CIS Benchmark.",
+        "Thiết lập Timer Unit (OnCalendar) thay thế toàn diện Cron truyền thống với khả năng bù phiên lỡ (Persistent=true), điều phối độ chính xác (AccuracySec) và ghi vết log tập trung.",
+        "Sử dụng thành thạo các câu lệnh vận hành: systemd-analyze verify kiểm tra cú pháp, systemctl daemon-reload, systemctl edit tạo drop-in override, và systemctl reset-failed xóa trạng thái lỗi."
       ],
       "intuition": {
         "title": "Quản gia trực chiến 24/7 và Đồng hồ báo thức lưu vết",
-        "metaphor": "Chạy ứng dụng bằng cách gõ lệnh `python main.py &` trong terminal giống như thuê một người làm công nhật: hễ cúp điện hay người đó bị ngất (crash), công việc sẽ dừng vĩnh viễn cho đến khi bạn phát hiện ra. systemd giống như một người quản gia chuyên nghiệp túc trực 24/7: nếu ứng dụng Python bị lỗi sập, quản gia lập tức hồi sinh nó chỉ sau 3 giây (Restart=always). Timer Unit của systemd giống như chiếc đồng hồ có bộ nhớ: nếu máy chủ bị tắt vào đúng thời điểm 3h sáng đặt lịch, ngay khi máy bật lại vào sáng hôm sau, chiếc đồng hồ sẽ kiểm tra và lập tức bù lại phiên sao lưu đã bị lỡ (Persistent=true) — điều mà cron cổ điển hoàn toàn bất lực.",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>⚙️</span>\n                    <span>CẤU TRÚC SERVICE</span>\n                    <span class=\"lx-vs-tag\">3 Khối chính</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>[Unit]:</strong> Mô tả dịch vụ, thứ tự khởi động (After=network.target) và điều kiện phụ thuộc (Wants/Requires).</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>[Service]:</strong> Lệnh thực thi (ExecStart), tài khoản chạy (User/Group), chính sách phục hồi (Restart=always) và biến môi trường.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>[Install]:</strong> Điểm gắn kết (WantedBy=multi-user.target) để systemctl enable biết khi nào cần tự kích hoạt lúc khởi động máy.</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>⏱️</span>\n                    <span>TIMER vs CRONTAB</span>\n                    <span class=\"lx-vs-tag\">Ưu thế Timer</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Ghi log tập trung:</strong> Toàn bộ output của Timer tự động đẩy vào journalctl của Service tương ứng, không sợ mất log.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Bù phiên lỡ (Persistent=true):</strong> Chạy bù tác vụ nếu thời điểm kích hoạt máy chủ đang tắt.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Quản lý phụ thuộc:</strong> Timer có thể chờ mạng sẵn sàng mới chạy tác vụ sao lưu qua mạng.</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "metaphor": "Nếu Cron giống như một chiếc đồng hồ báo thức cơ học đơn giản (chỉ reng chuông đúng giờ rồi mặc kệ kết quả, nếu mất điện đúng lúc thì mất luôn phiên báo thức), thì systemd Timer + Service giống như một quản gia thông minh: nếu máy chủ bị tắt nguồn vào thời điểm hẹn, quản gia sẽ ghi nhớ và chạy bù ngay khi máy khởi động lại (Persistent=true). Khi dịch vụ gặp sự cố sập (crash), quản gia lập tức can thiệp khởi động lại tự động theo chiến lược đặt trước, đồng thời lưu lại từng dòng nhật ký chi tiết vào hộp đen hệ thống (journald).",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Kiến trúc Quản lý Dịch vụ & Timer của systemd</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:12px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:6px;padding:10px;\">\n        <span style=\"color:#2563eb;font-weight:bold;\">[Timer Unit] /etc/systemd/system/backup.timer</span><br/>\n        ├── <code>OnCalendar=*-*-* 02:00:00</code> (Kích hoạt lúc 02:00 hàng ngày)<br/>\n        ├── <code>Persistent=true</code> (Bù phiên nếu máy chủ tắt nguồn lúc 02:00)<br/>\n        └── Trỏ tự động tới Service cùng tên: <code>backup.service</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Kích hoạt tự động)</div>\n      <div style=\"background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:10px;\">\n        <span style=\"color:#10b981;font-weight:bold;\">[Service Unit] /etc/systemd/system/backup.service</span><br/>\n        ├── <code>[Unit]</code>: Mô tả dịch vụ, thứ tự khởi động (<code>After=network.target</code>)<br/>\n        ├── <code>[Service]</code>: Thực thi lệnh (<code>ExecStart</code>), Chạy dưới user riêng, Sandbox bảo mật<br/>\n        │   ├── <code>NoNewPrivileges=yes</code> &amp; <code>ProtectSystem=strict</code> (Không leo quyền, chỉ đọc hệ thống)<br/>\n        │   └── <code>Restart=on-failure</code> &amp; <code>RestartSec=5s</code> (Tự phục hồi nếu crash)<br/>\n        └── <code>[Install]</code>: Kích hoạt khi boot (<code>WantedBy=multi-user.target</code>)\n      </div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-1-service-file",
-          "title": "1. Mẫu tệp Service Unit chuẩn công nghiệp cho ứng dụng Python FastAPI / Django",
-          "content": "\n                  <p>Mọi tệp Service Unit tùy biến của quản trị viên bắt buộc phải đặt trong thư mục <code>/etc/systemd/system/</code> (không đặt trong <code>/lib/systemd/system/</code> vì thư mục đó do trình quản lý gói APT/DNF quản lý, có thể bị ghi đè khi cập nhật).</p>\n                  <p>Các chỉ thị quan trọng nhất trong khối <code>[Service]</code>:</p>\n                  <ul>\n                    <li><code>Type=simple</code>: Phù hợp nhất cho các ứng dụng Python (Uvicorn, Gunicorn, Celery) không tự fork tiến trình ngầm. Tiến trình được gọi bởi <code>ExecStart</code> chính là tiến trình dịch vụ chính.</li>\n                    <li><code>ExecStart</code>: Đường dẫn tuyệt đối tới file thực thi (ví dụ: <code>/opt/my_app/venv/bin/uvicorn main:app ...</code>). <strong>Không bao giờ dùng đường dẫn tương đối!</strong></li>\n                    <li><code>Restart=always</code>: Luôn tự động bật lại ứng dụng khi bị sập (dù crash do lỗi mã nguồn, do OOM Killer tiêu diệt hay do ngoại lệ không bắt được).</li>\n                    <li><code>RestartSec=3s</code>: Khoảng thời gian chờ 3 giây trước khi khởi động lại để tránh làm nghẽn CPU nếu ứng dụng bị crash-loop liên tục.</li>\n                    <li><code>EnvironmentFile</code>: Nạp các biến môi trường bí mật (SECRET_KEY, DATABASE_URL) từ một file riêng biệt có phân quyền <code>600</code>.</li>\n                  </ul>\n                ",
+          "title": "1. Tệp Service Unit chuẩn công nghiệp & Cơ chế Sandbox Bảo mật",
+          "content": "\n        <p>Trong môi trường production, chạy ứng dụng Python qua <code>nohup python main.py &amp;</code> hoặc <code>screen/tmux</code> là điều cấm kỵ vì thiếu khả năng tự phục hồi khi crash, không có giới hạn tài nguyên và không thể kiểm soát vòng đời tiến trình. <strong>systemd</strong> (PID 1) là hệ thống init và quản lý dịch vụ chuẩn mực trên hầu hết các bản phân phối Linux hiện đại (Debian, Ubuntu, RHEL, CentOS, Rocky Linux, Fedora, Arch Linux).</p>\n        \n        <p>Vị trí các tệp Unit trong hệ thống được phân cấp theo độ ưu tiên rõ ràng:</p>\n        <ul>\n          <li><code>/lib/systemd/system/</code> hoặc <code>/usr/lib/systemd/system/</code>: Do các gói phần mềm cài đặt (apt, dnf) tạo ra. Không bao giờ sửa trực tiếp file trong thư mục này vì sẽ bị ghi đè khi cập nhật gói.</li>\n          <li><code>/run/systemd/system/</code>: Các Unit động sinh ra lúc runtime trong bộ nhớ RAM (mất khi reboot).</li>\n          <li><code>/etc/systemd/system/</code>: <strong>Nơi quản trị viên hệ thống đặt các file dịch vụ tự tạo hoặc ghi đè</strong>. Thư mục này có độ ưu tiên cao nhất!</li>\n        </ul>\n\n        <h3 class=\"lx-h3\">Bảng phân tích các chỉ thị cốt lõi trong Service Unit</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Chỉ thị</th>\n              <th>Khối (Section)</th>\n              <th>Mục đích</th>\n              <th>Giá trị khuyến nghị Production</th>\n              <th>Lưu ý an toàn</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>Description</code></td>\n              <td>[Unit]</td>\n              <td>Mô tả ngắn gọn mục đích dịch vụ</td>\n              <td><code>FastAPI Order Processing Service</code></td>\n              <td>Giúp nhận diện dịch vụ trong log và status.</td>\n            </tr>\n            <tr>\n              <td><code>After</code> / <code>Requires</code></td>\n              <td>[Unit]</td>\n              <td>Quy định thứ tự và phụ thuộc</td>\n              <td><code>After=network.target postgresql.service</code></td>\n              <td><code>Requires</code> làm dịch vụ sập nếu dịch vụ phụ thuộc sập; <code>Wants</code> an toàn hơn (chỉ cố gắng start).</td>\n            </tr>\n            <tr>\n              <td><code>Type</code></td>\n              <td>[Service]</td>\n              <td>Kiểu tiến trình dịch vụ</td>\n              <td><code>exec</code> (hoặc <code>simple</code> / <code>notify</code>)</td>\n              <td><code>exec</code> đợi tiến trình chính exec thành công mới báo active, tránh race condition.</td>\n            </tr>\n            <tr>\n              <td><code>User</code> / <code>Group</code></td>\n              <td>[Service]</td>\n              <td>Chạy dịch vụ dưới danh tính tối thiểu</td>\n              <td><code>appuser</code> / <code>appuser</code></td>\n              <td><strong>Cấm chạy dịch vụ web bằng quyền root!</strong> Tuân thủ CIS Linux Benchmark.</td>\n            </tr>\n            <tr>\n              <td><code>Restart</code></td>\n              <td>[Service]</td>\n              <td>Chính sách tự phục hồi khi chết</td>\n              <td><code>on-failure</code> hoặc <code>always</code></td>\n              <td><code>on-failure</code> chỉ restart khi thoát với mã lỗi khác 0 hoặc dính tín hiệu (SIGSEGV, SIGABRT).</td>\n            </tr>\n            <tr>\n              <td><code>ProtectSystem</code></td>\n              <td>[Service]</td>\n              <td>Sandbox bảo vệ hệ thống file</td>\n              <td><code>strict</code> hoặc <code>full</code></td>\n              <td><code>strict</code> biến toàn bộ hệ thống file thành Read-Only, chỉ cho phép ghi vào thư mục chỉ định qua <code>ReadWritePaths=</code>.</td>\n            </tr>\n            <tr>\n              <td><code>PrivateTmp</code></td>\n              <td>[Service]</td>\n              <td>Cô lập thư mục tạm /tmp</td>\n              <td><code>yes</code></td>\n              <td>Tạo một namespace /tmp riêng biệt, ngăn chặn tiến trình đọc trộm dữ liệu /tmp của dịch vụ khác.</td>\n            </tr>\n            <tr>\n              <td><code>NoNewPrivileges</code></td>\n              <td>[Service]</td>\n              <td>Chống leo thang đặc quyền</td>\n              <td><code>yes</code></td>\n              <td>Ngăn tiến trình con thực thi các file SUID/SGID để chiếm quyền root.</td>\n            </tr>\n          </tbody>\n        </table>\n      ",
           "codeExamples": [
             {
-              "lang": "Ini",
-              "title": "Tệp cấu hình /etc/systemd/system/fastapi_app.service chuẩn Production",
-              "code": "[Unit]\nDescription=FastAPI Production Backend Application\nAfter=network.target postgresql.service\nWants=postgresql.service\n\n[Service]\nType=simple\nUser=www-data\nGroup=www-data\nWorkingDirectory=/opt/fastapi_app\nEnvironmentFile=/opt/fastapi_app/.env.production\nExecStart=/opt/fastapi_app/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 4\nExecReload=/bin/kill -HUP $MAINPID\n\n# Cơ chế tự phục hồi\nRestart=always\nRestartSec=3s\nKillMode=mixed\nTimeoutStopSec=30s\n\n# Sandbox bảo mật cô lập\nProtectSystem=strict\nProtectHome=true\nPrivateTmp=true\nNoNewPrivileges=true\nReadWritePaths=/opt/fastapi_app/logs /opt/fastapi_app/media\n\n[Install]\nWantedBy=multi-user.target",
+              "title": "Tệp Service Unit /etc/systemd/system/fastapi_app.service gia cố bảo mật",
+              "lang": "ini",
+              "code": "# /etc/systemd/system/fastapi_app.service\n[Unit]\nDescription=FastAPI Production Backend Service\nAfter=network.target\nWants=network.target\n\n[Service]\nType=exec\nUser=appuser\nGroup=appuser\nWorkingDirectory=/opt/fastapi_app\nEnvironmentFile=/opt/fastapi_app/.env\nExecStart=/opt/fastapi_app/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000 --workers 4\nExecReload=/bin/kill -s HUP $MAINPID\n\n# Chính sách tự phục hồi khi sập\nRestart=on-failure\nRestartSec=5s\nStartLimitIntervalSec=60s\nStartLimitBurst=3\n\n# Sandbox gia cố bảo mật chuẩn CIS Benchmark & NIST SP 800-53\nNoNewPrivileges=yes\nProtectSystem=strict\nProtectHome=yes\nPrivateTmp=yes\nReadWritePaths=/opt/fastapi_app/logs /opt/fastapi_app/media\nCapabilityBoundingSet=\nMemoryMax=1G\nCPUQuota=150%\n\n[Install]\nWantedBy=multi-user.target",
+              "output": "# Kiểm tra cú pháp tệp unit bằng systemd-analyze:\n$ sudo systemd-analyze verify /etc/systemd/system/fastapi_app.service\n(Không có thông báo lỗi nào xuất hiện = Cú pháp chuẩn xác 100%)\n\n# Nạp lại cấu hình và khởi động:\n$ sudo systemctl daemon-reload\n$ sudo systemctl enable --now fastapi_app.service\nCreated symlink /etc/systemd/system/multi-user.target.wants/fastapi_app.service → /etc/systemd/system/fastapi_app.service.\n\n$ sudo systemctl status fastapi_app.service\n● fastapi_app.service - FastAPI Production Backend Service\n     Loaded: loaded (/etc/systemd/system/fastapi_app.service; enabled; preset: enabled)\n     Active: active (running) since Wed 2026-11-04 08:15:20 UTC; 4s ago\n   Main PID: 28415 (uvicorn)\n      Tasks: 5 (limit: 4614)\n     Memory: 84.2M (peak: 86.1M, max: 1.0G)\n        CPU: 420ms\n     CGroup: /system.slice/fastapi_app.service\n             ├─28415 /opt/fastapi_app/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000 --workers 4\n             ├─28417 /opt/fastapi_app/venv/bin/python3 -c from multiprocessing.resource_tracker import main...\n             ├─28418 /opt/fastapi_app/venv/bin/python3 -c from multiprocessing.spawn import spawn_main...\n             ├─28419 /opt/fastapi_app/venv/bin/python3 -c from multiprocessing.spawn import spawn_main...\n             └─28420 /opt/fastapi_app/venv/bin/python3 -c from multiprocessing.spawn import spawn_main...",
               "annotations": [
-                {
-                  "line": 3,
-                  "part": "After=network.target postgresql.service",
-                  "text": "Đảm bảo card mạng và dịch vụ Database PostgreSQL đã khởi động xong xuôi thì mới bật ứng dụng Python."
-                },
-                {
-                  "line": 8,
-                  "part": "User=www-data",
-                  "text": "Nguyên tắc bảo mật: Không bao giờ chạy ứng dụng web dưới quyền root! Dùng tài khoản người dùng dịch vụ hạn chế quyền."
-                },
-                {
-                  "line": 15,
-                  "part": "Restart=always",
-                  "text": "Tự động khởi động lại tiến trình ngay lập tức nếu bị sập bất kể lý do gì."
-                },
-                {
-                  "line": 21,
-                  "part": "ProtectSystem=strict",
-                  "text": "Cơ chế bảo mật systemd: Khóa toàn bộ hệ thống file /usr, /boot, /etc thành chỉ đọc (Read-Only) đối với ứng dụng; chỉ cho phép ghi vào các thư mục khai báo trong ReadWritePaths."
-                }
-              ],
-              "output": ""
+                "Dòng 13: Type=exec đảm bảo systemd giám sát trực tiếp PID uvicorn và chỉ chuyển trạng thái active khi tiến trình đã sẵn sàng nhận kết nối.",
+                "Dòng 19-21: StartLimitBurst=3 ngăn chặn vòng lặp restart vô tận làm nghẽn CPU nếu code có lỗi cú pháp không thể khởi động được.",
+                "Dòng 24-29: ProtectSystem=strict kết hợp ReadWritePaths khóa chặt toàn bộ filesystem, hacker dù chèn mã độc vào app cũng không thể ghi đè file hệ thống.",
+                "Dòng 30: MemoryMax=1G áp dụng cgroups v2 để tự động ngắt tiến trình nếu bị rò rỉ bộ nhớ vượt trần 1GB, bảo vệ tài nguyên máy chủ."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-1-timer-unit",
-          "title": "2. Viết Timer Unit thay thế toàn diện Cron truyền thống",
-          "content": "\n                  <p>Để lập lịch tác vụ bằng systemd, bạn tạo một cặp gồm 2 tệp có cùng tên trong <code>/etc/systemd/system/</code>:</p>\n                  <ol>\n                    <li><code>backup_db.service</code>: Định nghĩa lệnh cần chạy (không cần khối <code>[Install]</code> vì Timer sẽ kích hoạt nó). Thường đặt <code>Type=oneshot</code>.</li>\n                    <li><code>backup_db.timer</code>: Định nghĩa mốc thời gian kích hoạt.</li>\n                  </ol>\n                  <p>Cú pháp lịch biểu <code>OnCalendar</code>: <code>DayOfWeek Year-Month-Day Hour:Minute:Second</code></p>\n                  <ul>\n                    <li><code>OnCalendar=*-*-* 03:00:00</code>: Chạy vào lúc 03:00:00 sáng mỗi ngày.</li>\n                    <li><code>OnCalendar=Mon *-*-* 01:00:00</code>: Chạy vào lúc 01:00:00 sáng mỗi thứ Hai.</li>\n                    <li><code>OnCalendar=*:0/15</code>: Chạy mỗi 15 phút một lần.</li>\n                    <li><code>Persistent=true</code>: <strong>Bù phiên lỡ sống còn</strong> — nếu máy chủ bị tắt nguồn vào đúng giờ hẹn, ngay khi khởi động lại, systemd sẽ kích hoạt chạy bù tác vụ ngay lập tức!</li>\n                  </ul>\n                ",
+          "title": "2. Thay thế Cron toàn diện bằng Timer Unit (OnCalendar & Persistent)",
+          "content": "\n        <p>Mặc dù <code>cron</code> đã phục vụ thế giới Linux hàng chục năm, nhưng trong hạ tầng hiện đại, <strong>systemd Timer</strong> là sự thay thế vượt trội hoàn toàn nhờ 4 ưu điểm quyết định:</p>\n        <ol>\n          <li><strong>Bù phiên lỡ hẹn (<code>Persistent=true</code>):</strong> Nếu máy chủ bị tắt nguồn hoặc bảo trì đúng lúc cron job cần chạy (ví dụ 02:00 sáng), Cron sẽ bỏ qua vĩnh viễn phiên đó. Timer với <code>Persistent=true</code> sẽ nhận diện sự kiện bị lỡ và kích hoạt chạy ngay khi máy chủ khởi động lại!</li>\n          <li><strong>Ghi log tập trung có cấu trúc:</strong> Cron đẩy output qua mail cục bộ (thường bị bỏ quên) hoặc file log rời rạc. Timer gắn liền với Service Unit nên toàn bộ stdout/stderr được chuyển tự động vào <code>journald</code> kèm metadata thời gian chính xác tới microsecond.</li>\n          <li><strong>Quản lý độc lập và phụ thuộc:</strong> Bạn có thể kiểm tra trạng thái tiến trình chạy định kỳ bằng <code>systemctl status</code>, thiết lập giới hạn RAM/CPU, và chạy thử thủ công bất kỳ lúc nào bằng <code>systemctl start [service-name]</code>.</li>\n          <li><strong>Độ trễ ngẫu nhiên chống quá tải (<code>RandomizedDelaySec</code>):</strong> Khi có hàng trăm container/máy chủ cùng chạy backup vào 02:00, RandomizedDelaySec phân tán thời điểm kích hoạt ngẫu nhiên để tránh làm sập Storage Network.</li>\n        </ol>\n\n        <h3 class=\"lx-h3\">Cú pháp biểu thức OnCalendar chuẩn mực</h3>\n        <p>Cú pháp lịch biểu của systemd có dạng: <code>Thứ_trong_tuần Năm-Tháng-Ngày Giờ:Phút:Giây</code> (ví dụ: <code>Mon..Fri *-*-* 03:30:00</code> chạy 03:30 từ Thứ Hai đến Thứ Sáu). Bạn có thể kiểm tra tính hợp lệ của bất kỳ biểu thức lịch biểu nào bằng lệnh <code>systemd-analyze calendar \"cú_pháp\"</code>.</p>\n      ",
           "codeExamples": [
             {
-              "lang": "Ini",
               "title": "Cặp tệp sao lưu tự động /etc/systemd/system/backup_db.{service,timer}",
-              "code": "# Tệp 1: /etc/systemd/system/backup_db.service\n[Unit]\nDescription=Daily Database Backup Service\n\n[Service]\nType=oneshot\nUser=postgres\nExecStart=/opt/scripts/backup_postgres.sh\nStandardOutput=journal\nStandardError=journal\n\n---\n# Tệp 2: /etc/systemd/system/backup_db.timer\n[Unit]\nDescription=Daily Database Backup Timer (03:00 AM)\n\n[Timer]\nOnCalendar=*-*-* 03:00:00\nPersistent=true\nRandomizedDelaySec=300\n\n[Install]\nWantedBy=timers.target",
+              "lang": "ini",
+              "code": "# 1. Tệp Service thực thi: /etc/systemd/system/backup_db.service\n[Unit]\nDescription=Database Daily Backup Job\nAfter=network.target postgresql.service\n\n[Service]\nType=oneshot\nUser=postgres\nExecStart=/usr/local/bin/backup_postgres.sh\nStandardOutput=journal\nStandardError=journal\n\n---\n# 2. Tệp Timer điều phối thời gian: /etc/systemd/system/backup_db.timer\n[Unit]\nDescription=Trigger Database Daily Backup at 02:30 AM\nRequires=backup_db.service\n\n[Timer]\n# Chạy lúc 02:30 sáng mỗi ngày\nOnCalendar=*-*-* 02:30:00\n# Bù phiên chạy ngay lập tức nếu máy chủ bị tắt vào thời điểm 02:30\nPersistent=true\n# Độ chính xác kích hoạt trong vòng 1 giây\nAccuracySec=1s\n# Phân tán ngẫu nhiên tối đa 5 phút để tránh nghẽn I/O đồng loạt\nRandomizedDelaySec=5m\n\n[Install]\nWantedBy=timers.target",
+              "output": "# Kiểm tra tính hợp lệ của biểu thức lịch biểu OnCalendar:\n$ systemd-analyze calendar \"*-*-* 02:30:00\"\n  Normalized form: *-*-* 02:30:00\n    Next elapse: Thu 2026-11-05 02:30:00 UTC\n       From now: 18h left\n\n# Kích hoạt và theo dõi Timer:\n$ sudo systemctl daemon-reload\n$ sudo systemctl enable --now backup_db.timer\nCreated symlink /etc/systemd/system/timers.target.wants/backup_db.timer → /etc/systemd/system/backup_db.timer.\n\n$ systemctl list-timers backup_db.timer\nNEXT                         LEFT          LAST PASSED UNIT             ACTIVATES\nThu 2026-11-05 02:33:14 UTC  18h left      n/a  n/a    backup_db.timer  backup_db.service\n\n1 timers listed.",
               "annotations": [
-                {
-                  "line": 6,
-                  "part": "Type=oneshot",
-                  "text": "Thích hợp cho tác vụ chạy một lần rồi thoát thay vì tiến trình chạy nền liên tục."
-                },
-                {
-                  "line": 17,
-                  "part": "OnCalendar=*-*-* 03:00:00",
-                  "text": "Mốc thời gian kích hoạt: 3 giờ sáng mỗi ngày."
-                },
-                {
-                  "line": 18,
-                  "part": "Persistent=true",
-                  "text": "Kích hoạt chạy bù phiên sao lưu nếu vào thời điểm 3h sáng máy chủ đang bảo trì hoặc tắt nguồn."
-                },
-                {
-                  "line": 19,
-                  "part": "RandomizedDelaySec=300",
-                  "text": "Tạo độ trễ ngẫu nhiên từ 0-300 giây để các máy chủ trong cụm không đồng loạt sao lưu cùng 1 giây gây nghẽn mạng."
-                }
-              ],
-              "output": ""
+                "Tệp Service có Type=oneshot: Thích hợp cho các tiến trình chạy xong rồi thoát, systemd sẽ đợi tiến trình kết thúc hoàn toàn.",
+                "Tệp Timer KHÔNG cần khai báo ExecStart: Nó tự động liên kết với tệp .service có cùng tên cơ sở (backup_db).",
+                "Lệnh systemctl list-timers hiển thị thời điểm chạy tiếp theo (NEXT), thời gian còn lại (LEFT) và tệp Service sẽ được kích hoạt."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-1-cli-workflow",
-          "title": "3. Quy trình vận hành và kiểm tra Timer/Service",
-          "content": "\n                  <div class=\"callout-box warning-box\">\n                    <div class=\"callout-title\">⚠️ NGUYÊN TẮC BẮT BUỘC: systemctl daemon-reload</div>\n                    <p>Mỗi khi bạn tạo mới, chỉnh sửa nội dung hoặc xóa bất kỳ file <code>.service</code> hay <code>.timer</code> nào trong <code>/etc/systemd/system/</code>, systemd vẫn giữ cấu hình cũ trong RAM. Bạn <strong>BẮT BUỘC</strong> phải chạy lệnh <code>sudo systemctl daemon-reload</code> để systemd quét lại ổ đĩa và nạp cấu hình mới!</p>\n                  </div>\n                ",
+          "title": "3. Quy trình Vận hành, Ghi đè (Drop-in Override) & Xử lý Trạng thái Lỗi",
+          "content": "\n        <p>Trong vận hành thực tế, khi cần thay đổi biến môi trường, tham số khởi động hoặc tài nguyên của một dịch vụ hệ thống (như Nginx, Docker, PostgreSQL), <strong>không bao giờ sửa trực tiếp tệp gốc trong <code>/lib/systemd/system/</code></strong> vì các bản cập nhật package từ nhà phát triển sẽ đè mất cấu hình của bạn.</p>\n\n        <p>Thay vào đó, chuẩn mực công nghiệp là sử dụng <strong>Drop-in Override Files</strong>. Lệnh <code>sudo systemctl edit [service-name]</code> sẽ tự động tạo thư mục <code>/etc/systemd/system/[service-name].service.d/override.conf</code>. systemd sẽ nạp file gốc trước, sau đó nạp file override đè lên, bảo toàn hoàn hảo các tùy biến của bạn qua mọi lần nâng cấp hệ điều hành.</p>\n\n        <h3 class=\"lx-h3\">Bảng lệnh vận hành systemd thiết yếu</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Lệnh</th>\n              <th>Mục đích</th>\n              <th>Khi nào nên dùng</th>\n              <th>Lưu ý an toàn</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>sudo systemctl daemon-reload</code></td>\n              <td>Tải lại cấu hình tất cả các file unit từ đĩa vào bộ nhớ</td>\n              <td>Bắt buộc sau MỌI thay đổi đối với tệp .service hoặc .timer</td>\n              <td>Không làm khởi động lại dịch vụ đang chạy; chỉ cập nhật định nghĩa trong RAM.</td>\n            </tr>\n            <tr>\n              <td><code>sudo systemctl edit [unit]</code></td>\n              <td>Tạo hoặc chỉnh sửa tệp drop-in override</td>\n              <td>Khi muốn tăng giới hạn file (LimitNOFILE), đổi biến môi trường</td>\n              <td>Để xóa một chỉ thị dạng danh sách (ví dụ ExecStart), cần gán giá trị rỗng trước: <code>ExecStart=</code> rồi mới ghi dòng mới.</td>\n            </tr>\n            <tr>\n              <td><code>systemctl cat [unit]</code></td>\n              <td>In toàn bộ nội dung tệp unit gốc kèm mọi file drop-in override</td>\n              <td>Khi cần điều tra cấu hình thực tế đang áp dụng của dịch vụ</td>\n              <td>Rất nhanh và an toàn, không cần quyền root.</td>\n            </tr>\n            <tr>\n              <td><code>sudo systemctl reset-failed [unit]</code></td>\n              <td>Xóa trạng thái lỗi (failed) của dịch vụ</td>\n              <td>Khi dịch vụ đã được sửa lỗi nhưng vẫn hiển thị trạng thái đỏ 'failed'</td>\n              <td>Không tự động khởi động dịch vụ, chỉ xóa bộ đếm thất bại để cho phép restart lại.</td>\n            </tr>\n          </tbody>\n        </table>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Quy trình kích hoạt và kiểm tra danh sách Timer",
-              "code": "# 1. Quét nạp lại cấu hình sau khi sửa file\nsudo systemctl daemon-reload\n\n# 2. Bật và kích hoạt Timer chạy cùng hệ thống\nsudo systemctl enable --now backup_db.timer\n\n# 3. Liệt kê danh sách tất cả các Timer đang hoạt động và thời điểm chạy tiếp theo\nsystemctl list-timers --all",
+              "title": "Tùy biến tăng giới hạn File Descriptor cho Nginx bằng Drop-in Override",
+              "lang": "bash",
+              "code": "# Mở trình soạn thảo drop-in override cho Nginx:\n# (Lệnh này tự động tạo file /etc/systemd/system/nginx.service.d/override.conf)\n$ sudo systemctl edit nginx\n\n# Nhập nội dung sau vào giữa 2 dòng chú thích:\n### Editing /etc/systemd/system/nginx.service.d/override.conf\n[Service]\nLimitNOFILE=65535\n\n# Lưu và thoát. systemd tự động chạy daemon-reload.\n# Kiểm tra lại toàn bộ cấu hình đã được gộp:\n$ systemctl cat nginx | tail -n 8\n# /etc/systemd/system/nginx.service.d/override.conf\n[Service]\nLimitNOFILE=65535\n\n# Tải lại dịch vụ để áp dụng:\n$ sudo systemctl restart nginx\n$ cat /proc/$(pgrep -f \"nginx: master\")/limits | grep \"Max open files\"\nMax open files            65535                65535                files",
+              "output": "Max open files            65535                65535                files",
               "annotations": [
-                {
-                  "line": 5,
-                  "part": "enable --now",
-                  "text": "Cờ --now cực tiện lợi: vừa bật tự khởi động (enable) vừa kích hoạt chạy ngay lập tức (start)."
-                },
-                {
-                  "line": 8,
-                  "part": "list-timers",
-                  "text": "Xem chính xác còn bao nhiêu tiếng/phút nữa thì tác vụ kế tiếp sẽ được kích hoạt (cột LEFT)."
-                }
-              ],
-              "output": "NEXT                        LEFT          LAST PASSED UNIT                         ACTIVATES\nThu 2026-10-29 03:02:15 UTC 11h left      n/a  n/a    backup_db.timer              backup_db.service\nThu 2026-10-29 06:25:00 UTC 14h left      Wed 17h ago logrotate.timer              logrotate.service"
+                "systemctl edit tạo thư mục override.conf cô lập, giữ nguyên vẹn file gốc /lib/systemd/system/nginx.service.",
+                "LimitNOFILE=65535 nâng trần số lượng kết nối đồng thời mà Nginx có thể xử lý, phá bỏ giới hạn mặc định 1024 file.",
+                "Lệnh kiểm tra /proc/[PID]/limits chứng minh tiến trình worker thực sự đã thừa hưởng giới hạn mới."
+              ]
             }
           ]
         }
       ],
       "scenario": {
-        "title": "Ứng dụng Python bị lỗi kết nối Database làm sập tiến trình vào ban đêm",
-        "content": "\n              <p>Một ứng dụng Python xử lý hàng đợi background worker thỉnh thoảng bị lỗi rớt mạng sang database pool, dẫn tới ném ngoại lệ <code>OperationalError</code> và tiến trình bị sập. Nếu chạy bằng lệnh thông thường hoặc screen, ứng dụng sẽ chết ngắt và hàng ngàn đơn hàng bị ứ đọng suốt đêm.</p>\n              <p><strong>Giải pháp:</strong> Đóng gói ứng dụng vào systemd Service Unit với <code>Restart=always</code> và <code>RestartSec=5s</code>. Khi cơ sở dữ liệu bị ngắt trong 10 giây, worker bị thoát ra nhưng systemd kiên trì thử kết nối lại sau mỗi 5 giây. Ngay khi Database phục hồi, worker tự động sống lại và xử lý hết đơn hàng trong hàng đợi mà không cần bất kỳ sự can thiệp thủ công nào của con người!</p>\n            "
+        "title": "Ứng dụng Python Worker bị lỗi kết nối Database làm sập tiến trình liên tục vào ban đêm",
+        "content": "\n      <p><strong>1. Triệu chứng sự cố:</strong> Vào lúc 03:15 sáng, hệ thống cảnh báo Prometheus gửi tin nhắn khẩn cấp: Hàng đợi xử lý đơn hàng (Celery / Python Worker) bị ứ đọng hoàn toàn. Kỹ sư trực ca đăng nhập SSH kiểm tra thì phát hiện tiến trình worker đã biến mất khỏi hệ thống. Khi chạy <code>systemctl status order-worker</code>, dịch vụ báo đỏ với trạng thái <code>failed (Result: exit-code)</code>.</p>\n      \n      <p><strong>2. Điều tra & Chẩn đoán:</strong></p>\n      <pre><code>$ journalctl -u order-worker.service --since \"03:10:00\" -p err\nNov 04 03:12:45 srv-prod order-worker[14201]: psycopg2.OperationalError: could not connect to server: Connection refused\nNov 04 03:12:45 srv-prod systemd[1]: order-worker.service: Main process exited, code=exited, status=1/FAILURE\nNov 04 03:12:45 srv-prod systemd[1]: order-worker.service: Failed with result 'exit-code'.</code></pre>\n      <p>Log hệ thống chỉ rõ cơ sở dữ liệu PostgreSQL thực hiện sao lưu định kỳ lúc 03:12 khiến kết nối bị ngắt tạm thời trong 15 giây. Ứng dụng Python gặp ngoại lệ không bắt được (unhandled exception) nên ném mã thoát 1 và chết ngắt.</p>\n      \n      <p><strong>3. Nguyên nhân gốc rễ:</strong> Tệp <code>order-worker.service</code> ban đầu do lập trình viên cấu hình thiếu chỉ thị <code>Restart=</code>. Mặc định của systemd là <code>Restart=no</code>, nghĩa là một khi tiến trình thoát ra ngoài (dù do lỗi mạng tạm thời), systemd sẽ không bao giờ tự động khởi động lại nó.</p>\n      \n      <p><strong>4. Biện pháp khắc phục:</strong> Chỉnh sửa cấu hình dịch vụ, bổ sung cơ chế tự phục hồi linh hoạt:</p>\n      <pre><code>$ sudo systemctl edit order-worker.service\n\n# Thêm nội dung cấu hình phục hồi:\n[Service]\nRestart=on-failure\nRestartSec=10s\nStartLimitIntervalSec=120s\nStartLimitBurst=5\n\n$ sudo systemctl daemon-reload\n$ sudo systemctl start order-worker.service</code></pre>\n      <p>Dịch vụ lập tức hồi sinh, kết nối thành công tới Database và dọn sạch hàng nghìn đơn hàng đang tồn đọng trong 3 phút.</p>\n      \n      <p><strong>5. Phòng ngừa lâu dài:</strong> Áp dụng chuẩn kiểm thử <code>systemd-analyze verify</code> và quy định mọi Service Unit chạy trong môi trường production đều bắt buộc phải có <code>Restart=on-failure</code> kèm <code>RestartSec</code> và ngưỡng <code>StartLimitBurst</code> để tự vượt qua các đợt đứt gãy mạng nhất thời.</p>\n    "
       },
       "callouts": {
         "pitfalls": [
           {
-            "title": "Lỗi cấm dùng ký tự đại diện (* hay ~) trong ExecStart",
-            "content": "systemd không chạy qua shell mặc định! Bạn không thể viết <code>ExecStart=python ~/app/main.py</code> (dấu ngã ~ sẽ không được mở rộng). Bắt buộc phải viết đường dẫn tuyệt đối đầy đủ: <code>ExecStart=/usr/bin/python3 /home/ubuntu/app/main.py</code>."
+            "title": "Cấm dùng ký tự đại diện (*, ~) và đường dẫn tương đối trong ExecStart",
+            "content": "systemd KHÔNG thực thi lệnh thông qua Shell (Bash/Sh) mặc định! Nếu bạn viết <code>ExecStart=python ~/app/main.py</code> hoặc <code>ExecStart=source venv/bin/activate &amp;&amp; python main.py</code>, dịch vụ sẽ báo lỗi <em>'Failed to execute command: No such file or directory'</em>. Bắt buộc phải viết đường dẫn tuyệt đối đầy đủ tới trình thông dịch và tệp mã nguồn: <code>ExecStart=/opt/app/venv/bin/python /opt/app/main.py</code>. Nếu bắt buộc cần tính năng shell (như pipe | hay chuyển hướng >), phải gọi tường minh qua shell: <code>ExecStart=/bin/bash -c '...'</code>."
+          },
+          {
+            "title": "Vòng lặp khởi động lại vô tận làm treo máy chủ (Start Loop Crashing)",
+            "content": "Nếu mã nguồn ứng dụng bị lỗi cú pháp nghiêm trọng (SyntaxError) hoặc sai chuỗi kết nối Database, cấu hình <code>Restart=always</code> với <code>RestartSec=0</code> sẽ khiến systemd khởi động lại tiến trình hàng nghìn lần mỗi giây! Hậu quả là CPU chạm trần 100% và file log ngập tràn rác. Luôn luôn cấu hình <code>StartLimitIntervalSec=60s</code> và <code>StartLimitBurst=5</code> (nếu thử khởi động lại 5 lần trong 60 giây đều thất bại thì dừng lại và đánh dấu failed để bảo vệ CPU)."
           }
         ],
         "tips": [
           {
-            "title": "Dùng systemctl edit thay vì sửa trực tiếp file của hệ thống",
-            "content": "Khi muốn tùy biến một dịch vụ có sẵn của hệ điều hành (như Nginx hay Docker), hãy dùng lệnh <code>sudo systemctl edit [service]</code>. systemd sẽ tạo một file drop-in override tại <code>/etc/systemd/system/[service].d/override.conf</code>, giúp cấu hình tùy biến của bạn không bao giờ bị ghi đè khi nâng cấp gói phần mềm."
+            "title": "Dùng systemctl edit thay vì sửa trực tiếp file gốc của hệ thống",
+            "content": "Khi muốn tinh chỉnh bất kỳ dịch vụ nào do apt/dnf quản lý (như sshd, nginx, docker, redis), hãy chạy <code>sudo systemctl edit [service]</code>. systemd sẽ tạo tệp drop-in override tại <code>/etc/systemd/system/[service].service.d/override.conf</code>. Mọi chỉnh sửa của bạn được lưu trữ an toàn và không bao giờ bị mất đi khi nâng cấp gói phần mềm hệ điều hành."
+          },
+          {
+            "title": "Chấm điểm rủi ro an ninh với systemd-analyze security",
+            "content": "Linux cung cấp công cụ tự động kiểm định an ninh cực mạnh: <code>systemd-analyze security [service-name]</code>. Lệnh này sẽ chấm điểm độ an toàn từ 0 (cực kỳ an toàn) đến 10 (rất nguy hiểm) kèm danh sách khuyến nghị chi tiết (ví dụ thiếu <code>PrivateTmp</code>, <code>ProtectSystem</code>, hay <code>NoNewPrivileges</code>). Đây là vũ khí đắc lực để vượt qua các đợt kiểm toán bảo mật chuẩn CIS Benchmark."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Chỉ thị nào trong tệp systemd Service Unit đảm bảo dịch vụ tự động khởi động lại khi tiến trình bị kết thúc với mã lỗi khác 0?",
-          "command": "Restart=on-failure",
-          "explanation": "Restart=on-failure chỉ khởi động lại tiến trình khi nó bị crash hoặc thoát với mã lỗi khác 0 (nếu tiến trình thoát chủ động với mã 0 thì coi là hoàn thành và không khởi động lại)."
+          "question": "Mức 1 (Nhớ / Hiểu): Phân biệt sự khác nhau giữa Restart=always và Restart=on-failure trong tệp systemd Service Unit. Trong trường hợp nào thì Restart=on-failure KHÔNG khởi động lại tiến trình?",
+          "command": "# Kiểm tra mã thoát (exit code) của tiến trình gần nhất:\n$ systemctl status myapp.service | grep \"status=\"\n\n# Thử nghiệm kết thúc tiến trình sạch (clean exit code 0):\n$ sudo systemctl kill -s SIGTERM myapp.service",
+          "explanation": "Restart=always khởi động lại tiến trình trong MỌI trường hợp nó dừng, kể cả khi tiến trình chủ động thoát với mã 0 (thành công). Ngược lại, Restart=on-failure CHỈ khởi động lại khi tiến trình kết thúc bất thường: thoát với mã lỗi khác 0 (exit code != 0), bị kết thúc bởi tín hiệu ngoại lệ (SIGKILL, SIGSEGV, SIGABRT), hoặc vượt quá thời gian timeout. Nếu tiến trình thoát chủ động với mã 0 (clean exit), Restart=on-failure sẽ coi là đã hoàn thành nhiệm vụ và KHÔNG khởi động lại."
+        },
+        {
+          "question": "Mức 2 (Áp dụng / Vận hành): Viết một Timer Unit có tên clean_temp.timer để kích hoạt tệp clean_temp.service vào lúc 03:00 sáng mỗi Chủ Nhật, có tính năng bù phiên nếu máy chủ bị bảo trì tắt nguồn vào thời điểm đó. Kiểm tra tính hợp lệ của biểu thức lịch biểu trước khi áp dụng.",
+          "command": "# 1. Kiểm tra tính hợp lệ của cú pháp lịch biểu:\n$ systemd-analyze calendar \"Sun *-*-* 03:00:00\"\n\n# 2. Tạo nội dung tệp /etc/systemd/system/clean_temp.timer:\n[Unit]\nDescription=Weekly Temporary Files Cleanup Timer\nRequires=clean_temp.service\n\n[Timer]\nOnCalendar=Sun *-*-* 03:00:00\nPersistent=true\nAccuracySec=1s\n\n[Install]\nWantedBy=timers.target\n\n# 3. Nạp và kích hoạt timer:\n$ sudo systemctl daemon-reload\n$ sudo systemctl enable --now clean_temp.timer\n$ systemctl list-timers clean_temp.timer",
+          "explanation": "Biểu thức 'Sun *-*-* 03:00:00' quy định chạy vào ngày Chủ Nhật hàng tuần lúc 03:00 sáng. Chỉ thị Persistent=true đảm bảo ghi lại dấu thời gian thực thi cuối cùng vào đĩa (/var/lib/systemd/timers/); nếu máy chủ bị tắt nguồn vào rạng sáng Chủ Nhật, ngay khi khởi động lại systemd sẽ phát hiện phiên bị lỡ và kích hoạt chạy bù ngay lập tức."
+        },
+        {
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Một dịch vụ Python FastAPI sau khi bật sandbox ProtectSystem=strict và PrivateTmp=yes thì bị sập ngay lập tức với lỗi 'PermissionError: [Errno 30] Read-only file system: /opt/fastapi_app/logs/app.log'. Hãy giải thích nguyên nhân và đưa ra giải pháp khắc phục an toàn chuẩn mực mà không cần hạ thấp mức bảo vệ.",
+          "command": "# 1. Kiểm tra cấu hình hiện tại và log lỗi chi tiết:\n$ journalctl -u fastapi_app.service -n 20 --no-pager\n\n# 2. Sử dụng systemctl edit để cấp quyền ghi có kiểm soát (ReadWritePaths):\n$ sudo systemctl edit fastapi_app.service\n\n# Thêm chỉ định đường dẫn được phép ghi:\n[Service]\nReadWritePaths=/opt/fastapi_app/logs\n\n# 3. Lưu cấu hình và khởi động lại dịch vụ:\n$ sudo systemctl daemon-reload\n$ sudo systemctl restart fastapi_app.service\n$ sudo systemctl status fastapi_app.service",
+          "explanation": "Chỉ thị ProtectSystem=strict áp dụng mount namespace gắn toàn bộ hệ thống file dưới dạng chỉ đọc (Read-Only) đối với tiến trình dịch vụ. Do đó khi ứng dụng cố mở file log ở chế độ ghi, kernel sẽ chặn lại bằng lỗi EROFS (Read-only file system). Giải pháp chuẩn mực của CIS Benchmark không phải là tắt ProtectSystem, mà là khai báo bổ sung chỉ thị 'ReadWritePaths=/opt/fastapi_app/logs'. Điều này cho phép ứng dụng ghi log bình thường vào thư mục riêng nhưng vẫn bị khóa chặt, hoàn toàn không thể chỉnh sửa mã nguồn hoặc các thư mục nhạy cảm khác trên hệ điều hành."
         }
       ],
       "summary": [
-        "systemd Service Unit là chuẩn mực quản lý vòng đời ứng dụng trong sản xuất: hỗ trợ tự phục hồi khi crash và sandbox cô lập bảo mật.",
-        "Timer Unit vượt trội hơn Cron nhờ khả năng bù phiên lỡ (Persistent=true) và tích hợp ghi log tập trung với journald.",
-        "Luôn chạy sudo systemctl daemon-reload mỗi khi thay đổi bất kỳ tệp cấu hình .service hay .timer nào."
+        "systemd (PID 1) là hệ thống init và quản lý dịch vụ chuẩn công nghiệp trên Linux; các tệp cấu hình của quản trị viên luôn đặt tại /etc/systemd/system/.",
+        "Tệp Service Unit đóng gói ứng dụng với Type=exec, User chạy tối thiểu quyền, và cơ chế tự phục hồi Restart=on-failure kèm khoảng trễ RestartSec.",
+        "Gia cố bảo mật sandbox với ProtectSystem=strict, PrivateTmp=yes, NoNewPrivileges=yes cô lập dịch vụ và ngăn chặn leo quyền theo chuẩn CIS Benchmark.",
+        "Timer Unit thay thế hoàn hảo Cron nhờ khả năng bù phiên lỡ hẹn (Persistent=true), độ chính xác cao và tích hợp log tập trung trong journald.",
+        "Luôn dùng systemctl edit (drop-in override) để tùy biến dịch vụ hệ thống, không sửa file gốc của gói để tránh bị ghi đè khi nâng cấp.",
+        "Sau mọi thao tác sửa tệp .service hoặc .timer, bắt buộc phải chạy sudo systemctl daemon-reload để nạp định nghĩa mới vào bộ nhớ."
       ]
     },
     {
       "id": "lx-3-02",
       "number": "3.2",
       "title": "Quản lý Log tập trung, Phân tích sự cố với journalctl & Tối ưu Logrotate",
-      "subtitle": "Kiểm soát vòng đời log hệ thống, truy vết nhanh lỗi theo mốc thời gian và chặn đứng nguy cơ tràn ổ cứng",
+      "subtitle": "Nắm vững kỹ thuật điều tra sự cố số 1 trên Linux: Truy vết nhật ký nhị phân journald, kiểm soát trần dung lượng và xoay vòng file log tự động",
       "level": "Nâng cao",
       "duration": "50 phút",
       "requiresRoot": true,
       "requiresVM": false,
       "objectives": [
-        "Khai thác chuyên sâu journalctl để truy vết sự cố: lọc theo dịch vụ (-u), theo mức độ nghiêm trọng (-p err), theo khoảng thời gian chuẩn ISO, và theo dõi trực tiếp (-f).",
-        "Cấu hình giới hạn trần dung lượng lưu trữ của journald trong /etc/systemd/journald.conf để không bao giờ chiếm quá 10% ổ đĩa.",
-        "Viết tệp cấu hình logrotate chuyên nghiệp trong /etc/logrotate.d/ cho Nginx và ứng dụng web: nén gzip, xoay theo ngày, giữ n bản và gửi tín hiệu reload dịch vụ qua postrotate."
+        "Khai thác chuyên sâu các bộ lọc của journalctl: lọc theo dịch vụ (-u), lọc theo mức độ nghiêm trọng (-p err/warning), lọc mốc thời gian chuẩn ISO (--since/--until), và theo dõi trực tiếp dòng log thời gian thực (-f).",
+        "Hiểu rõ kiến trúc lưu trữ log nhị phân của systemd-journald: cấu hình duy trì log qua các lần reboot (/var/log/journal), giới hạn trần dung lượng lưu trữ (SystemMaxUse=1G) và kỹ thuật dọn dẹp khẩn cấp (--vacuum-size).",
+        "Làm chủ cơ chế hoạt động của Logrotate: phân biệt sự khác biệt sống còn giữa create + postrotate reload và copytruncate, phòng chống rò rỉ file descriptor khiến ổ đĩa vẫn báo đầy 100%.",
+        "Viết và kiểm thử an toàn các tệp cấu hình logrotate trong /etc/logrotate.d/ bằng chế độ chạy thử khô (logrotate -d / dry-run) trước khi áp dụng vào sản xuất."
       ],
       "intuition": {
         "title": "Hộp đen ghi âm buồng lái và Máy nghiền tài liệu định kỳ",
-        "metaphor": "journalctl giống như chiếc hộp đen ghi âm buồng lái máy bay: lưu trữ từng mili-giây mọi biến động, lời gọi lỗi và cảnh báo của toàn bộ hệ thống dưới định dạng nhị phân có index, cho phép bạn tua nhanh tới đúng thời điểm sự cố xảy ra để điều tra. Còn logrotate là nhân viên văn thư cần mẫn: mỗi đêm tự động lấy các tập nhật ký cũ đóng dấu ngày tháng, nén lại thành các file tí hon (.gz) cất vào kho, và tiêu hủy tài liệu cũ quá 14 ngày để ổ cứng máy chủ luôn luôn thông thoáng.",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🔍</span>\n                    <span>LỌC MỨC ĐỘ LOG</span>\n                    <span class=\"lx-vs-tag\">journalctl -p</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>0: emerg</code>, <code>1: alert</code>, <code>2: crit</code>: Thảm họa cấp hạt nhân.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>3: err</code>: Lỗi thực thi nghiêm trọng (kết nối DB chết, crash).</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>4: warning</code>: Cảnh báo tài nguyên (bộ nhớ cao, query chậm).</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>5: notice</code>, <code>6: info</code>, <code>7: debug</code>: Thông tin luồng hoạt động thông thường.</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🔄</span>\n                    <span>VÒNG ĐỜI LOGROTATE</span>\n                    <span class=\"lx-vs-tag\">Xoay &amp; Nén</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>app.log:</strong> File đang được ứng dụng ghi trực tiếp.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>app.log.1:</strong> Đổi tên vào đêm qua, chờ nén.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>app.log.2.gz:</strong> Đã nén gzip tiết kiệm 90% dung lượng.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> Bản sao lưu thứ 15 vượt quá chỉ thị <code>rotate 14</code> sẽ tự động bị xóa sổ!</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "metaphor": "systemd-journald giống như hộp đen ghi âm buồng lái của máy bay: nó thu thập mọi âm thanh, tín hiệu của động cơ và thông báo của phi hành đoàn vào một kho dữ liệu nhị phân thống nhất, có index chỉ mục cực nhanh và chống sửa đổi trái phép. Nhưng nếu không dọn dẹp, hộp đen sẽ chứa đầy thẻ nhớ. Lúc này, Logrotate đóng vai trò như một cỗ máy nghiền tài liệu thông minh: định kỳ nửa đêm, nó tự động nén các tài liệu cũ thành dạng zip gọn nhẹ, lưu trữ đúng 14 ngày rồi tự động tiêu hủy các bản ghi quá hạn để ổ cứng máy chủ luôn luôn thông thoáng.",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Luồng Xử lý Nhật ký: journald &amp; logrotate</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:10px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:6px;padding:8px;\">\n        <strong>1. Ứng dụng / Kernel / Dịch vụ</strong> (stdout, stderr, syslog) ➔ Gửi vào socket <code>/run/systemd/journal/socket</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼</div>\n      <div style=\"background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:8px;\">\n        <strong>2. systemd-journald (Nhật ký nhị phân có index)</strong><br/>\n        ├── Lưu trữ bền vững tại: <code>/var/log/journal/</code> (Giới hạn trần <code>SystemMaxUse=1G</code>)<br/>\n        └── Truy xuất siêu tốc bằng: <code>journalctl -u myapp.service -p err --since \"1 hour ago\"</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Đối với file log truyền thống như Nginx, MySQL, App logs)</div>\n      <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:6px;padding:8px;\">\n        <strong>3. logrotate (Định kỳ hàng ngày qua Cron/Timer)</strong><br/>\n        ├── <code>app.log</code> ➔ Đổi tên thành <code>app.log.1</code> ➔ Tạo mới <code>app.log</code> rỗng<br/>\n        ├── <code>postrotate</code>: Gửi tín hiệu <code>systemctl reload</code> để tiến trình nhả Inode cũ<br/>\n        └── <code>compress</code>: Nén gzip các file từ ngày thứ 2 (<code>app.log.2.gz</code>), giữ lại đúng N ngày\n      </div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-2-journalctl-advanced",
-          "title": "1. Tuyệt kỹ điều tra sự cố bằng journalctl",
-          "content": "\n                  <p>Khi máy chủ gặp sự cố vào một mốc thời gian cụ thể (ví dụ 14:15 đến 14:30), <code>journalctl</code> cho phép bạn cô lập khoảng thời gian đó trong tích tắc:</p>\n                  <ul>\n                    <li><code>journalctl -u my_app --since \"2026-10-28 14:15:00\" --until \"2026-10-28 14:30:00\"</code></li>\n                    <li><code>journalctl -u my_app -p err..emerg</code>: Chỉ lấy log từ cấp độ Error (3) tới Emergency (0).</li>\n                    <li><code>journalctl -k -b</code>: Xem log của riêng nhân Linux (Kernel dmesg) kể từ lần khởi động gần nhất (bắt lỗi phần cứng, OOM Killer).</li>\n                    <li><code>journalctl --disk-usage</code>: Kiểm tra toàn bộ kho log của journald đang chiếm bao nhiêu dung lượng đĩa.</li>\n                    <li><code>sudo journalctl --vacuum-size=500M</code>: Dọn dẹp khẩn cấp, chỉ giữ lại 500MB log gần nhất.</li>\n                  </ul>\n                ",
+          "title": "1. Tuyệt kỹ Điều tra Sự cố Bằng journalctl & Cấu hình Bền vững journald",
+          "content": "\n        <p><strong>journalctl</strong> là giao diện dòng lệnh mạnh mẽ để truy xuất dữ liệu từ nhật ký nhị phân của <code>systemd-journald</code>. Khác với các file log văn bản thuần túy (/var/log/syslog) dễ bị nghẽn I/O khi ghi khối lượng lớn, journald lập chỉ mục (indexing) theo thời gian, tiến trình PID, unit name và syslog priority, giúp việc tìm kiếm hàng triệu dòng log diễn ra chỉ trong vài phần trăm giây.</p>\n\n        <h3 class=\"lx-h3\">Bảng 8 mức độ ưu tiên (Log Priority) chuẩn RFC 5424 trong journald</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Cấp độ (Số)</th>\n              <th>Tên định danh</th>\n              <th>Ý nghĩa thực chiến</th>\n              <th>Ví dụ lệnh truy vết</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><strong>0</strong> / <strong>1</strong></td>\n              <td><code>emerg</code> / <code>alert</code></td>\n              <td>Hệ thống không thể sử dụng được; cần can thiệp khẩn cấp tức thì (Kernel panic, hỏng phần cứng)</td>\n              <td><code>journalctl -p 0..1 -b</code></td>\n            </tr>\n            <tr>\n              <td><strong>2</strong> / <strong>3</strong></td>\n              <td><code>crit</code> / <code>err</code></td>\n              <td>Lỗi nghiêm trọng hoặc lỗi dịch vụ (Database crash, mất kết nối mạng, ném ngoại lệ)</td>\n              <td><code>journalctl -u fastapi_app -p err</code></td>\n            </tr>\n            <tr>\n              <td><strong>4</strong></td>\n              <td><code>warning</code></td>\n              <td>Cảnh báo tài nguyên sắp cạn kiệt, API deprecation, chứng chỉ SSL sắp hết hạn</td>\n              <td><code>journalctl -p warning --since yesterday</code></td>\n            </tr>\n            <tr>\n              <td><strong>5</strong> / <strong>6</strong></td>\n              <td><code>notice</code> / <code>info</code></td>\n              <td>Thông tin vận hành bình thường (Dịch vụ khởi động thành công, người dùng SSH login)</td>\n              <td><code>journalctl -u ssh.service -p info</code></td>\n            </tr>\n            <tr>\n              <td><strong>7</strong></td>\n              <td><code>debug</code></td>\n              <td>Thông tin gỡ lỗi chi tiết cho lập trình viên (rất tốn dung lượng nếu bật thường xuyên)</td>\n              <td><code>journalctl -u myapp -p debug</code></td>\n            </tr>\n          </tbody>\n        </table>\n\n        <h3 class=\"lx-h3\">Cấu hình Bền vững & Giới hạn Dung lượng trong /etc/systemd/journald.conf</h3>\n        <p>Mặc định trên một số bản phân phối, journald chỉ lưu log trên RAM (<code>/run/log/journal/</code>), nghĩa là khi reboot toàn bộ log lịch sử sẽ biến mất! Để lưu bền vững trên đĩa cứng và khống chế dung lượng không ăn mòn ổ đĩa, ta cần cấu hình tệp <code>/etc/systemd/journald.conf</code>:</p>\n        <ul>\n          <li><code>Storage=persistent</code>: Lưu log bền vững vào thư mục <code>/var/log/journal/</code>.</li>\n          <li><code>SystemMaxUse=1G</code>: Giới hạn tối đa journald chỉ được phép sử dụng 1GB trên ổ đĩa. Khi chạm trần, các bản ghi cũ nhất sẽ tự động bị xoay vòng và xóa bỏ.</li>\n          <li><code>SystemKeepFree=2G</code>: Đảm bảo journald luôn nhường lại ít nhất 2GB dung lượng trống cho hệ thống.</li>\n        </ul>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Truy vết và dọn dẹp log hệ thống khẩn cấp",
-              "code": "# 1. Kiểm tra dung lượng log nhị phân journald đang chiếm\njournalctl --disk-usage\n\n# 2. Thu dọn chỉ giữ lại tối đa 500MB log mới nhất\nsudo journalctl --vacuum-size=500M\n\n# 3. Lọc tìm các lần OOM Killer đã tiêu diệt tiến trình trong nhân kernel\njournalctl -k | grep -i 'killed process'",
+              "title": "Truy vết sự cố dịch vụ và Giới hạn dung lượng journald khẩn cấp",
+              "lang": "bash",
+              "code": "# 1. Xem dung lượng log journald hiện tại đang chiếm dụng trên đĩa:\n$ journalctl --disk-usage\nArchived and active journals take up 3.4G in the file system.\n\n# 2. Thu dọn khẩn cấp log cũ, chỉ giữ lại tối đa 500MB hoặc log trong 7 ngày gần nhất:\n$ sudo journalctl --vacuum-size=500M\nVacuuming done, freed 2.9G of archived journals from /var/log/journal/...\n\n# 3. Truy vết lỗi nghiêm trọng (-p err) của ứng dụng Python từ 02:00 sáng đến nay:\n$ journalctl -u fastapi_app.service -p err --since \"2026-11-04 02:00:00\" --no-pager\n\n# 4. Xem log của phiên boot hiện tại (-b) hoặc phiên boot trước đó (-b -1):\n$ journalctl -b -p err..emerg\n\n# 5. Theo dõi dòng log trực tiếp theo thời gian thực (-f) kết hợp định dạng JSON:\n$ journalctl -u fastapi_app.service -f -o json-pretty",
+              "output": "Archived and active journals take up 3.4G in the file system.\nVacuuming done, freed 2.9G of archived journals from /var/log/journal/c9d09c31405b4853b0e3ec8ec494a87a.",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "--disk-usage",
-                  "text": "Biết chính xác lượng dung lượng log đang lưu trong thư mục /var/log/journal/."
-                },
-                {
-                  "line": 5,
-                  "part": "--vacuum-size=500M",
-                  "text": "Lập tức xóa bỏ các file journal cũ cho tới khi tổng dung lượng dưới 500MB."
-                },
-                {
-                  "line": 8,
-                  "part": "journalctl -k",
-                  "text": "Truy vấn log tầng hạt nhân (kernel ring buffer) để phát hiện sự cố cấp phần cứng và bộ nhớ."
-                }
-              ],
-              "output": "Archived and active journals take up 2.4G in the filesystem.\nVacuuming done, freed 1.9G of archived journals from /var/log/journal/.\n[ 8412.102] Out of memory: Killed process 4120 (python3) total-vm:420100kB, anon-rss:380100kB"
+                "journalctl --disk-usage: Kiểm tra ngay tức thì dung lượng thực tế của nhật ký trên đĩa.",
+                "journalctl --vacuum-size=500M: Lệnh cứu nguy cực kỳ hữu dụng khi phân vùng root (/) báo đầy 100%.",
+                "Cờ -p err tương đương -p 3 (lọc toàn bộ log từ cấp độ 0 đến 3: emerg, alert, crit, err).",
+                "Cờ -b -1 giúp điều tra nguyên nhân tại sao máy chủ bị sập hoặc tự reboot ở lần khởi động trước đó."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-2-logrotate-config",
-          "title": "2. Cấu hình xoay vòng log chuẩn mực với Logrotate",
-          "content": "\n                  <p>Mỗi đêm cron/timer kích hoạt <code>logrotate</code> quét các file cấu hình trong <code>/etc/logrotate.d/</code>. Dưới đây là tệp cấu hình mẫu chuẩn công nghiệp cho ứng dụng web:</p>\n                  <p>Giải nghĩa các chỉ thị cốt lõi:</p>\n                  <ul>\n                    <li><code>daily</code>: Xoay vòng file mỗi ngày một lần (có thể dùng <code>weekly</code> hoặc <code>size 100M</code>).</li>\n                    <li><code>rotate 14</code>: Giữ lại tối đa 14 bản sao lưu cũ (tương đương 2 tuần log). Bản thứ 15 sẽ bị xóa.</li>\n                    <li><code>compress</code>: Nén file log cũ bằng <code>gzip</code> (giảm dung lượng từ 1GB xuống còn khoảng 80MB).</li>\n                    <li><code>delaycompress</code>: Trì hoãn nén file của ngày hôm qua (chờ sang ngày hôm kia mới nén) để tránh làm nghẽn tiến trình đang ghi dở.</li>\n                    <li><code>missingok</code>: Nếu file log chưa được tạo ra thì bỏ qua trong yên lặng, không báo lỗi làm gián đoạn kịch bản.</li>\n                    <li><code>notifempty</code>: Nếu file log có kích thước 0 byte thì không thực hiện xoay vòng vô nghĩa.</li>\n                    <li><code>create 0640 www-data adm</code>: Tạo file log mới tinh với phân quyền và chủ sở hữu chỉ định.</li>\n                    <li><code>sharedscripts</code>: Chỉ chạy đoạn script trong <code>postrotate</code> một lần duy nhất sau khi đã xoay vòng xong toàn bộ danh sách file.</li>\n                  </ul>\n                ",
+          "title": "2. Cấu hình Xoay vòng Log chuẩn mực với Logrotate",
+          "content": "\n        <p>Các ứng dụng sinh log dạng tệp văn bản truyền thống (như Nginx tại <code>/var/log/nginx/access.log</code>, MySQL, PostgreSQL, hay ứng dụng Python ghi trực tiếp vào file) không tự động giới hạn kích thước file. Nếu không có cơ chế xoay vòng (rotation), chỉ sau vài tuần file log có thể phình to lên 50GB-100GB, làm tê liệt ổ đĩa hệ thống.</p>\n\n        <p><strong>Logrotate</strong> là tiện ích tiêu chuẩn quản lý vòng đời file log. Nó được kích hoạt định kỳ hàng ngày (thông qua <code>systemd timer: logrotate.timer</code> hoặc <code>/etc/cron.daily/logrotate</code>). Quản trị viên định cấu hình các chính sách xoay vòng bằng cách tạo tệp trong thư mục <code>/etc/logrotate.d/</code>.</p>\n\n        <h3 class=\"lx-h3\">So sánh Cơ chế: create + postrotate vs copytruncate</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Phương pháp</th>\n              <th>Nguyên lý hoạt động</th>\n              <th>Ưu điểm</th>\n              <th>Nhược điểm &amp; Rủi ro</th>\n              <th>Trường hợp áp dụng</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><strong>create + postrotate</strong><br/><em>(Khuyên dùng số 1)</em></td>\n              <td>1. Đổi tên <code>app.log</code> thành <code>app.log.1</code>.<br/>2. Tạo file <code>app.log</code> mới với quyền sở hữu chỉ định.<br/>3. Chạy khối <code>postrotate</code> gửi tín hiệu reload (HUP/USR1) để ứng dụng mở lại file descriptor mới.</td>\n              <td><strong>Tuyệt đối không mất log.</strong> Hiệu năng đọc/ghi cao nhất vì không phải sao chép dữ liệu.</td>\n              <td>Yêu cầu ứng dụng phải hỗ trợ nhận tín hiệu reload (như Nginx, Apache, Syslog).</td>\n              <td>Tất cả các dịch vụ web server, database, daemon hệ thống tiêu chuẩn.</td>\n            </tr>\n            <tr>\n              <td><strong>copytruncate</strong></td>\n              <td>1. Sao chép nội dung <code>app.log</code> sang <code>app.log.1</code>.<br/>2. Cắt cụt (truncate) file gốc về kích thước 0 byte. Không cần reload ứng dụng.</td>\n              <td>Áp dụng được cho mọi phần mềm nguồn đóng hoặc ứng dụng không hỗ trợ tín hiệu reload log.</td>\n              <td><strong>Nguy cơ mất log (Race Condition):</strong> Mọi dòng log được ghi vào file giữa thời điểm hoàn thành copy và thời điểm truncate sẽ bị xóa sổ vĩnh viễn! File log lớn (10GB) copy rất chậm và tốn gấp đôi dung lượng tạm thời.</td>\n              <td>Chỉ dùng khi ứng dụng là phần mềm của bên thứ 3 không thể can thiệp code và không hỗ trợ reload file descriptor.</td>\n            </tr>\n          </tbody>\n        </table>\n      ",
           "codeExamples": [
             {
-              "lang": "Text",
-              "title": "Tệp cấu hình /etc/logrotate.d/fastapi_app",
-              "code": "/var/log/fastapi_app/*.log {\n    daily\n    missingok\n    rotate 14\n    compress\n    delaycompress\n    notifempty\n    create 0640 www-data adm\n    sharedscripts\n    postrotate\n        # Gửi tín hiệu USR1 yêu cầu ứng dụng mở file log mới\n        systemctl kill -s HUP fastapi_app.service >/dev/null 2>&1 || true\n    endscript\n}",
+              "title": "Tệp cấu hình /etc/logrotate.d/fastapi_app chuẩn Production",
+              "lang": "ini",
+              "code": "# /etc/logrotate.d/fastapi_app\n/opt/fastapi_app/logs/*.log {\n    daily\n    missingok\n    rotate 14\n    compress\n    delaycompress\n    notifempty\n    create 0640 appuser appuser\n    sharedscripts\n    postrotate\n        # Gửi tín hiệu SIGHUP cho uvicorn master process để mở lại file log mới\n        systemctl reload fastapi_app.service > /dev/null 2>&1 || true\n    endscript\n}",
+              "output": "# Ý nghĩa từng chỉ thị trong tệp cấu hình:\n# daily:         Xoay vòng file log mỗi ngày 1 lần vào lúc nửa đêm\n# missingok:     Nếu file log không tồn tại thì bỏ qua, không báo lỗi làm gián đoạn cron\n# rotate 14:     Lưu trữ tối đa 14 bản ghi lịch sử, bản thứ 15 sẽ tự động bị xóa vĩnh viễn\n# compress:      Nén các file log lịch sử bằng thuật toán gzip để tiết kiệm tới 90% dung lượng\n# delaycompress: Tạm thời không nén file vừa xoay ngày hôm qua (.1), chỉ nén từ ngày thứ 2 (.2)\n#                để tránh lỗi nếu có tiến trình phụ vẫn đang hoàn tất việc ghi\n# notifempty:    Nếu file log rỗng (0 byte) thì không thực hiện xoay vòng\n# create:        Tạo file log mới ngay lập tức với quyền 0640 thuộc user appuser\n# sharedscripts: Gom toàn bộ các file khớp pattern *.log lại và chỉ thực thi khối postrotate 1 lần duy nhất",
               "annotations": [
-                {
-                  "line": 1,
-                  "part": "/var/log/fastapi_app/*.log",
-                  "text": "Áp dụng cho toàn bộ file đuôi .log trong thư mục log của ứng dụng."
-                },
-                {
-                  "line": 5,
-                  "part": "delaycompress",
-                  "text": "File log.1 để nguyên text cho dễ đọc debug; các file từ log.2 trở đi mới nén .gz."
-                },
-                {
-                  "line": 11,
-                  "part": "postrotate ... endscript",
-                  "text": "Đoạn lệnh shell chạy sau khi đổi tên file log để yêu cầu ứng dụng trỏ sang file log mới."
-                }
-              ],
-              "output": ""
+                "Chỉ thị sharedscripts cực kỳ quan trọng: Nếu có 5 file log trong thư mục, sharedscripts đảm bảo lệnh reload dịch vụ chỉ chạy 1 lần thay vì 5 lần.",
+                "create 0640 appuser appuser: Đảm bảo file log mới sinh ra có đúng quyền hạn, tránh lỗi Permission Denied khiến ứng dụng sập.",
+                "delaycompress là best practice bắt buộc khi ứng dụng vẫn giữ kết nối file cũ trong vài mili-giây sau khi reload."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-2-test-logrotate",
-          "title": "3. Kiểm thử cấu hình Logrotate với Dry-run",
-          "content": "\n                  <p>Trước khi để logrotate tự động chạy vào ban đêm, bạn luôn phải chạy thử nghiệm với cờ <code>-d</code> (Dry-run - gỡ lỗi không thực sự đổi tên file) để đảm bảo không viết sai cú pháp:</p>\n                ",
+          "title": "3. Quy trình Kiểm thử Logrotate An toàn với Chế độ Dry-Run (-d)",
+          "content": "\n        <p>Một lỗi cú pháp nhỏ trong tệp cấu hình logrotate có thể khiến toàn bộ các dịch vụ khác trên máy chủ bị đình trệ quá trình xoay log (vì logrotate xử lý tuần tự toàn bộ các file trong <code>/etc/logrotate.d/</code>). Do đó, nguyên tắc sống còn của kỹ sư hệ thống là: <strong>Luôn luôn chạy thử khô (Dry-run) trước khi áp dụng vào thực tế!</strong></p>\n\n        <h3 class=\"lx-h3\">Bảng cờ kiểm thử của lệnh logrotate</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Cờ (Flag)</th>\n              <th>Tên cờ</th>\n              <th>Mục đích</th>\n              <th>Lưu ý an toàn</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>-d</code></td>\n              <td><code>--debug</code> (Dry-run)</td>\n              <td>Kiểm tra cú pháp và in ra từng bước dự kiến sẽ thực hiện mà <strong>hoàn toàn không sửa đổi file thật trên đĩa</strong>.</td>\n              <td>Tuyệt đối an toàn. Chạy ở mọi thời điểm mà không sợ gián đoạn dịch vụ.</td>\n            </tr>\n            <tr>\n              <td><code>-f</code></td>\n              <td><code>--force</code></td>\n              <td>Bắt buộc xoay vòng log ngay lập tức, bất kể file chưa chạm mốc thời gian (daily) hay dung lượng (size).</td>\n              <td>Có tác động thực tế lên đĩa cứng. Dùng khi cần kiểm tra luồng nén và reload dịch vụ thực tế.</td>\n            </tr>\n            <tr>\n              <td><code>-v</code></td>\n              <td><code>--verbose</code></td>\n              <td>Hiển thị chi tiết từng quyết định của logrotate (tại sao file này được xoay, file kia bị bỏ qua).</td>\n              <td>Thường kết hợp với <code>-d</code> (ví dụ: <code>logrotate -d /etc/logrotate.d/myapp</code>).</td>\n            </tr>\n          </tbody>\n        </table>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Kiểm thử tệp cấu hình logrotate an toàn",
-              "code": "# 1. Chạy thử nghiệm chế độ Dry-run (chỉ in các bước sẽ làm, không sửa file thật)\nsudo logrotate -d /etc/logrotate.d/fastapi_app\n\n# 2. Ép buộc xoay vòng ngay lập tức để kiểm tra kết quả thực tế\nsudo logrotate -f /etc/logrotate.d/fastapi_app\n\n# 3. Kiểm tra danh sách file sau khi xoay vòng\nls -la /var/log/fastapi_app/",
+              "title": "Quy trình kiểm thử tệp cấu hình logrotate an toàn bằng dry-run",
+              "lang": "bash",
+              "code": "# 1. Kiểm thử cú pháp và logic bằng cờ -d (debug / dry-run):\n$ sudo logrotate -d /etc/logrotate.d/fastapi_app\nreading config file /etc/logrotate.d/fastapi_app\nAllocating hash table for state file, size 64 entries\n\nHandling 1 logs\nrotating pattern: /opt/fastapi_app/logs/*.log  after 1 days (14 rotations)\nempty log files are not rotated, old logs are removed\nconsidering log /opt/fastapi_app/logs/access.log\n  log does not need rotating (log has been already rotated)\nconsidering log /opt/fastapi_app/logs/error.log\n  log needs rotating\nrotating log /opt/fastapi_app/logs/error.log, log->rotateCount is 14\nrenaming /opt/fastapi_app/logs/error.log to /opt/fastapi_app/logs/error.log.1\ncreating new /opt/fastapi_app/logs/error.log mode = 0640 uid = 1001 gid = 1001\nrunning shared postrotate script\nrunning script with arg /opt/fastapi_app/logs/*.log: \"\n        systemctl reload fastapi_app.service > /dev/null 2>&1 || true\n\"\n\n# 2. Ép xoay vòng thực tế 1 lần để nghiệm thu (Force run):\n$ sudo logrotate -f /etc/logrotate.d/fastapi_app\n\n# 3. Kiểm tra danh sách file đã được xoay thành công:\n$ ls -lh /opt/fastapi_app/logs/\ntotal 4.2M\n-rw-r----- 1 appuser appuser    0 Nov  4 08:30 access.log\n-rw-r----- 1 appuser appuser 2.8M Nov  4 08:29 access.log.1\n-rw-r----- 1 appuser appuser    0 Nov  4 08:30 error.log\n-rw-r----- 1 appuser appuser 1.4M Nov  4 08:29 error.log.1",
+              "output": "Handling 1 logs\nrotating pattern: /opt/fastapi_app/logs/*.log  after 1 days (14 rotations)\nrenaming /opt/fastapi_app/logs/error.log to /opt/fastapi_app/logs/error.log.1\ncreating new /opt/fastapi_app/logs/error.log mode = 0640 uid = 1001 gid = 1001\nrunning shared postrotate script",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "-d (debug/dry-run)",
-                  "text": "In ra toàn bộ phân tích cú pháp, ngày tháng và quyết định xem file có đủ điều kiện xoay hay không."
-                },
-                {
-                  "line": 5,
-                  "part": "-f (force)",
-                  "text": "Cưỡng chế xoay vòng ngay lập tức bất kể điều kiện thời gian để test thực tế."
-                }
-              ],
-              "output": "reading config file /etc/logrotate.d/fastapi_app\nAllocating hash table for state file, size 64 entries\nHandling 1 logs\nrotating pattern: /var/log/fastapi_app/*.log  forced from command line (14 rotations)\n-rw-r----- 1 www-data adm    0 Oct 28 16:00 app.log\n-rw-r----- 1 www-data adm 4.2M Oct 28 15:59 app.log.1"
+                "Đầu ra của logrotate -d chứng minh chi tiết từng bước: đổi tên file, tạo file rỗng mới với quyền 0640, và thực thi script postrotate.",
+                "Cờ -d hoàn toàn không chạm vào file thật, giúp phát hiện sớm các lỗi sai cú pháp regex hoặc sai đường dẫn trước khi đưa vào sản xuất."
+              ]
             }
           ]
         }
       ],
       "scenario": {
-        "title": "File log Nginx access.log phình to 40GB làm sập hệ thống do thiếu Logrotate",
-        "content": "\n              <p>Một chiến dịch quảng cáo bùng nổ traffic mang về 5 triệu lượt truy cập mỗi ngày. Do file cấu hình logrotate của Nginx bị tắt nhầm, file <code>/var/log/nginx/access.log</code> tăng vọt từ vài trăm MB lên 42GB chỉ sau 4 ngày, nuốt chửng 100% dung lượng phân vùng gốc và làm treo cứng hệ điều hành.</p>\n              <p><strong>Khắc phục tức thì:</strong></p>\n              <p>1. Làm rỗng file an toàn bằng lệnh truncate: <code>sudo truncate -s 0 /var/log/nginx/access.log</code> (giải phóng ngay 42GB mà không cần tắt Nginx).</p>\n              <p>2. Kích hoạt cấu hình Logrotate với giới hạn kích thước khẩn cấp: <code>size 100M</code>, <code>rotate 7</code>, <code>compress</code> để đảm bảo hễ file chạm mốc 100MB là tự động nén xoay vòng ngay lập tức, triệt tiêu vĩnh viễn nguy cơ tràn đĩa!</p>\n            "
+        "title": "File log Nginx access.log phình to 45GB làm cạn kiệt phân vùng root (/) và làm sập Database",
+        "content": "\n      <p><strong>1. Triệu chứng sự cố:</strong> Lúc 04:00 sáng, hệ thống cảnh báo tin nhắn khẩn cấp: Website báo lỗi <code>502 Bad Gateway</code>. Khi kỹ sư đăng nhập SSH vào máy chủ thì không thể tạo file tạm hoặc lưu session, lệnh <code>df -h</code> báo phân vùng root <code>/</code> đã đầy <strong>100% (0 bytes free)</strong>. Cơ sở dữ liệu MySQL tự động tắt khẩn cấp để chống tham nhũng dữ liệu (panic shutdown).</p>\n      \n      <p><strong>2. Điều tra & Chẩn đoán:</strong></p>\n      <pre><code># Tìm các file có dung lượng lớn nhất trong hệ thống:\n$ sudo find / -xdev -type f -size +1G -exec ls -lh {} + 2>/dev/null\n-rw-r--r-- 1 www-data www-data 45G Nov 04 03:58 /var/log/nginx/access.log\n\n# Kỹ sư trực ca vội vàng chạy lệnh xóa file:\n$ sudo rm /var/log/nginx/access.log\n\n# Kiểm tra lại dung lượng ổ đĩa:\n$ df -h /\nFilesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G   50G     0 100% /</code></pre>\n      <p>Dù đã chạy lệnh <code>rm</code> nhưng dung lượng khả dụng vẫn là 0 bytes! Tại sao ổ cứng không chịu nhả dung lượng?</p>\n      \n      <p><strong>3. Nguyên nhân gốc rễ:</strong> Trên Linux, lệnh <code>rm</code> chỉ xóa mục tham chiếu (dentry) của file trong thư mục. Tuy nhiên, tiến trình Nginx master/worker vẫn đang mở file descriptor trỏ vào Inode của file đó. Chừng nào tiến trình Nginx chưa giải phóng file descriptor thì hệ điều hành vẫn giữ nguyên khối dữ liệu 45GB trên đĩa cứng!</p>\n      \n      <p><strong>4. Biện pháp khắc phục:</strong></p>\n      <pre><code># Dùng lsof tìm tiến trình đang giữ file descriptor của file đã xóa:\n$ sudo lsof +L1 /var/log\nCOMMAND   PID     USER   FD   TYPE DEVICE  SIZE/OFF NLINK   NODE NAME\nnginx   12044 www-data    7w   REG    8,1 48318382080     0 262148 /var/log/nginx/access.log (deleted)\n\n# Giải pháp tức thời: Gửi tín hiệu reload để Nginx giải phóng descriptor mà không cần restart sập web:\n$ sudo systemctl reload nginx\n\n# Kiểm tra lại dung lượng ổ cứng ngay sau khi reload:\n$ df -h /\nFilesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G  5.2G   45G  11% /</code></pre>\n      <p>Dung lượng 45GB lập tức được giải phóng về hệ thống! Kỹ sư khởi động lại MySQL an toàn bằng <code>sudo systemctl start mysql</code> và website hồi phục hoàn toàn.</p>\n      \n      <p><strong>5. Phòng ngừa lâu dài:</strong></p>\n      <ul>\n        <li>Tạo ngay tệp <code>/etc/logrotate.d/nginx</code> với chính sách xoay vòng hàng ngày, nén gzip, giữ 14 ngày và cấu hình <code>postrotate</code> chạy lệnh <code>systemctl reload nginx</code>.</li>\n        <li>Cấu hình cảnh báo Prometheus khi phân vùng đĩa đạt ngưỡng 80% dung lượng để xử lý chủ động, không để chạm trần 100%.</li>\n        <li>Khi muốn làm rỗng nhanh một file log đang mở mà không muốn xóa file descriptor, dùng lệnh chuyển hướng rỗng thay vì rm: <code>sudo truncate -s 0 /var/log/nginx/access.log</code> hoặc <code>sudo : > /var/log/nginx/access.log</code>.</li>\n      </ul>\n    "
       },
       "callouts": {
         "pitfalls": [
           {
-            "title": "Quên reload dịch vụ trong khối postrotate",
-            "content": "Nếu không gửi tín hiệu <code>systemctl reload</code> hoặc <code>kill -HUP</code> cho tiến trình trong khối postrotate, dịch vụ sẽ tiếp tục ghi log vào inode của file cũ (file đã bị đổi tên thành app.log.1), khiến file app.log mới tạo luôn ở trạng thái 0 byte!"
+            "title": "Dùng lệnh rm để xóa file log đang mở khiến ổ đĩa không nhả dung lượng",
+            "content": "Sai lầm kinh điển của người mới là khi thấy file log 40GB làm đầy ổ đĩa liền chạy <code>sudo rm app.log</code>. Trên Linux, nếu một tiến trình vẫn đang giữ file descriptor mở tới Inode đó, dung lượng vật lý trên đĩa cứng KHÔNG ĐƯỢC GIẢI PHÓNG! Kết quả là <code>df -h</code> vẫn báo đầy 100%. Để làm rỗng file log đang được ghi một cách an toàn mà không làm mất file descriptor, hãy dùng lệnh truncate: <code>sudo truncate -s 0 /path/to/app.log</code>."
+          },
+          {
+            "title": "Quên reload dịch vụ trong khối postrotate của logrotate",
+            "content": "Nếu sử dụng cơ chế xoay vòng truyền thống (đổi tên file) mà quên cấu hình khối <code>postrotate</code> gửi tín hiệu reload (như <code>systemctl reload [service]</code> hoặc <code>kill -USR1 [PID]</code>), tiến trình ứng dụng sẽ tiếp tục ghi các dòng log mới vào Inode của file cũ (lúc này đã mang tên <code>app.log.1</code>)! Hậu quả là file <code>app.log</code> mới tạo luôn có kích thước 0 byte, còn file cũ bị nén gzip làm hỏng dòng log."
           }
         ],
         "tips": [
           {
-            "title": "Cấu hình giới hạn SystemMaxUse cho journald",
-            "content": "Mở tệp <code>/etc/systemd/journald.conf</code> và đặt <code>SystemMaxUse=1G</code>, sau đó <code>sudo systemctl restart systemd-journald</code>. Journald sẽ không bao giờ sử dụng vượt quá 1GB ổ đĩa."
+            "title": "Cấu hình trần dung lượng SystemMaxUse cho journald ngay khi cài máy",
+            "content": "Mặc định trên hệ thống ổ đĩa lớn, journald có thể chiếm dụng tới 10% tổng dung lượng hoặc tối đa 4GB. Hãy chủ động mở tệp <code>/etc/systemd/journald.conf</code>, bỏ comment và đặt <code>SystemMaxUse=1G</code>, <code>SystemKeepFree=2G</code> rồi chạy <code>sudo systemctl restart systemd-journald</code>. Hệ thống sẽ luôn giữ nhật ký gọn gàng và không bao giờ chiếm đoạt tài nguyên ổ cứng."
+          },
+          {
+            "title": "Trích xuất log dạng JSON từ journalctl kết hợp với jq để điều tra nhanh",
+            "content": "Để phân tích dữ liệu log phức tạp, hãy kết hợp <code>journalctl -u [service] -o json-pretty -n 1</code>. Bạn sẽ thấy hàng chục trường metadata ẩn cực kỳ hữu ích mà định dạng văn bản thông thường không hiển thị, bao gồm: <code>_PID</code>, <code>_UID</code>, <code>_SYSTEMD_CGROUP</code>, <code>_COMM</code>, và thời gian thực chuẩn microsecond."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Chỉ thị nào trong tệp cấu hình logrotate giúp đảm bảo lệnh reload dịch vụ trong postrotate chỉ chạy một lần duy nhất cho toàn bộ danh sách file log được xoay?",
-          "command": "sharedscripts",
-          "explanation": "sharedscripts gom toàn bộ quá trình xoay vòng của các file khớp pattern lại và chỉ thực thi đoạn mã trong postrotate duy nhất 1 lần ở bước kết thúc."
+          "question": "Mức 1 (Nhớ / Hiểu): Viết câu lệnh journalctl để trích xuất toàn bộ các dòng nhật ký có mức độ nghiêm trọng từ cảnh báo trở lên (từ warning đến emerg) của dịch vụ nginx.service phát sinh trong vòng 3 giờ qua.",
+          "command": "journalctl -u nginx.service -p warning --since '3 hours ago' --no-pager",
+          "explanation": "Cờ -u nginx.service giới hạn phạm vi trong dịch vụ Nginx; cờ -p warning (tương đương -p 4) sẽ lọc tất cả các bản ghi có độ ưu tiên từ 0 đến 4 (emerg, alert, crit, err, warning); tham số --since '3 hours ago' khoanh vùng chính xác mốc thời gian tương đối 3 giờ gần nhất; và --no-pager giúp in thẳng kết quả ra terminal không qua bộ đệm less."
+        },
+        {
+          "question": "Mức 2 (Áp dụng / Vận hành): Phân vùng root (/) trên máy chủ bất ngờ báo đầy 100%. Kiểm tra phát hiện thư mục /var/log/journal/ đang chiếm hơn 8GB dữ liệu. Hãy viết chuỗi lệnh để: (1) Dọn dẹp khẩn cấp log journald cũ chỉ giữ lại tối đa 1GB; và (2) Cấu hình vĩnh viễn giới hạn trần 1GB cho journald để sự cố không bao giờ tái diễn.",
+          "command": "# 1. Dọn dẹp khẩn cấp giải phóng 7GB dung lượng ngay lập tức:\n$ sudo journalctl --vacuum-size=1G\n\n# 2. Cấu hình vĩnh viễn trong /etc/systemd/journald.conf:\n$ sudo sed -i 's/^#SystemMaxUse=.*/SystemMaxUse=1G/' /etc/systemd/journald.conf\n# Hoặc thêm dòng nếu chưa có:\n$ echo \"SystemMaxUse=1G\" | sudo tee -a /etc/systemd/journald.conf.d/01-maxsize.conf\n\n# 3. Khởi động lại daemon journald để áp dụng:\n$ sudo systemctl restart systemd-journald\n$ journalctl --disk-usage",
+          "explanation": "Lệnh journalctl --vacuum-size=1G lập tức xóa bỏ các tệp nhật ký đã lưu trữ (archived journals) cũ nhất cho đến khi tổng dung lượng rơi xuống dưới ngưỡng 1GB. Việc cấu hình SystemMaxUse=1G trong journald.conf đảm bảo daemon journald tự động duy trì ngưỡng này trong tương lai, ngăn chặn nguy cơ cạn kiệt đĩa cứng."
+        },
+        {
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Một kỹ sư xóa file /var/log/app.log bằng lệnh rm nhưng lệnh df -h vẫn báo ổ cứng đầy 100%. Hãy viết câu lệnh để phát hiện chính xác tiến trình PID nào đang giữ file descriptor của file đã bị xóa, và câu lệnh an toàn để giải phóng dung lượng mà không làm sập tiến trình.",
+          "command": "# 1. Truy tìm tiến trình đang giữ file descriptor của file đã xóa (NLINK = 0):\n$ sudo lsof +L1 /var/log\n\n# Giả sử phát hiện PID 14520 (myapp) đang giữ FD số 3 tới /var/log/app.log (deleted):\n# 2. Giải phóng dung lượng tức thì bằng cách làm rỗng file descriptor qua procfs:\n$ sudo truncate -s 0 /proc/14520/fd/3\n# Hoặc: sudo : > /proc/14520/fd/3\n\n# 3. Gửi tín hiệu reload để ứng dụng chuyển sang ghi vào file mới (nếu hỗ trợ):\n$ sudo kill -HUP 14520\n$ df -h /var/log",
+          "explanation": "Khi file bị xóa nhưng tiến trình vẫn mở kết nối, Linux duy trì liên kết trong hệ thống file ảo /proc/[PID]/fd/[FD]. Lệnh 'lsof +L1' liệt kê tất cả các file có số liên kết cứng bằng 0 (đã xóa) nhưng vẫn có tiến trình mở. Bằng cách can thiệp làm rỗng trực tiếp qua đường dẫn /proc/[PID]/fd/[FD] bằng truncate hoặc toán tử chuyển hướng rỗng (: >), kernel sẽ lập tức giải phóng toàn bộ các khối dữ liệu vật lý trên đĩa cứng mà không cần phải kết thúc (kill) tiến trình đang phục vụ người dùng."
         }
       ],
       "summary": [
-        "journalctl là công cụ số 1 để truy vết sự cố hệ thống; dùng cờ -u, -p err và --since để khoanh vùng thời gian lỗi.",
-        "Luôn cấu hình giới hạn dung lượng SystemMaxUse trong journald.conf để log không bao giờ ăn mòn ổ cứng.",
-        "Logrotate kết hợp nén gzip và postrotate reload là tiêu chuẩn vàng kiểm soát vòng đời file log của mọi ứng dụng."
+        "journalctl truy xuất nhật ký nhị phân có index tốc độ cao; sử dụng cờ -u, -p err và --since để thu hẹp vùng điều tra sự cố.",
+        "Mặc định journald có thể chiếm dụng nhiều GB; luôn cấu hình SystemMaxUse=1G trong journald.conf và dùng --vacuum-size để dọn dẹp khẩn cấp.",
+        "Logrotate là chuẩn mực kiểm soát vòng đời file log văn bản: hỗ trợ nén gzip, xoay vòng theo ngày và xóa log quá hạn tự động.",
+        "Cơ chế create + postrotate reload là tiêu chuẩn vàng; chỉ dùng copytruncate khi ứng dụng bắt buộc không hỗ trợ reload file descriptor.",
+        "Tuyệt đối không dùng lệnh rm để xóa file log đang mở vì tiến trình vẫn giữ file descriptor; dùng truncate -s 0 để làm rỗng an toàn.",
+        "Luôn luôn kiểm thử cấu hình logrotate bằng chế độ chạy thử khô (logrotate -d / dry-run) trước khi áp dụng vào môi trường sản xuất."
       ]
     },
     {
       "id": "lx-3-03",
       "number": "3.3",
       "title": "Quản lý Lưu trữ nâng cao: LVM (Logical Volume Manager), ext4/xfs/btrfs, fstab & RAID",
-      "subtitle": "Mở rộng dung lượng phân vùng 'nóng' không cần tắt máy chủ, bảo toàn dữ liệu bằng RAID và gắn đĩa an toàn qua fstab",
+      "subtitle": "Làm chủ hạ tầng lưu trữ doanh nghiệp: Mở rộng dung lượng phân vùng nóng không gián đoạn dịch vụ, phòng chống lỗi boot fstab và so sánh các cấp độ RAID",
       "level": "Nâng cao",
       "duration": "60 phút",
       "requiresRoot": true,
       "requiresVM": true,
       "objectives": [
-        "Hiểu tường tận kiến trúc 3 lớp của LVM: Physical Volume (PV), Volume Group (VG), Logical Volume (LV).",
-        "Thực hành mở rộng dung lượng phân vùng trực tiếp (Online Resizing) với lvextend và resize2fs (ext4) hoặc xfs_growfs (XFS) mà không làm gián đoạn dịch vụ.",
-        "Cấu hình tệp /etc/fstab chuẩn xác bằng mã UUID. Cảnh báo đỏ: Phòng ngừa thảm họa sai fstab làm máy chủ rơi vào Emergency Mode không boot được.",
-        "Nắm vững nguyên lý hoạt động của các cấp độ RAID lưu trữ (RAID 0, 1, 5, 10) và so sánh hệ thống file ext4 vs XFS vs Btrfs."
+        "Hiểu tường tận kiến trúc 3 tầng của LVM: Physical Volume (PV), Volume Group (VG), và Logical Volume (LV) cùng cơ chế ánh xạ Physical Extents (PE).",
+        "Thực hành quy trình mở rộng phân vùng trực tuyến (Online Resizing) với lvextend kết hợp tự động mở rộng hệ thống file (cờ -r) trên cả ext4 (resize2fs) và XFS (xfs_growfs) mà không gây gián đoạn dịch vụ (Zero-Downtime).",
+        "Nắm vững đặc tính của các hệ thống file phổ biến: ext4 hỗ trợ cả phóng to lẫn thu nhỏ (offline), XFS chỉ hỗ trợ tăng dung lượng (tuyệt đối KHÔNG hỗ trợ shrink), Btrfs hỗ trợ CoW và subvolumes.",
+        "Cấu hình tệp /etc/fstab chuẩn mực với UUID và tùy chọn cứu hộ nofail; phòng chống thảm họa máy chủ rơi vào Emergency Mode không boot được bằng lệnh kiểm tra mount -a.",
+        "Phân tích kiến trúc, hiệu năng đọc/ghi và khả năng chịu lỗi của các cấp độ RAID (RAID 0, 1, 5, 10); hiểu rõ nguyên lý cốt tử: RAID không phải là giải pháp thay thế Sao lưu (Backup)."
       ],
       "intuition": {
         "title": "Hồ chứa ghép khối LVM và Bản hợp đồng gắn đĩa fstab",
-        "metaphor": "Phân vùng truyền thống (như sda1, sda2) giống như các bình chứa nước bằng bê tông đúc chết: khi nước đầy bình, cách duy nhất là đập đi đúc lại bình mới lớn hơn (phải tắt server, backup, phân vùng lại). LVM gom toàn bộ các ổ đĩa vật lý (PV) đổ chung vào một 'Hồ chứa nước khổng lồ' (Volume Group). Bạn có thể múc nước chia cho các phòng ban (Logical Volume) tùy ý. Khi một phòng ban sắp hết nước, bạn chỉ cần mở rộng vòi van (lvextend) và diện tích sàn (resize2fs) trong vòng 5 giây khi máy chủ vẫn đang phục vụ hàng triệu khách hàng mà không rớt một giọt nước nào!",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🗄️</span>\n                    <span>3 LỚP CỦA LVM</span>\n                    <span class=\"lx-vs-tag\">PV → VG → LV</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>PV (Physical Volume):</strong> Ổ đĩa vật lý thực tế (/dev/sdb, /dev/nvme0n1) được khởi tạo bằng <code>pvcreate</code>.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>VG (Volume Group):</strong> Hồ chứa gộp chung nhiều PV lại bằng <code>vgcreate / vgextend</code>.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>LV (Logical Volume):</strong> Phân vùng ảo cấp phát cho hệ điều hành định dạng filesystem bằng <code>lvcreate / lvextend</code>.</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🛡️</span>\n                    <span>EXT4 vs XFS</span>\n                    <span class=\"lx-vs-tag\">Co giãn đĩa</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>ext4:</strong> Sau khi lvextend, dùng lệnh <code>resize2fs /dev/vg/lv</code> (hỗ trợ cả tăng và giảm kích thước).</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>XFS:</strong> Sau khi lvextend, dùng lệnh <code>xfs_growfs [mountpoint]</code> (truyền vào thư mục mount, CHỈ CÓ THỂ TĂNG, KHÔNG THỂ GIẢM KÍCH THƯỚC!).</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "metaphor": "Phân vùng truyền thống (như sda1, sda2) giống như các bức tường bê tông đúc chết: một khi đã xây phòng 20m2, bạn không thể mở rộng nó mà không đập phá toàn bộ. LVM (Logical Volume Manager) biến các ổ đĩa vật lý thành những thùng chứa nước (PV): bạn đổ chung nước của tất cả các ổ đĩa vào một hồ chứa khổng lồ (Volume Group - VG). Từ hồ chứa này, bạn có thể múc nước chia thành các cốc nhỏ (Logical Volume - LV). Khi một cốc nước sắp tràn, bạn chỉ việc múc thêm nước từ hồ đổ vào ngay tức khắc mà không cần tắt máy! Còn tệp /etc/fstab giống như bản hợp đồng gắn kết vĩnh viễn: mỗi khi máy khởi động, nó kiểm tra từng dòng hợp đồng, nếu có một dòng sai cú pháp mà thiếu điều khoản miễn trừ (nofail), toàn bộ hệ thống sẽ từ chối thức giấc.",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Kiến trúc 3 Tầng Lưu trữ của LVM (Physical Volume ➔ Volume Group ➔ Logical Volume)</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:10px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:6px;padding:8px;\">\n        <strong>Tầng 1: Physical Volumes (PV)</strong> - Ổ cứng vật lý hoặc phân vùng đĩa thô<br/>\n        ├── <code>/dev/sdb</code> (100GB PV) &amp; <code>/dev/sdc</code> (100GB PV)<br/>\n        └── Khởi tạo bằng: <code>pvcreate /dev/sdb /dev/sdc</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Gộp tài nguyên vào Hồ chứa)</div>\n      <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:6px;padding:8px;\">\n        <strong>Tầng 2: Volume Group (VG)</strong> - Hồ chứa dung lượng chung (Tổng: 200GB)<br/>\n        ├── Được chia thành các khối <strong>Physical Extents (PE)</strong> (mặc định 4MB/khối)<br/>\n        └── Quản lý bằng: <code>vgcreate vg_data /dev/sdb /dev/sdc</code> hoặc <code>vgextend</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Cấp phát phân vùng ảo linh hoạt)</div>\n      <div style=\"background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:8px;\">\n        <strong>Tầng 3: Logical Volumes (LV)</strong> - Thiết bị khối được định dạng filesystem và mount<br/>\n        ├── <code>/dev/vg_data/lv_db</code> (120GB ➔ Định dạng ext4/xfs ➔ Gắn vào <code>/var/lib/postgresql</code>)<br/>\n        ├── <code>/dev/vg_data/lv_app</code> (50GB ➔ Gắn vào <code>/opt/apps</code>)<br/>\n        └── Còn trống trong VG: 30GB (Sẵn sàng mở rộng nóng bằng <code>lvextend -r</code> bất kỳ lúc nào)\n      </div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-3-lvm-workflow",
-          "title": "1. Quy trình mở rộng dung lượng phân vùng LVM trực tuyến (Zero-downtime)",
-          "content": "\n                  <p>Giả sử bạn vừa gắn thêm một ổ cứng vật lý mới <code>/dev/sdb</code> (dung lượng 50GB) vào máy chủ và muốn mở rộng phân vùng <code>/dev/vg_data/lv_app</code> đang bị đầy.</p>\n                  <p><strong>Quy trình chuẩn 4 bước công nghiệp:</strong></p>\n                  <ol>\n                    <li>Khởi tạo Physical Volume: <code>sudo pvcreate /dev/sdb</code></li>\n                    <li>Mở rộng Volume Group: <code>sudo vgextend vg_data /dev/sdb</code></li>\n                    <li>Mở rộng Logical Volume: <code>sudo lvextend -L +30G /dev/vg_data/lv_app</code></li>\n                    <li>Mở rộng Hệ thống file (Filesystem) tương ứng:\n                      <ul>\n                        <li>Nếu là <strong>ext4</strong>: <code>sudo resize2fs /dev/vg_data/lv_app</code></li>\n                        <li>Nếu là <strong>XFS</strong>: <code>sudo xfs_growfs /var/www</code> (lưu ý: XFS nhận đường dẫn thư mục mount, không nhận file thiết bị!)</li>\n                      </ul>\n                    </li>\n                  </ol>\n                  <div class=\"callout-box info-box\">\n                    <div class=\"callout-title\">💡 Mẹo gom bước 3 và bước 4 bằng cờ -r</div>\n                    <p>Lệnh <code>lvextend -r -l +100%FREE /dev/vg_data/lv_app</code> có cờ <code>-r</code> (resizefs) sẽ tự động nhận diện ext4 hay XFS để tự co giãn filesystem trong MỘT LỆNH DUY NHẤT!</p>\n                  </div>\n                ",
+          "title": "1. Quy trình Mở rộng Phân vùng LVM Trực tuyến (Zero-Downtime Resizing)",
+          "content": "\n        <p>Trong các trung tâm dữ liệu hiện đại và đám mây (AWS, GCP, Azure, OpenStack), phân vùng lưu trữ gần như luôn được cấu hình trên nền <strong>LVM (Logical Volume Manager)</strong>. Ưu thế vượt trội của LVM là khả năng mở rộng dung lượng ổ đĩa trực tiếp khi dịch vụ đang chạy mà không cần phải unmount phân vùng và không mất một giây downtime nào.</p>\n\n        <h3 class=\"lx-h3\">Bảng lệnh cốt lõi của LVM qua 3 tầng kiến trúc</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Tầng kiến trúc</th>\n              <th>Lệnh quét / Tóm tắt</th>\n              <th>Lệnh hiển thị chi tiết</th>\n              <th>Lệnh khởi tạo</th>\n              <th>Lệnh mở rộng</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><strong>Physical Volume (PV)</strong></td>\n              <td><code>pvs</code></td>\n              <td><code>pvdisplay</code></td>\n              <td><code>sudo pvcreate /dev/sdb</code></td>\n              <td><code>sudo pvresize /dev/sdb</code> (sau khi mở rộng đĩa ảo)</td>\n            </tr>\n            <tr>\n              <td><strong>Volume Group (VG)</strong></td>\n              <td><code>vgs</code></td>\n              <td><code>vgdisplay</code></td>\n              <td><code>sudo vgcreate vg_data /dev/sdb</code></td>\n              <td><code>sudo vgextend vg_data /dev/sdc</code></td>\n            </tr>\n            <tr>\n              <td><strong>Logical Volume (LV)</strong></td>\n              <td><code>lvs</code></td>\n              <td><code>lvdisplay</code></td>\n              <td><code>sudo lvcreate -L 50G -n lv_db vg_data</code></td>\n              <td><code>sudo lvextend -L +20G -r /dev/vg_data/lv_db</code></td>\n            </tr>\n          </tbody>\n        </table>\n\n        <h3 class=\"lx-h3\">So sánh Hệ thống File: ext4 vs XFS vs Btrfs</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Hệ thống File</th>\n              <th>Distro mặc định</th>\n              <th>Mở rộng dung lượng (Grow)</th>\n              <th>Thu nhỏ dung lượng (Shrink)</th>\n              <th>Tính năng nổi bật</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><strong>ext4</strong></td>\n              <td>Debian, Ubuntu</td>\n              <td>Trực tuyến (Online) bằng <code>resize2fs</code></td>\n              <td><strong>Hỗ trợ Ngoại tuyến (Offline)</strong> (phải unmount và chạy e2fsck)</td>\n              <td>Cực kỳ ổn định, tương thích ngược tuyệt đối, dễ phục hồi dữ liệu khi gặp sự cố.</td>\n            </tr>\n            <tr>\n              <td><strong>XFS</strong></td>\n              <td>RHEL, CentOS, Rocky Linux, Oracle Linux</td>\n              <td>Trực tuyến (Online) bằng <code>xfs_growfs</code></td>\n              <td><strong>TUYỆT ĐỐI KHÔNG HỖ TRỢ!</strong> Không thể thu nhỏ dưới mọi hình thức.</td>\n              <td>Tối ưu xử lý file dung lượng cực lớn và đa luồng I/O song song (Allocation Groups).</td>\n            </tr>\n            <tr>\n              <td><strong>Btrfs</strong></td>\n              <td>Fedora, openSUSE</td>\n              <td>Trực tuyến bằng <code>btrfs filesystem resize</code></td>\n              <td>Trực tuyến (Online)</td>\n              <td>Hỗ trợ Copy-on-Write (CoW), tạo snapshot tức thì, tự phục hồi dữ liệu qua checksum.</td>\n            </tr>\n          </tbody>\n        </table>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Thực hiện mở rộng nóng phân vùng LVM cho ứng dụng",
-              "code": "# 1. Khảo sát cấu trúc LVM hiện tại\nsudo vgs\nsudo lvs\n\n# 2. Mở rộng LV thêm 20GB và tự động co giãn filesystem trực tiếp\nsudo lvextend -r -L +20G /dev/vg_data/lv_app\n\n# 3. Kiểm tra kết quả dung lượng mới bằng df -h\ndf -h /var/www",
+              "title": "Thao tác mở rộng nóng Logical Volume thêm 20GB không gián đoạn dịch vụ",
+              "lang": "bash",
+              "code": "# Bước 1: Kiểm tra dung lượng còn trống trong Volume Group:\n$ sudo vgs\n  VG      #PV #LV #SN Attr   VSize   VFree\n  vg_data   1   1   0 wz--n- 100.00g 35.00g\n\n# Bước 2: Mở rộng Logical Volume lv_db thêm 20GB và tự động đồng bộ Filesystem:\n# (Cờ -r hoặc --resizefs cực kỳ quan trọng: nó tự gọi resize2fs cho ext4 hoặc xfs_growfs cho XFS)\n$ sudo lvextend -L +20G -r /dev/vg_data/lv_db\n\n# Bước 3: Xác minh kết quả tức thì mà không cần unmount hay reboot:\n$ sudo lvs /dev/vg_data/lv_db\n  LV    VG      Attr       LSize  Pool Origin Data% Meta% Move Log Cpy%Sync Convert\n  lv_db vg_data -wi-ao---- 70.00g\n\n$ df -h /var/lib/postgresql\nFilesystem                   Size  Used Avail Use% Mounted on\n/dev/mapper/vg_data-lv_db     69G   45G   21G  69% /var/lib/postgresql",
+              "output": "  Size of logical volume vg_data/lv_db changed from 50.00 GiB (12800 extents) to 70.00 GiB (17920 extents).\n  Logical volume vg_data/lv_db successfully resized.\nresize2fs 1.46.5 (30-Dec-2021)\nFilesystem at /dev/mapper/vg_data-lv_db is mounted on /var/lib/postgresql; on-line resizing required\nold_desc_blocks = 7, new_desc_blocks = 9\nThe filesystem on /dev/mapper/vg_data-lv_db is now 18350080 (4k) blocks long.",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "vgs / lvs",
-                  "text": "Kiểm tra dung lượng còn trống trong Volume Group (VFree) trước khi mở rộng."
-                },
-                {
-                  "line": 5,
-                  "part": "-r -L +20G",
-                  "text": "-L +20G tăng thêm 20GB; cờ -r tự động chạy resize2fs hoặc xfs_growfs an toàn tuyệt đối."
-                },
-                {
-                  "line": 8,
-                  "part": "df -h",
-                  "text": "Xác nhận dung lượng phân vùng mount /var/www đã tăng thêm 20GB ngay tức thì."
-                }
-              ],
-              "output": "  VG      #PV #LV #SN Attr   VSize   VFree \n  vg_data   2   1   0 wz--n- 100.00g 30.00g\n  Size of logical volume vg_data/lv_app changed from 50.00 GiB to 70.00 GiB.\n  Logical volume vg_data/lv_app successfully resized.\nFilesystem                 Size  Used Avail Use% Mounted on\n/dev/mapper/vg_data-lv_app  69G   48G   18G  73% /var/www"
+                "Cờ -r (--resizefs): Tự động phát hiện loại filesystem bên trong LV và thực thi lệnh mở rộng filesystem tương ứng trong 1 thao tác duy nhất.",
+                "on-line resizing required: Thông báo của kernel xác nhận hệ thống file được nới rộng trực tiếp khi ứng dụng database vẫn đang đọc ghi dữ liệu bình thường."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-3-fstab-danger",
-          "title": "2. Cấu hình gắn đĩa tự động trong /etc/fstab & Cảnh báo đỏ cứu boot",
-          "content": "\n                  <div class=\"callout-box danger-box\">\n                    <div class=\"callout-title\">🚨 CẢNH BÁO ĐỎ: NGUY HIỂM CHÍ MẠNG KHI CHỈNH SỬA /etc/fstab</div>\n                    <p>Tệp <code>/etc/fstab</code> là danh sách các phân vùng hệ thống Linux sẽ đọc và gắn kết khi máy chủ khởi động. <strong>Chỉ cần gõ sai một dấu cách, sai tên UUID hoặc sai định dạng filesystem, máy chủ sẽ bị treo cứng ở màn hình Emergency Mode và không thể kết nối SSH từ xa!</strong></p>\n                    <div class=\"lx-safe-alternative\">\n                      <strong>Quy tắc sinh tồn bắt buộc cho kỹ sư hệ thống:</strong>\n                      <br>1. Luôn dùng <strong>UUID</strong> (lấy qua lệnh <code>sudo blkid</code>), không bao giờ dùng tên thiết bị như <code>/dev/sdb1</code> vì tên thiết bị có thể bị đảo lộn khi cắm thêm ổ đĩa.\n                      <br>2. Thêm cờ <code>nofail</code> cho các ổ đĩa dữ liệu phụ (nếu ổ đĩa bị mất kết nối, OS vẫn boot bình thường).\n                      <br>3. <strong>BƯỚC QUYẾT ĐỊNH:</strong> Sau khi sửa /etc/fstab, <strong>BẮT BUỘC CHẠY LỆNH: <code>sudo mount -a</code></strong>. Nếu lệnh này xuất hiện bất kỳ dòng lỗi nào, KHÔNG ĐƯỢC PHÉP REBOOT mà phải sửa lại file fstab ngay lập tức!\n                    </div>\n                  </div>\n                ",
+          "title": "2. Cấu hình Gắn đĩa Tự động /etc/fstab & Cảnh báo Đỏ Cứu Boot",
+          "content": "\n        <p>Tệp <code>/etc/fstab</code> (File Systems Table) chứa danh sách các phân vùng ổ đĩa sẽ được tự động gắn kết (mount) khi Linux khởi động. Mỗi dòng cấu hình bao gồm chính xác <strong>6 trường</strong> cách nhau bởi dấu cách hoặc phím Tab:</p>\n\n        <h3 class=\"lx-h3\">Cấu trúc 6 trường chuẩn mực trong tệp /etc/fstab</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Thứ tự</th>\n              <th>Tên trường</th>\n              <th>Ý nghĩa &amp; Giá trị mẫu</th>\n              <th>Quy tắc an toàn sống còn</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td>1</td>\n              <td><strong>Thiết bị (Device)</strong></td>\n              <td><code>UUID=3a4b5c6d-...</code> hoặc <code>/dev/mapper/vg_data-lv_db</code></td>\n              <td><strong>Luôn dùng UUID (tra cứu bằng lệnh blkid)!</strong> Không dùng tên thiết bị truyền thống như <code>/dev/sdb1</code> vì thứ tự sdb/sdc có thể bị đảo lộn khi cắm thêm ổ cứng mới.</td>\n            </tr>\n            <tr>\n              <td>2</td>\n              <td><strong>Thư mục gắn (Mount Point)</strong></td>\n              <td><code>/var/lib/postgresql</code> hoặc <code>/mnt/backup</code></td>\n              <td>Thư mục đích bắt buộc phải tồn tại trên hệ thống trước khi mount.</td>\n            </tr>\n            <tr>\n              <td>3</td>\n              <td><strong>Loại hệ thống file (Type)</strong></td>\n              <td><code>ext4</code>, <code>xfs</code>, <code>btrfs</code>, <code>nfs</code></td>\n              <td>Phải khớp chính xác với định dạng thực tế của phân vùng khi format bằng mkfs.</td>\n            </tr>\n            <tr>\n              <td>4</td>\n              <td><strong>Tùy chọn gắn kết (Options)</strong></td>\n              <td><code>defaults,noatime,nofail</code></td>\n              <td><code>defaults</code> bao gồm: rw, suid, dev, exec, auto, nouser, async.<br/><strong>Đối với mọi ổ đĩa phụ trợ (ổ gắn ngoài, ổ backup, ổ data đám mây), LUÔN BỔ SUNG tùy chọn <code>nofail</code>!</strong></td>\n            </tr>\n            <tr>\n              <td>5</td>\n              <td><strong>Dump (Sao lưu dump)</strong></td>\n              <td><code>0</code> (hoặc 1)</td>\n              <td>Đặt là <code>0</code> (tiện ích dump cổ xưa hiện nay không còn được sử dụng).</td>\n            </tr>\n            <tr>\n              <td>6</td>\n              <td><strong>Thứ tự kiểm tra Fsck (Pass)</strong></td>\n              <td><code>1</code> cho phân vùng root (/), <code>2</code> cho các phân vùng khác, <code>0</code> cho XFS hoặc ổ đĩa mạng</td>\n              <td>XFS có cơ chế journaling riêng và không dùng fsck lúc boot, luôn đặt là <code>0</code>.</td>\n            </tr>\n          </tbody>\n        </table>\n\n        <div class=\"lx-callout-danger\">\n          <strong>⚠️ CẢNH BÁO ĐỎ CỨU BOOT:</strong> Nếu bạn sửa tệp <code>/etc/fstab</code> bị sai cú pháp, sai UUID hoặc chỉ định mount một ổ đĩa không tồn tại (mà thiếu cờ <code>nofail</code>), khi khởi động lại máy chủ systemd sẽ không thể hoàn tất target <code>local-fs.target</code> và máy chủ sẽ bị dừng khẩn cấp tại <strong>Emergency Mode</strong>! Nếu máy chủ nằm trên Cloud hoặc ở xa hàng nghìn cây số, bạn sẽ bị mất hoàn toàn kết nối SSH và phải vào console cứu hộ cực kỳ vất vả.<br/>\n          <strong>Quy tắc bất di bất dịch:</strong> Sau khi sửa <code>/etc/fstab</code>, KHÔNG BAO GIỜ REBOOT ngay! Luôn chạy lệnh kiểm tra: <code>sudo mount -a</code>. Nếu có lỗi, lệnh sẽ lập tức báo đỏ ra terminal để bạn sửa ngay!\n        </div>\n      ",
           "codeExamples": [
             {
-              "lang": "Text",
-              "title": "Cấu trúc 6 trường chuẩn xác trong tệp /etc/fstab",
-              "code": "# <Thiết bị (UUID)>                   <Thư mục mount>   <Định dạng>   <Tùy chọn>              <dump>  <pass>\nUUID=7c3f8e52-1982-42bb-92b0-819284201824  /                 ext4          defaults                0       1\nUUID=4a1b8c9d-2345-67ef-89ab-cdef01234567  /var/data         ext4          defaults,nofail         0       2\n/dev/vg_data/lv_app                         /var/www          ext4          defaults                0       2",
+              "title": "Quy trình thêm phân vùng vào /etc/fstab an toàn tuyệt đối",
+              "lang": "bash",
+              "code": "# Bước 1: Sao lưu tệp fstab trước khi chạm vào:\n$ sudo cp /etc/fstab /etc/fstab.bak.$(date +%F_%H%M%S)\n\n# Bước 2: Lấy mã UUID chuẩn của phân vùng bằng lệnh blkid:\n$ sudo blkid /dev/mapper/vg_data-lv_db\n/dev/mapper/vg_data-lv_db: UUID=\"e4d2a1b9-8c7e-4b3f-9a0d-123456789abc\" BLOCK_SIZE=\"4096\" TYPE=\"ext4\"\n\n# Bước 3: Thêm dòng cấu hình vào /etc/fstab với cờ nofail:\n$ sudo tee -a /etc/fstab << 'EOF'\nUUID=e4d2a1b9-8c7e-4b3f-9a0d-123456789abc  /var/lib/postgresql  ext4  defaults,noatime,nofail  0  2\nEOF\n\n# Bước 4: BẮT BUỘC - Kiểm tra tính hợp lệ của toàn bộ fstab:\n$ sudo mount -a\n# (Nếu lệnh kết thúc im lặng và trả về mã thoát 0 = Cấu hình an toàn 100%)\n$ echo $?\n0",
+              "output": "0",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "UUID=...",
-                  "text": "Định danh duy nhất toàn cầu của phân vùng, không sợ bị nhầm lẫn khi thay đổi phần cứng."
-                },
-                {
-                  "line": 3,
-                  "part": "defaults,nofail",
-                  "text": "nofail: Cứu cánh sống còn — nếu ổ đĩa này bị hỏng cáp hoặc mất kết nối, server vẫn boot vào SSH bình thường!"
-                },
-                {
-                  "line": 4,
-                  "part": "<pass>: 0, 1, 2",
-                  "text": "Thứ tự kiểm tra lỗi ổ đĩa fsck: 1 cho phân vùng root /, 2 cho các phân vùng khác, 0 là bỏ qua không kiểm tra."
-                }
-              ],
-              "output": ""
+                "Tùy chọn noatime: Vô hiệu hóa việc ghi lại thời điểm truy cập file mỗi khi đọc, giúp tăng tốc độ đọc/ghi đĩa lên tới 15-20%.",
+                "Tùy chọn nofail: Cực kỳ quan trọng! Nếu ổ cứng bị tháo ra hoặc đứt kết nối cáp, máy chủ vẫn boot bình thường và cho phép bạn SSH vào xử lý.",
+                "mount -a: Thử nghiệm mount tất cả các điểm gắn kết khai báo trong fstab. Nếu sai cú pháp hoặc sai đường dẫn, lỗi sẽ hiện ra ngay lập tức."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-3-raid-concepts",
-          "title": "3. So sánh các cấp độ RAID lưu trữ (RAID 0, 1, 5, 10)",
-          "content": "\n                  <p>RAID (Redundant Array of Independent Disks) ghép nhiều ổ cứng vật lý thành một mảng lưu trữ để tăng tốc độ truy xuất hoặc chống mất mát dữ liệu khi hỏng ổ cứng:</p>\n                  <div class=\"table-container\">\n                    <table class=\"data-table\">\n                      <thead>\n                        <tr>\n                          <th>Cấp độ RAID</th>\n                          <th>Cơ chế hoạt động</th>\n                          <th>Khả năng chịu lỗi</th>\n                          <th>Hiệu năng đọc/ghi</th>\n                          <th>Dung lượng hữu dụng</th>\n                        </tr>\n                      </thead>\n                      <tbody>\n                        <tr>\n                          <td><strong>RAID 0</strong> (Striping)</td>\n                          <td>Cắt dữ liệu thành các lát ghi xen kẽ lên 2+ ổ</td>\n                          <td><strong>0%</strong> (Hỏng 1 ổ = Mất sạch toàn bộ dữ liệu)</td>\n                          <td>Gấp đôi tốc độ Đọc &amp; Ghi</td>\n                          <td>100% (Tổng dung lượng các ổ)</td>\n                        </tr>\n                        <tr>\n                          <td><strong>RAID 1</strong> (Mirroring)</td>\n                          <td>Nhân bản dữ liệu giống hệt nhau sang ổ thứ 2</td>\n                          <td>Chịu được hỏng 1 trong 2 ổ</td>\n                          <td>Đọc nhanh, Ghi bình thường</td>\n                          <td>50% (Chỉ bằng dung lượng 1 ổ)</td>\n                        </tr>\n                        <tr>\n                          <td><strong>RAID 5</strong> (Parity)</td>\n                          <td>Ghi dữ liệu kèm khối chẵn lẻ Parity trên 3+ ổ</td>\n                          <td>Chịu được hỏng 1 ổ bất kỳ</td>\n                          <td>Đọc rất nhanh, Ghi tốn CPU tính parity</td>\n                          <td>(N - 1) x Dung lượng ổ</td>\n                        </tr>\n                        <tr>\n                          <td><strong>RAID 10</strong> (1 + 0)</td>\n                          <td>Ghép Mirroring trước rồi Striping sau (Tối thiểu 4 ổ)</td>\n                          <td>Chịu được hỏng tới 2 ổ (khác cặp mirror)</td>\n                          <td><strong>Nhanh nhất &amp; An toàn nhất</strong> (Chuẩn Database)</td>\n                          <td>50% tổng dung lượng</td>\n                        </tr>\n                      </tbody>\n                    </table>\n                  </div>\n                "
+          "title": "3. So sánh các Cấp độ RAID Lưu trữ & Nguyên tắc Cốt tử về Backup",
+          "content": "\n        <p><strong>RAID (Redundant Array of Independent Disks)</strong> là công nghệ kết hợp nhiều ổ đĩa vật lý thành một đơn vị lưu trữ logic nhằm tăng hiệu năng đọc/ghi, tăng dung lượng hoặc cung cấp khả năng chịu lỗi (fault tolerance) khi một hoặc nhiều ổ cứng vật lý bị hỏng.</p>\n\n        <h3 class=\"lx-h3\">Bảng so sánh 4 cấp độ RAID phổ biến nhất</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Cấp độ RAID</th>\n              <th>Cơ chế hoạt động</th>\n              <th>Số ổ đĩa tối thiểu</th>\n              <th>Dung lượng sử dụng</th>\n              <th>Khả năng chịu lỗi</th>\n              <th>Hiệu năng Đọc / Ghi</th>\n              <th>Trường hợp áp dụng thực tế</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><strong>RAID 0</strong><br/><em>(Striping)</em></td>\n              <td>Dữ liệu được băm nhỏ và ghi rải đều lên tất cả các ổ đĩa.</td>\n              <td>2 ổ</td>\n              <td><strong>100%</strong> (Tổng dung lượng tất cả các ổ)</td>\n              <td><strong>0%</strong> (Chỉ cần 1 ổ hỏng là MẤT TRẮNG 100% dữ liệu)</td>\n              <td>Đọc: Rất nhanh<br/>Ghi: Rất nhanh</td>\n              <td>Bộ đệm tạm thời (Cache), render video, tính toán khoa học không đòi hỏi an toàn dữ liệu.</td>\n            </tr>\n            <tr>\n              <td><strong>RAID 1</strong><br/><em>(Mirroring)</em></td>\n              <td>Dữ liệu được sao chép nguyên bản (gương soi) giống hệt nhau sang ổ đĩa thứ hai.</td>\n              <td>2 ổ</td>\n              <td><strong>50%</strong> (Bằng dung lượng 1 ổ nhỏ nhất)</td>\n              <td>Chịu được hỏng 1 ổ đĩa (trong cặp 2 ổ)</td>\n              <td>Đọc: Nhanh<br/>Ghi: Trung bình (bằng 1 ổ đơn)</td>\n              <td>Phân vùng chứa hệ điều hành (/boot, /), máy chủ ứng dụng nhỏ cần an toàn.</td>\n            </tr>\n            <tr>\n              <td><strong>RAID 5</strong><br/><em>(Striping + Distributed Parity)</em></td>\n              <td>Dữ liệu ghi rải đều kết hợp khối chẵn lẻ (parity) phân tán trên tất cả các ổ.</td>\n              <td>3 ổ</td>\n              <td><strong>(N - 1)</strong> ổ (Ví dụ 4 ổ 2TB thì được 6TB)</td>\n              <td>Chịu được hỏng <strong>tối đa 1 ổ</strong> đĩa bất kỳ</td>\n              <td>Đọc: Nhanh<br/>Ghi: Chậm hơn (do phải tính toán Parity)</td>\n              <td>Máy chủ lưu trữ tệp (File Server), kho lưu trữ dữ liệu dung lượng lớn chi phí tiết kiệm.</td>\n            </tr>\n            <tr>\n              <td><strong>RAID 10</strong><br/><em>(RAID 1+0)</em></td>\n              <td>Kết hợp Mirroring (RAID 1) rồi Striping (RAID 0) lên trên.</td>\n              <td>4 ổ</td>\n              <td><strong>50%</strong> (N / 2)</td>\n              <td>Chịu được hỏng 1 ổ trên mỗi cặp gương soi (tối đa tới 2 ổ)</td>\n              <td>Đọc: <strong>Rất cao</strong><br/>Ghi: <strong>Rất cao</strong></td>\n              <td><strong>Tiêu chuẩn vàng cho Máy chủ Cơ sở dữ liệu (PostgreSQL, MySQL, Oracle) Production.</strong></td>\n            </tr>\n          </tbody>\n        </table>\n\n        <div class=\"lx-callout-danger\">\n          <strong>🚨 NGUYÊN TẮC CỐT TỬ: RAID KHÔNG PHẢI LÀ BACKUP (RAID IS NOT A BACKUP)!</strong><br/>\n          Rất nhiều kỹ sư nhầm tưởng rằng máy chủ đã cấu hình RAID 1 hoặc RAID 10 chịu lỗi phần cứng thì không cần sao lưu dữ liệu nữa. Đây là sai lầm chết người!\n          <ul>\n            <li>RAID chỉ bảo vệ chống lại sự cố <strong>hỏng hóc phần cứng vật lý</strong> của đĩa từ hoặc chip nhớ SSD.</li>\n            <li>Nếu lập trình viên lỡ tay chạy lệnh <code>DROP DATABASE production;</code> hoặc <code>rm -rf /var/data</code>, lệnh xóa sẽ được ghi đồng thời tức khắc sang cả 2 ổ đĩa gương soi! RAID không thể giúp bạn khôi phục lại dữ liệu bị xóa nhầm.</li>\n            <li>RAID không thể bảo vệ hệ thống trước tấn công mã hóa tống tiền (Ransomware), tham nhũng filesystem (Filesystem Corruption), hoặc cháy nổ trung tâm dữ liệu. Bắt buộc phải duy trì chiến lược sao lưu định kỳ độc lập theo quy tắc 3-2-1!</li>\n          </ul>\n        </div>\n      ",
+          "codeExamples": [
+            {
+              "title": "Kiểm tra trạng thái RAID phần mềm (mdadm) trên Linux",
+              "lang": "bash",
+              "code": "# Xem trạng thái hoạt động của các mảng RAID phần mềm trong kernel:\n$ cat /proc/mdstat\nPersonalities : [raid1] [raid10] \nmd0 : active raid1 sdb1[1] sda1[0]\n      523712 blocks super 1.2 [2/2] [UU]\n\nmd1 : active raid10 sdc1[0] sdd1[1] sde1[2] sdf1[3]\n      419428352 blocks super 1.2 512K chunks 2 near-copies [4/4] [UUUU]\n\n# Ký hiệu [UU] và [UUUU] biểu thị tất cả các ổ đĩa đều đang hoạt động hoàn hảo (Up).\n# Nếu xuất hiện ký tự [U_], nghĩa là một ổ đĩa trong mảng đã bị hỏng hoặc mất kết nối!\n\n# Kiểm tra chi tiết mảng RAID md1:\n$ sudo mdadm --detail /dev/md1 | grep -E \"State|Active Devices|Working Devices|Failed Devices\"\n          State : clean \n Active Devices : 4\nWorking Devices : 4\n Failed Devices : 0",
+              "output": "Personalities : [raid1] [raid10] \nmd1 : active raid10 sdc1[0] sdd1[1] sde1[2] sdf1[3]\n      419428352 blocks super 1.2 512K chunks 2 near-copies [4/4] [UUUU]",
+              "annotations": [
+                "/proc/mdstat: Cửa sổ quan sát trực tiếp trạng thái các mảng RAID phần mềm được kernel quản lý.",
+                "[UUUU]: Mỗi chữ cái đại diện cho 1 ổ đĩa. 'U' là Up (bình thường), '_' là Degraded (bị lỗi cần thay thế ổ mới ngay lập tức)."
+              ]
+            }
+          ]
         }
       ],
       "scenario": {
-        "title": "Phân vùng cơ sở dữ liệu PostgreSQL tăng vọt chạm trần 98% lúc nửa đêm",
-        "content": "\n              <p>Một đợt import dữ liệu lớn khiến phân vùng chứa dữ liệu PostgreSQL <code>/dev/vg_system/lv_postgres</code> (đang mount tại <code>/var/lib/postgresql</code>) chỉ còn đúng 800MB trống. Ứng dụng chuẩn bị crash vì không thể ghi thêm transaction log (WAL).</p>\n              <p><strong>Xử lý trong 60 giây không cần dừng Database:</strong></p>\n              <p>1. Bạn kiểm tra thấy Volume Group <code>vg_system</code> còn trống 50GB:</p>\n              <pre><code>sudo vgs</code></pre>\n              <p>2. Chạy lệnh mở rộng trực tiếp thêm 30GB kèm co giãn filesystem:</p>\n              <pre><code>sudo lvextend -r -L +30G /dev/vg_system/lv_postgres</code></pre>\n              <p>Hệ điều hành co giãn ext4 trực tuyến trong 3 giây. Database tiếp tục hoạt động trơn tru, không có bất kỳ khách hàng nào bị ngắt kết nối!</p>\n            "
+        "title": "Phân vùng cơ sở dữ liệu PostgreSQL tăng vọt chạm trần 98% lúc nửa đêm trên máy chủ sản xuất",
+        "content": "\n      <p><strong>1. Triệu chứng sự cố:</strong> Vào lúc 01:45 sáng trong đợt flash-sale mua sắm, hệ thống giám sát Datadog báo động đỏ: Phân vùng chứa dữ liệu PostgreSQL <code>/var/lib/postgresql</code> (đang nằm trên Logical Volume <code>/dev/vg_prod/lv_postgres</code>) đã chạm ngưỡng <strong>98% dung lượng</strong>. Dự kiến chỉ còn 20 phút nữa đĩa sẽ đầy 100%, lúc đó Database sẽ tự động khóa ghi và toàn bộ giao dịch mua hàng sẽ sập đổ.</p>\n      \n      <p><strong>2. Điều tra & Chẩn đoán:</strong> Kỹ sư trực ca đăng nhập SSH kiểm tra tình trạng LVM:</p>\n      <pre><code>$ df -h /var/lib/postgresql\nFilesystem                   Size  Used Avail Use% Mounted on\n/dev/mapper/vg_prod-lv_postgres  100G   98G  2.0G  98% /var/lib/postgresql\n\n$ sudo vgs\n  VG      #PV #LV #SN Attr   VSize   VFree\n  vg_prod   1   1   0 wz--n- 500.00g 400.00g</code></pre>\n      <p>Rất may mắn, Volume Group <code>vg_prod</code> vẫn còn tới 400GB dung lượng chưa cấp phát (VFree)! Đây là thời điểm vàng để thực hiện mở rộng phân vùng nóng.</p>\n      \n      <p><strong>3. Nguyên nhân gốc rễ:</strong> Lưu lượng đơn hàng tăng đột biến làm phình to bảng lịch sử giao dịch và file Write-Ahead Logging (WAL) của PostgreSQL. Do phân vùng ban đầu chỉ được cấp phát 100GB nên nhanh chóng chạm trần cảnh báo.</p>\n      \n      <p><strong>4. Biện pháp khắc phục (Zero-Downtime):</strong></p>\n      <pre><code># Mở rộng Logical Volume thêm 100GB và tự động nới rộng hệ thống file:\n$ sudo lvextend -L +100G -r /dev/vg_prod/lv_postgres\n\n# Kiểm tra lại dung lượng tức thì:\n$ df -h /var/lib/postgresql\nFilesystem                   Size  Used Avail Use% Mounted on\n/dev/mapper/vg_prod-lv_postgres  200G   98G  102G  49% /var/lib/postgresql</code></pre>\n      <p>Toàn bộ thao tác chỉ mất <strong>1.5 giây</strong> để hoàn thành. Ứng dụng PostgreSQL không hề bị dừng hay mất bất kỳ kết nối nào. Tỷ lệ sử dụng dung lượng rơi thẳng từ 98% xuống 49% an toàn.</p>\n      \n      <p><strong>5. Phòng ngừa lâu dài:</strong></p>\n      <ul>\n        <li>Cấu hình cron job chạy <code>pg_vacuum</code> định kỳ để thu hồi các hàng dữ liệu chết (dead tuples).</li>\n        <li>Thiết lập chính sách tự động cảnh báo từ ngưỡng 75% để kỹ sư có đủ thời gian chuẩn bị ổ đĩa gắn thêm.</li>\n        <li>Khi dung lượng trống của Volume Group (VFree) rơi xuống dưới 50GB, lập tức gắn thêm đĩa ảo mới và chạy <code>vgextend</code> để nạp sẵn tài nguyên cho hồ chứa.</li>\n      </ul>\n    "
       },
       "callouts": {
         "pitfalls": [
           {
-            "title": "XFS không thể thu nhỏ dung lượng",
-            "content": "Hệ thống file XFS mặc định trên RHEL/CentOS/Rocky chỉ hỗ trợ <strong>tăng kích thước</strong> (xfs_growfs), hoàn toàn <strong>KHÔNG HỖ TRỢ thu nhỏ (shrink)</strong>! Nếu bạn lỡ cấp phát quá nhiều dung lượng cho một LV định dạng XFS, cách duy nhất để giảm là backup dữ liệu, xóa LV tạo lại và restore."
+            "title": "XFS tuyệt đối không thể thu nhỏ (shrink) dung lượng",
+            "content": "Hệ thống file XFS (mặc định trên RHEL, CentOS, Rocky Linux) chỉ hỗ trợ <strong>tăng dung lượng (grow)</strong> trực tuyến, hoàn toàn <strong>KHÔNG CÓ KHẢ NĂNG THU NHỎ (SHRINK)</strong>! Nếu bạn lỡ cấp phát quá nhiều dung lượng cho một Logical Volume định dạng XFS (ví dụ cấp 500GB nhưng chỉ dùng 50GB), bạn không thể dùng lệnh thu nhỏ. Cách duy nhất để lấy lại dung lượng là sao lưu dữ liệu sang nơi khác, xóa Logical Volume đó đi, tạo lại LV nhỏ hơn và khôi phục dữ liệu."
+          },
+          {
+            "title": "Sửa /etc/fstab bị sai rồi reboot mà không chạy mount -a để kiểm tra",
+            "content": "Đây là nguyên nhân số 1 khiến máy chủ Linux bị sập sau khi bảo trì. Nếu trong tệp <code>/etc/fstab</code> có một dòng sai tên thiết bị, sai UUID, sai định dạng filesystem hoặc sai chính tả trong options mà thiếu cờ <code>nofail</code>, quá trình boot của systemd sẽ dừng lại khẩn cấp tại <strong>Emergency Mode</strong> và ngắt toàn bộ mạng SSH! Luôn luôn chạy <code>sudo mount -a</code> ngay sau khi chỉnh sửa fstab. Nếu lệnh không in ra bất kỳ dòng lỗi nào thì mới được phép khởi động lại."
           }
         ],
         "tips": [
           {
-            "title": "Luôn dùng tùy chọn nofail trong /etc/fstab cho ổ đĩa phụ",
-            "content": "Tùy chọn <code>nofail</code> báo cho Linux biết đây là ổ đĩa phụ trợ (như ổ backup, ổ gắn thêm). Nếu ổ này bị mất kết nối lúc khởi động, hệ thống sẽ bỏ qua và tiếp tục boot bình thường, cho phép bạn vào SSH cứu hộ từ xa."
+            "title": "Luôn dùng cờ -r (--resizefs) khi chạy lvextend",
+            "content": "Thay vì phải chạy 2 lệnh riêng biệt: <code>lvextend</code> để tăng kích thước phân vùng logic rồi mới chạy tiếp <code>resize2fs</code> (cho ext4) hoặc <code>xfs_growfs</code> (cho XFS), hãy luôn thêm cờ <code>-r</code> (ví dụ: <code>sudo lvextend -L +10G -r /dev/vg/lv</code>). LVM sẽ tự động phân tích định dạng hệ thống file và gọi công cụ mở rộng tương ứng một cách an toàn và chính xác tuyệt đối."
+          },
+          {
+            "title": "Luôn thêm tùy chọn nofail trong /etc/fstab cho mọi ổ đĩa phụ trợ",
+            "content": "Khi gắn các ổ đĩa phụ (như ổ backup, ổ lưu trữ dữ liệu ứng dụng, ổ đĩa mạng NFS), hãy luôn khai báo tùy chọn <code>nofail</code> trong cột thứ 4 của tệp <code>/etc/fstab</code> (ví dụ: <code>defaults,nofail</code>). Tùy chọn này chỉ thị cho systemd: Nếu ổ đĩa này bị tháo rời hoặc đứt kết nối cáp lúc boot, hãy bỏ qua và tiếp tục khởi động hệ thống bình thường, cho phép kỹ sư vẫn SSH vào máy chủ từ xa để xử lý."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Lệnh nào sau đây dùng để kiểm tra tính hợp lệ của toàn bộ cấu hình trong tệp /etc/fstab mà không cần khởi động lại máy chủ?",
+          "question": "Mức 1 (Nhớ / Hiểu): Lệnh nào sau đây cho phép kiểm tra tính hợp lệ của toàn bộ các mục khai báo trong tệp /etc/fstab mà không cần khởi động lại máy chủ? Giải thích cách lệnh này giúp ngăn ngừa thảm họa rơi vào Emergency Mode.",
           "command": "sudo mount -a",
-          "explanation": "mount -a thử gắn kết tất cả các hệ thống file được khai báo trong /etc/fstab. Nếu có bất kỳ dòng nào sai cú pháp hoặc sai UUID, lệnh sẽ lập tức báo lỗi ra màn hình."
+          "explanation": "Lệnh 'sudo mount -a' thử nghiệm gắn kết tất cả các hệ thống file được khai báo trong /etc/fstab (trừ những mục có cờ 'noauto'). Nếu tệp fstab có bất kỳ lỗi cú pháp nào, sai UUID, hoặc thư mục gắn kết không tồn tại, lệnh mount -a sẽ lập tức in thông báo lỗi chi tiết ra màn hình. Nhờ đó quản trị viên phát hiện và sửa lỗi ngay trong phiên làm việc hiện tại, ngăn chặn nguy cơ máy chủ bị kẹt tại Emergency Mode khi khởi động lại."
+        },
+        {
+          "question": "Mức 2 (Áp dụng / Vận hành): Một máy chủ có Logical Volume /dev/vg_app/lv_data đang được định dạng ext4 và mount tại /data. Volume Group vg_app còn 50GB dung lượng trống. Hãy viết duy nhất một câu lệnh LVM để tăng thêm 15GB dung lượng cho LV này và đồng bộ mở rộng hệ thống file trực tuyến ngay lập tức mà không làm gián đoạn ứng dụng.",
+          "command": "sudo lvextend -L +15G -r /dev/vg_app/lv_data",
+          "explanation": "Cờ '-L +15G' chỉ định tăng thêm chính xác 15GB dung lượng cho Logical Volume từ nguồn tài nguyên còn trống của Volume Group. Cờ '-r' (viết tắt của --resizefs) là chìa khóa: nó ra lệnh cho LVM tự động gọi công cụ resize2fs của ext4 để nới rộng hệ thống file trực tuyến (online resizing) trong cùng một thao tác duy nhất, đảm bảo ứng dụng đang đọc/ghi trên thư mục /data không bị gián đoạn dù chỉ 1 giây."
+        },
+        {
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Một kỹ sư được bàn giao ổ cứng thứ hai /dev/sdb (dung lượng 100GB). Hãy viết chuỗi lệnh chuẩn thực chiến để: (1) Khởi tạo Physical Volume trên /dev/sdb; (2) Mở rộng Volume Group hiện có tên 'vg_prod'; (3) Khởi tạo một Logical Volume mới tên 'lv_analytics' dung lượng 50GB; (4) Định dạng phân vùng mới bằng hệ thống file XFS; và (5) Lấy mã UUID để thêm vào /etc/fstab mount vào /mnt/analytics kèm tùy chọn chống treo boot an toàn.",
+          "command": "# 1. Khởi tạo PV và nạp vào Volume Group hiện có:\n$ sudo pvcreate /dev/sdb\n$ sudo vgextend vg_prod /dev/sdb\n\n# 2. Tạo Logical Volume mới và định dạng XFS:\n$ sudo lvcreate -L 50G -n lv_analytics vg_prod\n$ sudo mkfs.xfs /dev/vg_prod/lv_analytics\n\n# 3. Tạo thư mục mount và lấy mã UUID chuẩn:\n$ sudo mkdir -p /mnt/analytics\n$ UUID_VAL=$(sudo blkid -s UUID -o value /dev/vg_prod/lv_analytics)\n\n# 4. Thêm dòng cấu hình an toàn với cờ nofail vào /etc/fstab:\n$ echo \"UUID=${UUID_VAL}  /mnt/analytics  xfs  defaults,nofail  0  0\" | sudo tee -a /etc/fstab\n\n# 5. Kiểm tra tính hợp lệ và mount tức thì:\n$ sudo mount -a\n$ df -h /mnt/analytics",
+          "explanation": "Quy trình này tuân thủ trọn vẹn 3 tầng của LVM: pvcreate chuẩn bị ổ đĩa thô, vgextend mở rộng hồ chứa tài nguyên chung, lvcreate cấp phát phân vùng logic. Việc định dạng XFS mang lại hiệu năng I/O tối ưu cho phân tích dữ liệu. Cuối cùng, việc sử dụng mã UUID kết hợp tùy chọn 'defaults,nofail' và kiểm tra bằng 'mount -a' là chuẩn mực vàng đảm bảo máy chủ không bao giờ bị lỗi boot nếu ổ đĩa gặp trục trặc vật lý trong tương lai."
         }
       ],
       "summary": [
-        "LVM giải quyết bài toán cạn dung lượng ổ cứng linh hoạt; lvextend -r cho phép tăng dung lượng trực tuyến không gián đoạn dịch vụ.",
-        "Luôn sử dụng UUID và chạy sudo mount -a sau khi chỉnh sửa tệp /etc/fstab để phòng ngừa thảm họa không boot được.",
-        "RAID 10 là tiêu chuẩn vàng cho các máy chủ cơ sở dữ liệu đòi hỏi tốc độ đọc/ghi cao nhất kết hợp khả năng chịu lỗi phần cứng."
+        "LVM cung cấp kiến trúc lưu trữ 3 tầng linh hoạt: Physical Volume (PV) ➔ Volume Group (VG) ➔ Logical Volume (LV).",
+        "Lệnh lvextend -r cho phép mở rộng dung lượng Logical Volume và hệ thống file trực tuyến (zero-downtime) mà không làm gián đoạn dịch vụ.",
+        "Hệ thống file XFS chỉ hỗ trợ tăng kích thước (grow), TUYỆT ĐỐI KHÔNG hỗ trợ thu nhỏ (shrink); ext4 hỗ trợ cả phóng to lẫn thu nhỏ ngoại tuyến.",
+        "Tệp /etc/fstab quyết định quá trình gắn đĩa lúc khởi động; luôn dùng UUID và bổ sung tùy chọn nofail cho các ổ đĩa phụ trợ.",
+        "Sau mọi thao tác chỉnh sửa tệp /etc/fstab, BẮT BUỘC phải chạy sudo mount -a để kiểm tra trước khi khởi động lại máy chủ.",
+        "RAID 10 là tiêu chuẩn vàng cho cơ sở dữ liệu production nhờ tốc độ cao và khả năng chịu lỗi, nhưng RAID không thể thay thế cho chiến lược Sao lưu (Backup)."
       ]
     },
     {
       "id": "lx-3-04",
       "number": "3.4",
       "title": "Quản trị Mạng nâng cao: Định tuyến tĩnh, Cấu hình Interface & Tường lửa Firewall (nftables/ufw)",
-      "subtitle": "Xây dựng pháo đài bảo vệ server: cấu hình Netplan/NetworkManager và thiết lập quy tắc chặn lọc gói tin theo nguyên lý Least Privilege",
+      "subtitle": "Xây dựng pháo đài mạng máy chủ: Cấu hình địa chỉ IP tĩnh chuẩn Netplan / NetworkManager, định tuyến kernel và thiết lập tường lửa Least Privilege",
       "level": "Nâng cao",
       "duration": "55 phút",
       "requiresRoot": true,
       "requiresVM": true,
       "objectives": [
-        "Cấu hình địa chỉ IP tĩnh, Gateway và máy chủ DNS bằng Netplan (họ Debian/Ubuntu) và NetworkManager / nmcli (họ RHEL/Rocky).",
-        "Thiết lập pháo đài tường lửa với UFW áp dụng triệt để nguyên tắc Mặc định Chặn (Default DENY).",
-        "Cảnh báo đỏ sống còn: Quy tắc bắt buộc phải mở cổng SSH trước khi kích hoạt tường lửa từ xa để không bị khóa quyền truy cập vĩnh viễn.",
-        "Hiểu bản chất bảng luật hạ tầng của nftables và thiết lập quy tắc giới hạn tốc độ kết nối (Rate Limiting) chống quét cổng."
+        "Cấu hình địa chỉ IP tĩnh, Gateway, định tuyến tĩnh và máy chủ DNS bằng Netplan (/etc/netplan/*.yaml) trên họ Debian/Ubuntu và NetworkManager (nmcli) trên họ RHEL/Rocky.",
+        "Làm chủ quy trình kiểm thử cấu hình mạng an toàn từ xa bằng lệnh netplan try có bộ đếm tự động khôi phục cấu hình (auto-rollback 120s) khi mất kết nối.",
+        "Thiết lập pháo đài tường lửa với UFW áp dụng triệt để nguyên tắc Mặc định Chặn (Default DENY Incoming, Default ALLOW Outgoing) và giới hạn tốc độ kết nối (ufw limit).",
+        "Áp dụng quy tắc an toàn sống còn: Kỹ thuật hẹn giờ vô hiệu hóa tường lửa (sleep 300 && ufw disable &) phòng ngừa thảm họa tự khóa quyền truy cập SSH.",
+        "Khảo sát kiến trúc và bảng luật hạ tầng của nftables trong Linux kernel, phân tích sự thay thế của nftables đối với iptables truyền thống."
       ],
       "intuition": {
         "title": "Cổng thành kiên cố và Binh lính gác cổng nghiêm ngặt",
-        "metaphor": "Máy chủ khi kết nối ra Internet giống như một thành trì đứng giữa chiến địa: hàng ngàn botnet và máy quét tự động liên tục rà soát từng ô cửa sổ để tìm lỗ hổng. Tường lửa hoạt động theo nguyên tắc quân sự tối cao: MẶC ĐỊNH ĐÓNG KÍN TẤT CẢ CÁC CỔNG (Default DENY Incoming). Chỉ những ai mang đúng thẻ bài hợp lệ (cổng 22 cho SSH từ IP chỉ định, cổng 80/443 cho khách web) mới được binh lính mở cửa cho bước qua cổng thành.",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🛡️</span>\n                    <span>TƯỜNG LỬA UFW</span>\n                    <span class=\"lx-vs-tag\">Đơn giản hóa</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> Lớp bọc thân thiện bên trên iptables/nftables của Ubuntu/Debian.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> Cú pháp tiếng người: <code>ufw default deny incoming</code>, <code>ufw allow 22/tcp</code>.</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>⚡</span>\n                    <span>NFTABLES</span>\n                    <span class=\"lx-vs-tag\">Chuẩn Kernel Mới</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> Thay thế toàn diện iptables, ip6tables, arptables, ebtables cũ.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> Xử lý gói tin bằng máy ảo bytecode trong nhân Linux, hiệu năng lọc gói tin cao gấp nhiều lần khi có hàng ngàn quy tắc.</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "metaphor": "Nếu địa chỉ IP và bảng định tuyến (routing table) giống như địa chỉ nhà và sơ đồ mạng lưới đường sá chỉ dẫn bưu tá giao hàng tới đúng đích, thì Tường lửa (Firewall) giống như cổng thành thời cổ: Mặc định tất cả các cổng phụ đều bị khóa chặt (Default DENY). Khi có khách lạ gõ cửa, lính gác sẽ đối chiếu danh sách: Nếu là khách quen gõ đúng cổng SSH (cổng 22) với tốc độ bình thường thì cho qua; nếu có kẻ gõ cửa dồn dập hàng trăm lần mỗi phút (dò quét brute-force), lính gác lập tức đóng sập cửa từ chối tiếp đón (ufw limit). Binh lính gác cổng tối cao trong nhân Linux hiện đại chính là nftables.",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Quy trình Lọc Gói tin Mạng: Netplan ➔ Kernel Netfilter ➔ UFW / nftables</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:10px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:6px;padding:8px;\">\n        <strong>1. Gói tin mạng từ Internet đi vào Interface (eth0 / enp0s3)</strong><br/>\n        └── Cấu hình qua Netplan (<code>/etc/netplan/01-netcfg.yaml</code>) hoặc <code>nmcli</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼</div>\n      <div style=\"background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:6px;padding:8px;\">\n        <strong>2. Tường lửa UFW (Giao diện đơn giản) / nftables (Lõi Kernel Netfilter)</strong><br/>\n        ├── <strong>Chính sách mặc định:</strong> <code>DEFAULT DROP / DENY INCOMING</code> (Chặn toàn bộ)<br/>\n        ├── <strong>Ngoại lệ 1:</strong> <code>ALLOW from 10.0.0.0/24 to any port 22</code> (SSH quản trị nội bộ)<br/>\n        ├── <strong>Ngoại lệ 2:</strong> <code>LIMIT port 22/tcp</code> (Tự chặn IP thử kết nối quá 6 lần / 30 giây)<br/>\n        ├── <strong>Ngoại lệ 3:</strong> <code>ALLOW port 80,443/tcp</code> (Web traffic công khai)<br/>\n        └── <strong>Quy tắc an toàn:</strong> Cổng Database (3306, 5432) <strong>CẤM TUYỆT ĐỐI mở 0.0.0.0/0</strong>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Chỉ các gói tin hợp lệ mới được vào Socket)</div>\n      <div style=\"background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:8px;\">\n        <strong>3. Tiến trình ứng dụng phục vụ (Nginx, Gunicorn, PostgreSQL)</strong>\n      </div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-4-netplan-ip",
-          "title": "1. Cấu hình địa chỉ IP tĩnh chuẩn mực với Netplan",
-          "content": "\n                  <p>Trên các phiên bản Ubuntu Server hiện đại, cấu hình mạng được định nghĩa bằng tệp YAML trong thư mục <code>/etc/netplan/</code> (ví dụ: <code>01-netcfg.yaml</code>).</p>\n                  <p><strong>Lưu ý cú pháp YAML:</strong> Thụt lề bắt buộc phải dùng <strong>khoảng trắng (spaces)</strong>, tuyệt đối không dùng phím Tab!</p>\n                ",
+          "title": "1. Cấu hình Mạng Tĩnh Chuẩn mực: Netplan & NetworkManager",
+          "content": "\n        <p>Quản trị mạng trên Linux hiện đại đã dịch chuyển khỏi tệp <code>/etc/network/interfaces</code> cổ điển. Trên hệ điều hành họ <strong>Debian/Ubuntu</strong>, tiện ích trừu tượng hóa mạng là <strong>Netplan</strong> (sử dụng các tệp cấu hình YAML trong <code>/etc/netplan/</code>). Trên họ <strong>RHEL/CentOS/Rocky Linux</strong>, công cụ tiêu chuẩn là <strong>NetworkManager</strong> (điều khiển qua lệnh <code>nmcli</code>).</p>\n\n        <h3 class=\"lx-h3\">Quy tắc sinh tử khi chỉnh sửa tệp YAML của Netplan</h3>\n        <ul>\n          <li><strong>Thụt lề bắt buộc bằng 2 dấu cách:</strong> Tuyệt đối KHÔNG dùng phím Tab trong tệp YAML; vi phạm quy tắc này sẽ làm Netplan báo lỗi cú pháp và từ chối áp dụng mạng.</li>\n          <li><strong>Kiểm tra card mạng thực tế:</strong> Chạy lệnh <code>ip link show</code> để xác định chính xác tên interface (ví dụ: <code>eth0</code>, <code>ens3</code>, hoặc <code>enp0s3</code>) trước khi viết cấu hình.</li>\n          <li><strong>Luôn dùng netplan try thay vì netplan apply:</strong> Khi làm việc từ xa qua SSH, nếu cấu hình IP hoặc Gateway bị sai, <code>netplan apply</code> sẽ ngắt kết nối ngay lập tức và biến máy chủ thành cục gạch. Lệnh <code>sudo netplan try</code> sẽ áp dụng cấu hình tạm thời trong 120 giây và chờ bạn bấm Enter xác nhận; nếu bạn bị mất mạng và không bấm xác nhận được, Netplan sẽ tự động khôi phục cấu hình cũ!</li>\n        </ul>\n\n        <h3 class=\"lx-h3\">Bảng đối chiếu cấu hình mạng giữa Netplan và nmcli</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Hành động</th>\n              <th>Cấu hình Netplan (Debian/Ubuntu)</th>\n              <th>Lệnh NetworkManager (nmcli - RHEL/Rocky)</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td>Xem danh sách kết nối</td>\n              <td><code>cat /etc/netplan/*.yaml</code></td>\n              <td><code>nmcli connection show</code></td>\n            </tr>\n            <tr>\n              <td>Gán IP tĩnh &amp; Prefix</td>\n              <td>Dòng <code>addresses: [192.168.1.100/24]</code></td>\n              <td><code>sudo nmcli con mod eth0 ipv4.addresses 192.168.1.100/24</code></td>\n            </tr>\n            <tr>\n              <td>Gán Gateway mặc định</td>\n              <td>Dòng <code>routes: - to: default via: 192.168.1.1</code></td>\n              <td><code>sudo nmcli con mod eth0 ipv4.gateway 192.168.1.1</code></td>\n            </tr>\n            <tr>\n              <td>Gán DNS Server</td>\n              <td>Dòng <code>nameservers: addresses: [1.1.1.1, 8.8.8.8]</code></td>\n              <td><code>sudo nmcli con mod eth0 ipv4.dns \"1.1.1.1 8.8.8.8\"</code></td>\n            </tr>\n            <tr>\n              <td>Áp dụng cấu hình</td>\n              <td><code>sudo netplan try</code> (hoặc <code>apply</code>)</td>\n              <td><code>sudo nmcli con up eth0</code></td>\n            </tr>\n          </tbody>\n        </table>\n      ",
           "codeExamples": [
             {
-              "lang": "Yaml",
-              "title": "Tệp cấu hình IP tĩnh /etc/netplan/01-netcfg.yaml",
-              "code": "network:\n  version: 2\n  renderer: networkd\n  ethernets:\n    eth0:\n      dhcp4: no\n      addresses:\n        - 192.168.1.100/24\n      routes:\n        - to: default\n          via: 192.168.1.1\n      nameservers:\n        addresses:\n          - 1.1.1.1\n          - 8.8.8.8",
+              "title": "Tệp cấu hình IP tĩnh an toàn /etc/netplan/01-netcfg.yaml",
+              "lang": "yaml",
+              "code": "# /etc/netplan/01-netcfg.yaml\nnetwork:\n  version: 2\n  renderer: networkd\n  ethernets:\n    enp0s3:\n      dhcp4: no\n      addresses:\n        - 192.168.1.150/24\n      routes:\n        - to: default\n          via: 192.168.1.1\n        # Định tuyến tĩnh riêng cho dải mạng nội bộ Data Center:\n        - to: 10.10.0.0/16\n          via: 192.168.1.254\n      nameservers:\n        addresses:\n          - 1.1.1.1\n          - 8.8.8.8",
+              "output": "# Kiểm thử tệp cấu hình mạng với cơ chế bảo hiểm tự phục hồi (120s timeout):\n$ sudo netplan try\nDo you want to keep these settings?\n\nPress ENTER before the timeout to accept the new configuration\nChanges will revert in 118 seconds\n\n# Sau khi bấm ENTER xác nhận:\nConfiguration accepted.\n\n# Kiểm tra địa chỉ IP và bảng định tuyến mới:\n$ ip -4 addr show enp0s3\n2: enp0s3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP\n    inet 192.168.1.150/24 brd 192.168.1.255 scope global enp0s3\n\n$ ip route show\ndefault via 192.168.1.1 dev enp0s3 proto static\n10.10.0.0/16 via 192.168.1.254 dev enp0s3 proto static\n192.168.1.0/24 dev enp0s3 proto kernel scope link src 192.168.1.150",
               "annotations": [
-                {
-                  "line": 6,
-                  "part": "dhcp4: no",
-                  "text": "Tắt tự động nhận IP động DHCP để thiết lập IP tĩnh."
-                },
-                {
-                  "line": 8,
-                  "part": "192.168.1.100/24",
-                  "text": "Địa chỉ IP tĩnh kèm mặt nạ mạng Subnet mask CIDR /24 (tương đương 255.255.255.0)."
-                },
-                {
-                  "line": 11,
-                  "part": "via: 192.168.1.1",
-                  "text": "Địa chỉ Default Gateway của router chuyển tiếp gói tin ra Internet."
-                },
-                {
-                  "line": 14,
-                  "part": "nameservers",
-                  "text": "Máy chủ phân giải tên miền DNS (Cloudflare 1.1.1.1 và Google 8.8.8.8)."
-                }
-              ],
-              "output": ""
+                "netplan try: Cơ chế phòng vệ số 1 khi thao tác mạng từ xa; tự động rollback nếu quản trị viên mất kết nối SSH.",
+                "routes - to: default via: Thay thế cho chỉ thị gateway4 đã bị deprecate từ các bản Ubuntu gần đây.",
+                "ip route show: Xác minh dòng định tuyến tĩnh đến mạng 10.10.0.0/16 đã được nạp trực tiếp vào kernel routing table."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-4-ufw-fortress",
-          "title": "2. Thiết lập pháo đài UFW theo chuẩn Least Privilege",
-          "content": "\n                  <div class=\"callout-box danger-box\">\n                    <div class=\"callout-title\">🚨 CẢNH BÁO ĐỎ: MỞ CỔNG SSH TRƯỚC KHI BẬT TƯỜNG LỬA TỪ XA</div>\n                    <p>Nếu bạn đang kết nối tới máy chủ qua SSH và gõ lệnh: <code>sudo ufw default deny incoming && sudo ufw enable</code> mà <strong>CHƯA CHO PHÉP CỔNG SSH</strong>, phiên làm việc hiện tại sẽ bị cắt đứt ngay lập tức và bạn sẽ bị khóa quyền truy cập vĩnh viễn ra khỏi máy chủ!</p>\n                    <div class=\"lx-safe-alternative\">\n                      <strong>Quy trình chuẩn 4 bước bất di bất dịch:</strong>\n                      <br>1. Thiết lập chính sách mặc định: <code>sudo ufw default deny incoming && sudo ufw default allow outgoing</code>\n                      <br>2. <strong>BƯỚC QUYẾT ĐỊNH:</strong> Mở cổng SSH: <code>sudo ufw allow 22/tcp</code> (hoặc cổng SSH tùy biến của bạn).\n                      <br>3. Mở các cổng dịch vụ web: <code>sudo ufw allow 80/tcp && sudo ufw allow 443/tcp</code>\n                      <br>4. Chỉ sau khi đã mở SSH mới kích hoạt tường lửa: <code>sudo ufw enable</code>\n                    </div>\n                  </div>\n                ",
+          "title": "2. Thiết lập Pháo đài Tường lửa UFW theo Chuẩn Least Privilege",
+          "content": "\n        <p><strong>UFW (Uncomplicated Firewall)</strong> là tiện ích giao diện quản lý tường lửa phổ biến nhất trên họ Ubuntu/Debian. Bản chất UFW là một wrapper thao tác trên nền <code>nftables</code> (hoặc <code>iptables</code>), giúp kỹ sư quản lý các quy tắc mở/đóng cổng dễ hiểu và tránh nhầm lẫn.</p>\n\n        <h3 class=\"lx-h3\">Nguyên tắc Mặc định Chặn (Default DENY) & Giới hạn Tốc độ (Rate Limiting)</h3>\n        <p>Theo chuẩn bảo mật CIS Linux Benchmark và NIST SP 800-123:</p>\n        <ul>\n          <li><strong>Mặc định chặn toàn bộ lưu lượng đi vào:</strong> <code>sudo ufw default deny incoming</code>. Bất kỳ cổng dịch vụ nào không được khai báo rõ ràng đều sẽ bị drop gói tin trong im lặng.</li>\n          <li><strong>Mặc định cho phép lưu lượng đi ra:</strong> <code>sudo ufw default allow outgoing</code> (để máy chủ có thể cập nhật bản vá hệ điều hành và kết nối ra ngoài).</li>\n          <li><strong>Giới hạn tốc độ cổng SSH:</strong> <code>sudo ufw limit 22/tcp</code>. Thay vì mở thông thoáng cổng SSH, <code>ufw limit</code> sẽ tự động từ chối kết nối nếu một địa chỉ IP cố tình thử kết nối quá 6 lần trong vòng 30 giây, dập tắt các đợt tấn công brute-force mật khẩu.</li>\n          <li><strong>Tuyệt đối không mở cổng Database ra toàn mạng (0.0.0.0/0):</strong> Các cổng như 3306 (MySQL), 5432 (Postgres), 6379 (Redis) chỉ được phép mở cho địa chỉ IP cố định của máy chủ ứng dụng nội bộ: <code>sudo ufw allow from 10.10.1.50 to any port 5432 proto tcp</code>.</li>\n        </ul>\n\n        <div class=\"lx-callout-danger\">\n          <strong>⚠️ CẢNH BÁO ĐỎ TỰ KHÓA SSH (SSH SELF-LOCKOUT):</strong><br/>\n          Nếu bạn kích hoạt tường lửa (<code>sudo ufw enable</code>) trên một máy chủ đám mây từ xa mà <strong>QUÊN chưa mở cổng SSH</strong>, phiên SSH hiện tại sẽ bị ngắt kết nối ngay lập tức và máy chủ sẽ từ chối mọi kết nối mới! Bạn sẽ bị khóa quyền truy cập hoàn toàn.<br/>\n          <strong>Quy tắc bảo hiểm bắt buộc:</strong> Trước khi bật tường lửa lần đầu hoặc thực hiện thay đổi lớn, hãy kích hoạt một bộ hẹn giờ khẩn cấp ở tác vụ nền:<br/>\n          <code>sudo nohup sh -c 'sleep 300 &amp;&amp; ufw disable' &gt; /dev/null 2&gt;&amp;1 &amp;</code><br/>\n          Nếu chẳng may bạn bị mất kết nối, sau đúng 5 phút bộ đếm sẽ tự động tắt UFW để bạn SSH lại vào cứu hộ!\n        </div>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Bộ lệnh thiết lập tường lửa UFW chuẩn Production",
-              "code": "# 1. Áp dụng chính sách mặc định (Chặn toàn bộ chiều vào, Cho phép toàn bộ chiều ra)\nsudo ufw default deny incoming\nsudo ufw default allow outgoing\n\n# 2. BẮT BUỘC: Mở cổng SSH và bật Rate Limiting chống Brute-force\nsudo ufw limit 22/tcp comment 'SSH with rate limit'\n\n# 3. Mở cổng web HTTP và HTTPS\nsudo ufw allow 80/tcp comment 'Nginx HTTP'\nsudo ufw allow 443/tcp comment 'Nginx HTTPS'\n\n# 4. Chỉ cho phép địa chỉ IP văn phòng công ty truy cập cổng quản trị cơ sở dữ liệu 5432\nsudo ufw allow from 203.0.113.85 to any port 5432 proto tcp comment 'Postgres office only'\n\n# 5. Kích hoạt tường lửa và kiểm tra trạng thái chi tiết\nsudo ufw --force enable\nsudo ufw status verbose",
+              "title": "Quy trình thiết lập pháo đài UFW chuẩn Production từ A đến Z",
+              "lang": "bash",
+              "code": "# Bước 1: Đặt bộ hẹn giờ bảo hiểm 5 phút trước khi thao tác:\n$ sudo nohup sh -c 'sleep 300 && ufw disable' > /dev/null 2>&1 &\n\n# Bước 2: Thiết lập chính sách bảo mật gốc (Least Privilege):\n$ sudo ufw default deny incoming\n$ sudo ufw default allow outgoing\n\n# Bước 3: Mở cổng SSH trước tiên kết hợp giới hạn tốc độ chống brute-force:\n$ sudo ufw limit 22/tcp comment 'SSH Rate Limited'\n\n# Bước 4: Mở cổng Web công khai (HTTP/HTTPS):\n$ sudo ufw allow 80/tcp comment 'HTTP Web'\n$ sudo ufw allow 443/tcp comment 'HTTPS Web'\n\n# Bước 5: Chỉ mở cổng Database cho máy chủ ứng dụng nội bộ (Ví dụ: IP 10.10.1.50):\n$ sudo ufw allow from 10.10.1.50 to any port 5432 proto tcp comment 'PostgreSQL internal only'\n\n# Bước 6: Kích hoạt tường lửa an toàn:\n$ sudo ufw --force enable\n\n# Bước 7: Kiểm tra danh sách quy tắc có đánh số thứ tự:\n$ sudo ufw status numbered\nStatus: active\n\n     To                         Action      From\n     --                         ------      ----\n[ 1] 22/tcp                     LIMIT IN    Anywhere                   # SSH Rate Limited\n[ 2] 80/tcp                     ALLOW IN    Anywhere                   # HTTP Web\n[ 3] 443/tcp                    ALLOW IN    Anywhere                   # HTTPS Web\n[ 4] 5432/tcp                   ALLOW IN    10.10.1.50                 # PostgreSQL internal only\n[ 5] 22/tcp (v6)                LIMIT IN    Anywhere (v6)              # SSH Rate Limited\n[ 6] 80/tcp (v6)                ALLOW IN    Anywhere (v6)              # HTTP Web\n[ 7] 443/tcp (v6)               ALLOW IN    Anywhere (v6)              # HTTPS Web\n\n# Bước 8: Mọi thứ hoạt động hoàn hảo! Hủy bỏ tiến trình hẹn giờ bảo hiểm:\n$ sudo pkill -f 'sleep 300 && ufw disable'",
+              "output": "Status: active\n\n     To                         Action      From\n     --                         ------      ----\n[ 1] 22/tcp                     LIMIT IN    Anywhere                   # SSH Rate Limited\n[ 2] 80/tcp                     ALLOW IN    Anywhere                   # HTTP Web\n[ 3] 443/tcp                    ALLOW IN    Anywhere                   # HTTPS Web\n[ 4] 5432/tcp                   ALLOW IN    10.10.1.50                 # PostgreSQL internal only",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "default deny incoming",
-                  "text": "Chính sách phòng thủ Least Privilege: Mọi cổng không được khai báo rõ ràng đều bị chặn đứng."
-                },
-                {
-                  "line": 6,
-                  "part": "ufw limit 22/tcp",
-                  "text": "limit: Tính năng thông minh của UFW — nếu 1 IP thử kết nối SSH quá 6 lần trong 30 giây sẽ tự động bị chặn."
-                },
-                {
-                  "line": 13,
-                  "part": "allow from ... to port 5432",
-                  "text": "Bảo vệ cổng Database: Chỉ cho phép IP công ty được kết nối, người ngoài Internet bị cấm tuyệt đối."
-                }
-              ],
-              "output": "Status: active\nLogging: on (low)\nDefault: deny (incoming), allow (outgoing), disabled (routed)\n\nTo                         Action      From\n--                         ------      ----\n22/tcp                     LIMIT IN    Anywhere                   # SSH with rate limit\n80/tcp                     ALLOW IN    Anywhere                   # Nginx HTTP\n443/tcp                    ALLOW IN    Anywhere                   # Nginx HTTPS\n5432/tcp                   ALLOW IN    203.0.113.85               # Postgres office only"
+                "Bước 1: Cơ chế bảo hiểm sleep 300 && ufw disable: Nếu lỡ tay khóa mình ra ngoài, tường lửa tự mở sau 5 phút.",
+                "Bước 3: ufw limit 22/tcp tự động giám sát và chặn IP nếu có trên 6 kết nối bất thường trong 30 giây.",
+                "Bước 5: ufw allow from 10.10.1.50 to any port 5432: Đảm bảo cổng Database không bao giờ bị lộ ra ngoài Internet công khai.",
+                "Bước 7: ufw status numbered: Rất tiện lợi khi cần xóa quy tắc; chỉ cần chạy 'sudo ufw delete [số]'."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-4-nftables-inspect",
-          "title": "3. Khảo sát bảng luật hạ tầng của nftables",
-          "content": "\n                  <p>Dù bạn sử dụng UFW hay FirewallD, ở tầng nhân Linux, các quy tắc đều được chuyển đổi thành bảng luật của <code>nftables</code>. Bạn có thể kiểm tra trực tiếp các chain và counter của gói tin:</p>\n                ",
+          "title": "3. Khảo sát Kiến trúc Bảng luật Hạ tầng của nftables trong Kernel",
+          "content": "\n        <p>Từ nhân Linux kernel 3.13 và chính thức trở thành mặc định trên Debian 10, Ubuntu 20.04+, RHEL 8+, <strong>nftables</strong> đã thay thế hoàn toàn bộ công cụ <code>iptables</code>, <code>ip6tables</code>, <code>arptables</code>, và <code>ebtables</code>.</p>\n\n        <h3 class=\"lx-h3\">Vì sao Linux chuyển sang nftables?</h3>\n        <ul>\n          <li><strong>Cấu trúc dữ liệu thống nhất:</strong> Không còn sự phân mảnh giữa IPv4 và IPv6; nftables hỗ trợ họ <code>inet</code> dùng chung một bộ quy tắc cho cả 2 giao thức.</li>\n          <li><strong>Hiệu năng vượt trội:</strong> nftables sử dụng máy ảo nhẹ (JIT bytecode) trong kernel, hỗ trợ tra cứu tập hợp (Sets, Maps) với độ phức tạp $O(1)$ thay vì duyệt tuần tự từng dòng quy tắc như iptables.</li>\n          <li><strong>Cập nhật nguyên khối (Atomic Rule Updates):</strong> Khi nạp hàng ngàn quy tắc mới, nftables áp dụng toàn bộ trong một giao dịch nguyên khối (transaction), loại bỏ tình trạng trạng thái trung gian không nhất quán.</li>\n        </ul>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Xem toàn bộ bảng luật nftables thời gian thực",
-              "code": "# Liệt kê toàn bộ bảng quy tắc đang được nhân Linux thực thi\nsudo nft list ruleset\n\n# Giám sát các gói tin đang bị tường lửa thả rơi (Drop) thời gian thực\nsudo dmesg -w | grep -i '[UFW BLOCK]'",
+              "title": "Khảo sát bảng luật nftables thời gian thực và tra cứu Set",
+              "lang": "bash",
+              "code": "# Xem toàn bộ bảng luật nftables đang thực thi trong kernel:\n$ sudo nft list ruleset\n\n# Kiểm tra bảng lọc gói tin inet filter:\n$ sudo nft list table inet ufw\n\n# Tạo thủ công một tập hợp (Set) các IP độc hại và chặn toàn bộ trong 1 quy tắc:\n$ sudo nft add table inet my_filter\n$ sudo nft add set inet my_filter bad_ips { type ipv4_addr ; flags timeout ; }\n$ sudo nft add rule inet my_filter input ip saddr @bad_ips drop\n\n# Thêm IP vào danh sách đen tự động hết hạn sau 1 giờ:\n$ sudo nft add element inet my_filter bad_ips { 203.0.113.55 timeout 1h }",
+              "output": "table inet ufw {\n\tchain ufw-before-logging-input {\n\t}\n\tchain ufw-user-input {\n\t\ttcp dport 22 ct state new,untracked limit rate 6/minute burst 3 packets accept\n\t\ttcp dport 80 accept\n\t\ttcp dport 443 accept\n\t\tip saddr 10.10.1.50 tcp dport 5432 accept\n\t}\n}",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "nft list ruleset",
-                  "text": "In ra toàn bộ cấu trúc bảng (tables), chuỗi (chains) và bộ đếm gói tin (counters) của nhân Linux."
-                },
-                {
-                  "line": 5,
-                  "part": "grep '[UFW BLOCK]'",
-                  "text": "Theo dõi các IP đang cố gắng quét các cổng đóng trên máy chủ của bạn."
-                }
-              ],
-              "output": "table inet ufw {\n    chain ufw-user-input {\n        tcp dport 22 ct state new,untracked meter ufw-meter-ssh { ip saddr limit rate over 6/minute burst 6 packets } drop\n        tcp dport 80 accept\n        tcp dport 443 accept\n    }\n}"
+                "nft list ruleset: Cho thấy tầng dưới của UFW thực chất được biên dịch thành các chain và table chuẩn của nftables.",
+                "Tập hợp (Set) trong nftables: Cho phép chứa hàng trăm ngàn IP và lọc với tốc độ cực nhanh mà không làm chậm mạng."
+              ]
             }
           ]
         }
       ],
       "scenario": {
-        "title": "Cứu nguy kỹ sư cấu hình tường lửa chặn nhầm cổng SSH trên máy chủ Cloud",
-        "content": "\n              <p>Một bạn kỹ sư thực tập đổi cổng SSH từ 22 sang 2222 trong <code>sshd_config</code>, sau đó gõ lệnh <code>sudo ufw enable</code> khi chưa mở cổng 2222. Ngay lập tức, bạn bị văng ra khỏi máy chủ và không thể đăng nhập lại.</p>\n              <p><strong>Kỹ năng xử lý:</strong> Đăng nhập vào bảng điều khiển Web Console (VNC/Serial Console) của nhà cung cấp đám mây (AWS EC2 Serial Console / DigitalOcean Recovery Console) — kết nối này đi qua cổng phần cứng ảo trực tiếp, không phụ thuộc vào mạng IP hay tường lửa. Sau khi vào được, bạn gõ <code>sudo ufw allow 2222/tcp</code> và kết nối SSH từ máy cá nhân phục hồi thành công!</p>\n            "
+        "title": "Kỹ sư kích hoạt tường lửa UFW trên máy chủ Cloud và bị cắt đứt kết nối SSH tức thì",
+        "content": "\n      <p><strong>1. Triệu chứng sự cố:</strong> Một kỹ sư sơ cấp mới nhận bàn giao máy chủ Cloud tại Singapore. Để tăng cường bảo mật, kỹ sư gõ lệnh: <code>sudo ufw default deny incoming &amp;&amp; sudo ufw enable</code>. Ngay khi bấm phím Enter, toàn bộ cửa sổ terminal bị đơ cứng, không thể gõ được thêm lệnh nào. Sau 30 giây, kết nối SSH ném thông báo: <code>client_loop: send disconnect: Connection reset by peer</code>. Kỹ sư cố gắng mở terminal mới để SSH lại thì đều nhận được thông báo <code>Connection timed out</code>.</p>\n      \n      <p><strong>2. Điều tra & Chẩn đoán:</strong></p>\n      <p>Kỹ sư phải đăng nhập vào giao diện web điều khiển của nhà cung cấp Cloud (AWS Web Console / VNC Web Terminal). Tại đây, máy chủ vẫn đang chạy bình thường (CPU 2%, RAM ổn định), nhưng cổng 22 từ bên ngoài hoàn toàn bị tường lửa chặn lại.</p>\n      \n      <p><strong>3. Nguyên nhân gốc rễ:</strong> Kỹ sư đã thiết lập chính sách <code>default deny incoming</code> nhưng <strong>chưa hề thêm quy tắc cho phép cổng 22 (SSH)</strong> trước khi kích hoạt tường lửa! Do đó, UFW đã chặn ngay tức khắc chính phiên kết nối SSH mà kỹ sư đang thao tác.</p>\n      \n      <p><strong>4. Biện pháp khắc phục:</strong></p>\n      <pre><code># Từ Web Console cứu hộ, kỹ sư đăng nhập root và kiểm tra:\n# sudo ufw status\nStatus: active\n\n# Bổ sung ngay quy tắc mở cổng SSH:\n# sudo ufw allow 22/tcp comment 'SSH Recovery'\n\n# Hoặc nếu cần mở dải IP riêng:\n# sudo ufw allow from 1.2.3.4 to any port 22 proto tcp\n\n# Kiểm tra lại trạng thái:\n# sudo ufw status numbered</code></pre>\n      <p>Kỹ sư lập tức SSH lại được vào máy chủ bình thường từ máy tính cá nhân.</p>\n      \n      <p><strong>5. Phòng ngừa lâu dài:</strong></p>\n      <ul>\n        <li>Quy định bắt buộc trong checklist vận hành: <strong>Phải mở cổng SSH và kiểm tra kỹ bằng <code>ufw show added</code> trước khi chạy lệnh <code>ufw enable</code></strong>.</li>\n        <li>Luôn đặt cơ chế bảo hiểm tự phục hồi trước khi chạm vào tường lửa từ xa: <code>sudo nohup sh -c 'sleep 300 &amp;&amp; ufw disable' &gt; /dev/null 2&gt;&amp;1 &amp;</code>. Nếu thao tác thành công thì hủy tiến trình sleep; nếu gặp sự cố thì chỉ cần đợi 5 phút để vào lại cứu hộ mà không cần mở Web Console.</li>\n      </ul>\n    "
       },
       "callouts": {
         "pitfalls": [
           {
-            "title": "Không bao giờ mở cổng Database ra toàn mạng (0.0.0.0/0)",
-            "content": "Các cổng cơ sở dữ liệu như 3306 (MySQL), 5432 (Postgres), 6379 (Redis), 27017 (MongoDB) là mục tiêu hàng đầu của botnet tống tiền (Ransomware). Tuyệt đối KHÔNG mở công khai; chỉ cho phép kết nối nội bộ hoặc mở cho IP cố định của backend."
+            "title": "Mở cổng Database (3306, 5432, 6379) ra toàn mạng Internet (0.0.0.0/0)",
+            "content": "Các cổng cơ sở dữ liệu như 3306 (MySQL), 5432 (Postgres), 6379 (Redis), 27017 (MongoDB) là mục tiêu săn đón hàng đầu của các mạng botnet tống tiền (Ransomware). Chúng liên tục quét dải IP toàn cầu để tấn công vét cạn mật khẩu hoặc khai thác lỗ hổng xác thực rỗng. Tuyệt đối KHÔNG chạy lệnh <code>ufw allow 5432</code> mà không có giới hạn nguồn! Bắt buộc phải chỉ định địa chỉ IP máy chủ backend: <code>sudo ufw allow from 10.10.1.50 to any port 5432 proto tcp</code>."
+          },
+          {
+            "title": "Bật tường lửa từ xa mà quên mở cổng SSH và không có cơ chế hoàn tác",
+            "content": "Đây là tai nạn kinh điển nhất của người quản trị Linux. Khi bạn chạy <code>ufw default deny incoming</code> và kích hoạt tường lửa mà quên mở cổng 22 (hoặc cổng SSH tùy biến), phiên SSH của bạn sẽ bị cắt đứt ngay tức thì và toàn bộ kết nối bên ngoài bị từ chối. Trên các máy chủ vật lý không có IPMI/KVM hoặc máy ảo cloud không có Web Console, sự cố này đồng nghĩa với việc bạn phải yêu cầu bộ phận kỹ thuật DC cắm màn hình trực tiếp để cứu hộ."
           }
         ],
         "tips": [
           {
-            "title": "Dùng netplan try thay vì netplan apply",
-            "content": "Khi sửa cấu hình mạng từ xa, hãy gõ <code>sudo netplan try</code>. Lệnh sẽ áp dụng cấu hình trong 120 giây và chờ bạn bấm Enter xác nhận. Nếu bạn bị mất kết nối mạng và không bấm xác nhận được, Netplan sẽ tự động rollback về cấu hình cũ, cứu bạn khỏi việc bị mất kết nối vĩnh viễn."
+            "title": "Dùng netplan try thay vì netplan apply khi chỉnh sửa mạng từ xa",
+            "content": "Khi thay đổi IP, subnet mask, gateway hoặc định tuyến tĩnh trong tệp YAML của Netplan, hãy luôn sử dụng lệnh <code>sudo netplan try</code>. Lệnh này có cơ chế đếm ngược 120 giây: nếu bạn bị mất mạng và không bấm phím ENTER để xác nhận, Netplan sẽ tự động khôi phục (rollback) lại toàn bộ cấu hình mạng cũ, giúp bạn không bao giờ bị mất kết nối vĩnh viễn."
+          },
+          {
+            "title": "Dùng ufw limit thay cho ufw allow đối với cổng SSH",
+            "content": "Thay vì mở thông thoáng cổng SSH bằng <code>ufw allow 22/tcp</code>, hãy luôn sử dụng <code>sudo ufw limit 22/tcp</code>. UFW sẽ theo dõi lưu lượng và tự động chặn tạm thời bất kỳ địa chỉ IP nào khởi tạo quá 6 kết nối SSH trong vòng 30 giây, giúp dập tắt các đợt quét brute-force của botnet mà không làm ảnh hưởng đến người dùng quản trị hợp lệ."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Lệnh UFW nào sau đây dùng để xóa bỏ một quy tắc đã thêm mà không làm ảnh hưởng các quy tắc khác?",
-          "command": "sudo ufw status numbered\n# Sau đó xóa theo số thứ tự hiển thị:\nsudo ufw delete [số_thứ_tự]",
-          "explanation": "ufw status numbered đánh số thứ tự 1, 2, 3... cho từng dòng quy tắc, sau đó ufw delete [số] giúp bạn xóa chính xác dòng cần bỏ mà không sợ gõ sai cú pháp."
+          "question": "Mức 1 (Nhớ / Hiểu): Viết các câu lệnh UFW để: (1) Kiểm tra trạng thái tường lửa hiển thị rõ số thứ tự của từng quy tắc; và (2) Xóa bỏ chính xác quy tắc số 3 mà không làm ảnh hưởng đến các quy tắc khác.",
+          "command": "# 1. Kiểm tra trạng thái tường lửa có đánh số thứ tự:\n$ sudo ufw status numbered\n\n# 2. Xóa quy tắc số 3 theo số thứ tự hiển thị:\n$ sudo ufw delete 3",
+          "explanation": "Lệnh 'ufw status numbered' in danh sách quy tắc kèm chỉ số [ 1], [ 2], [ 3]... Việc xóa bằng chỉ số 'ufw delete 3' giúp quản trị viên loại bỏ chính xác quy tắc mong muốn mà không sợ gõ sai cú pháp hay tham số của quy tắc phức tạp. Sau khi xóa một quy tắc, số thứ tự của các quy tắc phía sau sẽ được tự động dịch chuyển lên."
+        },
+        {
+          "question": "Mức 2 (Áp dụng / Vận hành): Hãy viết chuỗi lệnh UFW chuẩn mực để thiết lập tường lửa mới cho một máy chủ: (1) Đặt chính sách mặc định chặn toàn bộ incoming và cho phép outgoing; (2) Mở cổng SSH (cổng 22) có giới hạn tốc độ chống quét brute-force; (3) Mở cổng Web HTTP (80) và HTTPS (443) cho mọi người; và (4) Chỉ cho phép duy nhất địa chỉ IP nội bộ 10.0.1.20 kết nối vào cổng Redis (6379/tcp).",
+          "command": "# 1. Thiết lập chính sách bảo vệ gốc:\n$ sudo ufw default deny incoming\n$ sudo ufw default allow outgoing\n\n# 2. Mở cổng SSH kèm rate-limiting:\n$ sudo ufw limit 22/tcp comment 'SSH brute-force protection'\n\n# 3. Mở cổng Web công khai:\n$ sudo ufw allow 80/tcp comment 'Web HTTP'\n$ sudo ufw allow 443/tcp comment 'Web HTTPS'\n\n# 4. Giới hạn truy cập Redis chỉ cho IP nội bộ tin cậy:\n$ sudo ufw allow from 10.0.1.20 to any port 6379 proto tcp comment 'Redis backend only'\n\n# 5. Kích hoạt tường lửa và kiểm tra:\n$ sudo ufw --force enable\n$ sudo ufw status numbered",
+          "explanation": "Chuỗi lệnh này áp dụng trọn vẹn nguyên tắc đặc quyền tối thiểu (Least Privilege). Bằng cách kết hợp ufw default deny incoming với ufw limit cho cổng SSH và giới hạn IP nghiêm ngặt cho cổng Redis 6379, máy chủ vừa bảo đảm an toàn trước các đợt rà quét công khai vừa đảm bảo các dịch vụ nghiệp vụ nội bộ hoạt động trơn tru."
+        },
+        {
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Máy chủ ứng dụng cần gửi dữ liệu sang dải mạng cơ sở dữ liệu nội bộ 10.50.0.0/16 thông qua một gateway riêng biệt có IP 192.168.1.254 trên card mạng eth0. Hãy viết khối cấu hình định tuyến tĩnh chuẩn YAML cho Netplan và nêu rõ quy trình kiểm thử an toàn từ xa để không làm sập mạng máy chủ.",
+          "command": "# 1. Soạn thảo khối định tuyến trong tệp /etc/netplan/50-cloud-init.yaml:\nnetwork:\n  version: 2\n  ethernets:\n    eth0:\n      routes:\n        - to: 10.50.0.0/16\n          via: 192.168.1.254\n          metric: 100\n\n# 2. BẮT BUỘC: Kiểm thử an toàn bằng netplan try (không dùng netplan apply trực tiếp):\n$ sudo netplan try\n\n# (Kiểm tra kết nối và nhấn ENTER để xác nhận trong vòng 120 giây)\n\n# 3. Xác minh tuyến đường đã được nạp vào Kernel routing table:\n$ ip route show 10.50.0.0/16\n10.50.0.0/16 via 192.168.1.254 dev eth0 proto static metric 100",
+          "explanation": "Khối khai báo routes trong Netplan thiết lập tuyến đường tĩnh (static route) cố định trong kernel. Tùy chọn 'metric: 100' xác định độ ưu tiên của tuyến đường. Điểm cốt tử trong vận hành là việc sử dụng 'netplan try': nếu gateway 192.168.1.254 không phản hồi hoặc cấu hình xung đột làm đứt kết nối mạng chính, hệ thống sẽ tự động hủy bỏ thay đổi sau 120 giây và khôi phục trạng thái cũ, bảo vệ kỹ sư khỏi sự cố mất kết nối hoàn toàn."
         }
       ],
       "summary": [
-        "Áp dụng triệt để chính sách Mặc định Chặn (Default DENY) cho toàn bộ lưu lượng mạng đi vào máy chủ.",
-        "BẮT BUỘC mở cổng SSH trước khi kích hoạt tường lửa từ xa để phòng ngừa bị khóa quyền truy cập.",
-        "Dùng ufw limit cho cổng SSH và chỉ mở cổng Database cho các địa chỉ IP nội bộ tin cậy."
+        "Netplan (/etc/netplan/*.yaml) là công cụ cấu hình mạng hiện đại trên Ubuntu/Debian; thụt lề chuẩn 2 dấu cách và dùng netplan try để kiểm thử an toàn.",
+        "NetworkManager (nmcli) là tiêu chuẩn quản trị mạng trên RHEL, CentOS, và Rocky Linux.",
+        "Áp dụng triệt để chính sách Mặc định Chặn (Default DENY incoming) cho tường lửa máy chủ theo chuẩn CIS Benchmark.",
+        "BẮT BUỘC mở cổng SSH (tốt nhất là dùng ufw limit) trước khi kích hoạt tường lửa từ xa để phòng ngừa bị tự khóa mình ra ngoài.",
+        "Cổng cơ sở dữ liệu (MySQL, Postgres, Redis) tuyệt đối không được mở ra Internet công khai (0.0.0.0/0); chỉ mở cho IP nội bộ tin cậy.",
+        "nftables là cỗ máy lọc gói tin thế hệ mới trong nhân Linux, thay thế toàn diện cụm công cụ iptables với hiệu năng và độ ổn định cao hơn."
       ]
     },
     {
       "id": "lx-3-05",
       "number": "3.5",
       "title": "Gia cố Bảo mật Máy chủ theo hướng Phòng thủ (sshd_config, Fail2ban, Auditd, Cập nhật bảo mật)",
-      "subtitle": "Biến máy chủ thành pháo đài bất khả xâm phạm trước các đợt tấn công Brute-force, quét lỗ hổng và rà soát thay đổi trái phép",
+      "subtitle": "Xây dựng hệ thống phòng thủ đa lớp: Gia cố SSH chuẩn CIS Benchmark, tự động khóa IP kẻ tấn công với Fail2ban và giám sát thay đổi file với Auditd",
       "level": "Nâng cao",
       "duration": "55 phút",
       "requiresRoot": true,
       "requiresVM": true,
       "objectives": [
-        "Gia cố tệp cấu hình sshd_config theo chuẩn CIS Benchmark: cấm đăng nhập root, cấm xác thực mật khẩu (bắt buộc dùng SSH Key), đổi cổng và giới hạn số lần thử kết nối.",
-        "Triển khai và cấu hình Fail2ban: tự động phân tích log và khóa IP của kẻ tấn công vào tường lửa khi có hành vi dò quét.",
-        "Giám sát tính toàn vẹn của các tệp nhạy cảm (/etc/passwd, /etc/shadow, /etc/sudoers) bằng hệ thống kiểm toán auditd.",
-        "Cấu hình tự động cập nhật bản vá bảo mật không gián đoạn với unattended-upgrades."
+        "Gia cố tệp cấu hình OpenSSH Daemon (/etc/ssh/sshd_config.d/*.conf) đạt chuẩn kiểm định CIS Benchmark: cấm đăng nhập root trực tiếp, cấm xác thực mật khẩu (bắt buộc SSH Key), giới hạn số lần thử kết nối và hủy bỏ chuyển tiếp X11.",
+        "Áp dụng quy trình kiểm tra cú pháp an toàn bằng sudo sshd -t và nguyên tắc luôn duy trì phiên kết nối song song trước khi reload daemon SSH.",
+        "Triển khai và tinh chỉnh hệ thống phòng ngự phản ứng tự động Fail2ban (/etc/fail2ban/jail.local): cấu hình ignoreip, maxretry, bantime và quản trị qua fail2ban-client.",
+        "Giám sát tính toàn vẹn của các tệp nhạy cảm (/etc/passwd, /etc/shadow, /etc/sudoers) bằng hệ thống kiểm toán nhân Linux (auditd) và truy vấn vết vi phạm bằng ausearch/aureport.",
+        "Kích hoạt và tự động hóa cập nhật các bản vá bảo mật khẩn cấp (Security Patches) với unattended-upgrades mà không gây gián đoạn hệ thống."
       ],
       "intuition": {
         "title": "Cửa bọc thép SSH, Cảnh sát Fail2ban và Camera Auditd",
-        "metaphor": "Máy chủ mặc định giống như một ngôi nhà có ổ khóa cơ bình thường: bất kỳ ai cũng có thể đứng trước cửa gõ thử từng chiếc chìa khóa (tấn công Brute-force). Gia cố sshd_config giống như tháo bỏ ổ khóa cơ và thay bằng cửa thép vân tay sinh trắc học (SSH Key ed25519) — nếu không có chìa khóa riêng trong tay, hacker có thử hàng triệu lần cũng vô ích. Fail2ban là chú cảnh sát tuần tra: hễ thấy kẻ nào lảng vảng trước cửa thử chìa khóa quá 5 lần, chú cảnh sát lập tức còng tay tống vào danh sách đen của tường lửa trong 24 giờ. Còn Auditd là camera an ninh 4K ghi hình từng tích tắc bất kỳ ai chạm tay vào két sắt chứa tài liệu mật của cơ quan.",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🔐</span>\n                    <span>GIA CỐ CỔNG SSH</span>\n                    <span class=\"lx-vs-tag\">sshd_config</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>PermitRootLogin no</code>: Cấm tuyệt đối đăng nhập trực tiếp bằng tài khoản root.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>PasswordAuthentication no</code>: Tắt vĩnh viễn đăng nhập bằng mật khẩu, chỉ cho phép dùng SSH Key.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>MaxAuthTries 3</code>: Ngắt kết nối ngay sau 3 lần xác thực thất bại.</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🚔</span>\n                    <span>CƠ CHẾ FAIL2BAN</span>\n                    <span class=\"lx-vs-tag\">Tự động chặn</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> Quét liên tục tệp log xác thực (<code>/var/log/auth.log</code>).</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> Nếu phát hiện IP có 5 lần Failed Password trong vòng 10 phút...</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> Fail2ban tự động gọi UFW/nftables thêm luật <strong>DROP IP</strong> đó trong 24 giờ!</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "metaphor": "Bảo mật phòng thủ trên Linux hoạt động như một ngôi nhà tài chính kiên cố: Tệp sshd_config là cánh cửa bọc thép chỉ mở cho người cầm chìa khóa mã hóa (SSH Key) và từ chối mọi ổ khóa mật mã thông thường. Fail2ban là người cảnh sát tuần tra trước cổng: hễ thấy kẻ nào lén lút bấm chuông thử mật khẩu sai quá 3 lần, cảnh sát sẽ còng tay tống vào buồng giam và cấm bén mảng tới cửa trong 2 giờ. Còn Auditd chính là hệ thống camera an ninh hồng ngoại lắp kín bên trong: bất kỳ ai chạm tay vào tủ hồ sơ chứa thông tin tài khoản người dùng (/etc/shadow, /etc/sudoers), camera sẽ lập tức ghi lại chính xác từng mili-giây, định danh rõ ai đã mở và sửa đổi nội dung gì.",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Hệ thống Phòng thủ Đa lớp Máy chủ Linux (Defense-in-Depth)</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:10px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:6px;padding:8px;\">\n        <strong>Lớp 1: Cửa ngõ OpenSSH Daemon (sshd_config) - Chuẩn CIS Benchmark</strong><br/>\n        ├── <code>PermitRootLogin no</code> (Cấm root đăng nhập trực tiếp)<br/>\n        ├── <code>PasswordAuthentication no</code> (Khóa mật khẩu, 100% dùng SSH Key ed25519)<br/>\n        └── <code>MaxAuthTries 3</code> &amp; <code>ClientAliveInterval 300</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Nếu có kẻ cố tình dò quét brute-force)</div>\n      <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:6px;padding:8px;\">\n        <strong>Lớp 2: Cảnh sát Phản ứng Tự động Fail2ban (jail.local)</strong><br/>\n        ├── Phân tích log auth.log thời gian thực<br/>\n        ├── Phát hiện sai quá 3 lần (<code>maxretry = 3</code>) ➔ Tự động đẩy IP vào UFW/nftables chặn 2 giờ<br/>\n        └── Quản lý qua: <code>fail2ban-client status sshd</code> &amp; <code>unbanip</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Bên trong nội bộ hệ điều hành)</div>\n      <div style=\"background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:8px;\">\n        <strong>Lớp 3: Camera Giám sát Toàn vẹn Auditd (/etc/audit/rules.d/)</strong><br/>\n        ├── Theo dõi ghi/sửa tệp nhạy cảm: <code>/etc/shadow</code>, <code>/etc/sudoers</code><br/>\n        └── Truy xuất vi phạm tức thì: <code>ausearch -k identity_changes</code>\n      </div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-5-sshd-hardening",
-          "title": "1. Gia cố cấu hình SSH Daemon (sshd_config) chuẩn CIS Benchmark",
-          "content": "\n                  <p>File cấu hình chính của SSH Server nằm tại <code>/etc/ssh/sshd_config</code> (hoặc các file bổ sung trong thư mục <code>/etc/ssh/sshd_config.d/</code>).</p>\n                  <div class=\"callout-box warning-box\">\n                    <div class=\"callout-title\">⚠️ NGUYÊN TẮC AN TOÀN SỐNG CÒN KHI SỬA SSHD_CONFIG</div>\n                    <ol>\n                      <li>Trước khi chỉnh sửa: <strong>ĐẢM BẢO BẠN ĐÃ CÓ KHÓA SSH KEY ĐĂNG NHẬP THÀNH CÔNG VỚI MỘT USER CÓ QUYỀN SUDO</strong>.</li>\n                      <li>Sau khi sửa xong: Luôn chạy lệnh kiểm tra cú pháp: <code>sudo sshd -t</code>. Nếu lệnh không in ra lỗi gì thì mới được reload!</li>\n                      <li><strong>GIỮ NGUYÊN CỬA SỔ TERMINAL HIỆN TẠI</strong>, mở một cửa sổ terminal mới trên máy bạn và thử gõ <code>ssh username@server</code> để đăng nhập thử. Chỉ khi cửa sổ mới đăng nhập thành công bạn mới được đóng cửa sổ cũ!</li>\n                    </ol>\n                  </div>\n                ",
+          "title": "1. Gia cố Cấu hình SSH Daemon (sshd_config) Chuẩn CIS Benchmark",
+          "content": "\n        <p>Giao thức SSH là mục tiêu tấn công tự động số 1 trên Internet. Trung bình một máy chủ công khai nhận hàng nghìn lượt dò quét mỗi ngày từ các botnet. Do đó, việc cấu hình máy chủ SSH theo chuẩn <strong>CIS Linux Benchmark</strong> và <strong>NIST SP 800-123</strong> là yêu cầu bắt buộc đối với mọi hệ thống sản xuất.</p>\n\n        <p>Trên các bản phân phối Linux mới, tệp cấu hình chính <code>/etc/ssh/sshd_config</code> chứa dòng lệnh <code>Include /etc/ssh/sshd_config.d/*.conf</code>. Chuẩn mực quản trị là không sửa file chính, mà tạo một tệp riêng biệt ví dụ: <code>/etc/ssh/sshd_config.d/99-hardening.conf</code> để dễ quản lý và không bị ghi đè khi nâng cấp gói openssh-server.</p>\n\n        <h3 class=\"lx-h3\">Bảng chỉ thị gia cố SSH Daemon chuẩn CIS Benchmark</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Chỉ thị cấu hình</th>\n              <th>Giá trị CIS</th>\n              <th>Mục đích an ninh</th>\n              <th>Lưu ý an toàn sống còn</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>PermitRootLogin</code></td>\n              <td><code>no</code></td>\n              <td>Cấm tài khoản <code>root</code> đăng nhập SSH trực tiếp. Kẻ tấn công không thể nhắm vào tên người dùng mặc định.</td>\n              <td>Bắt buộc phải tạo sẵn một tài khoản thường có quyền <code>sudo</code> trước khi kích hoạt!</td>\n            </tr>\n            <tr>\n              <td><code>PasswordAuthentication</code></td>\n              <td><code>no</code></td>\n              <td>Vô hiệu hóa hoàn toàn xác thực bằng mật khẩu; bắt buộc dùng khóa mã hóa bất đối xứng SSH Key.</td>\n              <td><strong>CỰC KỲ NGUY HIỂM:</strong> Phải chắc chắn bạn đã copy SSH Public Key lên server và đăng nhập thử thành công bằng key!</td>\n            </tr>\n            <tr>\n              <td><code>PubkeyAuthentication</code></td>\n              <td><code>yes</code></td>\n              <td>Bật cơ chế xác thực bằng SSH Key cặp (khuyên dùng ed25519 hoặc rsa 4096-bit).</td>\n              <td>Tiêu chuẩn vàng về bảo mật truy cập từ xa.</td>\n            </tr>\n            <tr>\n              <td><code>MaxAuthTries</code></td>\n              <td><code>3</code></td>\n              <td>Chỉ cho phép thử sai tối đa 3 lần cho mỗi phiên kết nối trước khi ngắt phiên.</td>\n              <td>Làm chậm đáng kể tốc độ vét cạn mật mã của botnet.</td>\n            </tr>\n            <tr>\n              <td><code>X11Forwarding</code></td>\n              <td><code>no</code></td>\n              <td>Tắt tính năng chuyển tiếp giao diện đồ họa X11.</td>\n              <td>Ngăn chặn việc phần mềm độc hại can thiệp vào đồ họa từ xa.</td>\n            </tr>\n            <tr>\n              <td><code>ClientAliveInterval</code></td>\n              <td><code>300</code></td>\n              <td>Gửi gói tin kiểm tra kết nối sau mỗi 300 giây (5 phút).</td>\n              <td>Kết hợp với <code>ClientAliveCountMax 2</code> để tự ngắt các phiên SSH bị bỏ quên, giải phóng tài nguyên.</td>\n            </tr>\n          </tbody>\n        </table>\n\n        <div class=\"lx-callout-danger\">\n          <strong>⚠️ QUY TRÌNH THỰC THI AN TOÀN TUYỆT ĐỐI CHO SSH:</strong><br/>\n          1. Chạy lệnh kiểm tra cú pháp: <code>sudo sshd -t</code>. Nếu có lỗi, sshd sẽ chỉ rõ số dòng bị sai.<br/>\n          2. Sau khi chạy <code>sudo systemctl reload ssh</code>, <strong>TUYỆT ĐỐI KHÔNG ĐÓNG CỬA SỔ TERMINAL HIỆN TẠI!</strong><br/>\n          3. Mở một cửa sổ Terminal mới trên máy của bạn và chạy: <code>ssh username@server_ip</code> để kiểm tra đăng nhập.<br/>\n          4. Chỉ khi cửa sổ mới đăng nhập thành công vào server thì mới được phép đóng cửa sổ cũ. Nếu gặp sự cố, bạn vẫn còn cửa sổ cũ với quyền sudo để sửa lại cấu hình ngay lập tức!\n        </div>\n      ",
           "codeExamples": [
             {
-              "lang": "Text",
-              "title": "Tệp gia cố /etc/ssh/sshd_config.d/99-security-hardening.conf",
-              "code": "# 1. Cấm đăng nhập trực tiếp tài khoản root\nPermitRootLogin no\n\n# 2. Tắt hoàn toàn xác thực bằng mật khẩu (Bắt buộc dùng SSH Key)\nPasswordAuthentication no\nPubkeyAuthentication yes\n\n# 3. Giới hạn số lần thử xác thực\nMaxAuthTries 3\n\n# 4. Tắt cơ chế chứng thực rỗng và chuyển tiếp nguy hiểm\nPermitEmptyPasswords no\nX11Forwarding no\nAllowAgentForwarding no\n\n# 5. Tự động ngắt phiên nhàn rỗi sau 10 phút (ClientAliveInterval 300 x ClientAliveCountMax 2)\nClientAliveInterval 300\nClientAliveCountMax 2\n\n# 6. Chỉ cho phép các user chỉ định được phép SSH vào máy chủ\nAllowUsers ubuntu deployer",
+              "title": "Tệp gia cố /etc/ssh/sshd_config.d/99-hardening.conf và quy trình reload an toàn",
+              "lang": "ini",
+              "code": "# /etc/ssh/sshd_config.d/99-hardening.conf\n# Gia cố SSH Daemon chuẩn CIS Benchmark & NIST SP 800-123\nPermitRootLogin no\nPasswordAuthentication no\nPubkeyAuthentication yes\nMaxAuthTries 3\nClientAliveInterval 300\nClientAliveCountMax 2\nX11Forwarding no\nMaxSessions 5\nAllowTcpForwarding no",
+              "output": "# Bước 1: BẮT BUỘC - Kiểm tra tính hợp lệ của toàn bộ cấu hình:\n$ sudo sshd -t\n# (Không có thông báo lỗi = Cú pháp chuẩn xác 100%)\n\n# Bước 2: Tải lại dịch vụ (dùng reload, không dùng restart để không ngắt phiên cũ):\n$ sudo systemctl reload ssh\n# (Trên họ RHEL/Rocky, tên dịch vụ là sshd: sudo systemctl reload sshd)\n\n# Bước 3: Mở một terminal mới trên máy cá nhân để kiểm thử:\n$ ssh -i ~/.ssh/id_ed25519 devops@192.168.1.150\nWelcome to Ubuntu 24.04 LTS ...\ndevops@srv-prod:~$ ",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "PermitRootLogin no",
-                  "text": "Buộc quản trị viên phải đăng nhập bằng tài khoản cá nhân rồi mới dùng sudo, giúp truy vết chính xác ai đã làm gì qua log."
-                },
-                {
-                  "line": 5,
-                  "part": "PasswordAuthentication no",
-                  "text": "Triệt tiêu 100% nguy cơ bị tấn công brute-force dò mật khẩu tự động."
-                },
-                {
-                  "line": 18,
-                  "part": "AllowUsers",
-                  "text": "Danh sách trắng (Whitelist): Dù kẻ tấn công có tạo được user khác thì SSH cũng từ chối kết nối."
-                }
-              ],
-              "output": ""
+                "sudo sshd -t: Kiểm tra cú pháp toàn diện. Lỗi chính tả nhỏ như viết sai 'PasswordAuthenticaton' sẽ được báo ngay.",
+                "Dùng 'systemctl reload ssh' thay vì 'restart': Reload chỉ yêu cầu daemon đọc lại cấu hình mới cho các kết nối sau này, hoàn toàn không làm gián đoạn hay ngắt các phiên SSH đang chạy."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-5-fail2ban-setup",
-          "title": "2. Triển khai cảnh sát bảo vệ tự động Fail2ban",
-          "content": "\n                  <p>Cài đặt Fail2ban: <code>sudo apt update && sudo apt install -y fail2ban</code></p>\n                  <p>Không bao giờ sửa trực tiếp file <code>jail.conf</code> vì nó sẽ bị ghi đè khi cập nhật gói. Luôn tạo file cấu hình đè: <code>/etc/fail2ban/jail.local</code>.</p>\n                ",
+          "title": "2. Triển khai Cảnh sát Phản ứng Tự động với Fail2ban",
+          "content": "\n        <p><strong>Fail2ban</strong> là một dịch vụ bảo vệ máy chủ theo thời gian thực viết bằng Python. Cơ chế hoạt động của nó cực kỳ thông minh:</p>\n        <ol>\n          <li>Liên tục theo dõi các tệp nhật ký hệ thống (như <code>/var/log/auth.log</code> hoặc journald) bằng biểu thức chính quy (regex filter).</li>\n          <li>Đếm số lần thử đăng nhập thất bại của từng địa chỉ IP trong một khoảng thời gian quan sát (<code>findtime</code>).</li>\n          <li>Nếu số lần vi phạm vượt ngưỡng (<code>maxretry</code>), Fail2ban sẽ lập tức triệu hồi tường lửa (UFW hoặc nftables) để chèn một quy tắc chặn đứng địa chỉ IP đó trong thời gian phạt (<code>bantime</code>).</li>\n        </ol>\n\n        <h3 class=\"lx-h3\">Cấu hình chuẩn trong /etc/fail2ban/jail.local</h3>\n        <p>Không bao giờ chỉnh sửa tệp mặc định <code>jail.conf</code> vì nó sẽ bị ghi đè khi cập nhật phần mềm. Thay vào đó, hãy sao chép hoặc tạo tệp mới tại <code>/etc/fail2ban/jail.local</code>. Tệp này sẽ ghi đè các tham số cần thiết.</p>\n        <ul>\n          <li><code>ignoreip</code>: <strong>BẮT BUỘC KHAI BÁO!</strong> Danh sách các địa chỉ IP hoặc dải mạng nội bộ an toàn (ví dụ: IP tĩnh văn phòng, 127.0.0.1) mà Fail2ban <strong>tuyệt đối không bao giờ được phép chặn</strong>, phòng trường hợp chính bạn gõ nhầm mật khẩu nhiều lần.</li>\n          <li><code>bantime = 2h</code>: Thời gian khóa IP vi phạm (ví dụ 2 giờ hoặc 24 giờ).</li>\n          <li><code>findtime = 10m</code>: Cửa sổ quan sát thời gian (10 phút).</li>\n          <li><code>maxretry = 3</code>: Số lần thử sai tối đa trong khoảng findtime trước khi bị khóa.</li>\n        </ul>\n      ",
           "codeExamples": [
             {
-              "lang": "Ini",
-              "title": "Tệp cấu hình /etc/fail2ban/jail.local",
-              "code": "[DEFAULT]\n# Thời gian khóa IP: 24 giờ (86400 giây)\nbantime = 86400\n\n# Khoảng thời gian quét log: 10 phút (600 giây)\nfindtime = 600\n\n# Số lần thử thất bại tối đa trước khi bị khóa\nmaxretry = 5\n\n# Danh sách IP nội bộ tin cậy không bao giờ bị khóa (Whitelist)\nignoreip = 127.0.0.1/8 ::1 203.0.113.85\n\n# Cấu hình bảo vệ dịch vụ SSH\n[sshd]\nenabled = true\nport = ssh\nlogpath = %(sshd_log)s\nbackend = systemd",
+              "title": "Tệp cấu hình /etc/fail2ban/jail.local và lệnh vận hành fail2ban-client",
+              "lang": "ini",
+              "code": "# /etc/fail2ban/jail.local\n[DEFAULT]\n# Danh sách IP an toàn không bao giờ bị chặn (Loopback & Mạng nội bộ):\nignoreip = 127.0.0.1/8 ::1 192.168.1.0/24 203.0.113.10\nbantime  = 2h\nfindtime = 10m\nmaxretry = 3\nbanaction = ufw\n\n[sshd]\nenabled = true\nport    = ssh\nlogpath = %(sshd_log)s\nbackend = systemd",
+              "output": "# Khởi động và kiểm tra trạng thái của Jail sshd:\n$ sudo systemctl enable --now fail2ban\n$ sudo fail2ban-client status sshd\nStatus for the jail: sshd\n|- Filter\n|  |- Currently failed: 1\n|  |- Total failed:     28\n|  `- Journal matches:  _SYSTEMD_UNIT=ssh.service + _COMM=sshd\n`- Actions\n   |- Currently banned: 2\n   |- Total banned:     15\n   `- Banned IP list:   198.51.100.42 203.0.113.88\n\n# Mở khóa khẩn cấp một địa chỉ IP (Unban IP):\n$ sudo fail2ban-client set sshd unbanip 198.51.100.42\n1",
               "annotations": [
-                {
-                  "line": 3,
-                  "part": "bantime = 86400",
-                  "text": "Khóa IP kẻ tấn công trong 24 giờ để botnet nản lòng bỏ đi mục tiêu khác."
-                },
-                {
-                  "line": 12,
-                  "part": "ignoreip",
-                  "text": "Danh sách IP văn phòng công ty và IP localhost để đảm bảo đồng nghiệp không bao giờ bị khóa nhầm."
-                },
-                {
-                  "line": 18,
-                  "part": "backend = systemd",
-                  "text": "Đọc trực tiếp log từ journald của systemd thay vì đọc qua file tĩnh, tối ưu hiệu năng."
-                }
-              ],
-              "output": ""
+                "ignoreip: Phòng vệ sinh tử chống việc quản trị viên tự khóa chính mình ra khỏi máy chủ.",
+                "backend = systemd: Cho phép Fail2ban đọc trực tiếp nhật ký nhị phân từ journald thay vì đọc file văn bản auth.log, giúp tăng tốc độ và độ tin cậy.",
+                "fail2ban-client set sshd unbanip [IP]: Lệnh giải cứu tức thì một địa chỉ IP bị khóa nhầm."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-5-fail2ban-cli",
-          "title": "3. Kiểm tra trạng thái và Mở khóa IP với fail2ban-client",
-          "content": "\n                  <p>Các lệnh tương tác với Fail2ban:</p>\n                  <ul>\n                    <li><code>sudo fail2ban-client status</code>: Xem danh sách các ngục (jails) đang hoạt động.</li>\n                    <li><code>sudo fail2ban-client status sshd</code>: Xem chi tiết số lượng IP đã bị tóm và danh sách các IP đang bị khóa.</li>\n                    <li><code>sudo fail2ban-client set sshd unbanip [IP_ADDRESS]</code>: Mở khóa thủ công cho một đồng nghiệp bị khóa nhầm do gõ sai mật khẩu nhiều lần.</li>\n                  </ul>\n                ",
+          "title": "3. Giám sát Tính Toàn vẹn Hệ thống với Auditd & Tự động Vá lỗi",
+          "content": "\n        <p><strong>Auditd (Linux Audit Daemon)</strong> là hệ thống ghi nhật ký kiểm toán mức nhân kernel theo chuẩn CAPP (Controlled Access Protection Profile) và NIST SP 800-53 (Control AU-2 / AU-12). Nếu syslog và journald dùng cho việc vận hành thông thường, thì auditd được sinh ra dành riêng cho <strong>điều tra pháp y số và phát hiện xâm nhập (Forensics & Compliance)</strong>.</p>\n\n        <h3 class=\"lx-h3\">Cấu hình Quy tắc Giám sát File Nhạy cảm trong /etc/audit/rules.d/</h3>\n        <p>Cú pháp khai báo quy tắc theo dõi file: <code>-w &lt;đường_dẫn_file&gt; -p &lt;quyền_theo_dõi&gt; -k &lt;nhãn_key&gt;</code></p>\n        <ul>\n          <li><code>-w /etc/shadow</code>: Đường dẫn file cần canh gác (watch).</li>\n          <li><code>-p wa</code>: Theo dõi khi có hành động ghi (<code>w</code> - write) hoặc sửa thuộc tính (<code>a</code> - attribute change). Ngoài ra còn có <code>r</code> (read) và <code>x</code> (execute).</li>\n          <li><code>-k identity_changes</code>: Gán nhãn nhận diện (key) giúp việc truy vấn log sau này cực kỳ nhanh chóng bằng lệnh <code>ausearch -k identity_changes</code>.</li>\n        </ul>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Kiểm tra danh sách IP đang bị giam cầm bởi Fail2ban",
-              "code": "# Xem trạng thái bảo vệ của ngục sshd\nsudo fail2ban-client status sshd\n\n# Mở khóa cho IP của đồng nghiệp\nsudo fail2ban-client set sshd unbanip 198.51.100.44",
+              "title": "Thiết lập quy tắc giám sát tệp /etc/sudoers và truy vết vi phạm",
+              "lang": "bash",
+              "code": "# 1. Tạo tệp quy tắc kiểm toán: /etc/audit/rules.d/99-security.rules\n$ sudo tee /etc/audit/rules.d/99-security.rules << 'EOF'\n-w /etc/passwd -p wa -k identity_changes\n-w /etc/shadow -p wa -k identity_changes\n-w /etc/sudoers -p wa -k privilege_escalation\n-w /etc/sudoers.d/ -p wa -k privilege_escalation\nEOF\n\n# 2. Nạp lại quy tắc kiểm toán vào kernel:\n$ sudo augenrules --load\n$ sudo auditctl -l\n-w /etc/passwd -p wa -k identity_changes\n-w /etc/shadow -p wa -k identity_changes\n-w /etc/sudoers -p wa -k privilege_escalation\n\n# 3. Khi có kẻ gian can thiệp vào /etc/sudoers, điều tra tức thì bằng ausearch:\n$ sudo ausearch -k privilege_escalation --interpret\ntype=SYSCALL msg=audit(11/04/2026 08:45:10.120:412) : arch=x86_64 syscall=openat success=yes exit=3 a0=ffffff9c a1=7ffd3a a2=241 a3=1b6 items=2 ppid=1420 pid=2890 auid=1001 uid=0 gid=0 euid=0 comm=nano exe=/bin/nano key=\"privilege_escalation\"\ntype=PATH msg=audit(11/04/2026 08:45:10.120:412) : item=0 name=\"/etc/sudoers\" inode=131075 dev=08:01 mode=0100440 ouid=0 ogid=0",
+              "output": "type=SYSCALL msg=audit(...) : arch=x86_64 syscall=openat success=yes items=2 ppid=1420 pid=2890 auid=1001 uid=0 gid=0 comm=nano exe=/bin/nano key=\"privilege_escalation\"\ntype=PATH msg=audit(...) : item=0 name=\"/etc/sudoers\" inode=131075 mode=0100440",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "status sshd",
-                  "text": "Hiển thị tổng số lần phát hiện (Currently failed) và danh sách Banned IP list."
-                },
-                {
-                  "line": 5,
-                  "part": "unbanip",
-                  "text": "Xóa lệnh chặn khỏi tường lửa UFW/nftables ngay lập tức."
-                }
-              ],
-              "output": "Status for the jail: sshd\n|- Filter\n|  |- Currently failed: 2\n|  |- Total failed:     845\n`- Actions\n   |- Currently banned: 14\n   |- Total banned:     112\n   `- Banned IP list:   198.51.100.44 203.0.113.12 192.0.2.89\n198.51.100.44"
+                "auid=1001: Audit UID nguyên bản của người dùng đăng nhập ban đầu trước khi sudo lên root. Đây là bằng chứng không thể chối cãi khi điều tra nội bộ!",
+                "comm=nano: Định danh chính xác chương trình đã được dùng để mở và sửa tệp.",
+                "augenrules --load: Biên dịch các tệp trong rules.d thành cấu hình chuẩn nạp thẳng vào kernel."
+              ]
             }
           ]
         }
       ],
       "scenario": {
-        "title": "Chặn đứng đợt tấn công Brute-force 40.000 request/giờ vào máy chủ công khai",
-        "content": "\n              <p>Ngay sau khi gán IP tĩnh công khai cho máy chủ, tệp <code>/var/log/auth.log</code> ghi nhận hàng trăm lượt thử đăng nhập mỗi phút với các tài khoản phổ biến như <code>root</code>, <code>admin</code>, <code>test</code>, <code>user</code> từ các botnet khắp thế giới.</p>\n              <p><strong>Triển khai chiến dịch phòng thủ 3 bước:</strong></p>\n              <p>1. Bạn tắt hoàn toàn <code>PasswordAuthentication no</code> trong tệp <code>/etc/ssh/sshd_config.d/99-hardened.conf</code> và reload SSH daemon.</p>\n              <p>2. Cài đặt Fail2ban với <code>bantime = 86400</code> (24 giờ) và <code>maxretry = 3</code>.</p>\n              <p>3. Chỉ sau 2 tiếng, Fail2ban đã tự động tống hơn 420 địa chỉ IP độc hại vào ngục giam của tường lửa. Tải CPU do SSH xử lý giảm từ 35% về 0.1%, hệ thống an toàn tuyệt đối!</p>\n            "
+        "title": "Chặn đứng đợt tấn công Brute-force 45.000 request/giờ vào cổng SSH máy chủ công khai",
+        "content": "\n      <p><strong>1. Triệu chứng sự cố:</strong> Hệ thống cảnh báo CPU của máy chủ web tăng vọt 60% dù lưu lượng người dùng truy cập web rất thấp. Khi kiểm tra log xác thực <code>journalctl -u ssh.service -n 50</code>, màn hình tràn ngập hàng chục nghìn thông báo: <code>Failed password for invalid user admin from 185.220.101.5 port 41200 ssh2</code>.</p>\n      \n      <p><strong>2. Điều tra & Chẩn đoán:</strong></p>\n      <pre><code># Đếm số lượng request thất bại trong 10 phút qua:\n$ sudo journalctl -u ssh.service --since \"10 minutes ago\" | grep \"Failed password\" | wc -l\n8420\n\n# Kiểm tra các IP gửi nhiều yêu cầu nhất:\n$ sudo journalctl -u ssh.service --since \"1 hour ago\" | awk '/Failed password/ {print $(NF-3)}' | sort | uniq -c | sort -nr | head -n 5\n  14200 185.220.101.5\n   9800 194.26.29.112\n   6500 45.154.255.89</code></pre>\n      <p>Một mạng lưới botnet đang sử dụng từ điển mật khẩu hàng triệu từ để vét cạn tài khoản máy chủ, gây quá tải tiến trình sshd và nghẽn tài nguyên CPU.</p>\n      \n      <p><strong>3. Nguyên nhân gốc rễ:</strong> Máy chủ mới dựng vẫn giữ cấu hình mặc định: cho phép xác thực mật khẩu (<code>PasswordAuthentication yes</code>) và chưa cài đặt dịch vụ phản ứng tự động Fail2ban.</p>\n      \n      <p><strong>4. Biện pháp khắc phục:</strong></p>\n      <pre><code># Bước 1: Khóa xác thực mật khẩu trong sshd_config.d/99-hardening.conf:\nPasswordAuthentication no\nPermitRootLogin no\n\n# Bước 2: Kiểm tra cú pháp và nạp lại daemon:\n$ sudo sshd -t && sudo systemctl reload ssh\n\n# Bước 3: Cài đặt và kích hoạt Fail2ban để tự động xử lý botnet:\n$ sudo apt install -y fail2ban\n$ sudo systemctl enable --now fail2ban\n$ sudo fail2ban-client status sshd</code></pre>\n      <p>Chỉ sau 2 phút, Fail2ban đã tóm gọn và tống giam toàn bộ các địa chỉ IP của botnet vào danh sách chặn của tường lửa UFW. Tỷ lệ CPU của máy chủ lập tức hạ nhiệt từ 60% xuống còn 1.5%.</p>\n      \n      <p><strong>5. Phòng ngừa lâu dài:</strong></p>\n      <ul>\n        <li>Quy định bắt buộc đối với mọi máy chủ kết nối Internet: Vô hiệu hóa hoàn toàn xác thực mật khẩu ngay từ thời điểm tạo máy ảo.</li>\n        <li>Triển khai <code>unattended-upgrades</code> để hệ thống tự động tải và cập nhật các bản vá lỗ hổng zero-day cho OpenSSH mà không cần can thiệp thủ công.</li>\n      </ul>\n    "
       },
       "callouts": {
         "pitfalls": [
           {
-            "title": "Khóa nhầm chính mình khi chưa thêm IP vào ignoreip",
-            "content": "Luôn luôn thêm dải mạng nội bộ hoặc IP tĩnh của bạn vào dòng <code>ignoreip</code> trong <code>/etc/fail2ban/jail.local</code> trước khi kích hoạt, để tránh trường hợp bạn thử test lỗi và tự khóa chính mình ra khỏi máy chủ."
+            "title": "Tắt PasswordAuthentication khi chưa nạp SSH Key hoặc đóng phiên SSH hiện tại quá sớm",
+            "content": "Sai lầm thảm họa số 1 của quản trị viên là đặt <code>PasswordAuthentication no</code> trong tệp cấu hình SSH, chạy lệnh restart rồi vội vàng đóng cửa sổ terminal hiện tại trong khi máy tính của bạn chưa hề nạp SSH Public Key vào tệp <code>~/.ssh/authorized_keys</code> của server! Kết quả là bạn bị khóa vĩnh viễn ở ngoài cửa. Luôn luôn kiểm tra cú pháp bằng <code>sudo sshd -t</code>, dùng <code>reload</code> thay vì restart, và mở một terminal thứ hai để đăng nhập thử thành công trước khi đóng phiên làm việc ban đầu."
+          },
+          {
+            "title": "Quên khai báo ignoreip trong cấu hình Fail2ban",
+            "content": "Nếu bạn không đưa địa chỉ IP tĩnh cá nhân hoặc dải mạng VPN của công ty vào dòng <code>ignoreip</code> trong <code>/etc/fail2ban/jail.local</code>, chỉ cần một công cụ tự động hoặc một lần bạn gõ sai thông số kết nối quá 3 lần, Fail2ban sẽ coi bạn là kẻ tấn công và thẳng tay chặn kết nối của chính bạn trong 2 giờ!"
           }
         ],
         "tips": [
           {
-            "title": "Bật cập nhật bảo mật tự động bằng unattended-upgrades",
-            "content": "Chạy lệnh <code>sudo apt install -y unattended-upgrades && sudo dpkg-reconfigure -plow unattended-upgrades</code>. Hệ thống sẽ tự động tải và vá các lỗ hổng bảo mật cấp bách của nhân Linux và các gói phần mềm mỗi đêm mà không cần can thiệp thủ công."
+            "title": "Luôn kiểm tra tính hợp lệ bằng sshd -t trước khi nạp lại dịch vụ",
+            "content": "Lệnh <code>sudo sshd -t</code> kiểm tra toàn diện cú pháp của toàn bộ các file trong <code>/etc/ssh/sshd_config</code> và thư mục <code>sshd_config.d/</code>. Nếu có bất kỳ dòng nào sai chính tả hoặc không được hỗ trợ, lệnh sẽ báo rõ số dòng lỗi để bạn khắc phục, giúp bạn không bao giờ làm sập dịch vụ SSH đang chạy."
+          },
+          {
+            "title": "Bật cập nhật bản vá bảo mật tự động với unattended-upgrades",
+            "content": "Trên Ubuntu/Debian, hãy cài đặt gói <code>unattended-upgrades</code> và kích hoạt nó. Hệ thống sẽ tự động quét kho lưu trữ của nhà phân phối mỗi đêm và âm thầm cài đặt các bản vá lỗ hổng bảo mật khẩn cấp (Security Updates) của kernel và các thư viện cốt lõi, bảo vệ máy chủ an toàn trước các cuộc tấn công khai thác lỗ hổng đã biết."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Lệnh nào sau đây dùng để kiểm tra tính hợp lệ của toàn bộ cú pháp tệp cấu hình SSH daemon trước khi reload dịch vụ?",
+          "question": "Mức 1 (Nhớ / Hiểu): Lệnh nào sau đây cho phép kiểm tra cú pháp của toàn bộ cấu hình máy chủ SSH trước khi áp dụng? Điều gì xảy ra nếu bạn chạy lệnh này và terminal không in ra bất kỳ thông báo nào?",
           "command": "sudo sshd -t",
-          "explanation": "sshd -t (test mode) kiểm tra toàn bộ cú pháp của tệp cấu hình sshd_config. Nếu có bất kỳ dòng nào sai, nó sẽ in số dòng lỗi ra màn hình mà không làm ảnh hưởng tới dịch vụ đang chạy."
+          "explanation": "Lệnh 'sudo sshd -t' (test mode) kiểm tra toàn diện cú pháp cấu hình của sshd_config. Theo triết lý Unix, 'Silence is Golden' (Im lặng là vàng): nếu lệnh kết thúc mà không in ra bất kỳ dòng chữ nào và trả về mã thoát 0 (echo $? bằng 0), điều đó chứng minh toàn bộ các tệp cấu hình đều hoàn toàn chuẩn xác và an toàn để reload."
+        },
+        {
+          "question": "Mức 2 (Áp dụng / Vận hành): Hãy viết tệp cấu hình /etc/fail2ban/jail.local hoàn chỉnh để bảo vệ dịch vụ SSH với các yêu cầu: (1) Bỏ qua địa chỉ IP máy tính quản trị viên 192.168.1.50 và dải loopback; (2) Giới hạn số lần thử sai tối đa là 3 lần trong vòng 15 phút; và (3) Thời gian khóa IP vi phạm là 4 giờ. Sau đó viết lệnh kiểm tra danh sách các IP đang bị khóa.",
+          "command": "# 1. Soạn thảo tệp /etc/fail2ban/jail.local:\n[DEFAULT]\nignoreip = 127.0.0.1/8 ::1 192.168.1.50\nbantime  = 4h\nfindtime = 15m\nmaxretry = 3\nbanaction = ufw\n\n[sshd]\nenabled = true\nport    = ssh\nbackend = systemd\n\n# 2. Khởi động lại Fail2ban và xem danh sách IP bị khóa:\n$ sudo systemctl restart fail2ban\n$ sudo fail2ban-client status sshd",
+          "explanation": "Tệp cấu hình này đặt ignoreip bảo vệ máy tính quản trị viên không bao giờ bị khóa nhầm. Các tham số bantime = 4h, findtime = 15m và maxretry = 3 thiết lập hàng rào phản ứng nhanh chống lại các đợt tấn công brute-force. Lệnh 'fail2ban-client status sshd' in ra danh sách chi tiết các IP đang bị giam cầm (Banned IP list)."
+        },
+        {
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Hãy viết một quy tắc cho hệ thống kiểm toán auditd để theo dõi mọi hành động sửa đổi tệp /etc/shadow với nhãn key 'shadow_tampering'. Sau đó viết lệnh ausearch để trích xuất danh tính Audit UID (auid) của người dùng ban đầu đã can thiệp vào tệp này.",
+          "command": "# 1. Tạo tệp quy tắc /etc/audit/rules.d/shadow.rules:\n$ echo \"-w /etc/shadow -p wa -k shadow_tampering\" | sudo tee /etc/audit/rules.d/shadow.rules\n\n# 2. Nạp quy tắc vào nhân kernel:\n$ sudo augenrules --load\n\n# 3. Truy xuất nhật ký kiểm toán với bộ lọc key và phiên dịch thông tin:\n$ sudo ausearch -k shadow_tampering --interpret\n\n# Lệnh trích xuất riêng người dùng gốc (AUID) và tiến trình can thiệp:\n$ sudo ausearch -k shadow_tampering --interpret | grep -E \"auid|comm|exe\"",
+          "explanation": "Quy tắc '-w /etc/shadow -p wa -k shadow_tampering' ra lệnh cho kernel giám sát mọi thao tác ghi (w) hoặc sửa thuộc tính (a) đối với file /etc/shadow. Khi một người dùng đăng nhập bằng tài khoản cá nhân (ví dụ uid=1001) rồi chuyển quyền sang root bằng sudo/su để sửa file, kernel vẫn lưu giữ trường auid (Audit User ID) bằng 1001 trong bản ghi auditd. Do đó, kỹ sư điều tra có thể truy xuất chính xác người chịu trách nhiệm bất kể họ đã dùng quyền root để che giấu dấu vết."
         }
       ],
       "summary": [
-        "Tắt PasswordAuthentication trong sshd_config và bắt buộc dùng SSH Key là biện pháp bảo mật số 1 trên mọi server Linux.",
-        "Fail2ban là hệ thống phản ứng tự động xuất sắc: phát hiện hành vi quét cổng và tự động chặn IP qua tường lửa.",
-        "Luôn kiểm tra sudo sshd -t và giữ một phiên SSH đang mở trước khi reload dịch vụ SSH để đảm bảo an toàn."
+        "Gia cố sshd_config chuẩn CIS Benchmark: bắt buộc tắt PermitRootLogin và PasswordAuthentication, chuyển 100% sang SSH Key.",
+        "Luôn kiểm tra cú pháp bằng sudo sshd -t và duy trì một phiên SSH độc lập trước khi tải lại dịch vụ SSH.",
+        "Fail2ban là hệ thống phản ứng tự động cốt lõi: tự động quét log, phát hiện hành vi brute-force và đẩy IP độc hại vào tường lửa chặn.",
+        "BẮT BUỘC cấu hình ignoreip trong Fail2ban để phòng ngừa quản trị viên tự khóa chính mình ra khỏi máy chủ.",
+        "Auditd là hệ thống kiểm toán cấp nhân kernel theo chuẩn NIST SP 800-53, ghi nhận chính xác danh tính người dùng nguyên bản (AUID) khi can thiệp vào các tệp nhạy cảm.",
+        "Kích hoạt unattended-upgrades để máy chủ tự động cập nhật các bản vá bảo mật khẩn cấp định kỳ mà không cần can thiệp thủ công."
       ]
     },
     {
       "id": "lx-3-06",
       "number": "3.6",
       "title": "Cơ chế Bảo mật Kiểm soát Truy cập Bắt buộc: SELinux & AppArmor",
-      "subtitle": "Hiểu rõ bản chất cơ chế MAC (Mandatory Access Control), gỡ bỏ nỗi sợ 'tắt SELinux' khi gặp lỗi phân quyền",
+      "subtitle": "Làm chủ cơ chế phòng thủ tối hậu của nhân Linux: Phân biệt DAC vs MAC, giải mã nhãn SELinux Context, điều khiển Booleans và hồ sơ bảo vệ AppArmor",
       "level": "Nâng cao",
       "duration": "55 phút",
       "requiresRoot": true,
       "requiresVM": true,
       "objectives": [
-        "Phân biệt rạch ròi sự khác nhau giữa DAC (Discretionary Access Control - rwx truyền thống) và MAC (Mandatory Access Control).",
-        "Nắm vững kiến trúc nhãn ngữ cảnh SELinux Context (user:role:type:level) và 3 chế độ hoạt động: Enforcing, Permissive, Disabled.",
-        "Khắc phục triệt để sự cố Nginx/Python bị chặn truy cập file web bằng restorecon và semanage fcontext thay vì tắt SELinux.",
-        "Quản lý các biến cờ SELinux Booleans (setsebool -P) và hiểu cơ chế bảo vệ Profile của AppArmor trên họ Debian/Ubuntu."
+        "Phân biệt rạch ròi sự khác nhau bản chất giữa Kiểm soát Truy cập Tùy ý (DAC - Discretionary Access Control) và Kiểm soát Truy cập Bắt buộc (MAC - Mandatory Access Control).",
+        "Hiểu sâu kiến trúc nhãn an ninh SELinux Context (user:role:type:level) và 3 chế độ hoạt động trong kernel: Enforcing, Permissive, Disabled.",
+        "Khắc phục triệt để lỗi 403 Forbidden và 502 Bad Gateway trên họ RHEL/CentOS/Rocky Linux bằng semanage fcontext và restorecon thay vì tắt SELinux.",
+        "Làm chủ các biến cờ SELinux Booleans (getsebool, setsebool -P) cho phép dịch vụ web thực hiện kết nối mạng hoặc truy cập database an toàn.",
+        "Sử dụng thành thạo bộ công cụ điều tra audit2why và ausearch để giải mã các thông báo từ chối truy cập (AVC denials) thành các giải pháp khắc phục chuẩn xác.",
+        "Nắm vững cơ chế bảo vệ theo Hồ sơ (Profiles) của AppArmor trên họ Debian/Ubuntu và các lệnh quản trị aa-status, aa-enforce, aa-complain."
       ],
       "intuition": {
-        "title": "Quy chế an ninh mật vụ vượt trên cả quyền trưởng phòng",
-        "metaphor": "Hệ thống phân quyền truyền thống DAC (rwx) giống như một công ty tư nhân: trưởng phòng có toàn quyền quyết định cho bất kỳ ai đọc hay sửa tài liệu trong phòng của mình. Nếu kẻ trộm chiếm được tài khoản root, hắn có thể đọc toàn bộ bí mật công ty. SELinux/AppArmor là Quy chế an ninh mật vụ quốc gia (MAC): do chính phủ (Kernel Policy) đặt ra và KHÔNG MỘT AI (kể cả root) có thể phá vỡ! Dù hacker có cướp được quyền root của tiến trình Nginx, nhưng vì tiến trình Nginx bị dán nhãn `httpd_t`, nó chỉ được phép đọc các file có nhãn `httpd_sys_content_t`. Nếu hacker cố gắng đọc file thẻ tín dụng trong thư mục `/data/finance`, Kernel sẽ lập tức chặn đứng và bấm còi báo động ngay tức khắc!",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🛡️</span>\n                    <span>NHÃN SELINUX</span>\n                    <span class=\"lx-vs-tag\">Context -Z</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Type Enforcement (Quan trọng nhất):</strong> Quyết định tiến trình được phép làm gì. Tiến trình nhãn <code>httpd_t</code> (Nginx) chỉ được tương tác với file mang nhãn <code>httpd_sys_content_t</code>.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> Lệnh xem nhãn bảo mật: thêm cờ <code>-Z</code> vào các lệnh quen thuộc (<code>ls -Z</code>, <code>ps -Z</code>, <code>id -Z</code>).</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>⚙️</span>\n                    <span>3 CHẾ ĐỘ SELINUX</span>\n                    <span class=\"lx-vs-tag\">sestatus</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Enforcing:</strong> Chế độ bảo vệ thực sự — kiên quyết chặn đứng hành vi trái phép và ghi log audit.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Permissive:</strong> Chế độ gỡ lỗi — KHÔNG CHẶN, chỉ ghi log cảnh báo (dùng để debug khi deploy).</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Disabled:</strong> Tắt hoàn toàn (Cực kỳ nguy hiểm, mất sạch lớp phòng vệ thứ hai).</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "title": "Quy chế An ninh Mật vụ vượt trên cả quyền Trưởng phòng",
+        "metaphor": "Phân quyền truyền thống (DAC - chmod rwx) giống như quyền của Trưởng phòng: Trưởng phòng có thể toàn quyền mở cửa, sao chép hoặc xóa mọi tài liệu trong phòng của mình. Nếu một hacker chiếm được quyền của Trưởng phòng (hoặc tài khoản root), hắn sẽ làm chủ toàn bộ tòa nhà. Ngược lại, SELinux / AppArmor (MAC) giống như một Cơ quan Mật vụ Tối cao với quy chế an ninh bất di bất dịch do Nhà nước ban hành: Dù Trưởng phòng có ký giấy cho phép (chmod 777), nhưng nếu quy chế Mật vụ quy định 'Nhân viên Nginx chỉ được phép đọc tài liệu dán tem httpd_sys_content_t', thì nhân viên đó tuyệt đối không thể đọc được file dán tem dữ liệu người dùng (user_home_t) hay file cấu hình hệ thống! Ngay cả khi ứng dụng web bị dính lỗ hổng chiếm quyền root, hacker vẫn bị nhốt chặt trong chiếc lồng sắt của SELinux.",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Hai Tầng Kiểm Soát An Ninh Linux: DAC ➔ MAC (SELinux / AppArmor)</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:10px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:6px;padding:8px;\">\n        <strong>1. Yêu cầu truy cập từ Tiến trình (Ví dụ: Nginx đọc file /data/web/index.html)</strong>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼</div>\n      <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:6px;padding:8px;\">\n        <strong>Tầng 1: DAC (Discretionary Access Control - Phân quyền truyền thống)</strong><br/>\n        ├── Kiểm tra User, Group, và các bit quyền <code>rwx</code> (chmod / chown)<br/>\n        └── Nếu DAC từ chối (Permission Denied) ➔ Dừng lại ngay lập tức. Nếu đạt ➔ Chuyển tiếp sang Tầng 2.\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼</div>\n      <div style=\"background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:6px;padding:8px;\">\n        <strong>Tầng 2: MAC (Mandatory Access Control - SELinux / AppArmor)</strong><br/>\n        ├── <strong>SELinux Context:</strong> Tiến trình (<code>httpd_t</code>) có quyền đọc Inode (<code>httpd_sys_content_t</code>) không?<br/>\n        ├── <strong>SELinux Booleans:</strong> Cờ <code>httpd_can_network_connect</code> có bật (on) không?<br/>\n        └── <strong>Chế độ Enforcing:</strong> Nếu không khớp Policy ➔ Kernel CHẶN ĐỨNG và ghi log AVC vào <code>/var/log/audit/audit.log</code>\n      </div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-6-selinux-concepts",
-          "title": "1. Giải mã nhãn ngữ cảnh SELinux Context và các lệnh xử lý",
-          "content": "\n                  <p>Mỗi tiến trình, mỗi tệp tin, mỗi cổng mạng trên hệ điều hành có SELinux (RHEL, Rocky Linux, CentOS, Fedora) đều được gán một nhãn bảo mật dạng: <code>user:role:type:level</code>.</p>\n                  <p>Phần quan trọng nhất chiếm 99% công việc hàng ngày là <strong>Type</strong> (kiểu đối tượng):</p>\n                  <ul>\n                    <li>File mã nguồn web phục vụ bởi Nginx bắt buộc phải có type: <code>httpd_sys_content_t</code></li>\n                    <li>File mã nguồn có quyền ghi (upload/media): <code>httpd_sys_rw_content_t</code></li>\n                    <li>File cấu hình SSH: <code>etc_t</code>, file khóa SSH: <code>ssh_home_t</code></li>\n                  </ul>\n                  <p><strong>Bộ công cụ quản lý nhãn:</strong></p>\n                  <ul>\n                    <li><code>ls -lZ /var/www</code>: Hiển thị nhãn ngữ cảnh của các file.</li>\n                    <li><code>sudo restorecon -Rv /var/www</code>: Tự động khôi phục nhãn chuẩn mực theo chính sách mặc định của hệ thống.</li>\n                    <li><code>sudo semanage fcontext -a -t httpd_sys_content_t \"/custom/www(/.*)?\"</code>: Khai báo quy tắc nhãn vĩnh viễn cho một thư mục tùy biến.</li>\n                  </ul>\n                ",
+          "title": "1. Kiến trúc Nhãn Ngữ cảnh SELinux Context & 3 Chế độ Hoạt động",
+          "content": "\n        <p><strong>SELinux (Security-Enhanced Linux)</strong> là một kiến trúc kiểm soát an ninh bắt buộc (MAC) được phát triển bởi Cơ quan An ninh Quốc gia Hoa Kỳ (NSA) kết hợp cùng cộng đồng Linux, được tích hợp mặc định trên các bản phân phối họ Red Hat (RHEL, CentOS Stream, Rocky Linux, AlmaLinux, Fedora).</p>\n\n        <h3 class=\"lx-h3\">3 Chế độ hoạt động của SELinux trong Kernel</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Chế độ (Mode)</th>\n              <th>Hành vi của Kernel</th>\n              <th>Khi nào nên dùng</th>\n              <th>Lưu ý an toàn</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><strong>Enforcing</strong><br/><em>(Mặc định)</em></td>\n              <td>Chính sách an ninh được thực thi nghiêm ngặt: <strong>Chặn đứng mọi hành vi vi phạm</strong> và ghi nhật ký từ chối (AVC denial).</td>\n              <td>Môi trường Production tiêu chuẩn.</td>\n              <td>Cung cấp mức độ bảo vệ tối đa cho hệ thống.</td>\n            </tr>\n            <tr>\n              <td><strong>Permissive</strong></td>\n              <td><strong>Không chặn bất kỳ hành vi nào</strong>; chỉ ghi nhật ký cảnh báo vào file audit log nếu có vi phạm.</td>\n              <td>Gỡ lỗi sự cố dịch vụ; kiểm tra xem lỗi có phải do SELinux gây ra hay không.</td>\n              <td>Chuyển đổi tức thì trong RAM bằng lệnh <code>sudo setenforce 0</code> (không cần reboot).</td>\n            </tr>\n            <tr>\n              <td><strong>Disabled</strong></td>\n              <td>Tắt hoàn toàn module SELinux trong kernel. Hệ thống quay về chỉ dùng phân quyền DAC thông thường.</td>\n              <td><strong>TUYỆT ĐỐI KHÔNG KHUYÊN DÙNG!</strong></td>\n              <td>Khi bật lại từ disabled sang enforcing, máy chủ sẽ phải chạy quy trình relabel toàn bộ ổ đĩa rất lâu lúc boot.</td>\n            </tr>\n          </tbody>\n        </table>\n\n        <h3 class=\"lx-h3\">Giải phẫu Nhãn Ngữ cảnh (Security Context)</h3>\n        <p>Trong SELinux, mọi tiến trình, file, thư mục, socket và cổng mạng đều được gắn một nhãn an ninh gồm 4 thành phần cách nhau bởi dấu hai chấm: <code>user:role:type:level</code></p>\n        <p>Ví dụ: <code>system_u:object_r:httpd_sys_content_t:s0</code></p>\n        <ul>\n          <li><strong>User (<code>system_u</code>):</strong> Danh tính người dùng SELinux.</li>\n          <li><strong>Role (<code>object_r</code>):</strong> Vai trò của đối tượng.</li>\n          <li><strong>Type (<code>httpd_sys_content_t</code>):</strong> <strong>Thành phần quan trọng nhất (Type Enforcement)!</strong> Đây là loại nhãn quy định tiến trình web server (chạy dưới type <code>httpd_t</code>) chỉ được phép truy cập vào các file có type tương thích như <code>httpd_sys_content_t</code>.</li>\n          <li><strong>Level (<code>s0</code>):</strong> Mức độ bảo mật đa tầng (MLS/MCS).</li>\n        </ul>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
               "title": "Kiểm tra và gán nhãn SELinux đúng chuẩn cho thư mục web tùy biến",
-              "code": "# 1. Xem trạng thái SELinux hiện tại\nsestatus\n\n# 2. Xem nhãn của thư mục web tùy biến /data/my_website\nls -ldZ /data/my_website\n\n# 3. Đăng ký quy tắc nhãn vĩnh viễn cho thư mục và toàn bộ file con\nsudo semanage fcontext -a -t httpd_sys_content_t \"/data/my_website(/.*)?\"\n\n# 4. Áp dụng nhãn mới lên toàn bộ cây thư mục\nsudo restorecon -Rv /data/my_website",
+              "lang": "bash",
+              "code": "# 1. Kiểm tra trạng thái và chế độ hoạt động của SELinux:\n$ sestatus\nSELinux status:                 enabled\nSELinuxfs mount:                /sys/fs/selinux\nSELinux root directory:         /etc/selinux\nLoaded policy name:             targeted\nCurrent mode:                   enforcing\nMode from config file:          enforcing\n\n# 2. Quan sát nhãn ngữ cảnh của file bằng cờ -Z:\n$ ls -lZ /var/www/html/\n-rw-r--r--. 1 root root system_u:object_r:httpd_sys_content_t:s0 index.html\n\n# 3. Sự cố: Quản trị viên chuyển web root sang thư mục /data/website/\n# Khi tạo mới, thư mục bị gán nhãn mặc định là default_t khiến Nginx bị chặn 403 Forbidden!\n$ ls -ldZ /data/website/\ndrwxr-xr-x. 2 root root unconfined_u:object_r:default_t:s0 /data/website/\n\n# 4. KHẮC PHỤC CHUẨN: Đăng ký quy tắc nhãn vĩnh viễn với semanage và nạp lại bằng restorecon:\n$ sudo semanage fcontext -a -t httpd_sys_content_t \"/data/website(/.*)?\"\n$ sudo restorecon -Rv /data/website/\nRelabeled /data/website from unconfined_u:object_r:default_t:s0 to unconfined_u:object_r:httpd_sys_content_t:s0",
+              "output": "Relabeled /data/website from unconfined_u:object_r:default_t:s0 to unconfined_u:object_r:httpd_sys_content_t:s0",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "sestatus",
-                  "text": "Hiển thị chế độ hoạt động (Current mode: enforcing) và tên policy (Targeted)."
-                },
-                {
-                  "line": 5,
-                  "part": "ls -ldZ",
-                  "text": "Xem nhãn: nếu hiển thị default_t hoặc user_home_t thì Nginx sẽ bị chặn không đọc được."
-                },
-                {
-                  "line": 8,
-                  "part": "semanage fcontext",
-                  "text": "Ghi quy tắc vào cơ sở dữ liệu chính sách của SELinux để nhãn không bị mất khi hệ thống relabel."
-                },
-                {
-                  "line": 11,
-                  "part": "restorecon -Rv",
-                  "text": "Quét và gán lại nhãn thực tế trên đĩa theo đúng quy tắc vừa khai báo."
-                }
-              ],
-              "output": "SELinux status:                 enabled\nCurrent mode:                   enforcing\nMode from config file:          enforcing\nRelabeled /data/my_website from unconfined_u:object_r:default_t:s0 to unconfined_u:object_r:httpd_sys_content_t:s0\nRelabeled /data/my_website/index.html from unconfined_u:object_r:default_t:s0 to unconfined_u:object_r:httpd_sys_content_t:s0"
+                "Lệnh ls -lZ: Cờ -Z hiển thị nhãn an ninh SELinux của file và thư mục.",
+                "semanage fcontext: Đăng ký quy tắc nhãn vĩnh viễn vào cơ sở dữ liệu chính sách SELinux của hệ điều hành.",
+                "restorecon -Rv: Đọc cơ sở dữ liệu chính sách và quét đệ trình để áp đặt lại nhãn chuẩn cho toàn bộ cây thư mục.",
+                "Tuyệt đối không dùng chcon vì chcon chỉ đổi nhãn tạm thời, sẽ bị mất sạch khi hệ thống relabel."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-6-selinux-booleans",
-          "title": "2. Quản lý SELinux Booleans & Bật kết nối mạng cho Nginx Proxy",
-          "content": "\n                  <p>Mặc định, chính sách SELinux cấm tiến trình Nginx tạo kết nối mạng ra bên ngoài (để ngăn hacker lợi dụng Nginx làm bàn đạp tấn công mạng nội bộ). Do đó, khi bạn cấu hình Nginx làm <strong>Reverse Proxy</strong> trỏ tới ứng dụng Python chạy tại <code>127.0.0.1:8000</code>, Nginx sẽ bị SELinux chặn đứng và trả về lỗi <code>502 Bad Gateway</code>!</p>\n                  <p>Giải pháp chuẩn xác: Kích hoạt biến cờ <strong>SELinux Boolean</strong> <code>httpd_can_network_connect</code>:</p>\n                ",
+          "title": "2. Quản lý Biến cờ SELinux Booleans & Bộ công cụ Giải mã audit2why",
+          "content": "\n        <p>Trong nhiều trường hợp, bạn không cần phải thay đổi nhãn của file mà chỉ cần bật tắt các tính năng nghiệp vụ đã được định nghĩa sẵn trong chính sách của SELinux. Các công tắc bật/tắt này được gọi là <strong>SELinux Booleans</strong>.</p>\n\n        <p>Ví dụ kinh điển: Mặc định, chính sách SELinux cấm tiến trình Web Server (Nginx, Apache) khởi tạo bất kỳ kết nối mạng nào ra ngoài (để ngăn chặn mã độc kết nối tới C2 Server). Do đó khi bạn cấu hình Nginx làm <strong>Reverse Proxy</strong> trỏ tới ứng dụng Python FastAPI chạy trên cổng 8000, Nginx sẽ bị kernel chặn đứng và ném lỗi <code>502 Bad Gateway</code> (Permission Denied)!</p>\n\n        <h3 class=\"lx-h3\">Bảng các biến cờ SELinux Booleans thiết yếu cho Web &amp; Python</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Tên Boolean</th>\n              <th>Mặc định</th>\n              <th>Ý nghĩa &amp; Khi nào cần bật</th>\n              <th>Lệnh kích hoạt vĩnh viễn</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>httpd_can_network_connect</code></td>\n              <td><code>off</code></td>\n              <td>Cho phép Nginx / Apache kết nối mạng tới các backend proxy (FastAPI, Gunicorn, Node.js).</td>\n              <td><code>sudo setsebool -P httpd_can_network_connect 1</code></td>\n            </tr>\n            <tr>\n              <td><code>httpd_can_network_connect_db</code></td>\n              <td><code>off</code></td>\n              <td>Cho phép ứng dụng web kết nối trực tiếp tới máy chủ cơ sở dữ liệu (PostgreSQL, MySQL).</td>\n              <td><code>sudo setsebool -P httpd_can_network_connect_db 1</code></td>\n            </tr>\n            <tr>\n              <td><code>httpd_enable_homedirs</code></td>\n              <td><code>off</code></td>\n              <td>Cho phép dịch vụ web đọc nội dung trang web đặt trong thư mục cá nhân của user (/home/user/public_html).</td>\n              <td><code>sudo setsebool -P httpd_enable_homedirs 1</code></td>\n            </tr>\n          </tbody>\n        </table>\n\n        <h3 class=\"lx-h3\">Vũ khí Giải mã Lỗi: audit2why</h3>\n        <p>Khi gặp sự cố từ chối truy cập bí ẩn, đừng đoán mò! Hãy cài đặt gói <code>policycoreutils-python-utils</code> và chạy công cụ điều tra tự động:</p>\n        <p><code>sudo ausearch -m avc -ts recent | audit2why</code></p>\n        <p>Công cụ sẽ phân tích dòng log nhị phân AVC phức tạp và đưa ra kết luận rõ ràng bằng tiếng Anh: <em>\"Was caused by: Missing type context\"</em> hoặc <em>\"You must tell SELinux about this by enabling the 'httpd_can_network_connect' boolean\"</em> kèm đúng câu lệnh bạn chỉ việc sao chép để giải quyết!</p>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Bật quyền cho phép Nginx làm Reverse Proxy qua SELinux Boolean",
-              "code": "# Kiểm tra trạng thái của boolean httpd_can_network_connect\ngetsebool httpd_can_network_connect\n\n# Bật cờ này vĩnh viễn (cờ -P: Persistent qua các lần reboot)\nsudo setsebool -P httpd_can_network_connect 1\n\n# Kiểm tra lại xác nhận trạng thái 'on'\ngetsebool httpd_can_network_connect",
+              "title": "Giải mã lỗi Nginx 502 Bad Gateway bằng audit2why và bật cờ Boolean",
+              "lang": "bash",
+              "code": "# 1. Nginx báo lỗi 502 Bad Gateway khi proxy sang FastAPI port 8000.\n# Điều tra nhật ký từ chối truy cập (AVC denial) bằng ausearch:\n$ sudo ausearch -m avc -ts recent\ntype=AVC msg=audit(11/04/2026 09:12:30.412:501): avc:  denied  { name_connect } for  pid=12401 comm=\"nginx\" dest=8000 scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:object_r:soundd_port_t:s0 tclass=tcp_socket permissive=0\n\n# 2. Dùng audit2why để phiên dịch nguyên nhân và giải pháp:\n$ sudo ausearch -m avc -ts recent | audit2why\nWas caused by:\n\tOne of the following booleans was not enabled to allow this access:\n\thttpd_can_network_connect\n\n\tThen execute:\n\t# setsebool -P httpd_can_network_connect 1\n\n# 3. Kích hoạt vĩnh viễn biến cờ (cờ -P đảm bảo không bị mất sau khi reboot):\n$ sudo setsebool -P httpd_can_network_connect 1\n\n# 4. Kiểm tra lại kết nối: Nginx lập tức chuyển tiếp lưu lượng thành công, trả về HTTP 200 OK!",
+              "output": "Was caused by:\n\tOne of the following booleans was not enabled to allow this access:\n\thttpd_can_network_connect\n\n\tThen execute:\n\t# setsebool -P httpd_can_network_connect 1",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "getsebool",
-                  "text": "Kiểm tra xem tính năng đang bật (on) hay tắt (off)."
-                },
-                {
-                  "line": 5,
-                  "part": "setsebool -P ... 1",
-                  "text": "Cờ -P bắt buộc phải có để giá trị được lưu vào đĩa cứng, không bị mất khi reboot server."
-                }
-              ],
-              "output": "httpd_can_network_connect --> off\nhttpd_can_network_connect --> on"
+                "cờ -ts recent: Lọc các bản ghi AVC denial vừa mới xảy ra trong vài phút gần nhất.",
+                "setsebool -P: Cờ -P (Persistent) cực kỳ quan trọng! Nếu thiếu cờ -P, cấu hình chỉ có hiệu lực tạm thời trong RAM và sẽ bị mất khi máy chủ khởi động lại.",
+                "audit2why là trợ thủ số 1 của kỹ sư Linux, loại bỏ hoàn toàn việc phải đoán mò chính sách an ninh."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-6-apparmor-basics",
-          "title": "3. Hệ thống bảo vệ AppArmor trên Debian / Ubuntu",
-          "content": "\n                  <p>Trong khi họ Red Hat dùng SELinux, hệ điều hành Ubuntu và Debian sử dụng <strong>AppArmor</strong> làm cơ chế MAC mặc định. AppArmor hoạt động theo cơ chế <strong>đường dẫn file (Path-based Profiles)</strong> nằm trong <code>/etc/apparmor.d/</code>.</p>\n                  <p>3 chế độ của AppArmor Profile:</p>\n                  <ul>\n                    <li><code>Enforce</code>: Chặn đứng và ghi log mọi hành vi vượt quá quyền hạn khai báo trong profile.</li>\n                    <li><code>Complain</code>: Không chặn, chỉ ghi log cảnh báo vi phạm để quản trị viên theo dõi.</li>\n                    <li><code>Disable</code>: Vô hiệu hóa profile đối với ứng dụng đó.</li>\n                  </ul>\n                ",
+          "title": "3. Hệ thống Bảo vệ Hồ sơ AppArmor trên Debian / Ubuntu",
+          "content": "\n        <p>Trong khi họ Red Hat lựa chọn SELinux thì các bản phân phối họ <strong>Debian và Ubuntu</strong> sử dụng <strong>AppArmor</strong> làm cơ chế Kiểm soát Truy cập Bắt buộc (MAC) mặc định. AppArmor được đánh giá là trực quan và dễ tiếp cận hơn cho lập trình viên nhờ cách tiếp cận dựa trên đường dẫn tệp (path-based).</p>\n\n        <h3 class=\"lx-h3\">Nguyên lý hoạt động theo Hồ sơ (Profiles) của AppArmor</h3>\n        <p>Mỗi chương trình được bảo vệ bởi một tệp hồ sơ lưu tại <code>/etc/apparmor.d/</code> (ví dụ: <code>/etc/apparmor.d/usr.sbin.mysqld</code> hoặc <code>/etc/apparmor.d/usr.sbin.tcpdump</code>). Một hồ sơ có thể hoạt động ở 1 trong 2 chế độ chính:</p>\n        <ul>\n          <li><strong>enforce (Bắt buộc):</strong> Áp đặt chính sách nghiêm ngặt, chặn đứng mọi hành vi đọc/ghi/thực thi ngoài phạm vi được phép và ghi nhật ký cảnh báo.</li>\n          <li><strong>complain (Phàn nàn / Quan sát):</strong> Không chặn hành vi, chỉ ghi lại nhật ký cảnh báo vi phạm. Rất hữu ích khi tạo hồ sơ mới hoặc kiểm thử ứng dụng trước khi đưa lên production.</li>\n        </ul>\n\n        <h3 class=\"lx-h3\">Bảng lệnh quản trị AppArmor thiết yếu</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Lệnh</th>\n              <th>Mục đích</th>\n              <th>Ví dụ thực tế</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>sudo aa-status</code></td>\n              <td>Xem tổng quan trạng thái AppArmor và danh sách tiến trình đang được bảo vệ</td>\n              <td><code>sudo aa-status</code></td>\n            </tr>\n            <tr>\n              <td><code>sudo aa-enforce &lt;profile&gt;</code></td>\n              <td>Chuyển hồ sơ sang chế độ bắt buộc chặn vi phạm</td>\n              <td><code>sudo aa-enforce /etc/apparmor.d/usr.sbin.nginx</code></td>\n            </tr>\n            <tr>\n              <td><code>sudo aa-complain &lt;profile&gt;</code></td>\n              <td>Chuyển hồ sơ sang chế độ quan sát không chặn để gỡ lỗi</td>\n              <td><code>sudo aa-complain /etc/apparmor.d/usr.sbin.nginx</code></td>\n            </tr>\n            <tr>\n              <td><code>sudo aa-logprof</code></td>\n              <td>Công cụ tương tác tự động đọc log vi phạm và hỏi quản trị viên để cập nhật hồ sơ</td>\n              <td><code>sudo aa-logprof</code></td>\n            </tr>\n          </tbody>\n        </table>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
               "title": "Kiểm tra và quản lý trạng thái bảo vệ của AppArmor",
-              "code": "# Kiểm tra danh sách các dịch vụ đang được AppArmor bảo vệ\nsudo aa-status\n\n# Chuyển profile của Nginx sang chế độ theo dõi (Complain mode) để debug\nsudo aa-complain /etc/apparmor.d/usr.sbin.nginx\n\n# Khóa chặt lại chế độ Enforce sau khi đã hoàn tất cấu hình\nsudo aa-enforce /etc/apparmor.d/usr.sbin.nginx",
+              "lang": "bash",
+              "code": "# Kiểm tra trạng thái chi tiết của AppArmor trên Ubuntu:\n$ sudo aa-status\napparmor module is loaded.\n42 profiles are loaded.\n38 profiles are in enforce mode.\n   /usr/bin/evince\n   /usr/sbin/mysqld\n   /usr/sbin/tcpdump\n4 profiles are in complain mode.\n15 processes are in enforce mode.\n   /usr/sbin/mysqld (1420)\n\n# Chuyển hồ sơ mysql sang chế độ complain để thử nghiệm cấu hình phân vùng data mới:\n$ sudo aa-complain /usr/sbin/mysqld\nSetting /usr/sbin/mysqld to complain mode.\n\n# Sau khi kiểm tra ổn định, chuyển ngược lại chế độ enforce để kích hoạt bảo vệ:\n$ sudo aa-enforce /usr/sbin/mysqld\nSetting /usr/sbin/mysqld to enforce mode.",
+              "output": "apparmor module is loaded.\n42 profiles are loaded.\n38 profiles are in enforce mode.",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "aa-status",
-                  "text": "Hiển thị số lượng profile đang ở chế độ enforce và complain."
-                },
-                {
-                  "line": 5,
-                  "part": "aa-complain",
-                  "text": "Cực kỳ hữu ích khi nâng cấp ứng dụng: ứng dụng chạy bình thường mà bạn vẫn thu thập đủ log vi phạm."
-                }
-              ],
-              "output": "apparmor module is loaded.\n38 profiles are loaded.\n36 profiles are in enforce mode.\n   /usr/sbin/mysqld\n   /usr/sbin/nginx\n2 profiles are in complain mode."
+                "aa-status: Cung cấp bức tranh toàn cảnh về số lượng profile và tiến trình đang được sandbox bảo vệ.",
+                "aa-complain: Cho phép ứng dụng ghi dữ liệu vào các phân vùng lưu trữ mới mà không bị chặn, đồng thời ghi log mẫu để cập nhật profile."
+              ]
             }
           ]
         }
       ],
       "scenario": {
-        "title": "Lỗi 403 Forbidden bí ẩn trên Rocky Linux dù quyền đã chmod 777",
-        "content": "\n              <p>Một lập trình viên chuyển thư mục mã nguồn web từ máy tính cá nhân lên máy chủ Rocky Linux tại <code>/var/www/my_site</code>. Khi truy cập trang web qua trình duyệt, Nginx lập tức trả về <code>403 Forbidden</code>. Lập trình viên thử gõ <code>chmod -R 777</code> và <code>chown -R nginx:nginx</code> nhưng website vẫn kiên quyết báo 403.</p>\n              <p><strong>Truy vết bản chất:</strong></p>\n              <p>1. Bạn kiểm tra log audit của hệ thống:</p>\n              <pre><code>sudo ausearch -m avc -ts recent</code></pre>\n              <p>Log chỉ rõ: <code>denied { read } ... scontext=...:httpd_t:s0 tcontext=...:user_home_t:s0</code>. Do file được copy từ thư mục home của user nên nó mang nhãn <code>user_home_t</code>, SELinux kiên quyết cấm Nginx đọc file của người dùng cá nhân!</p>\n              <p>2. Thay vì làm liều tắt SELinux, bạn chỉ cần gõ đúng một lệnh khôi phục nhãn chuẩn:</p>\n              <pre><code>sudo restorecon -Rv /var/www/my_site</code></pre>\n              <p>Website tải ngay lập tức, phân quyền được siết chặt an toàn chuẩn bảo mật quân đội!</p>\n            "
+        "title": "Lỗi 403 Forbidden bí ẩn trên Rocky Linux dù quyền thư mục web đã cấp chmod 777",
+        "content": "\n      <p><strong>1. Triệu chứng sự cố:</strong> Một lập trình viên triển khai ứng dụng web tĩnh trên máy chủ Rocky Linux 9. Lập trình viên tạo thư mục web tại <code>/webroot/site</code> và trỏ Nginx <code>root /webroot/site;</code>. Tuy nhiên khi truy cập từ trình duyệt, trang web luôn báo lỗi <code>403 Forbidden</code>. Lập trình viên bực tức chạy lệnh cấp toàn quyền: <code>sudo chmod -R 777 /webroot/site</code> và <code>sudo chown -R nginx:nginx /webroot/site</code> nhưng trang web vẫn trơ tráo báo lỗi 403 Forbidden!</p>\n      \n      <p><strong>2. Điều tra & Chẩn đoán:</strong> Kỹ sư hệ thống vào hỗ trợ và kiểm tra nhãn an ninh của thư mục:</p>\n      <pre><code># Kiểm tra nhãn SELinux Context của thư mục web:\n$ ls -ldZ /webroot/site\ndrwxrwxrwx. 2 nginx nginx unconfined_u:object_r:default_t:s0 /webroot/site\n\n# Kiểm tra log từ chối AVC của SELinux:\n$ sudo ausearch -m avc -ts recent | audit2why\nWas caused by:\n\tMissing type enforcement allow rule.\n\tYou can alter labeling of /webroot/site\n\tto match httpd_sys_content_t.</code></pre>\n      <p>Bản chất vấn đề lập tức sáng tỏ: Phân quyền DAC (chmod 777) đã cho phép tất cả mọi người truy cập, nhưng tầng bảo vệ thứ hai là SELinux (MAC) phát hiện thư mục đang mang nhãn <code>default_t</code>. Chính sách an ninh của kernel cấm tiến trình Nginx (type <code>httpd_t</code>) đọc các file mang nhãn <code>default_t</code> để chống rò rỉ dữ liệu hệ thống!</p>\n      \n      <p><strong>3. Nguyên nhân gốc rễ:</strong> Thư mục <code>/webroot/site</code> được tạo trực tiếp ở gốc <code>/</code>, nơi SELinux tự động gán nhãn loại trừ <code>default_t</code>. Do chưa được đăng ký trong danh mục nhãn ngữ cảnh web của hệ điều hành, Nginx bị kernel chặn đứng.</p>\n      \n      <p><strong>4. Biện pháp khắc phục chuẩn mực (Không tắt SELinux):</strong></p>\n      <pre><code># Bước 1: Thu hồi quyền 777 nguy hiểm về mức an toàn chuẩn:\n$ sudo chmod -R 755 /webroot/site\n\n# Bước 2: Đăng ký quy tắc nhãn web vĩnh viễn cho đường dẫn này:\n$ sudo semanage fcontext -a -t httpd_sys_content_t \"/webroot/site(/.*)?\"\n\n# Bước 3: Áp đặt lại nhãn an ninh trên hệ thống file:\n$ sudo restorecon -Rv /webroot/site\nRelabeled /webroot/site from unconfined_u:object_r:default_t:s0 to unconfined_u:object_r:httpd_sys_content_t:s0\n\n# Bước 4: Kiểm tra lại quyền:\n$ curl -I http://localhost\nHTTP/1.1 200 OK</code></pre>\n      <p>Trang web lập tức hoạt động trơn tru với mã HTTP 200 OK trong khi quyền thư mục vẫn được thắt chặt an toàn ở mức 755 và SELinux vẫn đang ở chế độ bảo vệ Enforcing!</p>\n      \n      <p><strong>5. Phòng ngừa lâu dài:</strong></p>\n      <ul>\n        <li>Tập huấn cho đội ngũ phát triển: Lỗi 403 Forbidden trên RHEL/Rocky Linux hầu như luôn liên quan tới nhãn SELinux, không phải do chmod thiếu quyền.</li>\n        <li>Tuyệt đối cấm hành vi gõ <code>setenforce 0</code> hoặc sửa file <code>/etc/selinux/config</code> để tắt SELinux. Khi gặp lỗi, luôn dùng bộ đôi <code>semanage fcontext</code> + <code>restorecon</code> hoặc công cụ <code>audit2why</code>.</li>\n      </ul>\n    "
       },
       "callouts": {
         "pitfalls": [
           {
-            "title": "Thói quen tai hại: Gõ setenforce 0 hoặc tắt SELinux trong file config",
-            "content": "Tắt SELinux (<code>SELINUX=disabled</code>) làm mất đi lớp phòng vệ kiên cố nhất của hệ điều hành. Khi một ứng dụng web bị dính lỗ hổng Remote Code Execution (RCE), nếu có SELinux, hacker bị nhốt chặt trong sandbox; nếu tắt SELinux, hacker sẽ lập tức leo thang chiếm toàn bộ máy chủ."
+            "title": "Thói quen tai hại: Tắt vĩnh viễn SELinux khi gặp lỗi Permission Denied",
+            "content": "Nhiều hướng dẫn trên mạng khuyến khích người mới gõ <code>SELINUX=disabled</code> trong <code>/etc/selinux/config</code> để 'cho nhanh'. Đây là sai lầm nghiêm trọng nhất về an ninh trên môi trường doanh nghiệp. Tắt SELinux tước bỏ lớp giáp phòng thủ tối hậu: Nếu ứng dụng web dính lỗ hổng thực thi mã từ xa (RCE) hoặc chiếm quyền tài khoản web, kẻ tấn công sẽ lập tức kiểm soát toàn bộ máy chủ. Ngược lại, nếu bật SELinux, kẻ tấn công bị giam chặt trong sandbox và không thể đọc trộm file nhạy cảm hay can thiệp hệ thống."
+          },
+          {
+            "title": "Dùng lệnh chcon thay vì semanage fcontext",
+            "content": "Lệnh <code>chcon -t httpd_sys_content_t /path</code> chỉ thay đổi nhãn an ninh tạm thời trên đĩa cứng. Khi máy chủ chạy lệnh <code>restorecon</code> hoặc hệ thống khởi động lại kích hoạt tiến trình kiểm tra relabel, toàn bộ nhãn do <code>chcon</code> thiết lập sẽ bị xóa sổ và ghi đè lại bởi nhãn mặc định, làm lỗi 403 Forbidden tái xuất hiện! Chuẩn mực duy nhất là dùng <code>semanage fcontext -a -t ...</code> kết hợp với <code>restorecon -Rv</code>."
           }
         ],
         "tips": [
           {
-            "title": "Dùng công cụ audit2why để được giải thích bằng tiếng người",
-            "content": "Cài đặt gói <code>policycoreutils-python-utils</code> và chạy lệnh: <code>sudo ausearch -m avc -ts recent | audit2why</code>. Công cụ sẽ phân tích log từ chối của SELinux và đưa ra gợi ý chính xác lệnh cần chạy (như cần đổi nhãn nào hay bật boolean nào) để giải quyết lỗi."
+            "title": "Dùng công cụ audit2why để được gợi ý câu lệnh khắc phục bằng tiếng Anh rõ ràng",
+            "content": "Cài đặt gói <code>policycoreutils-python-utils</code> và chạy lệnh: <code>sudo ausearch -m avc -ts recent | audit2why</code>. Công cụ sẽ đọc trực tiếp nhật ký từ chối của SELinux và đưa ra lý do chính xác kèm dòng lệnh bạn cần gõ (như bật boolean nào hoặc gán nhãn nào) để giải quyết triệt để sự cố mà không cần đoán mò."
+          },
+          {
+            "title": "Tạm thời dùng Permissive Mode để chẩn đoán xem có phải do SELinux hay không",
+            "content": "Trước khi nghi ngờ SELinux gây lỗi, hãy chạy <code>sudo setenforce 0</code> để chuyển sang chế độ Permissive (không chặn, chỉ ghi log). Nếu sau lệnh này dịch vụ vẫn lỗi, nguyên nhân 100% nằm ở code hoặc quyền DAC thông thường (chmod/chown). Nếu dịch vụ chạy được, hãy chạy <code>audit2why</code> để sửa đúng nhãn/boolean rồi bật lại chế độ bảo vệ ngay bằng <code>sudo setenforce 1</code>."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Lệnh nào sau đây dùng để tạm thời chuyển SELinux sang chế độ Permissive (không chặn, chỉ ghi log) để gỡ lỗi mà không cần khởi động lại máy chủ?",
-          "command": "sudo setenforce 0",
-          "explanation": "setenforce 0 chuyển SELinux sang chế độ Permissive ngay lập tức trong bộ nhớ RAM; để bật lại chế độ bảo vệ Enforcing, dùng lệnh: sudo setenforce 1."
+          "question": "Mức 1 (Nhớ / Hiểu): Phân biệt sự khác nhau giữa chế độ Enforcing và Permissive của SELinux. Lệnh nào dùng để tạm thời chuyển SELinux sang chế độ Permissive trong bộ nhớ RAM mà không cần khởi động lại máy chủ?",
+          "command": "# Chuyển sang chế độ Permissive (không chặn, chỉ ghi log):\n$ sudo setenforce 0\n\n# Kiểm tra lại chế độ hiện hành:\n$ getenforce\nPermissive\n\n# Chuyển ngược lại chế độ Enforcing (bảo vệ nghiêm ngặt):\n$ sudo setenforce 1",
+          "explanation": "Trong chế độ Enforcing, kernel thực thi chính sách bảo mật bắt buộc: mọi hành vi truy cập trái phép đều bị chặn đứng (Access Denied) và ghi log AVC. Trong chế độ Permissive, kernel cho phép mọi truy cập diễn ra bình thường nhưng vẫn ghi nhật ký cảnh báo vi phạm vào /var/log/audit/audit.log. Lệnh 'sudo setenforce 0' giúp chuyển tức thì sang Permissive để gỡ lỗi trong RAM mà không cần reboot hệ thống."
+        },
+        {
+          "question": "Mức 2 (Áp dụng / Vận hành): Một kỹ sư lưu trữ mã nguồn web tại thư mục tùy biến /srv/mywebsite. Khi Nginx chạy thì bị lỗi 403 Forbidden do SELinux chặn nhãn default_t. Hãy viết chuỗi lệnh chuẩn thực chiến để: (1) Đăng ký vĩnh viễn nhãn httpd_sys_content_t cho thư mục này và toàn bộ file con; (2) Áp dụng nhãn mới lên hệ thống file; và (3) Xác minh nhãn an ninh mới được hiển thị chuẩn xác.",
+          "command": "# 1. Đăng ký quy tắc nhãn ngữ cảnh vĩnh viễn vào chính sách hệ điều hành:\n$ sudo semanage fcontext -a -t httpd_sys_content_t \"/srv/mywebsite(/.*)?\"\n\n# 2. Áp đặt lại nhãn đệ trình cho toàn bộ cây thư mục:\n$ sudo restorecon -Rv /srv/mywebsite\n\n# 3. Kiểm tra nhãn an ninh đã được cập nhật thành công:\n$ ls -ldZ /srv/mywebsite\ndrwxr-xr-x. 3 root root system_u:object_r:httpd_sys_content_t:s0 /srv/mywebsite",
+          "explanation": "Lệnh 'semanage fcontext -a -t' đăng ký mẫu đường dẫn vào cơ sở dữ liệu chính sách SELinux. Cụm regex '(/.*)?' đại diện cho thư mục cha và toàn bộ file/thư mục con bên trong. Lệnh 'restorecon -Rv' đọc cơ sở dữ liệu này và nạp nhãn chuẩn lên đĩa cứng. Cách làm này đảm bảo nhãn tồn tại vĩnh viễn qua mọi lần relabel hệ thống hoặc reboot."
+        },
+        {
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Nginx được cấu hình làm Reverse Proxy chuyển tiếp yêu cầu tới ứng dụng Python FastAPI lắng nghe trên cổng 127.0.0.1:8080. Trình duyệt nhận mã lỗi 502 Bad Gateway và log Nginx báo: 'connect() to 127.0.0.1:8080 failed (13: Permission denied)'. Hãy viết chuỗi lệnh điều tra bằng ausearch/audit2why để xác nhận lỗi do SELinux và câu lệnh chuẩn để khắc phục vĩnh viễn mà không làm giảm độ an toàn của hệ thống.",
+          "command": "# 1. Trích xuất và phân tích bản ghi từ chối truy cập (AVC denial) gần nhất:\n$ sudo ausearch -m avc -ts recent | audit2why\n\n# Kết quả thông báo: Was caused by: Missing boolean httpd_can_network_connect\n\n# 2. Kích hoạt vĩnh viễn biến cờ cho phép Nginx kết nối mạng tới backend:\n$ sudo setsebool -P httpd_can_network_connect 1\n\n# 3. Kiểm tra lại trạng thái biến cờ:\n$ getsebool httpd_can_network_connect\nhttpd_can_network_connect --> on\n\n# 4. Kiểm tra lại dịch vụ web:\n$ curl -I http://127.0.0.1",
+          "explanation": "Mặc định SELinux cấm tiến trình web server (httpd_t) tạo socket kết nối ra ngoài để ngăn mã độc kết nối máy chủ điều khiển (C2). Khi làm reverse proxy tới FastAPI, kết nối này bị kernel chặn với lỗi Permission Denied. Bộ công cụ ausearch kết hợp audit2why phân tích log và chỉ đích danh nguyên nhân là do thiếu cờ 'httpd_can_network_connect'. Bằng cách dùng lệnh 'setsebool -P ... 1' (với cờ -P để lưu vĩnh viễn vào đĩa), ta mở quyền có kiểm soát cho Nginx kết nối backend mà vẫn duy trì toàn bộ hệ thống phòng thủ SELinux ở chế độ Enforcing."
         }
       ],
       "summary": [
-        "SELinux và AppArmor là các cơ chế Mandatory Access Control (MAC) bảo vệ hệ thống ngay cả khi tài khoản root bị chiếm đoạt.",
-        "Phần lớn lỗi Permission Denied trên họ Red Hat là do sai Type Context; xử lý bằng semanage fcontext và restorecon.",
-        "Tuyệt đối không tắt SELinux trong sản xuất; dùng chế độ Permissive để chẩn đoán và khắc phục bằng các biến cờ Boolean."
+        "SELinux và AppArmor là các cơ chế Mandatory Access Control (MAC) tối cao, bảo vệ hệ thống ngay cả khi tài khoản root bị chiếm đoạt.",
+        "SELinux hoạt động qua cơ chế Type Enforcement (TE); mọi tiến trình và file đều được gắn nhãn Context (user:role:type:level).",
+        "Tuyệt đối KHÔNG tắt SELinux (SELINUX=disabled) trong môi trường sản xuất; dùng chế độ Permissive để chẩn đoán sự cố an toàn.",
+        "Khắc phục lỗi Permission Denied trên họ RHEL bằng bộ đôi semanage fcontext và restorecon, không dùng chcon vì chỉ có hiệu lực tạm thời.",
+        "Khai thác các biến cờ SELinux Booleans (setsebool -P) để cấp quyền nghiệp vụ hợp lệ cho dịch vụ web (như httpd_can_network_connect).",
+        "Sử dụng công cụ điều tra audit2why để tự động phân tích log AVC denial và nhận hướng dẫn khắc phục chính xác."
       ]
     },
     {
       "id": "lx-3-07",
       "number": "3.7",
       "title": "Chiến lược Sao lưu, Đồng bộ với rsync qua SSH & Filesystem Snapshot",
-      "subtitle": "Đồng bộ dữ liệu khác biệt thần tốc qua đường truyền mạng và tạo ảnh chụp nhanh hệ thống trong tích tắc",
+      "subtitle": "Bảo vệ tài sản sống còn của doanh nghiệp: Thuật toán delta-transfer rsync, cảnh báo đỏ cờ --delete, và sao lưu điểm thời gian nhất quán với LVM Snapshot",
       "level": "Nâng cao",
       "duration": "55 phút",
       "requiresRoot": true,
       "requiresVM": false,
       "objectives": [
-        "Làm chủ thuật toán delta-transfer của rsync: chỉ truyền tải các khối dữ liệu bị thay đổi, tiết kiệm tới 95% băng thông mạng.",
-        "Nắm vững bộ cờ tiêu chuẩn vàng: rsync -avzP --delete qua cổng SSH tùy biến (-e 'ssh -p 2222').",
-        "Cảnh báo đỏ sống còn: Nhận diện cạm bẫy dấu gạch chéo cuối (Trailing Slash) và nguy cơ xóa sạch dữ liệu của cờ --delete.",
-        "Thực hành tạo ảnh chụp nhanh LVM Snapshot để sao lưu dữ liệu nhất quán điểm thời gian (Point-in-Time Consistency) cho database đang chạy zero-downtime."
+        "Làm chủ thuật toán delta-transfer của rsync: chỉ truyền tải các khối dữ liệu bị thay đổi, tiết kiệm tới 95% băng thông mạng khi đồng bộ từ xa qua SSH.",
+        "Nắm vững bộ cờ tiêu chuẩn vàng rsync: -avzP kết hợp cổng SSH tùy biến (-e 'ssh -p 2222') và cờ giới hạn băng thông (--bwlimit).",
+        "Cảnh báo đỏ sống còn: Nhận diện cạm bẫy dấu gạch chéo cuối (Trailing Slash) ở thư mục nguồn và quy trình kiểm thử khô an toàn (cờ -n / --dry-run) trước khi áp dụng cờ xóa nguy hiểm --delete.",
+        "Thực hành tạo ảnh chụp nhanh LVM Snapshot (Copy-on-Write) để sao lưu dữ liệu nhất quán điểm thời gian (Point-in-Time Consistency) cho cơ sở dữ liệu đang chạy zero-downtime.",
+        "Áp dụng nguyên tắc sao lưu vàng 3-2-1 trong quản trị hạ tầng và kỹ thuật khóa quyền SSH Key bằng lệnh cưỡng chế command= nhằm tự động hóa an toàn."
       ],
       "intuition": {
         "title": "Chép phần khác biệt rsync và Gương đóng băng Snapshot",
-        "metaphor": "Sao chép dữ liệu thông thường bằng `cp` hay `scp` giống như việc: mỗi lần bạn sửa một chữ trong cuốn bách khoa toàn thư dày 1.000 trang, bạn phải in và gửi lại toàn bộ cuốn sách qua bưu điện. rsync hoạt động như một máy photocopy thông minh: nó so sánh checksum giữa 2 máy và chỉ truyền đúng 1 dòng văn bản bị sửa, giúp bạn đồng bộ thư mục 500GB chỉ trong vài giây! Còn LVM Snapshot giống như việc bạn chụp một tấm ảnh phản chiếu đóng băng trạng thái của toàn bộ ổ đĩa trong 1 mili-giây: cơ sở dữ liệu cứ tiếp tục ghi dữ liệu mới lên ổ chính, trong khi bạn thong thả gắn chiếc gương snapshot vào để sao lưu mà dữ liệu không bao giờ bị xáo trộn.",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>⚡</span>\n                    <span>CỜ VÀNG RSYNC</span>\n                    <span class=\"lx-vs-tag\">rsync -avzP</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>-a (Archive):</strong> Bảo toàn trọn vẹn thuộc tính file: phân quyền, chủ sở hữu, mốc thời gian và liên kết mềm (symlink).</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>-v (Verbose):</strong> Hiển thị chi tiết từng file đang truyền.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>-z (Compress):</strong> Tự động nén dữ liệu trong lúc truyền qua mạng và giải nén ở máy đích.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>-P (Progress + Partial):</strong> Hiển thị thanh tiến độ thời gian thực và cho phép nối tiếp quá trình tải nếu bị đứt mạng giữa chừng.</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>⚠️</span>\n                    <span>BẪY DẤU / CUỐI</span>\n                    <span class=\"lx-vs-tag\">Trailing Slash</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>rsync -a /src /dest</code>: Tạo ra thư mục con <code>/dest/src/</code>.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>rsync -a /src/ /dest</code>: (CÓ dấu gạch chéo cuối): Chỉ chép NỘI DUNG bên trong của <code>/src</code> trực tiếp vào <code>/dest/</code>.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> Chỉ một dấu <code>/</code> ở cuối đường dẫn nguồn làm thay đổi hoàn toàn cấu trúc cây thư mục đích!</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "metaphor": "Nếu việc sao lưu truyền thống bằng lệnh cp hay scp giống như việc photocopy lại toàn bộ cuốn từ điển 2.000 trang mỗi khi có một từ mới được bổ sung (cực kỳ lãng phí thời gian và giấy mực), thì rsync giống như một trợ lý siêu phàm: nó soi cuốn từ điển cũ và mới, tìm ra đúng 2 đoạn văn có sửa đổi rồi chỉ gửi duy nhất 2 đoạn văn đó qua bưu điện! Còn LVM Snapshot giống như chụp một bức ảnh đóng băng thời gian: ngay khoảnh khắc bấm máy, bạn có thể thong thả sao chép bức ảnh mà không sợ sự vật chuyển động làm nhòe hình (cơ sở dữ liệu vẫn ghi chép bình thường mà file backup vẫn nhất quán 100%).",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Hai Trụ cột Sao lưu Doanh nghiệp: rsync Delta &amp; LVM Snapshot</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:10px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:6px;padding:8px;\">\n        <strong>1. Cơ chế Sao lưu Nhất quán: LVM Snapshot (Point-in-Time)</strong><br/>\n        ├── Đóng băng trạng thái Database: <code>lvcreate -s -L 10G -n db_snap /dev/vg_prod/lv_db</code><br/>\n        ├── Cơ chế Copy-on-Write (CoW): Ổ chính tiếp tục phục vụ đọc/ghi mà snapshot không bị biến đổi<br/>\n        └── Gắn kết chỉ đọc: <code>mount -o ro /dev/vg_prod/db_snap /mnt/snapshot</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Đồng bộ sang máy chủ Sao lưu từ xa)</div>\n      <div style=\"background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:8px;\">\n        <strong>2. rsync qua đường truyền mã hóa SSH</strong><br/>\n        ├── <code>rsync -avzP --delete -e 'ssh -p 2222' /mnt/snapshot/ backup-srv:/backups/db/</code><br/>\n        ├── <strong>Delta-transfer:</strong> Chỉ truyền các byte khác biệt; nén dữ liệu trong lúc truyền (<code>-z</code>)<br/>\n        └── <strong>Quy tắc Trailing Slash:</strong> <code>/mnt/snapshot/</code> (có dấu / cuối) = chỉ chép nội dung bên trong\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Hoàn tất sao lưu)</div>\n      <div style=\"background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:6px;padding:8px;\">\n        <strong>3. Dọn dẹp Snapshot ngay lập tức:</strong> <code>umount /mnt/snapshot &amp;&amp; lvremove -f /dev/vg_prod/db_snap</code>\n      </div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-7-rsync-syntax",
-          "title": "1. Làm chủ rsync đồng bộ qua SSH và các cờ loại trừ",
-          "content": "\n                  <p>Cú pháp tổng quát: <code>rsync [tùy_chọn] [nguồn] [đích]</code></p>\n                  <p>Khi đồng bộ giữa 2 máy chủ qua kết nối mạng, <code>rsync</code> mặc định sử dụng đường hầm SSH đã được mã hóa:</p>\n                ",
+          "title": "1. Làm chủ rsync Đồng bộ qua SSH & Bộ Cờ Tiêu chuẩn Vàng",
+          "content": "\n        <p><strong>rsync (Remote Sync)</strong> là công cụ đồng bộ tệp tin tiêu chuẩn số 1 trong thế giới Linux và DevOps. Khác với <code>scp</code> hay <code>sftp</code> (luôn truyền lại toàn bộ file từ đầu đến cuối), rsync sử dụng thuật toán <strong>rolling checksum</strong> và <strong>delta-transfer</strong>: nó băm nhỏ file thành các khối, so sánh mã băm giữa nguồn và đích, và chỉ truyền tải các khối thực sự có sự thay đổi. Khi đồng bộ các file dung lượng lớn (như file máy ảo, database dump), rsync giúp tiết kiệm tới 90-95% băng thông và thời gian truyền tải.</p>\n\n        <h3 class=\"lx-h3\">Bảng phân tích bộ cờ tiêu chuẩn vàng trong rsync</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Cờ (Flag)</th>\n              <th>Tên cờ</th>\n              <th>Ý nghĩa &amp; Chức năng</th>\n              <th>Tại sao bắt buộc phải dùng</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>-a</code></td>\n              <td><code>--archive</code></td>\n              <td>Chế độ lưu trữ tổng hợp: tương đương <code>-rlptgoD</code> (đệ quy thư mục, bảo toàn liên kết tượng trưng symlink, quyền hạn permissions, dấu thời gian timestamps, owner, group, và file thiết bị).</td>\n              <td>Đảm bảo file ở máy đích có trạng thái giống hệt 100% so với máy nguồn.</td>\n            </tr>\n            <tr>\n              <td><code>-v</code></td>\n              <td><code>--verbose</code></td>\n              <td>In chi tiết danh sách file đang được xử lý ra terminal.</td>\n              <td>Giúp theo dõi tiến độ công việc.</td>\n            </tr>\n            <tr>\n              <td><code>-z</code></td>\n              <td><code>--compress</code></td>\n              <td>Nén dữ liệu trong quá trình truyền qua mạng và tự giải nén ở đích.</td>\n              <td>Tiết kiệm băng thông đáng kể đối với file văn bản, mã nguồn, log và SQL dump.</td>\n            </tr>\n            <tr>\n              <td><code>-P</code></td>\n              <td><code>--partial --progress</code></td>\n              <td>Hiển thị thanh tiến độ truyền tải và cho phép <strong>truyền tiếp (resume)</strong> nếu mạng bị đứt giữa chừng.</td>\n              <td>Cứu nguy khi truyền các file lớn hàng chục GB qua kết nối mạng Internet chập chờn.</td>\n            </tr>\n            <tr>\n              <td><code>-e 'ssh'</code></td>\n              <td><code>--rsh</code></td>\n              <td>Chỉ định shell mã hóa từ xa; có thể tùy biến cổng hoặc file SSH key.</td>\n              <td>Ví dụ: <code>-e 'ssh -p 2222 -i /root/.ssh/backup_key'</code>.</td>\n            </tr>\n            <tr>\n              <td><code>--exclude</code></td>\n              <td><code>--exclude</code></td>\n              <td>Loại trừ các file hoặc thư mục không cần sao lưu.</td>\n              <td>Ví dụ: <code>--exclude='*.pyc' --exclude='node_modules' --exclude='.git'</code>.</td>\n            </tr>\n            <tr>\n              <td><code>--bwlimit</code></td>\n              <td><code>--bwlimit=KBytes</code></td>\n              <td>Giới hạn băng thông truyền tải tối đa (tính theo KB/s).</td>\n              <td>Ngăn rsync ngốn hết đường truyền Internet của khách hàng vào giờ cao điểm (ví dụ <code>--bwlimit=5000</code>).</td>\n            </tr>\n          </tbody>\n        </table>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Đồng bộ thư mục dự án lên máy chủ backup qua SSH",
-              "code": "# Đồng bộ thư mục dự án sang máy chủ backup qua cổng SSH 2222\nrsync -avzP -e 'ssh -p 2222' \\\n    --exclude=\"*.pyc\" \\\n    --exclude=\"__pycache__\" \\\n    --exclude=\".git\" \\\n    /var/www/my_project/ backup_user@203.0.113.80:/var/backups/my_project/",
+              "title": "Đồng bộ thư mục mã nguồn sang máy chủ backup qua cổng SSH tùy biến",
+              "lang": "bash",
+              "code": "# Đồng bộ thư mục dự án lên máy chủ backup từ xa:\n$ rsync -avzP \\\n    -e 'ssh -p 2222 -i ~/.ssh/id_ed25519' \\\n    --exclude='*.log' \\\n    --exclude='__pycache__' \\\n    --exclude='.venv' \\\n    --bwlimit=10000 \\\n    /opt/fastapi_app/ \\\n    backup_user@192.168.1.200:/data/backups/fastapi_app/",
+              "output": "sending incremental file list\n./\nmain.py\n          4,120 100%    3.93MB/s    0:00:00 (xfr#1, to-chk=12/15)\nconfig.py\n          2,048 100%    1.95MB/s    0:00:00 (xfr#2, to-chk=11/15)\nrouters/\nrouters/orders.py\n          8,192 100%    7.81MB/s    0:00:00 (xfr#3, to-chk=8/15)\n\nsent 6,420 bytes  received 92 bytes  4,341.33 bytes/sec\ntotal size is 14,360  speedup is 2.21",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "-e 'ssh -p 2222'",
-                  "text": "Chỉ định tham số SSH tùy biến (như đổi cổng port hoặc dùng file key riêng với -i)."
-                },
-                {
-                  "line": 3,
-                  "part": "--exclude",
-                  "text": "Loại trừ các file tạm rác để không tốn băng thông truyền tải qua Internet."
-                },
-                {
-                  "line": 6,
-                  "part": "/var/www/my_project/",
-                  "text": "Có dấu gạch chéo cuối: chép toàn bộ nội dung bên trong vào thẳng thư mục đích."
-                }
-              ],
-              "output": "sending incremental file list\n./\napp/main.py\n      14,250 100%    4.20MB/s    0:00:00 (xfr#1, to-chk=42/45)\nsent 4,520 bytes  received 120 bytes  3,093.33 bytes/sec\ntotal size is 45,820,120  speedup is 10,210.42"
+                "-e 'ssh -p 2222': Chỉ định rsync kết nối qua cổng SSH bảo mật không tiêu chuẩn 2222.",
+                "--exclude: Bỏ qua rác không cần sao lưu như file bytecode __pycache__ và môi trường ảo .venv.",
+                "--bwlimit=10000: Khống chế tốc độ truyền tải tối đa 10 MB/s để giữ mạng ổn định cho các dịch vụ khác.",
+                "speedup is 2.21: Tỷ lệ tăng tốc nhờ thuật toán nén và delta-transfer."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-7-delete-danger",
-          "title": "2. Cảnh báo đỏ sống còn với cờ --delete & Kỹ thuật Dry-run",
-          "content": "\n                  <div class=\"callout-box danger-box\">\n                    <div class=\"callout-title\">🚨 CẢNH BÁO ĐỎ: CỜ --DELETE CÓ THỂ XÓA SẠCH DỮ LIỆU ĐÍCH</div>\n                    <p>Cờ <code>--delete</code> yêu cầu rsync xóa bất kỳ file nào ở thư mục ĐÍCH nếu file đó không tồn tại ở thư mục NGUỒN (tạo bản sao gương phản chiếu 1:1). Nếu bạn gõ nhầm đảo ngược vị trí nguồn và đích, hoặc thư mục nguồn vô tình bị rỗng, <strong>rsync sẽ xóa sạch toàn bộ kho dữ liệu sao lưu ở đích chỉ trong 3 giây!</strong></p>\n                    <div class=\"lx-safe-alternative\">\n                      <strong>Quy tắc phòng thủ bắt buộc cho kỹ sư hệ thống:</strong>\n                      <br>BẤT KỲ KHI NÀO sử dụng cờ <code>--delete</code>, <strong>BẮT BUỘC PHẢI CHẠY KÈM CỜ <code>-n</code> (hoặc <code>--dry-run</code>) TRƯỚC</strong>!\n                      <br>Lệnh sẽ chạy mô phỏng, in ra chính xác danh sách file nào sẽ bị xóa mà không đụng tới đĩa. Sau khi mắt bạn đã đọc và xác nhận danh sách xóa là chính xác, bạn mới được phép bỏ cờ <code>-n</code> để chạy thật!\n                    </div>\n                  </div>\n                ",
+          "title": "2. Cảnh báo Đỏ Sống còn: Trailing Slash & Cờ Xóa --delete",
+          "content": "\n        <p>Trong quá trình sao lưu, để bản backup ở máy đích phản ánh chính xác trạng thái của máy nguồn (nghĩa là nếu một file ở máy nguồn đã bị xóa thì ở máy đích cũng phải bị xóa theo), ta sử dụng cờ <code>--delete</code>. Tuy nhiên, <strong>đây là cờ có sức hủy diệt dữ liệu lớn nhất trong các công cụ Linux</strong> nếu kết hợp với sai lầm về dấu gạch chéo cuối (Trailing Slash)!</p>\n\n        <h3 class=\"lx-h3\">Cạm bẫy Dấu gạch chéo cuối (Trailing Slash: /)</h3>\n        <p>Hành vi của rsync thay đổi hoàn toàn chỉ vì sự có mặt của đúng 1 ký tự <code>/</code> ở cuối đường dẫn nguồn:</p>\n        <ul>\n          <li><strong>Có dấu <code>/</code> ở cuối (<code>/data/src/</code>):</strong> rsync hiểu là <em>'Hãy sao chép NỘI DUNG BÊN TRONG của thư mục src sang thư mục đích'</em>. Kết quả: các file nằm trực tiếp dưới <code>/backup/</code>.</li>\n          <li><strong>KHÔNG có dấu <code>/</code> ở cuối (<code>/data/src</code>):</strong> rsync hiểu là <em>'Hãy sao chép CẢ THƯ MỤC src sang thư mục đích'</em>. Kết quả: rsync tạo ra thư mục <code>/backup/src/</code>.</li>\n        </ul>\n\n        <div class=\"lx-callout-danger\">\n          <strong>⚠️ THẢM HỌA XÓA TRẮNG DỮ LIỆU VỚI CỜ --delete:</strong><br/>\n          Giả sử bạn muốn đồng bộ một thư mục trống <code>/tmp/empty</code> sang <code>/backup/</code> với lệnh:<br/>\n          <code>rsync -av --delete /tmp/empty/ /backup/</code><br/>\n          Vì nguồn trống rỗng và bạn có cờ <code>--delete</code>, rsync sẽ coi tất cả các file đang có trong <code>/backup/</code> là 'thừa' và <strong>LẬP TỨC XÓA SẠCH TOÀN BỘ DỮ LIỆU TRONG /backup/ VĨNH VIỄN!</strong><br/>\n          <strong>Quy tắc an toàn bất di bất dịch:</strong> Trước khi chạy bất kỳ lệnh rsync nào có cờ <code>--delete</code>, BẮT BUỘC phải thêm cờ <code>-n</code> (hoặc <code>--dry-run</code>) để chạy thử nghiệm ảo! Quan sát kỹ danh sách các file có chữ <em>*deleting*</em>; chỉ khi chắc chắn danh sách đó là chính xác thì mới bỏ cờ <code>-n</code> để chạy thật.\n        </div>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Chạy mô phỏng an toàn với cờ --dry-run trước khi áp dụng --delete",
-              "code": "# Bước 1: CHẠY MÔ PHỎNG KIỂM TRA (Dry-run: thêm cờ -n)\nrsync -avzPn --delete /var/www/html/ backup_user@backup.internal:/var/www/html/\n\n# Bước 2: Quan sát kỹ các dòng có chữ 'deleting ...'\n# Bước 3: Sau khi xác nhận an toàn 100%, mới bỏ cờ -n để chạy lệnh thật\nrsync -avzP --delete /var/www/html/ backup_user@backup.internal:/var/www/html/",
+              "title": "Quy trình chạy thử khô (Dry-Run) với cờ -n trước khi xóa thực tế",
+              "lang": "bash",
+              "code": "# Bước 1: BẮT BUỘC - Chạy thử khô với cờ -n (--dry-run):\n$ rsync -avzP -n --delete /opt/fastapi_app/ /data/backups/fastapi_app/\nsending incremental file list\n*deleting   old_unused_file.bak\n*deleting   test_data.csv\nrouters/new_module.py\n\nsent 420 bytes  received 35 bytes  910.00 bytes/sec\ntotal size is 14,360  speedup is 31.56 (DRY RUN)\n\n# Dòng chữ (DRY RUN) xác nhận: CHƯA CÓ BẤT KỲ FILE NÀO TRÊN ĐĨA BỊ XÓA!\n# Bạn kiểm tra thấy old_unused_file.bak và test_data.csv đúng là file rác cần xóa.\n\n# Bước 2: Tự tin bỏ cờ -n để thực hiện đồng bộ thật:\n$ rsync -avzP --delete /opt/fastapi_app/ /data/backups/fastapi_app/",
+              "output": "sending incremental file list\ndeleting old_unused_file.bak\ndeleting test_data.csv\nrouters/new_module.py",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "-avzPn",
-                  "text": "Chữ 'n' ở cuối kích hoạt chế độ Dry-run: in ra danh sách file sẽ sửa/xóa mà không thay đổi bất kỳ byte nào trên đĩa."
-                },
-                {
-                  "line": 6,
-                  "part": "--delete",
-                  "text": "Đồng bộ gương phản chiếu: xóa file rác bên đích đã bị xóa ở bên nguồn."
-                }
-              ],
-              "output": "sending incremental file list\ndeleting old_backup_2025.tar.gz\napp/config.json\n\nsent 1,240 bytes  received 45 bytes  856.67 bytes/sec\ntotal size is 12,450,200  speedup is 9,688.87 (DRY RUN)"
+                "-n (--dry-run): Mô phỏng toàn bộ quá trình truyền tải và xóa file mà không chạm vào một byte dữ liệu nào trên đĩa.",
+                "*deleting: Dấu hiệu cảnh báo các file trên thư mục đích sẽ bị tiêu hủy vĩnh viễn khi chạy thật."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-7-lvm-snapshot",
-          "title": "3. Kỹ thuật tạo ảnh chụp nhanh LVM Snapshot sao lưu Database zero-downtime",
-          "content": "\n                  <p>Khi sao lưu cơ sở dữ liệu đang chạy tải cao, nếu bạn dùng <code>tar</code> hay <code>cp</code> thông thường, quá trình sao lưu mất 10 phút. Trong 10 phút đó, dữ liệu bảng A được sao lưu ở phút thứ 1, còn bảng B liên kết với nó được sao lưu ở phút thứ 10. Dữ liệu sao lưu bị <strong>bất đồng nhất (Inconsistent Backup)</strong> và không thể khôi phục lại được.</p>\n                  <p><strong>LVM Snapshot</strong> giải quyết triệt để bài toán này nhờ cơ chế <strong>Copy-on-Write (CoW)</strong>:</p>\n                  <ol>\n                    <li>Tạo snapshot trong 1 giây: LVM đóng băng bảng con trỏ khối dữ liệu tại đúng thời điểm đó.</li>\n                    <li>Gắn mount phân vùng snapshot ở chế độ chỉ đọc (Read-Only).</li>\n                    <li>Thong thả dùng <code>rsync</code> hoặc <code>tar</code> để nén sao lưu từ thư mục snapshot mount.</li>\n                    <li>Xóa phân vùng snapshot sau khi sao lưu xong để giải phóng dung lượng Volume Group.</li>\n                  </ol>\n                ",
+          "title": "3. Sao lưu Điểm Thời gian Nhất quán với LVM Snapshot (Point-in-Time)",
+          "content": "\n        <p>Khi sao lưu các hệ thống cơ sở dữ liệu đang chạy chịu tải cao (PostgreSQL, MySQL, SQLite), việc sao chép file trực tiếp bằng <code>cp</code> hay <code>rsync</code> trên thư mục dữ liệu sống (live data directory) là điều cấm kỵ. Do database liên tục ghi các trang dữ liệu vào đĩa lúc rsync đang đọc, file backup thu được sẽ rơi vào trạng thái <strong>tham nhũng xé rách (Torn Pages / Corrupted State)</strong> và không bao giờ phục hồi lại được.</p>\n\n        <p><strong>LVM Snapshot</strong> giải quyết bài toán này triệt để bằng cơ chế <strong>Copy-on-Write (CoW)</strong>:</p>\n        <ol>\n          <li>Tạo một ảnh chụp logic snapshot chỉ trong vài mili-giây.</li>\n          <li>Khi có một khối dữ liệu trên ổ chính bị thay đổi, LVM sẽ chép khối dữ liệu nguyên bản cũ sang vùng snapshot trước khi cho phép ghi đè lên ổ chính.</li>\n          <li>Phân vùng snapshot đóng băng trạng thái của dữ liệu đúng tại thời điểm chụp (Point-in-Time Consistency). Quản trị viên gắn kết (mount) snapshot dưới dạng chỉ đọc và thong thả sao lưu sang nơi khác mà không cần dừng Database dù chỉ 1 giây!</li>\n        </ol>\n\n        <div class=\"lx-callout-danger\">\n          <strong>⚠️ CẠNH BÁO TRÀN VÙNG ĐỆM SNAPSHOT (COW OVERFLOW):</strong><br/>\n          Vùng nhớ snapshot không chứa toàn bộ dữ liệu, mà chỉ chứa các khối bị thay đổi. Nếu bạn tạo snapshot 5GB mà để quên suốt 3 ngày, khi dữ liệu ghi mới trên ổ chính vượt quá 5GB dung lượng đệm, snapshot sẽ bị <strong>tràn (Snapshot Invalidation / 100% full)</strong> và bị kernel vô hiệu hóa ngay lập tức. Nguy hiểm hơn, việc duy trì snapshot lâu ngày sẽ làm suy giảm nghiêm trọng hiệu năng đọc/ghi của ổ chính. <strong>Quy tắc: Sau khi sao lưu xong, phải unmount và xóa bỏ snapshot ngay lập tức!</strong>\n        </div>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Quy trình sao lưu Database nhất quán với LVM Snapshot",
-              "code": "# 1. Tạo snapshot dung lượng 5GB tên là lv_db_snap từ volume gốc lv_database\nsudo lvcreate -L 5G -s -n lv_db_snap /dev/vg_data/lv_database\n\n# 2. Tạo thư mục và gắn kết snapshot ở chế độ chỉ đọc\nsudo mkdir -p /mnt/db_snapshot\nsudo mount -o ro /dev/vg_data/lv_db_snap /mnt/db_snapshot\n\n# 3. Đồng bộ dữ liệu nhất quán sang máy chủ sao lưu\nrsync -avzP /mnt/db_snapshot/ backup_user@backup.internal:/backups/db_consistent/\n\n# 4. Tháo mount và hủy bỏ snapshot sau khi hoàn thành\nsudo umount /mnt/db_snapshot\nsudo lvremove -y /dev/vg_data/lv_db_snap",
+              "title": "Quy trình sao lưu cơ sở dữ liệu nhất quán với LVM Snapshot từ A đến Z",
+              "lang": "bash",
+              "code": "# Bước 1: Khóa nhẹ database hoặc flush bảng (đối với Postgres/MySQL) để đồng bộ cache xuống đĩa:\n# (Ví dụ: psql -c \"SELECT pg_backup_start('lvm_snap');\")\n\n# Bước 2: Tạo LVM Snapshot dung lượng 10GB từ Volume gốc lv_postgres:\n$ sudo lvcreate -s -L 10G -n snap_postgres /dev/vg_prod/lv_postgres\n\n# (Mở khóa database ngay lập tức: psql -c \"SELECT pg_backup_stop();\")\n# Tổng thời gian database bị giữ chỉ khoảng 0.2 giây!\n\n# Bước 3: Tạo thư mục và gắn kết Snapshot ở chế độ Chỉ đọc (Read-Only):\n# (Lưu ý: Với hệ thống file XFS, cần thêm tùy chọn nouuid vì XFS từ chối mount trùng UUID)\n$ sudo mkdir -p /mnt/snapshot_db\n$ sudo mount -o ro,nouuid /dev/vg_prod/snap_postgres /mnt/snapshot_db\n\n# Bước 4: Thong thả sao lưu dữ liệu nhất quán sang máy chủ lưu trữ từ xa:\n$ rsync -avz /mnt/snapshot_db/ backup_server:/backups/postgres_snapshot_$(date +%F)/\n\n# Bước 5: BẮT BUỘC - Unmount và Xóa bỏ Snapshot ngay sau khi xong việc:\n$ sudo umount /mnt/snapshot_db\n$ sudo lvremove -f /dev/vg_prod/snap_postgres\n  Logical volume \"snap_postgres\" successfully removed.",
+              "output": "  Logical volume \"snap_postgres\" created.\n  Logical volume \"snap_postgres\" successfully removed.",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "-L 5G -s",
-                  "text": "Cờ -s kích hoạt tạo Snapshot. Dung lượng 5GB là vùng nhớ đệm lưu các block dữ liệu gốc bị thay đổi trong lúc snapshot đang mở."
-                },
-                {
-                  "line": 6,
-                  "part": "mount -o ro",
-                  "text": "Gắn kết ở chế độ Read-Only để đảm bảo dữ liệu snapshot không bị bất kỳ tiến trình nào làm thay đổi."
-                },
-                {
-                  "line": 13,
-                  "part": "lvremove -y",
-                  "text": "Hủy bỏ snapshot để trả lại dung lượng trống cho Volume Group, tránh tràn dung lượng CoW."
-                }
-              ],
-              "output": "  Logical volume \"lv_db_snap\" created.\n  Logical volume \"lv_db_snap\" successfully removed."
+                "lvcreate -s -L 10G: Cờ -s chỉ định tạo Snapshot; dung lượng 10GB là không gian tối đa cho các khối dữ liệu bị thay đổi trong lúc sao lưu.",
+                "-o ro,nouuid: Gắn kết an toàn chỉ đọc, cờ nouuid giúp XFS bỏ qua kiểm tra trùng UUID với phân vùng gốc đang chạy.",
+                "lvremove -f: Xóa snapshot ngay lập tức, giải phóng tài nguyên và bảo toàn hiệu năng I/O cho máy chủ."
+              ]
             }
           ]
         }
       ],
       "scenario": {
-        "title": "Đồng bộ kho tệp đính kèm 2TB giữa 2 miền Bắc - Nam mà không làm nghẽn đường truyền",
-        "content": "\n              <p>Hệ thống có kho ảnh tải lên của người dùng nặng 2TB tại Hà Nội. Yêu cầu đặt ra: Mỗi đêm phải đồng bộ toàn bộ file mới sang trung tâm dữ liệu dự phòng tại TP.HCM qua đường truyền cáp quang Internet thông thường.</p>\n              <p>Nếu dùng FTP hoặc copy thông thường, bạn không thể hoàn thành trong đêm. Bằng cách sử dụng <code>rsync -avzP --delete</code>, mỗi đêm hệ thống chỉ cần truyền khoảng 15GB các file mới sinh ra và các file bị xóa, toàn bộ quá trình hoàn tất chỉ trong 35 phút với độ chính xác và nhất quán 100%!</p>\n            "
+        "title": "Đồng bộ kho tệp đính kèm 2TB giữa 2 miền Bắc - Nam mà không làm nghẽn đường truyền người dùng",
+        "content": "\n      <p><strong>1. Triệu chứng & Thách thức:</strong> Doanh nghiệp có kho lưu trữ tài liệu người dùng <code>/var/data/uploads</code> dung lượng <strong>2.1 TB với hơn 4 triệu file nhỏ</strong> tại trung tâm dữ liệu Hà Nội. Nhiệm vụ đặt ra là phải đồng bộ sang trung tâm dữ liệu dự phòng tại TP.HCM mỗi đêm qua kênh truyền mạng WAN băng thông 100 Mbps. Lần đầu chạy thử lệnh <code>scp</code>, tiến trình mất tới 36 tiếng và làm nghẽn toàn bộ đường truyền khiến khách hàng không thể tải tài liệu trong giờ làm việc.</p>\n      \n      <p><strong>2. Điều tra & Thiết kế Giải pháp:</strong></p>\n      <ul>\n        <li>Khoảng 99% tài liệu là file tĩnh không thay đổi; mỗi ngày chỉ có khoảng 15 GB tài liệu mới hoặc chỉnh sửa.</li>\n        <li>Lệnh <code>scp</code> sao chép lại toàn bộ là hoàn toàn sai lầm. Công cụ tối ưu bắt buộc phải là <code>rsync</code> để tận dụng thuật toán delta-transfer.</li>\n        <li>Cần khống chế tốc độ truyền tải tối đa trong giờ hành chính để không ảnh hưởng đến đường truyền của người dùng.</li>\n      </ul>\n      \n      <p><strong>3. Nguyên nhân gốc rễ:</strong> Việc sử dụng công cụ truyền tải không tối ưu (scp) và thiếu chính sách khống chế băng thông (bandwidth throttle) gây nghẽn mạng WAN và kéo dài thời gian sao lưu vượt quá cửa sổ bảo trì ban đêm.</p>\n      \n      <p><strong>4. Biện pháp triển khai:</strong> Thiết lập quy trình rsync qua SSH kết hợp khóa quyền chuyên dụng và giới hạn băng thông:</p>\n      <pre><code># Tạo script /usr/local/bin/sync_storage.sh:\n#!/usr/bin/env bash\nset -euo pipefail\n\nLOG_FILE=\"/var/log/sync_storage.log\"\nSOURCE_DIR=\"/var/data/uploads/\"\nDEST_SERVER=\"backup-user@hcm-backup.internal\"\nDEST_DIR=\"/var/data/uploads/\"\n\n# Giới hạn 40 Mbps (~5 MB/s) để giữ 60% băng thông cho dịch vụ khách hàng:\nBW_LIMIT=5000\n\necho \"[$(date '+%Y-%m-%d %H:%M:%S')] Bắt đầu đồng bộ kho tài liệu...\" >> \"$LOG_FILE\"\n\nrsync -avzP \\\n    --delete \\\n    --bwlimit=\"$BW_LIMIT\" \\\n    -e 'ssh -i /root/.ssh/id_ed25519_backup -p 2222 -o StrictHostKeyChecking=accept-new' \\\n    \"$SOURCE_DIR\" \\\n    \"$DEST_SERVER\":\"$DEST_DIR\" >> \"$LOG_FILE\" 2>&1\n\necho \"[$(date '+%Y-%m-%d %H:%M:%S')] Hoàn tất đồng bộ thành công!\" >> \"$LOG_FILE\"</code></pre>\n      <p>Nhờ thuật toán delta-transfer, sau lần đồng bộ đầu tiên, mỗi đêm rsync chỉ mất <strong>22 phút</strong> để đồng bộ toàn bộ 15GB dữ liệu mới. Băng thông mạng luôn được giới hạn an toàn dưới 5MB/s, hoàn toàn không gây bất kỳ độ trễ nào cho khách hàng.</p>\n      \n      <p><strong>5. Phòng ngừa lâu dài:</strong></p>\n      <ul>\n        <li>Tích hợp script vào <code>systemd Timer</code> chạy lúc 01:30 sáng hàng ngày với chỉ thị <code>Persistent=true</code>.</li>\n        <li>Trên máy chủ backup phía TP.HCM, cấu hình tệp <code>authorized_keys</code> chỉ cho phép thực thi duy nhất lệnh rsync bằng tiền tố: <code>command=\"rsync --server ...\"</code> để hacker dù có đánh cắp được SSH key cũng không thể mở shell tương tác chiếm máy chủ.</li>\n      </ul>\n    "
       },
       "callouts": {
         "pitfalls": [
           {
-            "title": "Để quên LVM Snapshot quá lâu làm tràn vùng nhớ đệm CoW",
-            "content": "LVM Snapshot sử dụng cơ chế Copy-on-Write: khi volume gốc bị sửa, block dữ liệu cũ được chép sang vùng snapshot. Nếu bạn tạo snapshot 5GB mà để quên suốt 3 ngày, khi dữ liệu ghi trên ổ chính vượt quá 5GB, snapshot sẽ bị <strong>tràn (Snapshot Invalidation)</strong> và rơi vào trạng thái lỗi không đọc được. Luôn nhớ xóa snapshot ngay sau khi sao lưu xong!"
+            "title": "Cạm bẫy dấu gạch chéo cuối (Trailing Slash) làm xáo trộn cấu trúc thư mục",
+            "content": "Hãy ghi nhớ sự khác biệt sống còn: <code>rsync -a /src/ /dst/</code> (có dấu / cuối) sẽ chép các file con bên trong <code>src</code> đổ thẳng vào <code>dst</code>. Trong khi <code>rsync -a /src /dst/</code> (không có dấu / cuối) sẽ tạo ra một thư mục con mang tên <code>/dst/src/</code>. Nhầm lẫn dấu gạch chéo này kết hợp với cờ <code>--delete</code> có thể xóa nhầm hàng triệu file ở thư mục đích!"
+          },
+          {
+            "title": "Bỏ quên LVM Snapshot quá lâu làm tràn vùng nhớ đệm CoW",
+            "content": "LVM Snapshot sử dụng cơ chế Copy-on-Write: khi volume gốc bị sửa, block dữ liệu cũ được chép sang vùng snapshot. Nếu bạn tạo snapshot 5GB mà để quên suốt 3 ngày, khi dữ liệu ghi trên ổ chính vượt quá 5GB, snapshot sẽ bị <strong>tràn (Snapshot Invalidation / 100% full)</strong> và rơi vào trạng thái lỗi không đọc được. Luôn nhớ xóa snapshot ngay sau khi sao lưu xong!"
           }
         ],
         "tips": [
           {
-            "title": "Giới hạn băng thông mạng khi rsync vào giờ làm việc",
-            "content": "Nếu bạn phải chạy rsync vào ban ngày và sợ làm nghẽn đường truyền của khách hàng, hãy thêm cờ giới hạn băng thông: <code>--bwlimit=5000</code> (giới hạn tối đa 5000 KB/s ~ 5 MB/s)."
+            "title": "Luôn dùng cờ -n (--dry-run) trước khi áp dụng cờ --delete",
+            "content": "Mỗi khi viết một lệnh rsync có chứa cờ hủy diệt <code>--delete</code>, hãy luôn chèn thêm cờ <code>-n</code> (dry-run). Lệnh sẽ chạy mô phỏng và in ra toàn bộ các tệp dự kiến sẽ bị xóa có tiền tố <code>*deleting</code>. Khi bạn đã kiểm tra và thấy danh sách đó hoàn toàn chính xác, hãy tự tin bỏ cờ <code>-n</code> để chạy thật."
+          },
+          {
+            "title": "Giới hạn băng thông mạng khi rsync vào giờ làm việc bằng --bwlimit",
+            "content": "Nếu bạn phải chạy rsync vào ban ngày và sợ làm nghẽn đường truyền mạng Internet của khách hàng, hãy thêm cờ giới hạn băng thông: <code>--bwlimit=5000</code> (giới hạn tối đa 5000 KB/s ~ 5 MB/s). rsync sẽ tự động điều tiết tốc độ đọc ghi gói tin mượt mà."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Sự khác biệt giữa hai lệnh sau là gì: 'rsync -a /var/data /backup' và 'rsync -a /var/data/ /backup'?",
-          "command": "# Lệnh 1 (không có dấu / cuối): tạo ra thư mục /backup/data/...\n# Lệnh 2 (có dấu / cuối): chép toàn bộ nội dung bên trong thẳng vào /backup/...",
-          "explanation": "Dấu gạch chéo cuối (Trailing Slash) ở đường dẫn nguồn báo cho rsync biết chỉ sao chép nội dung bên trong thư mục chứ không tạo thêm thư mục vỏ bọc ở đích."
+          "question": "Mức 1 (Nhớ / Hiểu): Phân biệt sự khác nhau về hành vi giữa 2 câu lệnh sau: (A) 'rsync -a /var/www /backup/' và (B) 'rsync -a /var/www/ /backup/'. Thư mục đích /backup/ sẽ chứa cấu trúc file như thế nào trong từng trường hợp?",
+          "command": "# Lệnh A: Không có dấu / ở cuối nguồn:\n$ rsync -a /var/www /backup/\n# Kết quả: Tạo ra thư mục con /backup/www/...\n\n# Lệnh B: Có dấu / ở cuối nguồn:\n$ rsync -a /var/www/ /backup/\n# Kết quả: Chép toàn bộ file bên trong đổ thẳng vào /backup/... (không tạo thư mục www)",
+          "explanation": "Dấu gạch chéo cuối (Trailing Slash) ở đường dẫn nguồn là quy ước kinh điển của rsync: Nếu không có dấu '/', rsync sao chép cả thư mục nguồn và tạo thư mục đó ở đích (/backup/www). Nếu có dấu '/', rsync hiểu là chỉ sao chép nội dung bên trong thư mục nguồn và đặt thẳng vào đích (/backup/index.html, /backup/images...)."
+        },
+        {
+          "question": "Mức 2 (Áp dụng / Vận hành): Hãy viết một câu lệnh rsync hoàn chỉnh để đồng bộ thư mục /opt/data/ sang máy chủ backup từ xa có IP 10.0.1.100 dưới user backupuser, cổng SSH là 2222. Yêu cầu: nén dữ liệu khi truyền, hiển thị tiến độ và hỗ trợ truyền tiếp nếu đứt mạng, xóa các file ở đích nếu nguồn đã xóa, loại trừ toàn bộ các file tạm .tmp, và chạy thử nghiệm mô phỏng (dry-run) an toàn trước.",
+          "command": "rsync -avzP -n \\\n    --delete \\\n    --exclude='*.tmp' \\\n    -e 'ssh -p 2222' \\\n    /opt/data/ \\\n    backupuser@10.0.1.100:/backups/data/",
+          "explanation": "Bộ cờ -avzP kết hợp lưu trữ (-a), chi tiết (-v), nén (-z) và hiển thị tiến độ/resume (-P). Cờ -n (--dry-run) đảm bảo quá trình chạy mô phỏng an toàn 100%, không xóa hay ghi đè bất kỳ file thật nào. Cờ --delete đồng bộ trạng thái xóa, --exclude='*.tmp' lọc file rác, và -e 'ssh -p 2222' kết nối qua cổng SSH tùy biến của máy chủ lưu trữ."
+        },
+        {
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Cơ sở dữ liệu PostgreSQL đang chạy trên Logical Volume /dev/vg_data/lv_db (định dạng XFS, mount tại /var/lib/postgresql). Hãy viết chuỗi lệnh chuẩn thực chiến để: (1) Tạo một LVM snapshot tên 'snap_db' dung lượng 15GB; (2) Mount snapshot chỉ đọc vào /mnt/db_backup kèm cờ xử lý lỗi trùng UUID của XFS; (3) Sao lưu thư mục snapshot sang máy chủ backup; và (4) Thu hồi và xóa bỏ snapshot ngay lập tức để không gây nghẽn I/O cho cơ sở dữ liệu.",
+          "command": "# 1. Tạo LVM Snapshot 15GB từ Volume gốc lv_db:\n$ sudo lvcreate -s -L 15G -n snap_db /dev/vg_data/lv_db\n\n# 2. Tạo thư mục và gắn kết chỉ đọc kèm tùy chọn nouuid (bắt buộc cho XFS):\n$ sudo mkdir -p /mnt/db_backup\n$ sudo mount -o ro,nouuid /dev/vg_data/snap_db /mnt/db_backup\n\n# 3. Đồng bộ dữ liệu nhất quán sang máy chủ lưu trữ:\n$ rsync -avz /mnt/db_backup/ backupuser@10.0.1.100:/backups/postgres_consistent/\n\n# 4. BẮT BUỘC: Unmount và xóa bỏ Snapshot ngay lập tức:\n$ sudo umount /mnt/db_backup\n$ sudo lvremove -f /dev/vg_data/snap_db",
+          "explanation": "Quy trình này giải quyết trọn vẹn bài toán sao lưu nhất quán điểm thời gian (Point-in-Time Consistency) zero-downtime. Cơ chế Copy-on-Write của LVM bảo đảm các bảng database trong snapshot không bị biến đổi dù database gốc vẫn đang nhận giao dịch ghi. Việc bổ sung tùy chọn 'nouuid' là chìa khóa đối với hệ thống file XFS (vì XFS cấm mount 2 phân vùng có cùng UUID). Bước cuối cùng unmount và xóa snapshot là nguyên tắc vàng để ngăn chặn nguy cơ tràn bộ đệm CoW và bảo vệ hiệu năng I/O cho máy chủ."
         }
       ],
       "summary": [
-        "rsync là công cụ đồng bộ dữ liệu số 1 nhờ thuật toán delta-transfer chỉ gửi phần dữ liệu khác biệt qua mạng.",
-        "Luôn kiểm tra bằng cờ -n (--dry-run) trước khi áp dụng cờ nguy hiểm --delete để tránh xóa nhầm dữ liệu ở đích.",
-        "LVM Snapshot cho phép chụp ảnh đóng băng trạng thái ổ đĩa tức thì, giúp sao lưu cơ sở dữ liệu nhất quán zero-downtime."
+        "rsync là công cụ đồng bộ dữ liệu số 1 nhờ thuật toán delta-transfer chỉ gửi các byte dữ liệu khác biệt qua mạng.",
+        "Bộ cờ tiêu chuẩn vàng rsync -avzP kết hợp lưu trữ thuộc tính file (-a), nén dữ liệu (-z) và thanh tiến độ có thể truyền tiếp (-P).",
+        "Ghi nhớ cạm bẫy Trailing Slash: dấu / ở cuối đường dẫn nguồn quyết định việc chép cả thư mục hay chỉ chép nội dung bên trong.",
+        "Luôn luôn sử dụng cờ -n (--dry-run) để chạy thử nghiệm ảo trước khi áp dụng cờ xóa dữ liệu nguy hiểm --delete.",
+        "LVM Snapshot sử dụng cơ chế Copy-on-Write (CoW) giúp sao lưu cơ sở dữ liệu nhất quán điểm thời gian mà không cần dừng dịch vụ.",
+        "BẮT BUỘC unmount và xóa bỏ LVM Snapshot ngay sau khi hoàn tất sao lưu để phòng ngừa tràn bộ đệm và suy giảm hiệu năng đĩa."
       ]
     },
     {
       "id": "lx-3-08",
       "number": "3.8",
       "title": "Triển khai Dịch vụ Web Nginx Reverse Proxy, Tối ưu Hiệu năng & Chứng chỉ SSL HTTPS",
-      "subtitle": "Đưa ứng dụng Python/Web ra thế giới thực với khả năng chịu tải cao, bộ đệm tĩnh, nén gzip, SSL Let's Encrypt và nhập môn Docker",
+      "subtitle": "Đưa ứng dụng ra Internet an toàn: Cấu hình Nginx đứng trước Python FastAPI/Django, tối ưu bộ đệm, và tự động cấp phát SSL Let's Encrypt đạt điểm A+",
       "level": "Nâng cao",
       "duration": "60 phút",
       "requiresRoot": true,
       "requiresVM": true,
       "objectives": [
-        "Cấu hình Nginx làm Reverse Proxy đứng trước backend Python (FastAPI/Django) qua TCP socket hoặc UNIX Domain Socket.",
-        "Thiết lập chuẩn mực các header chuyển tiếp: Host, X-Real-IP, X-Forwarded-For, X-Forwarded-Proto để ứng dụng backend nhận diện đúng client.",
-        "Tối ưu phục vụ file tĩnh (static caching), nén dữ liệu gzip và giới hạn kích thước upload client_max_body_size.",
-        "Tự động cấp phát và gia hạn chứng chỉ bảo mật SSL/TLS miễn phí chuẩn A+ từ Let's Encrypt bằng Certbot.",
-        "Mở rộng Container căn bản: Đóng gói ứng dụng web vào Docker container và vận hành an toàn."
+        "Thiết lập Nginx làm Reverse Proxy đứng trước ứng dụng Python (FastAPI/Django/Flask) thông qua TCP loopback socket hoặc UNIX Domain Socket nhằm tăng hiệu năng.",
+        "Cấu hình chuẩn xác toàn bộ các header chuyển tiếp khách hàng: Host, X-Real-IP, X-Forwarded-For, X-Forwarded-Proto để ứng dụng backend nhận diện đúng IP thật và giao thức HTTPS.",
+        "Tối ưu hiệu năng Nginx: bật bộ đệm nén gzip, cấu hình cache tài nguyên tĩnh (Static Assets Caching), điều chỉnh worker_processes/worker_connections và giới hạn tải lên client_max_body_size.",
+        "Tự động cấp phát và gia hạn chứng chỉ bảo mật SSL/TLS miễn phí từ Let's Encrypt bằng Certbot theo giao thức ACME; kiểm thử gia hạn định kỳ với certbot renew --dry-run.",
+        "Gia cố bảo mật HTTPS theo khuyến nghị Mozilla SSL Configuration Generator: kích hoạt HTTP/2, khóa chặt các giao thức cũ (chỉ dùng TLSv1.2 và TLSv1.3), và cấu hình tiêu đề HSTS (Strict-Transport-Security)."
       ],
       "intuition": {
         "title": "Lễ tân 5 sao Nginx và Bếp trưởng backend Python",
-        "metaphor": "Để một ứng dụng Python (như Uvicorn hay Gunicorn) tiếp xúc trực tiếp với Internet giống như việc bắt đầu bếp trưởng phải vừa nấu ăn vừa ra đứng trước cửa tiếp khách, bưng bê nước ngọt, tính tiền và đối phó với kẻ phá hoại. Nginx chính là cô lễ tân chuyên nghiệp tại tiền sảnh: tiếp đón hàng chục ngàn khách hàng cùng lúc, phục vụ bánh ngọt và menu (file tĩnh ảnh/css/js) ngay tại quầy trong 1 mili-giây, chặn đứng các vị khách say xỉn (tấn công DDOS/rate limit), kiểm tra mã hóa trang phục (SSL HTTPS); chỉ những món ăn phức tạp cần chế biến (API logic/database) mới được chuyển vào bếp trưởng Python xử lý trong yên tĩnh.",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🌐</span>\n                    <span>NGINX PROXY</span>\n                    <span class=\"lx-vs-tag\">HTTPS → App</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Client (HTTPS:443):</strong> Giao tiếp qua Internet bảo mật mã hóa SSL.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Nginx:</strong> Giải mã SSL (SSL Termination), nén gzip, cache file tĩnh, rate limit.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Backend (127.0.0.1:8000 hoặc unix socket):</strong> Nhận request sạch từ Nginx và xử lý logic nhanh gọn.</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🐳</span>\n                    <span>DOCKER CONTAINER</span>\n                    <span class=\"lx-vs-tag\">Đóng gói nhẹ</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> Đóng gói toàn bộ mã nguồn Python + dependencies (requirements.txt) vào 1 Image duy nhất.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> Chạy độc lập, không sợ xung đột phiên bản Python hay thư viện hệ thống với host.</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "metaphor": "Một nhà hàng sang trọng không bao giờ để khách hàng chạy thẳng vào khu bếp gặp trực tiếp Bếp trưởng (ứng dụng Python FastAPI / Gunicorn). Bếp trưởng chỉ chuyên tâm vào nấu nướng (xử lý logic nghiệp vụ và truy vấn database). Đứng ở sảnh chính là Quản lý lễ tân 5 sao (Nginx): Lễ tân kiểm tra trang phục khách hàng (xác thực chứng chỉ SSL/TLS), từ chối những vị khách mang hành lý quá khổ (client_max_body_size), tự tay phục vụ các món tráng miệng có sẵn mà không cần phiền tới bếp (Static File Caching và nén Gzip), và cẩn thận ghi chép lại tên tuổi, địa chỉ thực của khách hàng vào một tờ giấy chuyển giao cho Bếp trưởng (các header X-Real-IP và X-Forwarded-For).",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Kiến trúc Nginx Reverse Proxy &amp; SSL Termination</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:10px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:6px;padding:8px;\">\n        <strong>1. Khách hàng trên Internet (Trình duyệt Web / Mobile App)</strong><br/>\n        └── Kết nối HTTPS bảo mật (Cổng 443 / TLS 1.3 / HTTP/2)\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼</div>\n      <div style=\"background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:8px;\">\n        <strong>2. Nginx Reverse Proxy (Lễ tân tiền tuyến)</strong><br/>\n        ├── <strong>SSL Termination:</strong> Giải mã mã hóa HTTPS bằng chứng chỉ Let's Encrypt<br/>\n        ├── <strong>Phục vụ file tĩnh trực tiếp:</strong> <code>/static/</code> ➔ Phản hồi ngay không gọi Python<br/>\n        ├── <strong>Nén dữ liệu:</strong> Gzip nén HTML, CSS, JSON giảm 75% kích thước<br/>\n        └── <strong>Gắn Header chuyển tiếp:</strong> <code>X-Real-IP</code> &amp; <code>X-Forwarded-Proto https</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼ (Chuyển tiếp nội bộ qua UNIX Domain Socket hoặc Loopback TCP)</div>\n      <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:6px;padding:8px;\">\n        <strong>3. Backend Python (FastAPI / Gunicorn / Uvicorn)</strong><br/>\n        └── Xử lý API logic nghiệp vụ và truy xuất Database PostgreSQL\n      </div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-8-nginx-proxy-config",
-          "title": "1. Cấu hình Nginx Reverse Proxy chuẩn Production cho ứng dụng Python",
-          "content": "\n                  <p>Tạo file cấu hình tại <code>/etc/nginx/sites-available/fastapi_app.conf</code> và tạo liên kết mềm sang <code>sites-enabled/</code>:</p>\n                ",
+          "title": "1. Cấu hình Nginx Reverse Proxy Chuẩn Production cho Ứng dụng Python",
+          "content": "\n        <p>Trong kiến trúc microservices và web hiện đại, các ứng dụng Python (viết bằng FastAPI, Django, Flask) chạy trên các ASGI/WSGI server như <strong>Uvicorn</strong> hoặc <strong>Gunicorn</strong>. Mặc dù các server này có thể xử lý HTTP, chúng <strong>không được thiết kế để mở trực tiếp ra Internet</strong> vì thiếu khả năng chống tấn công Slowloris, không tối ưu phục vụ file tĩnh và không hỗ trợ xử lý SSL hiệu năng cao.</p>\n\n        <p><strong>Nginx</strong> sử dụng kiến trúc bất đồng bộ hướng sự kiện (Asynchronous Event-Driven) dựa trên cơ chế <code>epoll</code> của nhân Linux, cho phép một tiến trình worker duy nhất duy trì hàng chục ngàn kết nối đồng thời với mức tiêu tốn RAM cực kỳ thấp.</p>\n\n        <h3 class=\"lx-h3\">Bảng phân tích 4 Header chuyển tiếp sống còn trong Reverse Proxy</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Chỉ thị Header</th>\n              <th>Giá trị cấu hình Nginx</th>\n              <th>Mục đích nghiệp vụ</th>\n              <th>Hậu quả nghiêm trọng nếu thiếu</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>Host</code></td>\n              <td><code>$host</code></td>\n              <td>Gửi tên miền gốc của trang web mà người dùng gõ trên trình duyệt vào backend.</td>\n              <td>Backend không biết mình đang phục vụ cho domain nào, làm hỏng routing đa tên miền.</td>\n            </tr>\n            <tr>\n              <td><code>X-Real-IP</code></td>\n              <td><code>$remote_addr</code></td>\n              <td>Gửi địa chỉ IP thật của máy khách hàng vào cho backend.</td>\n              <td><strong>Hệ thống log và bảo mật của Python ghi nhận 100% IP người dùng là 127.0.0.1!</strong> Không thể chặn brute-force hay định danh vị trí địa lý.</td>\n            </tr>\n            <tr>\n              <td><code>X-Forwarded-For</code></td>\n              <td><code>$proxy_add_x_forwarded_for</code></td>\n              <td>Danh sách chuỗi các IP proxy mà gói tin đã đi qua (Client, Proxy1, Proxy2...).</td>\n              <td>Mất dấu vết truy vết kiểm toán an ninh nguồn gốc yêu cầu.</td>\n            </tr>\n            <tr>\n              <td><code>X-Forwarded-Proto</code></td>\n              <td><code>$scheme</code> (hoặc <code>https</code>)</td>\n              <td>Báo cho ứng dụng backend biết kết nối ban đầu giữa client và Nginx là HTTP hay HTTPS.</td>\n              <td><strong>Lỗi vòng lặp chuyển hướng vô tận (Infinite Redirect Loop):</strong> Ứng dụng Python tưởng client đang truy cập HTTP nên ném mã chuyển hướng 301 sang HTTPS, Nginx nhận lại và lại chuyển tiếp, khiến trình duyệt báo lỗi <code>ERR_TOO_MANY_REDIRECTS</code>.</td>\n            </tr>\n          </tbody>\n        </table>\n      ",
           "codeExamples": [
             {
-              "lang": "Nginx",
-              "title": "Tệp cấu hình /etc/nginx/sites-available/fastapi_app.conf",
-              "code": "upstream backend_python {\n    # Có thể dùng UNIX Domain Socket hoặc TCP socket\n    server 127.0.0.1:8000 fail_timeout=0;\n    keepalive 32;\n}\n\nserver {\n    listen 80;\n    server_name api.example.com;\n    client_max_body_size 50M;\n\n    # Phục vụ file tĩnh trực tiếp không làm phiền Python backend\n    location /static/ {\n        alias /opt/fastapi_app/static/;\n        expires 30d;\n        add_header Cache-Control \"public, no-transform\";\n        access_log off;\n    }\n\n    # Chuyển tiếp toàn bộ API requests vào Python backend\n    location / {\n        proxy_pass http://backend_python;\n        proxy_http_version 1.1;\n        proxy_set_header Connection \"\";\n        \n        # BẮT BUỘC: Truyền đúng IP thật và giao thức của client\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Forwarded-Proto $scheme;\n        \n        # Tùy chọn timeout chống treo kết nối\n        proxy_connect_timeout 60s;\n        proxy_read_timeout 60s;\n    }\n}",
+              "title": "Tệp cấu hình Nginx chuẩn /etc/nginx/sites-available/fastapi_app.conf",
+              "lang": "nginx",
+              "code": "# /etc/nginx/sites-available/fastapi_app.conf\n# Định nghĩa cụm backend server (Upstream)\nupstream fastapi_backend {\n    server 127.0.0.1:8000;\n    # Khuyên dùng UNIX socket khi cùng máy: server unix:/run/fastapi_app.sock;\n    keepalive 32;\n}\n\nserver {\n    listen 80;\n    server_name api.example.com;\n\n    # Giới hạn dung lượng tải lên tối đa (tránh lỗi 413 Request Entity Too Large):\n    client_max_body_size 50M;\n\n    # 1. Phục vụ file tĩnh trực tiếp kèm bộ nhớ đệm trình duyệt 30 ngày:\n    location /static/ {\n        alias /opt/fastapi_app/static/;\n        expires 30d;\n        add_header Cache-Control \"public, no-transform\";\n        access_log off;\n    }\n\n    # 2. Chuyển tiếp toàn bộ API requests vào backend Python:\n    location / {\n        proxy_pass http://fastapi_backend;\n        proxy_http_version 1.1;\n        proxy_set_header Connection \"\";\n\n        # 4 Headers chuyển tiếp bắt buộc:\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Forwarded-Proto $scheme;\n\n        # Cấu hình thời gian chờ kết nối (Timeouts):\n        proxy_connect_timeout 60s;\n        proxy_send_timeout 60s;\n        proxy_read_timeout 60s;\n    }\n}",
+              "output": "# Bước 1: Kích hoạt site bằng cách tạo symlink sang sites-enabled:\n$ sudo ln -s /etc/nginx/sites-available/fastapi_app.conf /etc/nginx/sites-enabled/\n\n# Bước 2: BẮT BUỘC - Kiểm tra cú pháp toàn bộ hệ thống Nginx:\n$ sudo nginx -t\nnginx: the configuration file /etc/nginx/nginx.conf syntax is ok\nnginx: configuration /etc/nginx/nginx.conf test is successful\n\n# Bước 3: Nạp lại cấu hình mượt mà không làm gián đoạn kết nối người dùng (Zero-Downtime):\n$ sudo systemctl reload nginx",
               "annotations": [
-                {
-                  "line": 1,
-                  "part": "upstream backend_python",
-                  "text": "Khai báo cụm máy chủ backend hỗ trợ cân bằng tải và keepalive socket tái sử dụng kết nối."
-                },
-                {
-                  "line": 9,
-                  "part": "client_max_body_size 50M",
-                  "text": "Mặc định Nginx chỉ cho upload 1MB; tăng lên 50MB để người dùng upload được file ảnh/tài liệu."
-                },
-                {
-                  "line": 12,
-                  "part": "location /static/",
-                  "text": "Nginx phục vụ file ảnh, CSS, JS trực tiếp từ đĩa cứng với tốc độ tối đa, không cần Python xử lý."
-                },
-                {
-                  "line": 26,
-                  "part": "X-Forwarded-For / Proto",
-                  "text": "Bắt buộc phải có để ứng dụng Python biết chính xác địa chỉ IP người dùng thật và giao thức HTTPS."
-                }
-              ],
-              "output": ""
+                "client_max_body_size 50M: Nâng trần dung lượng upload file (mặc định của Nginx chỉ là 1MB).",
+                "location /static/: Phục vụ file tĩnh trực tiếp từ đĩa với access_log off, giúp giảm tải tới 80% công việc cho Python.",
+                "nginx -t: Nguyên tắc sống còn trước khi reload để không bao giờ làm sập các website khác trên máy chủ."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-8-certbot-ssl",
-          "title": "2. Tự động cấp phát và gia hạn SSL miễn phí với Certbot Let's Encrypt",
-          "content": "\n                  <p>Cài đặt Certbot và plugin Nginx: <code>sudo apt update && sudo apt install -y certbot python3-certbot-nginx</code></p>\n                  <p>Chỉ với một dòng lệnh duy nhất, Certbot sẽ tự động kết nối với máy chủ Let's Encrypt để xác thực tên miền, tự sinh cặp khóa bảo mật TLS 1.3 và tự động chỉnh sửa file cấu hình Nginx để kích hoạt HTTPS:</p>\n                ",
+          "title": "2. Cấp phát & Tự động Gia hạn SSL Miễn phí với Certbot Let's Encrypt",
+          "content": "\n        <p>Ngày nay, HTTPS là tiêu chuẩn bảo mật bắt buộc đối với mọi website và API. Giao thức HTTP thuần túy truyền tải thông tin ở dạng bản rõ (cleartext), dễ dàng bị nghe lén hoặc sửa đổi nội dung trên đường truyền (Man-in-the-Middle attack).</p>\n\n        <p><strong>Let's Encrypt</strong> là tổ chức cấp phát chứng chỉ số (CA) phi lợi nhuận toàn cầu, cung cấp chứng chỉ SSL/TLS hoàn toàn miễn phí thông qua giao thức tự động <strong>ACME</strong>. Công cụ chính thức để giao tiếp với Let's Encrypt trên Linux là <strong>Certbot</strong> do Electronic Frontier Foundation (EFF) phát triển.</p>\n\n        <h3 class=\"lx-h3\">Gia cố Bảo mật SSL Chuẩn Mozilla Intermediate</h3>\n        <p>Một cấu hình SSL đạt điểm A+ trên hệ thống kiểm định <strong>Qualys SSL Labs</strong> cần thỏa mãn các tiêu chuẩn:</p>\n        <ul>\n          <li><strong>Loại bỏ hoàn toàn các giao thức lỗi thời và mất an toàn:</strong> Khóa chặt SSLv2, SSLv3, TLSv1.0 và TLSv1.1 (vốn dính các lỗ hổng nghiêm trọng như POODLE, BEAST). <strong>Chỉ cho phép TLSv1.2 và TLSv1.3</strong>.</li>\n          <li><strong>Kích hoạt HTTP/2 (hoặc HTTP/3):</strong> Cho phép ghép kênh song song (multiplexing) nhiều yêu cầu trên cùng một kết nối TCP, tăng tốc tải trang web lên tới 40%.</li>\n          <li><strong>Bật tiêu đề HSTS (HTTP Strict Transport Security):</strong> Ra lệnh cho trình duyệt ghi nhớ và chỉ truy cập trang web bằng kết nối mã hóa HTTPS trong suốt 1 năm tới (<code>max-age=31536000; includeSubDomains</code>), ngăn chặn triệt để tấn công hạ cấp SSL Stripping.</li>\n        </ul>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Quy trình kích hoạt HTTPS và kiểm tra tự động gia hạn",
-              "code": "# 1. Kiểm tra tính hợp lệ của cấu hình Nginx trước khi kích hoạt\nsudo nginx -t\n\n# 2. Yêu cầu cấp chứng chỉ SSL và tự động cấu hình redirect HTTP sang HTTPS\nsudo certbot --nginx -d api.example.com\n\n# 3. Chạy thử nghiệm quy trình tự động gia hạn (Dry-run)\nsudo certbot renew --dry-run",
+              "title": "Quy trình kích hoạt HTTPS và Kiểm tra Tự động Gia hạn bằng Certbot",
+              "lang": "bash",
+              "code": "# Bước 1: Cài đặt Certbot và plugin Nginx chính thức qua snap hoặc apt:\n$ sudo apt install -y certbot python3-certbot-nginx\n\n# Bước 2: Tự động xin cấp phát chứng chỉ và cấu hình Nginx:\n# (Certbot sẽ tự động đọc server_name, xác thực tên miền qua ACME challenge, và chèn khối SSL vào file config)\n$ sudo certbot --nginx -d api.example.com --non-interactive --agree-tos -m admin@example.com --redirect\n\n# Bước 3: Kiểm tra tệp hẹn giờ tự động gia hạn của systemd:\n$ systemctl list-timers | grep certbot\nNEXT                         LEFT          LAST PASSED UNIT           ACTIVATES\nWed 2026-11-04 18:42:00 UTC  9h left       n/a  n/a    certbot.timer  certbot.service\n\n# Bước 4: BẮT BUỘC - Kiểm thử quy trình gia hạn giả lập (Dry-Run):\n$ sudo certbot renew --dry-run\nSaving debug log to /var/log/letencrypt/letsencrypt.log\nSimulating renewal of an existing certificate for api.example.com\nThe dry run was successful.",
+              "output": "Simulating renewal of an existing certificate for api.example.com\nThe dry run was successful.",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "nginx -t",
-                  "text": "Kiểm tra cú pháp cấu hình Nginx, không bao giờ reload nếu lệnh này báo lỗi."
-                },
-                {
-                  "line": 5,
-                  "part": "certbot --nginx",
-                  "text": "Certbot tự động thêm khối listen 443 ssl và tự cấu hình chứng chỉ Let's Encrypt."
-                },
-                {
-                  "line": 8,
-                  "part": "renew --dry-run",
-                  "text": "systemd timer của Certbot tự động chạy mỗi ngày 2 lần; dry-run đảm bảo gia hạn không bị lỗi khi hết hạn 90 ngày."
-                }
-              ],
-              "output": "Saving debug log to /var/log/letsencrypt/letsencrypt.log\nRequesting a certificate for api.example.com\nSuccessfully received certificate.\nCertificate is saved at: /etc/letsencrypt/live/api.example.com/fullchain.pem\nKey is saved at:         /etc/letsencrypt/live/api.example.com/privkey.pem\nDeploying certificate to VirtualHost /etc/nginx/sites-enabled/fastapi_app.conf\nCongratulations! You have successfully enabled HTTPS on https://api.example.com"
+                "--nginx: Plugin tự động cấu hình các khối listen 443 ssl và đường dẫn chứng chỉ trong Nginx mà không cần sửa tay.",
+                "--redirect: Tự động tạo luật chuyển hướng toàn bộ lưu lượng HTTP (cổng 80) sang HTTPS (cổng 443) bằng mã 301.",
+                "certbot renew --dry-run: Lệnh kiểm thử bắt buộc để bảo đảm hệ thống tự động gia hạn thành công trước khi chứng chỉ 90 ngày hết hạn."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-8-docker-basics",
-          "title": "3. Mở rộng: Đóng gói ứng dụng web với Container Docker",
-          "content": "\n                  <p>Thay vì cài đặt Python và các thư viện trực tiếp lên máy chủ host (dễ gây xung đột phiên bản), giải pháp hiện đại là đóng gói ứng dụng vào <strong>Docker Container</strong>:</p>\n                ",
+          "title": "3. Tối ưu Bộ đệm Gzip & Đóng gói Container Docker Chuẩn Mực",
+          "content": "\n        <p>Bên cạnh việc phân luồng lưu lượng, Nginx còn đảm nhận vai trò tối ưu hóa hiệu năng đường truyền bằng cách nén dữ liệu trước khi gửi cho người dùng. Kích hoạt module <code>gzip</code> có thể giảm kích thước các tệp văn bản (HTML, CSS, JavaScript, JSON phản hồi từ API) từ 60% đến 80%, giúp website tải nhanh hơn rõ rệt trên mạng di động.</p>\n\n        <h3 class=\"lx-h3\">Mở rộng: Đóng gói Ứng dụng Web với Docker</h3>\n        <p>Trong hạ tầng hiện đại, ứng dụng Python thường được đóng gói thành các <strong>Docker Container</strong> chạy dưới sự điều phối của Docker hoặc Kubernetes. Nguyên tắc an toàn cốt tử khi viết Dockerfile là: <strong>Cấm chạy ứng dụng bằng quyền root bên trong container!</strong> Luôn tạo một người dùng thường (non-root user) và áp dụng cơ chế đa tầng (Multi-stage build) để giảm kích thước image.</p>\n      ",
           "codeExamples": [
             {
-              "lang": "Dockerfile",
-              "title": "Tệp Dockerfile tối ưu nhiều lớp cho ứng dụng Python FastAPI",
-              "code": "# 1. Sử dụng image cơ sở Python phiên bản rút gọn (slim)\nFROM python:3.12-slim\n\nWORKDIR /app\n\n# 2. Cài đặt thư viện dependencies trước để tận dụng Docker layer cache\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\n# 3. Sao chép mã nguồn ứng dụng\nCOPY . .\n\n# 4. Chạy dưới quyền user không đặc quyền để bảo mật\nUSER nobody\n\nEXPOSE 8000\nCMD [\"uvicorn\", \"app.main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+              "title": "Dockerfile chuẩn Production cho ứng dụng FastAPI và cấu hình Gzip Nginx",
+              "lang": "dockerfile",
+              "code": "# 1. Tệp Dockerfile đa tầng bảo mật cho ứng dụng Python FastAPI\nFROM python:3.12-slim AS base\nWORKDIR /app\n\n# Thiết lập biến môi trường tối ưu Python:\nENV PYTHONDONTWRITEBYTECODE=1 \\\n    PYTHONUNBUFFERED=1\n\n# Cài đặt thư viện:\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\n# Tạo tài khoản người dùng thường (Least Privilege):\nRUN groupadd -r appgroup && useradd -r -g appgroup -s /sbin/nologin appuser\nCOPY --chown=appuser:appgroup . .\n\n# Chuyển quyền thực thi sang user thường:\nUSER appuser\nEXPOSE 8000\n\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\", \"--workers\", \"4\"]\n\n---\n# 2. Cấu hình nén Gzip trong /etc/nginx/conf.d/gzip.conf\ngzip on;\ngzip_vary on;\ngzip_proxied any;\ngzip_comp_level 6;\ngzip_types text/plain text/css text/xml application/json application/javascript application/rss+xml image/svg+xml;",
+              "output": "# Kiểm tra tỷ lệ nén gzip bằng curl:\n$ curl -I -H \"Accept-Encoding: gzip\" https://api.example.com/api/v1/orders\nHTTP/2 200 \nserver: nginx\ncontent-type: application/json\ncontent-encoding: gzip\nstrict-transport-security: max-age=31536000; includeSubDomains",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "python:3.12-slim",
-                  "text": "Image siêu nhẹ (~150MB) chứa môi trường Python chuẩn không rác thừa."
-                },
-                {
-                  "line": 8,
-                  "part": "--no-cache-dir",
-                  "text": "Không lưu cache pip để giảm tối đa kích thước image."
-                },
-                {
-                  "line": 14,
-                  "part": "USER nobody",
-                  "text": "Nguyên tắc bảo mật: Không bao giờ chạy container dưới quyền root!"
-                }
-              ],
-              "output": ""
+                "USER appuser: Ngăn chặn mã độc leo thang quyền root trên máy chủ nếu ứng dụng bị dính lỗ hổng container breakout.",
+                "gzip_comp_level 6: Mức nén cân bằng hoàn hảo giữa tỷ lệ nén dung lượng và tài nguyên tiêu tốn của CPU.",
+                "content-encoding: gzip: Xác nhận phản hồi API JSON đã được nén mượt mà trước khi truyền qua mạng."
+              ]
             }
           ]
         }
       ],
       "scenario": {
-        "title": "Đưa ứng dụng FastAPI ra Internet đạt điểm A+ bảo mật trên SSL Labs",
-        "content": "\n              <p>Bạn vừa hoàn thành một API dịch vụ thanh toán bằng Python FastAPI. Yêu cầu của đối tác: API bắt buộc phải chạy trên tên miền HTTPS chính thức, mã hóa TLS 1.3, hỗ trợ HTTP/2 và đạt điểm A+ trên hệ thống kiểm thử bảo mật SSL Labs.</p>\n              <p><strong>Triển khai trọn gói:</strong></p>\n              <p>1. Cấu hình Nginx làm Reverse Proxy đứng trước Uvicorn backend, bật HTTP/2 trên cổng 443.</p>\n              <p>2. Chạy <code>certbot --nginx</code> để cấp chứng chỉ SSL miễn phí.</p>\n              <p>3. Bổ sung header bảo vệ HSTS: <code>add_header Strict-Transport-Security \"max-age=63072000; includeSubDomains; preload\" always;</code>.</p>\n              <p>Kiểm tra trên ssllabs.com: Điểm số đạt A+ hoàn hảo, tốc độ tải API tăng gấp 3 lần nhờ HTTP/2 multiplexing!</p>\n            "
+        "title": "Đưa ứng dụng FastAPI ra Internet đạt điểm A+ bảo mật trên Qualys SSL Labs",
+        "content": "\n      <p><strong>1. Triệu chứng & Yêu cầu:</strong> Khách hàng doanh nghiệp yêu cầu hệ thống cổng thanh toán trực tuyến chạy FastAPI phải đạt <strong>chứng chỉ bảo mật hạng A+ trên Qualys SSL Labs</strong> trước khi ký hợp đồng dịch vụ. Hiện tại máy chủ đang mở thẳng cổng 8000 của Uvicorn ra mạng Internet và chưa có tên miền chính thức.</p>\n      \n      <p><strong>2. Điều tra & Thiết kế Kiến trúc:</strong></p>\n      <ul>\n        <li>Uvicorn không hỗ trợ HTTP/2 và không có khả năng tự động gia hạn chứng chỉ Let's Encrypt.</li>\n        <li>Cần dựng <code>Nginx</code> làm cổng tiền tuyến (Reverse Proxy &amp; SSL Termination) tại cổng 80/443, khóa cổng 8000 trong tường lửa chỉ cho phép kết nối từ localhost (127.0.0.1).</li>\n        <li>Áp dụng bộ cấu hình mã hóa hiện đại Mozilla Intermediate TLS Configuration, bật HTTP/2 và tiêu đề HSTS.</li>\n      </ul>\n      \n      <p><strong>3. Nguyên nhân gốc rễ:</strong> Việc thiếu lớp đệm Proxy kiên cố và cấu hình mã hóa yếu (hỗ trợ TLS 1.0/1.1 hoặc thuật toán mã hóa lỗi thời) khiến hệ thống bị đánh trượt trong các bài kiểm tra bảo mật độc lập.</p>\n      \n      <p><strong>4. Biện pháp triển khai:</strong></p>\n      <pre><code># Bước 1: Khóa cổng 8000 trong tường lửa UFW:\n$ sudo ufw delete allow 8000/tcp\n$ sudo ufw allow 80/tcp && sudo ufw allow 443/tcp\n\n# Bước 2: Thiết lập Nginx Proxy và cấp phát SSL:\n$ sudo certbot --nginx -d api.mycorp.com --agree-tos -m devops@mycorp.com\n\n# Bước 3: Gia cố tiêu đề HSTS trong khối server 443:\nadd_header Strict-Transport-Security \"max-age=31536000; includeSubDomains\" always;\nadd_header X-Frame-Options \"SAMEORIGIN\" always;\nadd_header X-Content-Type-Options \"nosniff\" always;\n\n# Bước 4: Kiểm tra cú pháp và nạp lại dịch vụ:\n$ sudo nginx -t && sudo systemctl reload nginx</code></pre>\n      <p>Chạy công cụ kiểm định bảo mật SSL Labs, máy chủ đạt <strong>điểm số A+ tuyệt đối</strong> với 100% chứng chỉ hợp lệ, giao thức bảo mật cao cấp và cấu hình HSTS vững chắc.</p>\n      \n      <p><strong>5. Phòng ngừa lâu dài:</strong></p>\n      <ul>\n        <li>Kiểm tra định kỳ trạng thái của <code>certbot.timer</code> bằng lệnh <code>systemctl list-timers</code> để bảo đảm chứng chỉ luôn được gia hạn trước ngày thứ 60.</li>\n        <li>Tích hợp công cụ tự động quét lỗ hổng SSL vào pipeline CI/CD để phát hiện sớm nếu có ai vô tình hạ cấp cấu hình mã hóa.</li>\n      </ul>\n    "
       },
       "callouts": {
         "pitfalls": [
           {
-            "title": "Lỗi 502 Bad Gateway kinh điển",
-            "content": "Lỗi 502 có nghĩa là Nginx đã sẵn sàng tiếp nhận request nhưng <strong>tiến trình backend Python phía sau đang bị chết hoặc chưa khởi động</strong>! Khi gặp lỗi 502, lập tức kiểm tra backend bằng: <code>systemctl status my_app</code> hoặc <code>curl http://127.0.0.1:8000</code>."
+            "title": "Reload Nginx mà quên chạy lệnh kiểm tra cú pháp nginx -t",
+            "content": "Nginx quản lý tập trung toàn bộ các website trên máy chủ. Nếu bạn sửa một tệp site mới bị sai một dấu chấm phẩy (;) hoặc sai đường dẫn file rồi vội vàng chạy <code>sudo systemctl reload nginx</code>, Nginx có thể từ chối nạp cấu hình mới hoặc nếu chạy <code>restart</code> thì toàn bộ Nginx sẽ bị sập, làm chết tất cả các website khác đang hoạt động! Luôn luôn gõ <code>sudo nginx -t</code> trước; khi thấy báo test is successful thì mới được reload."
+          },
+          {
+            "title": "Thiếu header X-Forwarded-Proto gây lỗi vòng lặp chuyển hướng vô tận",
+            "content": "Khi Nginx đã giải mã SSL (HTTPS) và chuyển tiếp yêu cầu HTTP bình thường vào backend Python, nếu thiếu dòng <code>proxy_set_header X-Forwarded-Proto $scheme;</code>, ứng dụng Python sẽ tưởng rằng người dùng đang truy cập bằng giao thức HTTP không bảo mật! Nếu code Python có logic tự động ép chuyển hướng sang HTTPS, trình duyệt sẽ nhận mã chuyển hướng liên tục và báo lỗi sập: <code>ERR_TOO_MANY_REDIRECTS</code>."
           }
         ],
         "tips": [
           {
-            "title": "Luôn bật gzip trong Nginx để tiết kiệm 70% băng thông",
-            "content": "Thêm chỉ thị <code>gzip on; gzip_types text/plain application/json text/css application/javascript;</code> vào khối http để Nginx tự động nén dữ liệu API trả về, giúp người dùng tải trang nhanh hơn đáng kể."
+            "title": "Dùng UNIX Domain Socket thay vì TCP Loopback khi cùng máy",
+            "content": "Nếu Nginx và tiến trình Python (Uvicorn / Gunicorn) cùng chạy trên một máy chủ vật lý, hãy cấu hình chúng giao tiếp qua UNIX Socket (ví dụ: <code>server unix:/run/app.sock;</code>). Giao thức UNIX Socket bỏ qua toàn bộ ngăn xếp mạng TCP/IP, không tốn tài nguyên cổng mạng và tăng thông lượng truyền dữ liệu lên tới 20-30%."
+          },
+          {
+            "title": "Kiểm tra gia hạn Certbot bằng cờ --dry-run ngay sau khi cài",
+            "content": "Chứng chỉ SSL của Let's Encrypt chỉ có giá trị trong 90 ngày. Đừng đợi tới ngày thứ 89 mới phát hiện cron job gia hạn bị lỗi! Ngay sau khi cấp chứng chỉ, hãy chạy lệnh: <code>sudo certbot renew --dry-run</code>. Nếu kết quả in ra 'The dry run was successful', bạn hoàn toàn có thể yên tâm ngủ ngon."
           }
         ]
       },
       "exercises": [
         {
-          "question": "Chỉ thị nào trong tệp cấu hình Nginx dùng để truyền địa chỉ IP thật của người dùng vào ứng dụng backend Python?",
-          "command": "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;",
-          "explanation": "Nếu thiếu header này, ứng dụng Python sẽ chỉ nhìn thấy địa chỉ IP của client là 127.0.0.1 (IP của Nginx), làm hỏng toàn bộ logic ghi log, xác thực người dùng và rate limiting theo IP."
+          "question": "Mức 1 (Nhớ / Hiểu): Lệnh nào sau đây dùng để kiểm tra tính hợp lệ của toàn bộ cú pháp tệp cấu hình Nginx trước khi nạp lại dịch vụ? Ý nghĩa của thông báo 'test is successful' là gì?",
+          "command": "sudo nginx -t",
+          "explanation": "Lệnh 'sudo nginx -t' (test mode) kiểm tra toàn bộ cấu hình Nginx bao gồm tệp nginx.conf và tất cả các file cấu hình trong sites-enabled/ và conf.d/. Thông báo 'test is successful' xác nhận không có bất kỳ lỗi cú pháp nào, các đường dẫn file và thư mục khai báo đều tồn tại và hợp lệ, bảo đảm an toàn 100% khi thực hiện reload dịch vụ."
+        },
+        {
+          "question": "Mức 2 (Áp dụng / Vận hành): Hãy viết một khối cấu hình location / chuẩn mực trong Nginx để chuyển tiếp yêu cầu sang backend Python đang lắng nghe tại 127.0.0.1:8000 với đầy đủ 4 header chuyển tiếp danh tính khách hàng (Host, X-Real-IP, X-Forwarded-For, X-Forwarded-Proto) và giới hạn tải lên tối đa 20MB.",
+          "command": "location / {\n    client_max_body_size 20M;\n    proxy_pass http://127.0.0.1:8000;\n    proxy_http_version 1.1;\n    proxy_set_header Connection \"\";\n\n    proxy_set_header Host $host;\n    proxy_set_header X-Real-IP $remote_addr;\n    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n    proxy_set_header X-Forwarded-Proto $scheme;\n}",
+          "explanation": "Khối cấu hình này thiết lập một Reverse Proxy hoàn chỉnh. Chỉ thị proxy_pass chuyển tiếp lưu lượng vào cổng nội bộ 8000. Bốn header proxy_set_header là chuẩn mực công nghiệp giúp ứng dụng backend Python nhận diện chính xác tên miền người dùng truy cập, địa chỉ IP thực của khách hàng (thay vì IP 127.0.0.1 của Nginx) và nhận biết giao thức bảo mật HTTPS để phòng tránh vòng lặp chuyển hướng."
+        },
+        {
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Sau khi cấu hình Nginx Reverse Proxy cho ứng dụng FastAPI, lập trình viên phát hiện toàn bộ log của ứng dụng Python đều ghi nhận IP của khách hàng là '127.0.0.1' và mọi request đều bị chuyển hướng lặp vô tận (ERR_TOO_MANY_REDIRECTS). Hãy phân tích nguyên nhân gốc rễ và đưa ra giải pháp sửa đổi cấu hình Nginx để khắc phục dứt điểm cả 2 vấn đề trên.",
+          "command": "# 1. Nguyên nhân 1: Nginx chưa chuyển tiếp IP thực nên backend chỉ nhìn thấy socket từ loopback (127.0.0.1).\n# Nguyên nhân 2: Nginx đã giải mã SSL nhưng không báo cho backend biết qua header X-Forwarded-Proto,\n# khiến backend nghĩ client đang dùng HTTP và tiếp tục chuyển hướng sang HTTPS.\n\n# 2. Khắc phục: Bổ sung các chỉ thị sau vào khối location / trong tệp cấu hình Nginx:\nproxy_set_header X-Real-IP $remote_addr;\nproxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\nproxy_set_header X-Forwarded-Proto https;\n\n# 3. Kiểm tra cú pháp và tải lại Nginx:\n$ sudo nginx -t && sudo systemctl reload nginx",
+          "explanation": "Nguyên nhân gốc rễ là sự thiếu hụt các metadata trong tầng proxy: (1) Nếu thiếu X-Real-IP và X-Forwarded-For, socket nhận ở tầng ứng dụng chỉ là kết nối TCP cục bộ từ Nginx, dẫn tới IP luôn là 127.0.0.1. (2) Nếu thiếu X-Forwarded-Proto https, middleware bảo mật của FastAPI/Django thấy kết nối nội bộ là HTTP nên ném mã 301 bắt chuyển sang HTTPS, tạo ra vòng lặp vô tận. Bằng cách khai báo đầy đủ các header trên và reload Nginx, cả 2 lỗi đều được xử lý triệt để."
         }
       ],
       "summary": [
-        "Nginx đóng vai trò Reverse Proxy tiền sảnh: giải mã SSL, nén gzip, phục vụ file tĩnh và bảo vệ backend Python phía sau.",
-        "Certbot tự động hóa hoàn toàn quy trình cấp phát và gia hạn chứng chỉ SSL Let's Encrypt chuẩn A+ miễn phí.",
-        "Container Docker giúp đóng gói mã nguồn và dependencies vào một đơn vị độc lập, vận hành an toàn và dễ dàng mở rộng."
+        "Nginx sử dụng kiến trúc bất đồng bộ hướng sự kiện (epoll) giúp xử lý hàng chục ngàn kết nối đồng thời với RAM tối thiểu.",
+        "Luôn đặt Nginx làm Reverse Proxy đứng trước ứng dụng Python (FastAPI/Django) để xử lý file tĩnh, SSL và bảo vệ backend.",
+        "Bắt buộc khai báo đủ 4 header chuyển tiếp: Host, X-Real-IP, X-Forwarded-For, và X-Forwarded-Proto để ứng dụng backend nhận đúng IP thật và tránh lặp chuyển hướng.",
+        "Certbot tự động hóa toàn bộ quy trình xin cấp phát và gia hạn chứng chỉ SSL miễn phí từ Let's Encrypt qua giao thức ACME.",
+        "Luôn luôn kiểm tra tính hợp lệ bằng sudo nginx -t trước khi reload dịch vụ để không bao giờ làm sập hệ thống web.",
+        "Kích hoạt nén gzip và bộ nhớ đệm static assets để giảm tải tới 80% dung lượng truyền tải và tăng tốc độ phản hồi cho người dùng."
       ]
     },
     {
       "id": "lx-3-09",
       "number": "3.9",
       "title": "Chẩn đoán Hiệu năng (USE Method, vmstat, strace), Tự động hóa Ansible & Dự án Thực hành Cấp 3",
-      "subtitle": "Phương pháp bắt bệnh hệ thống bài bản theo chuẩn USE Method, tự động hóa hạ tầng với Ansible và giải quyết 3 kịch bản sự cố máy chủ thực tế",
-      "level": "Dự án",
+      "subtitle": "Nghệ thuật chẩn đoán sự cố đỉnh cao: Phương pháp luận USE của Brendan Gregg, giải phẫu nút thắt cổ chai I/O, và tự động hóa hạ tầng với Ansible Idempotency",
+      "level": "Nâng cao",
       "duration": "75 phút",
       "requiresRoot": true,
       "requiresVM": true,
       "objectives": [
-        "Làm chủ phương pháp chẩn đoán sự cố bài bản USE Method (Utilization, Saturation, Errors) của chuyên gia Brendan Gregg.",
-        "Sử dụng thành thạo bộ công cụ phân tích hiệu năng: vmstat (CPU/RAM/IO), iostat (%util ổ đĩa), lsof (file descriptor), strace (soi syscall thời gian thực).",
-        "Nhập môn tự động hóa hạ tầng với Ansible căn bản: viết Inventory và Playbook tự động cấu hình máy chủ Nginx/Python.",
-        "Dự án Thực hành Cấp 3: Triển khai Cụm Máy chủ Web Production hoàn chỉnh và vượt qua 3 kịch bản sự cố thực tế kinh điển."
+        "Làm chủ Phương pháp luận USE (Utilization, Saturation, Errors) của huyền thoại hiệu năng Brendan Gregg để chẩn đoán sự cố có hệ thống, không phỏng đoán mơ hồ.",
+        "Phân tích chuyên sâu các chỉ số tài nguyên: giải mã cột r (run queue) và wa (iowait) trong vmstat, độ trễ await và mức độ bận %util trong iostat.",
+        "Sử dụng strace an toàn có kiểm soát: thống kê chi phí thời gian của các system call bằng strace -c; hiểu rõ cảnh báo đỏ về nguy cơ suy giảm hiệu năng nghiêm trọng khi gắn strace vào tiến trình sản xuất.",
+        "Hiểu bản chất tính chất lũy thừa (Idempotency) trong Tự động hóa Cấu hình (Configuration Management) với Ansible và viết Playbook chuẩn mực.",
+        "Hoàn thành xuất sắc 3 bài diễn tập sự cố thực tế cấp 3: Lỗi 502 Bad Gateway backend, cứu hộ máy chủ kẹt Emergency Mode do fstab, và điều tra nghẽn đĩa I/O Bottleneck."
       ],
       "intuition": {
-        "title": "Bác sĩ bắt bệnh theo phương pháp USE và Robot Ansible",
-        "metaphor": "Khi máy chủ bị chậm hoặc nghẽn, một kỹ sư thiếu kinh nghiệm sẽ hoảng loạn gõ lung tung các lệnh khởi động lại. Một kỹ sư kỳ cựu hành xử như một bác sĩ chuyên khoa: áp dụng phương pháp USE kiểm tra từng cơ quan nội tạng (CPU, Bộ nhớ, Ổ đĩa, Mạng) để đo 3 chỉ số: Mức độ sử dụng (Utilization), Độ bão hòa xếp hàng (Saturation), và Lỗi phát sinh (Errors). Sau khi bắt đúng bệnh, bạn sử dụng Ansible như một cánh tay robot công nghiệp để tự động hóa việc triển khai và sửa đổi cấu hình trên hàng chục máy chủ cùng lúc chỉ bằng một dòng lệnh.",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🩺</span>\n                    <span>PHƯƠNG PHÁP USE</span>\n                    <span class=\"lx-vs-tag\">Brendan Gregg</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Utilization (Sử dụng):</strong> Tài nguyên đang hoạt động bao nhiêu % công suất? (vmstat us/sy, iostat %util).</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Saturation (Bão hòa):</strong> Có bao nhiêu tác vụ đang phải xếp hàng chờ đợi? (vmstat r/b, Load Average).</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Errors (Lỗi):</strong> Có bao nhiêu gói tin hay khối dữ liệu bị lỗi, drop? (netstat -s, dmesg).</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>🤖</span>\n                    <span>ANSIBLE AUTOMATION</span>\n                    <span class=\"lx-vs-tag\">Agentless</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Không cần cài Agent:</strong> Ansible giao tiếp qua cổng SSH có sẵn của Linux bằng Python.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Tính lũy đẳng (Idempotency):</strong> Chạy playbook 1 lần hay 100 lần kết quả vẫn nhất quán, không sợ lỗi trùng lặp.</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "title": "Kính hiển vi Bác sĩ Đa khoa và Bản thiết kế Tự động hóa",
+        "metaphor": "Khi một bệnh nhân nguy kịch đưa vào phòng cấp cứu, một bác sĩ giỏi không bao giờ đoán mò mà luôn đo các chỉ số sinh tồn cơ bản theo quy trình: Mạch, Huyết áp, Nhịp thở. Phương pháp USE Method chính là quy trình cấp cứu của kỹ sư hệ thống: Với mỗi tài nguyên (CPU, RAM, Đĩa cứng, Mạng), ta lần lượt kiểm tra Mức sử dụng (Utilization - có bận không?), Độ bão hòa (Saturation - có hàng đợi tắc nghẽn không?), và Lỗi (Errors - có gói tin bị drop không?). Các công cụ vmstat, iostat và strace chính là ống nghe và kính hiển vi giúp bác sĩ nhìn thấu từng nhịp đập của nhân Linux. Còn Ansible giống như dây chuyền sản xuất tự động: thay vì kỹ sư phải tự tay vặn từng con ốc trên hàng trăm chiếc xe, dây chuyền sẽ tự động đối soát và chỉ siết những con ốc nào chưa chặt (tính chất Idempotent).",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Quy trình Chẩn đoán Hiệu năng USE Method (Brendan Gregg)</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:10px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:6px;padding:8px;\">\n        <strong>1. CPU: Bộ vi xử lý trung tâm</strong><br/>\n        ├── <strong>Utilization:</strong> <code>%usr + %sys</code> trong <code>top</code> hoặc <code>mpstat 1</code><br/>\n        ├── <strong>Saturation:</strong> Cột <code>r</code> (Run queue) trong <code>vmstat 1</code> lớn hơn số lõi CPU<br/>\n        └── <strong>Công cụ:</strong> <code>uptime</code>, <code>top</code>, <code>perf</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼</div>\n      <div style=\"background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);border-radius:6px;padding:8px;\">\n        <strong>2. Storage I/O: Ổ đĩa lưu trữ (Điểm nghẽn phổ biến nhất!)</strong><br/>\n        ├── <strong>Utilization:</strong> Cột <code>%util</code> chạm 100% trong <code>iostat -xz 1</code><br/>\n        ├── <strong>Saturation:</strong> Cột <code>wa</code> (iowait) trong <code>vmstat</code> tăng cao; độ trễ <code>await &gt; 10ms</code><br/>\n        └── <strong>Công cụ:</strong> <code>iostat -xz 1</code>, <code>iotop -o</code>, <code>lsof</code>\n      </div>\n      <div style=\"text-align:center;color:var(--text-muted);\">▼</div>\n      <div style=\"background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:6px;padding:8px;\">\n        <strong>3. Memory: Bộ nhớ RAM &amp; Swap</strong><br/>\n        ├── <strong>Saturation:</strong> Cột <code>si</code> (swap in) và <code>so</code> (swap out) trong <code>vmstat</code> liên tục khác 0<br/>\n        └── <strong>Errors:</strong> Kernel ném thông báo OOM Killer trong <code>dmesg -T</code>\n      </div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-9-use-method-tools",
-          "title": "1. Bộ công cụ chẩn đoán hiệu năng theo phương pháp USE: vmstat, iostat & strace",
-          "content": "\n                  <p>Khi hệ thống bị chậm, hãy chạy bộ công cụ chẩn đoán theo thứ tự chuẩn:</p>\n                  <ol>\n                    <li><code>vmstat 1 5</code>: Chụp 5 lần thông số hệ thống mỗi giây một lần. Quan sát cột <code>r</code> (tiến trình chờ CPU), cột <code>b</code> (tiến trình bị nghẽn I/O - Uninterruptible Sleep), và cột <code>wa</code> (CPU chờ ổ đĩa). Nếu <code>wa > 20%</code>, thủ phạm là ổ cứng nghẽn!</li>\n                    <li><code>iostat -xz 1 3</code>: Đo lường chi tiết từng ổ đĩa. Cột <code>%util</code> thể hiện thời gian ổ đĩa bận rộn; nếu chạm mốc <code>100%</code>, ổ đĩa đã quá tải.</li>\n                    <li><code>strace -p [PID] -c</code>: Đếm và thống kê thời gian tiêu tốn vào các lời gọi hệ thống (Syscalls) của tiến trình đang bị chậm.</li>\n                  </ol>\n                ",
+          "title": "1. Bộ Công cụ Chẩn đoán Hiệu năng theo Phương pháp USE: vmstat, iostat & strace",
+          "content": "\n        <p>Phương pháp luận <strong>USE Method</strong> (do Brendan Gregg, chuyên gia hiệu năng tại Netflix và Intel khởi xướng) quy định: Đối với mọi tài nguyên phần cứng (CPU, Memory, Storage, Network), kỹ sư cần phân tích 3 yếu tố:</p>\n        <ol>\n          <li><strong>Utilization (Mức sử dụng):</strong> Tỷ lệ phần trăm thời gian tài nguyên đang bận xử lý công việc.</li>\n          <li><strong>Saturation (Độ bão hòa):</strong> Mức độ công việc bị ứ đọng, xếp hàng chờ đợi do tài nguyên đã hết công suất.</li>\n          <li><strong>Errors (Lỗi):</strong> Số lượng sự kiện lỗi hoặc gói tin bị loại bỏ.</li>\n        </ol>\n\n        <h3 class=\"lx-h3\">Bảng phân giải các cột chỉ số sống còn trong vmstat 1</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Nhóm</th>\n              <th>Cột</th>\n              <th>Ý nghĩa thực chiến</th>\n              <th>Dấu hiệu cảnh báo nguy hiểm</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><strong>procs</strong></td>\n              <td><code>r</code></td>\n              <td>Số lượng tiến trình đang chạy hoặc đang xếp hàng chờ CPU (Run Queue).</td>\n              <td>Nếu <code>r &gt; số_lõi_CPU</code> liên tục trong thời gian dài: CPU bị nghẽn (CPU Saturation)!</td>\n            </tr>\n            <tr>\n              <td><strong>procs</strong></td>\n              <td><code>b</code></td>\n              <td>Số lượng tiến trình bị chặn (Blocked) trong giấc ngủ không ngắt được (D state), thường là chờ I/O đĩa.</td>\n              <td>Nếu <code>b &gt; 0</code> kéo dài: Ổ đĩa cứng hoặc kết nối mạng đang bị treo.</td>\n            </tr>\n            <tr>\n              <td><strong>memory</strong></td>\n              <td><code>si</code> / <code>so</code></td>\n              <td>Dung lượng dữ liệu đọc từ Swap vào RAM (Swap In) và ghi từ RAM ra Swap (Swap Out) mỗi giây.</td>\n              <td><strong>Chỉ số cảnh báo số 1 về cạn RAM!</strong> Nếu <code>si/so &gt; 0</code> liên tục, máy chủ đang bị hiện tượng tráo trang dữ liệu (Thrashing), hiệu năng sẽ tụt dốc thảm hại.</td>\n            </tr>\n            <tr>\n              <td><strong>cpu</strong></td>\n              <td><code>us</code> / <code>sy</code></td>\n              <td>Tỷ lệ phần trăm thời gian CPU dành cho không gian người dùng (User) và nhân kernel (System).</td>\n              <td>Nếu <code>sy &gt; 30%</code>: Tiến trình đang thực hiện quá nhiều system call hoặc bị tranh chấp lock.</td>\n            </tr>\n            <tr>\n              <td><strong>cpu</strong></td>\n              <td><code>wa</code></td>\n              <td>Tỷ lệ phần trăm thời gian CPU nhàn rỗi nhưng phải chờ đợi đĩa cứng hoàn thành thao tác I/O (iowait).</td>\n              <td>Nếu <code>wa &gt; 20%</code>: Máy chủ bị nghẽn đĩa cứng trầm trọng (Disk I/O Bottleneck), không phải do thuật toán CPU.</td>\n            </tr>\n          </tbody>\n        </table>\n\n        <div class=\"lx-callout-danger\">\n          <strong>⚠️ CẢNH BÁO ĐỎ KHI DÙNG STRACE TRÊN MÁY CHỦ SẢN XUẤT:</strong><br/>\n          Lệnh <code>strace</code> là công cụ thần thánh giúp soi thấu từng lời gọi hệ thống (system call) của tiến trình. Tuy nhiên, cơ chế <code>ptrace</code> bên dưới sẽ chặn và tạm dừng tiến trình đích ở MỖI LẦN gọi system call để đọc dữ liệu! Điều này làm <strong>tiến trình bị chậm đi từ 10 lần đến 100 lần (10x-100x overhead)</strong>.<br/>\n          Nếu bạn gắn <code>strace</code> vào một tiến trình Nginx hay Database đang chịu tải hàng nghìn kết nối/giây trên Production, bạn sẽ làm hàng đợi bị nghẽn tức thì và đánh sập toàn bộ dịch vụ!<br/>\n          <strong>Quy tắc an toàn:</strong> Khi cần điều tra trên Production, chỉ dùng cờ thống kê nhẹ <code>strace -c -p &lt;PID&gt;</code> trong 5-10 giây rồi bấm Ctrl+C; hoặc chỉ lọc chính xác một syscall cụ thể: <code>strace -e trace=openat -p &lt;PID&gt;</code>.\n        </div>\n      ",
           "codeExamples": [
             {
-              "lang": "Bash",
-              "title": "Chẩn đoán nghẽn cổ chai và soi lời gọi hệ thống với strace",
-              "code": "# 1. Kiểm tra nhanh tài nguyên CPU và bộ nhớ đệm mỗi giây một lần\nvmstat 1 3\n\n# 2. Đo lường tỷ lệ bận rộn của các ổ đĩa\niostat -xz 1 2\n\n# 3. Theo dõi tiến trình Python đang bị treo xem nó đang dừng ở syscall nào\nsudo strace -p 4520 -T -e trace=network,file",
+              "title": "Chẩn đoán nghẽn đĩa với iostat và thống kê system call an toàn với strace -c",
+              "lang": "bash",
+              "code": "# 1. Khảo sát hoạt động đĩa chi tiết sau mỗi 1 giây (lọc bỏ thiết bị nhàn rỗi):\n$ sudo iostat -xz 1 3\nDevice            r/s     w/s     rkB/s     wkB/s   await  r_await  w_await  %util\nsda              2.00  450.00     16.00  18400.00   45.20     2.10    45.40  98.50%\n\n# Nhận xét: %util chạm 98.5% và thời gian chờ w_await lên tới 45.4ms (rất cao)!\n# Đĩa cứng sda đang bị quá tải ghi dữ liệu nghiêm trọng.\n\n# 2. Dùng iotop truy tìm chính xác tiến trình nào đang ghi đĩa:\n$ sudo iotop -b -n 1 -o | head -n 8\nTotal DISK READ: 0.00 B/s | Total DISK WRITE: 18.20 M/s\n  TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN      IO    COMMAND\n14201 be/4  postgres    0.00 B/s   18.20 M/s  0.00 %  94.10 %  postgres: walwriter\n\n# 3. Thống kê chi phí thời gian system call của tiến trình Python bằng strace -c (an toàn):\n$ sudo timeout 5 strace -c -p 28415\n% time     seconds  usecs/call     calls    errors syscall\n------ ----------- ----------- --------- --------- ----------------\n 82.40    0.045210          45      1004           epoll_wait\n 11.20    0.006140           6      1020           read\n  6.40    0.003510           3      1020           write\n------ ----------- ----------- --------- --------- ----------------\n100.00    0.054860                  3044           total",
+              "output": "Device            r/s     w/s     rkB/s     wkB/s   await  r_await  w_await  %util\nsda              2.00  450.00     16.00  18400.00   45.20     2.10    45.40  98.50%",
               "annotations": [
-                {
-                  "line": 2,
-                  "part": "vmstat 1 3",
-                  "text": "Số đầu tiên là chu kỳ (1 giây), số thứ hai là số lần đo (3 lần)."
-                },
-                {
-                  "line": 5,
-                  "part": "iostat -xz",
-                  "text": "-x hiển thị thông số mở rộng (await, %util); -z bỏ qua các thiết bị không có hoạt động để dễ nhìn."
-                },
-                {
-                  "line": 8,
-                  "part": "strace -p ... -T",
-                  "text": "-p theo dõi PID đang chạy; -T in ra thời gian tiêu tốn cho từng syscall tính bằng micro-giây."
-                }
-              ],
-              "output": "procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----\n r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st\n 4  1      0 420100  45200 850400    0    0   120   450 1200 2400 65 15 12  8  0\nDevice            r/s     w/s     rkB/s     wkB/s   await  %util\nsda             45.00  120.00   1800.00   4500.00    2.50  88.40"
+                "iostat -xz 1: Cờ -x hiển thị thống kê mở rộng (await, %util); cờ -z tự động ẩn các ổ đĩa không có hoạt động I/O.",
+                "%util = 98.5%: Thiết bị phần cứng đã chạm ngưỡng bão hòa hoàn toàn.",
+                "strace -c: Thu thập và tổng kết bảng thống kê thời gian tiêu tốn cho từng syscall mà không in hàng triệu dòng log làm đơ terminal."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-9-ansible-basics",
-          "title": "2. Tự động hóa cấu hình máy chủ với Ansible căn bản",
-          "content": "\n                  <p>Ansible cho phép bạn cấu hình và cài đặt hàng chục máy chủ Linux đồng thời chỉ bằng các tệp khai báo YAML (Playbook):</p>\n                ",
+          "title": "2. Tự động hóa Hạ tầng với Ansible & Nguyên lý Idempotency",
+          "content": "\n        <p>Quản trị máy chủ thủ công bằng cách gõ từng dòng lệnh SSH (như cài đặt gói, sửa file cấu hình) chỉ phù hợp khi học tập hoặc quản lý 1-2 máy ảo nhỏ. Trong doanh nghiệp với quy mô hàng chục đến hàng trăm máy chủ, kỹ sư sử dụng công cụ <strong>Infrastructure as Code (IaC)</strong> như <strong>Ansible</strong>.</p>\n\n        <h3 class=\"lx-h3\">Tính chất Lũy thừa (Idempotency) - Linh hồn của Tự động hóa</h3>\n        <p>Một tác vụ được gọi là <strong>Idempotent (Bất biến lũy thừa)</strong> nếu bạn chạy nó 1 lần, 10 lần hay 100 lần thì kết quả cuối cùng trên hệ thống vẫn hoàn toàn giống nhau, và nếu hệ thống đã đạt trạng thái mong muốn thì các lần chạy sau sẽ <strong>không làm thay đổi bất kỳ điều gì</strong>.</p>\n        <ul>\n          <li><strong>Script Bash thông thường (Không idempotent):</strong> Nếu bạn viết <code>echo \"192.168.1.1 master\" &gt;&gt; /etc/hosts</code> trong script, mỗi lần chạy script tệp hosts sẽ bị chèn thêm 1 dòng thừa thãi!</li>\n          <li><strong>Ansible Module (Idempotent):</strong> Module <code>lineinfile</code> kiểm tra xem dòng đó đã có trong file chưa. Nếu chưa có nó mới thêm (trạng thái <code>changed</code>); nếu đã có rồi nó sẽ bỏ qua và báo trạng thái <code>ok</code>.</li>\n        </ul>\n      ",
           "codeExamples": [
             {
-              "lang": "Yaml",
-              "title": "Playbook deploy_web.yml cài đặt và cấu hình Nginx tự động",
-              "code": "---\n- name: Deploy Production Web Server\n  hosts: webservers\n  become: true\n  tasks:\n    - name: Cài đặt Nginx và UFW\n      apt:\n        name:\n          - nginx\n          - ufw\n        state: present\n        update_cache: true\n\n    - name: Sao chép file cấu hình Nginx vào sites-available\n      copy:\n        src: ./files/fastapi_app.conf\n        dest: /etc/nginx/sites-available/fastapi_app.conf\n        owner: root\n        group: root\n        mode: '0644'\n      notify: Restart Nginx\n\n    - name: Kích hoạt site Nginx qua symlink\n      file:\n        src: /etc/nginx/sites-available/fastapi_app.conf\n        dest: /etc/nginx/sites-enabled/fastapi_app.conf\n        state: link\n\n  handlers:\n    - name: Restart Nginx\n      systemd:\n        name: nginx\n        state: restarted",
+              "title": "Playbook Ansible deploy_web.yml chuẩn Idempotent",
+              "lang": "yaml",
+              "code": "# deploy_web.yml\n- name: Deploy Production Nginx & Hardening\n  hosts: webservers\n  become: yes\n  tasks:\n    - name: Ensure Nginx is installed at latest version\n      ansible.builtin.apt:\n        name: nginx\n        state: present\n        update_cache: yes\n        cache_valid_time: 3600\n\n    - name: Deploy custom Nginx configuration template\n      ansible.builtin.template:\n        src: templates/nginx.conf.j2\n        dest: /etc/nginx/nginx.conf\n        owner: root\n        group: root\n        mode: '0644'\n        validate: '/usr/sbin/nginx -t -c %s'\n      notify: Reload Nginx\n\n    - name: Ensure Nginx service is running and enabled at boot\n      ansible.builtin.systemd:\n        name: nginx\n        state: started\n        enabled: yes\n\n  handlers:\n    - name: Reload Nginx\n      ansible.builtin.systemd:\n        name: nginx\n        state: reloaded",
+              "output": "# Kiểm thử Playbook bằng chế độ Dry-run và so sánh khác biệt:\n$ ansible-playbook -i inventory.ini deploy_web.yml --check --diff\n\nPLAY [Deploy Production Nginx & Hardening] *************************************\nTASK [Ensure Nginx is installed at latest version] *****************************\nok: [web-prod-01]\nTASK [Deploy custom Nginx configuration template] ******************************\n--- before: /etc/nginx/nginx.conf\n+++ after: /root/.ansible/tmp/ansible-tmp-1234/source\n@@ -12,3 +12,4 @@\n+    client_max_body_size 50M;\nchanged: [web-prod-01]\n\nPLAY RECAP *********************************************************************\nweb-prod-01                : ok=2    changed=1    unreachable=0    failed=0",
               "annotations": [
-                {
-                  "line": 4,
-                  "part": "become: true",
-                  "text": "Tự động chuyển sang quyền sudo để thực thi các tác vụ quản trị hệ thống."
-                },
-                {
-                  "line": 20,
-                  "part": "notify: Restart Nginx",
-                  "text": "Cơ chế Handler thông minh: chỉ khởi động lại Nginx nếu nội dung file cấu hình thực sự có sự thay đổi."
-                },
-                {
-                  "line": 28,
-                  "part": "handlers",
-                  "text": "Khối tác vụ phản ứng chỉ chạy khi có tín hiệu notify từ các bước trên."
-                }
-              ],
-              "output": ""
+                "validate: '/usr/sbin/nginx -t -c %s': Tự động kiểm tra cú pháp file cấu hình trước khi chép đè vào /etc/nginx/.",
+                "--check --diff: Chạy mô phỏng xem trước các dòng nội dung sẽ thay đổi mà không áp dụng thật.",
+                "handlers: Chỉ kích hoạt reload Nginx duy nhất 1 lần nếu tệp cấu hình thực sự có sự thay đổi."
+              ]
             }
           ]
         },
         {
           "id": "sec-3-9-troubleshoot-scenarios",
-          "title": "3. Diễn tập 3 Kịch bản Sự cố Thực tế Cấp 3 (Troubleshooting Scenarios)",
-          "content": "\n                  <p>Dưới đây là 3 bài toán sự cố thực chiến phức tạp thường gặp ở các hệ thống chịu tải cao. Hãy suy luận nguyên nhân và cách xử lý trước khi bấm mở xem lời giải!</p>\n                "
+          "title": "3. Diễn tập 3 Kịch bản Sự cố Sản xuất Toàn diện Cấp 3 (Troubleshooting Labs)",
+          "content": "\n        <p>Dưới đây là 3 tình huống sự cố điển hình thường xuyên xuất hiện trong các bài phỏng vấn vị trí Senior Linux Systems Engineer / DevOps / SRE:</p>\n\n        <h3 class=\"lx-h3\">Kịch bản 1: Lỗi 502 Bad Gateway Nginx khi Backend Python bị Sập</h3>\n        <ul>\n          <li><strong>Hiện tượng:</strong> Khách hàng truy cập website gặp trang trắng thông báo <code>502 Bad Gateway</code>. Nginx vẫn đang active running.</li>\n          <li><strong>Quy trình xử lý:</strong>\n            <ol>\n              <li>Đọc file log lỗi của Nginx: <code>sudo tail -n 20 /var/log/nginx/error.log</code>. Thấy dòng thông báo: <em>connect() to 127.0.0.1:8000 failed (111: Connection refused)</em>.</li>\n              <li>Kiểm tra dịch vụ backend: <code>sudo systemctl status fastapi_app.service</code>. Dịch vụ hiển thị trạng thái <code>failed</code>.</li>\n              <li>Đọc vết ngoại lệ Python bằng journald: <code>journalctl -u fastapi_app.service -n 30 -p err</code>.</li>\n              <li>Khắc phục nguyên nhân (ví dụ biến môi trường trong file <code>.env</code> bị thiếu) và khởi động lại backend: <code>sudo systemctl restart fastapi_app</code>.</li>\n            </ol>\n          </li>\n        </ul>\n\n        <h3 class=\"lx-h3\">Kịch bản 2: Máy chủ bị Kẹt tại Emergency Mode do Lỗi /etc/fstab</h3>\n        <ul>\n          <li><strong>Hiện tượng:</strong> Kỹ sư thêm một ổ đĩa gắn ngoài vào fstab rồi reboot máy. Máy chủ không vào được SSH mà dừng lại ở màn hình console khẩn cấp với thông báo: <em>You are in emergency mode. After logging in, type 'journalctl -xb' to view system logs</em>.</li>\n          <li><strong>Quy trình cứu hộ:</strong>\n            <ol>\n              <li>Đăng nhập tài khoản root tại giao diện console.</li>\n              <li>Gắn lại phân vùng root ở chế độ đọc ghi (vì mặc định Emergency mode mount root là Read-Only): <code>mount -o remount,rw /</code>.</li>\n              <li>Mở tệp fstab: <code>nano /etc/fstab</code>. Comment dòng ổ đĩa bị lỗi hoặc thêm tùy chọn <code>nofail</code> vào cột thứ 4.</li>\n              <li>Kiểm tra lại toàn bộ: <code>mount -a</code>. Khi không còn lỗi nào, gõ <code>reboot</code> để máy khởi động lại bình thường.</li>\n            </ol>\n          </li>\n        </ul>\n\n        <h3 class=\"lx-h3\">Kịch bản 3: Load Average Tăng Vọt nhưng %CPU Chỉ 5% (Hiện tượng Nghẽn I/O)</h3>\n        <ul>\n          <li><strong>Hiện tượng:</strong> Lệnh <code>uptime</code> báo tải hệ thống cực cao: <code>load average: 38.5, 35.2, 30.1</code> trên máy chủ chỉ có 4 lõi CPU. Tuy nhiên khi mở <code>top</code>, tỷ lệ CPU người dùng <code>%us</code> chỉ có 4-5%!</li>\n          <li><strong>Bản chất:</strong> Load Average trên Linux phản ánh tổng số tiến trình ở trạng thái chạy (R) <strong>cộng với các tiến trình ở trạng thái ngủ không ngắt được (D - Uninterruptible Sleep)</strong>. Khi ổ cứng bị nghẽn hoặc quá tải, hàng chục tiến trình bị treo cứng chờ đọc ghi đĩa, làm chỉ số Load Average tăng vọt.</li>\n          <li><strong>Quy trình xử lý:</strong> Chạy <code>vmstat 1</code> thấy cột <code>wa</code> tăng vọt 70%. Chạy <code>sudo iostat -xz 1</code> xác định ổ đĩa có <code>%util = 100%</code>. Dùng <code>sudo iotop -o</code> phát hiện một câu lệnh sao chép dữ liệu khổng lồ đang chạy không kiểm soát.</li>\n        </ul>\n      ",
+          "codeExamples": [
+            {
+              "title": "Bộ lệnh cứu hộ sự cố khẩn cấp trên Production",
+              "lang": "bash",
+              "code": "# Kiểm tra nhanh 3 nguyên nhân cốt lõi gây sập dịch vụ:\n# 1. Kiểm tra dung lượng đĩa có bị đầy 100%:\n$ df -h / /var/log\n\n# 2. Kiểm tra bộ nhớ RAM và swap:\n$ free -h\n\n# 3. Xem 15 dòng lỗi gần nhất trong nhật ký hệ thống:\n$ journalctl -p err -n 15 --no-pager",
+              "output": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/sda1        50G   12G   36G  25% /\n               total        used        free      shared  buff/cache   available\nMem:           7.7Gi       2.1Gi       3.8Gi       120Mi       1.8Gi       5.3Gi\nSwap:          2.0Gi          0B       2.0Gi",
+              "annotations": [
+                "Quy trình kiểm tra 3 bước phản xạ: Đĩa (df -h) ➔ RAM (free -h) ➔ Log lỗi (journalctl -p err) giúp giải quyết 80% sự cố production trong 60 giây đầu tiên."
+              ]
+            }
+          ]
         }
       ],
+      "scenario": {
+        "title": "Hệ thống Black Friday chịu tải 100.000 user/phút bất ngờ bị đơ lag và quy trình hồi sinh bằng USE Method",
+        "content": "\n      <p><strong>1. Triệu chứng sự cố:</strong> Đúng 12:00 trưa ngày hội mua sắm Black Friday, lượng người dùng ùa vào mua hàng vượt mốc 100.000 user/phút. Máy chủ phản hồi chậm chạp, khách hàng kêu ca không thể thanh toán đơn hàng. Giám sát báo động Load Average tăng vọt từ 2.0 lên <strong>42.0</strong> trên máy chủ 8 CPU.</p>\n      \n      <p><strong>2. Điều tra theo Phương pháp USE Method:</strong></p>\n      <pre><code># Bước 1: Kiểm tra CPU và Bộ nhớ với vmstat:\n$ vmstat 1 3\nprocs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----\n r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st\n 2 38      0 120540  14200 450120    0    0    12 48500 2400 3100  8  6 12 74  0</code></pre>\n      <p>Bảng phân tích chỉ rõ:</p>\n      <ul>\n        <li>Cột <code>r</code> chỉ có 2 (CPU hoàn toàn rảnh rỗi, <code>us=8%</code>).</li>\n        <li>Cột <code>b = 38</code> (có tới 38 tiến trình đang bị khóa cứng chờ đợi I/O).</li>\n        <li>Cột <code>wa = 74%</code> (CPU dành tới 74% thời gian chỉ để ngồi chờ đĩa cứng phản hồi!).</li>\n        <li>Cột <code>bo = 48500</code> (khối lượng ghi ra đĩa cực lớn).</li>\n      </ul>\n      \n      <p><strong>3. Nguyên nhân gốc rễ:</strong> Dùng <code>sudo iotop -o</code> phát hiện dịch vụ Nginx và FastAPI đang ghi log truy cập ở mức độ Verbose Debug xuống cùng một phân vùng ổ đĩa chứa cơ sở dữ liệu. Ổ đĩa cứng SSD bị bão hòa I/O 100% (I/O Bottleneck), khiến các truy vấn ghi đơn hàng của PostgreSQL bị nghẽn hàng đợi.</p>\n      \n      <p><strong>4. Biện pháp khắc phục khẩn cấp:</strong></p>\n      <pre><code># Tắt ngay lập tức log ghi file tĩnh của Nginx và hạ log level FastAPI về WARNING:\n$ sudo sed -i 's/access_log on;/access_log off;/' /etc/nginx/sites-available/fastapi_app.conf\n$ sudo nginx -t && sudo systemctl reload nginx\n\n# Đổi log level của ứng dụng Python sang WARNING trong file .env:\n$ sudo sed -i 's/LOG_LEVEL=DEBUG/LOG_LEVEL=WARNING/' /opt/fastapi_app/.env\n$ sudo systemctl restart fastapi_app</code></pre>\n      <p>Chỉ sau 30 giây, cột <code>wa</code> trong vmstat rơi thẳng từ 74% xuống còn 2%, cột <code>b</code> về 0. Tốc độ ghi đĩa hạ nhiệt 95%, cơ sở dữ liệu xử lý trơn tru và toàn bộ đơn hàng được giải phóng tức thì.</p>\n      \n      <p><strong>5. Phòng ngừa lâu dài:</strong></p>\n      <ul>\n        <li>Tách riêng phân vùng ổ đĩa chứa dữ liệu Database (trên Logical Volume riêng biệt tốc độ cao) tách rời khỏi phân vùng chứa tệp nhật ký <code>/var/log</code>.</li>\n        <li>Quy định nghiêm ngặt: Trong môi trường sản xuất, tuyệt đối không để mức log DEBUG cho ứng dụng web.</li>\n      </ul>\n    "
+      },
+      "callouts": {
+        "pitfalls": [
+          {
+            "title": "Lạm dụng strace trên tiến trình đang chịu tải cao trong môi trường Production",
+            "content": "Lệnh <code>strace</code> can thiệp ở mức nhân kernel thông qua cơ chế <code>ptrace</code>, làm chậm tiến trình đích từ 10 lần đến 100 lần! Nếu bạn chạy lệnh <code>sudo strace -p $(pgrep nginx)</code> trên một máy chủ web đang phục vụ hàng nghìn khách hàng, Nginx sẽ bị treo cứng và toàn bộ kết nối người dùng sẽ bị timeout. Chỉ dùng <code>strace -c</code> trong vài giây để lấy mẫu thống kê hoặc tái hiện sự cố trên môi trường Staging/Lab."
+          },
+          {
+            "title": "Hiểu sai chỉ số CPU Load Average",
+            "content": "Nhiều người lầm tưởng rằng Load Average cao đồng nghĩa với việc CPU bị quá tải và vội vàng nâng cấp CPU máy chủ. Trên Linux, Load Average đo cả các tiến trình ở trạng thái Uninterruptible Sleep (chờ I/O đĩa cứng). Nếu cột <code>wa</code> trong <code>vmstat</code> cao, nâng cấp CPU hoàn toàn vô tác dụng; thủ phạm thực sự là ổ đĩa bị nghẽn hoặc database thiếu index."
+          }
+        ],
+        "tips": [
+          {
+            "title": "Luôn dùng bộ cờ -xz 1 khi kiểm tra bằng iostat",
+            "content": "Lệnh <code>sudo iostat -xz 1</code> là vũ khí hàng đầu để phát hiện nghẽn ổ đĩa. Cờ <code>-x</code> hiển thị các thông số mở rộng sống còn như <code>await</code> (độ trễ phản hồi đĩa tính bằng ms) và <code>%util</code> (mức độ bận của ổ cứng); còn cờ <code>-z</code> sẽ ẩn toàn bộ các phân vùng không có hoạt động, giúp màn hình cực kỳ gọn gàng và dễ quan sát."
+          },
+          {
+            "title": "Kiểm tra Playbook Ansible an toàn với --check và --diff",
+            "content": "Trước khi bấm chạy một Playbook Ansible lên hàng chục máy chủ production, hãy luôn thêm cờ: <code>ansible-playbook site.yml --check --diff</code>. Cờ <code>--check</code> thực thi ở chế độ Dry-run (không sửa thật trên server), còn <code>--diff</code> hiển thị chi tiết từng dòng cấu hình sẽ bị thay đổi theo định dạng diff trực quan."
+          }
+        ]
+      },
       "exercises": [
         {
-          "question": "SỰ CỐ 1: Khách hàng truy cập website gặp lỗi '502 Bad Gateway'. Kiểm tra Nginx vẫn đang active running. Lỗi do đâu và quy trình 3 bước xử lý dứt điểm?",
-          "command": "# Bước 1: Kiểm tra log lỗi Nginx:\nsudo tail -n 20 /var/log/nginx/error.log\n# Bước 2: Kiểm tra backend Python:\nsudo systemctl status fastapi_app\n# Bước 3: Xem log crash của backend:\njournalctl -u fastapi_app -n 30 -p err",
-          "explanation": "NGUYÊN NHÂN: Nginx là reverse proxy; lỗi 502 có nghĩa là nó không thể kết nối tới backend Python (Uvicorn/Gunicorn bị sập hoặc quá tải nghẽn queue).\nCÁCH XỬ LÝ: Đọc error.log của Nginx để biết địa chỉ/port backend từ chối kết nối (Connection Refused), sau đó kiểm tra trạng thái systemd của backend và dùng journalctl để đọc trace lỗi ngoại lệ Python làm sập ứng dụng."
+          "question": "Mức 1 (Nhớ / Hiểu): Trong đầu ra của lệnh 'vmstat 1', hai chỉ số cột 'r' và 'wa' phản ánh điều gì về sức khỏe hệ thống? Khi nào thì chỉ số 'wa' báo hiệu hệ thống đang gặp nguy hiểm?",
+          "command": "# Chạy lệnh theo dõi trạng thái hệ thống sau mỗi 1 giây trong 5 chu kỳ:\n$ vmstat 1 5",
+          "explanation": "Cột 'r' (runnable) cho biết số lượng tiến trình đang chạy hoặc đang chờ được CPU cấp phát thời gian xử lý; nếu r lớn hơn số lõi CPU liên tục thì CPU đang bị quá tải. Cột 'wa' (iowait) phản ánh tỷ lệ phần trăm thời gian CPU đang phải nhàn rỗi chờ đợi ổ đĩa cứng hoặc hệ thống lưu trữ phản hồi thao tác đọc/ghi. Khi 'wa' vượt quá ngưỡng 20-30%, điều đó báo hiệu hệ thống đang bị thắt nút cổ chai nghiêm trọng tại ổ đĩa (Disk I/O Bottleneck), làm chậm toàn bộ các tiến trình dù CPU vẫn chưa dùng hết công suất."
         },
         {
-          "question": "SỰ CỐ 2: Sau khi kỹ sư sửa file /etc/fstab để gắn ổ đĩa mới, máy chủ được khởi động lại nhưng không vào được SSH mà rơi vào 'Emergency Mode'. Cách cứu hộ từ xa là gì?",
-          "command": "# Đăng nhập Web Console, remount root dạng đọc ghi:\nmount -o remount,rw /\n# Sửa lại file fstab bằng nano/vi:\nnano /etc/fstab\n# Kiểm tra lại:\nmount -a",
-          "explanation": "NGUYÊN NHÂN: fstab bị sai UUID, sai cú pháp hoặc thiếu cờ 'nofail' trên ổ phụ khiến quá trình boot của systemd bị chặn đứng.\nCÁCH XỬ LÝ: Mở Web Console cứu hộ của nhà cung cấp Cloud, chạy 'mount -o remount,rw /' để cho phép ghi dữ liệu, mở /etc/fstab comment lại dòng bị lỗi hoặc thêm tùy chọn 'nofail', sau đó reboot lại máy."
+          "question": "Mức 2 (Áp dụng / Vận hành): Hãy viết câu lệnh sử dụng strace an toàn để đếm và thống kê tỷ lệ phần trăm thời gian tiêu tốn cho từng lời gọi hệ thống (system call) của tiến trình có PID 12450 trong vòng 10 giây mà không in hàng triệu dòng log chi tiết làm đơ terminal.",
+          "command": "sudo timeout 10 strace -c -p 12450",
+          "explanation": "Lệnh 'timeout 10' tự động gửi tín hiệu kết thúc strace sau đúng 10 giây để đảm bảo an toàn, không để quên tiến trình theo dõi. Cờ '-c' (count/summary) là chìa khóa: nó yêu cầu strace chạy ngầm thu thập dữ liệu và chỉ in ra duy nhất một bảng tổng kết tỷ lệ phần trăm thời gian, số lượng cuộc gọi và số lỗi của từng system call khi kết thúc. Cờ '-p 12450' chỉ định gắn vào PID tiến trình đang chạy."
         },
         {
-          "question": "SỰ CỐ 3: Máy chủ web có CPU load trung bình tăng cao bất thường nhưng %CPU trong top chỉ 5%, trong khi cột 'wa' trong vmstat tăng vọt lên 65%. Điều này phản ánh bệnh gì?",
-          "command": "sudo iostat -xz 1 5\nsudo iotop -o",
-          "explanation": "NGUYÊN NHÂN: Hiện tượng nghẽn I/O (Disk I/O Bottleneck). CPU không bận tính toán logic mà đang phải rảnh rỗi chờ đợi ổ đĩa cứng đọc/ghi dữ liệu (iowait).\nCÁCH XỬ LÝ: Dùng 'iostat -xz 1' để xác định ổ đĩa nào có %util chạm 100%, sau đó dùng 'sudo iotop -o' để tìm chính xác tiến trình nào đang ghi đĩa điên cuồng (thường là query database thiếu index hoặc log quá lớn)."
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Máy chủ ứng dụng Python bị lỗi '502 Bad Gateway'. Trình bày quy trình chẩn đoán 3 bước chuẩn mực trên terminal để khoanh vùng chính xác nguyên nhân: (1) Kiểm tra log Nginx; (2) Kiểm tra trạng thái tiến trình backend systemd; và (3) Trích xuất trace lỗi ngoại lệ Python bằng journalctl.",
+          "command": "# Bước 1: Đọc log lỗi Nginx để xác định nguyên nhân proxy từ chối:\n$ sudo tail -n 20 /var/log/nginx/error.log\n\n# Bước 2: Kiểm tra trạng thái dịch vụ backend của systemd:\n$ sudo systemctl status fastapi_app.service\n\n# Bước 3: Xem vết ngoại lệ crash chi tiết của ứng dụng Python:\n$ sudo journalctl -u fastapi_app.service -n 50 -p err --no-pager",
+          "explanation": "Đây là quy trình chẩn đoán phản xạ chuẩn mực cho lỗi 502 Bad Gateway. Bước 1 đọc error.log của Nginx sẽ phân biệt được lỗi 'Connection refused' (backend bị sập) hay 'Connection timed out' (backend quá tải xử lý chậm). Bước 2 kiểm tra systemctl status xác nhận PID của backend và mã thoát (exit code). Bước 3 khai thác journalctl với cờ -p err và --no-pager trích xuất chính xác traceback ngoại lệ Python (như OperationalError, Database connection failure, syntax error) giúp lập trình viên sửa code kịp thời."
         }
       ],
       "summary": [
-        "Áp dụng phương pháp USE Method giúp bạn chẩn đoán sự cố máy chủ một cách khoa học, không phỏng đoán mơ hồ.",
-        "Bộ công cụ vmstat, iostat, lsof và strace là kính hiển vi giúp kỹ sư soi thấu từng lời gọi hệ thống và điểm nghẽn tài nguyên.",
-        "Ansible tự động hóa việc triển khai hạ tầng nhất quán, giúp bạn quản trị hàng trăm máy chủ nhẹ nhàng và không sai sót."
+        "Phương pháp luận USE Method của Brendan Gregg là kim chỉ nam chẩn đoán: khảo sát Utilization, Saturation và Errors trên từng tài nguyên phần cứng.",
+        "vmstat là công cụ phản xạ số 1: cột 'r' chỉ CPU queue, cột 'b' chỉ blocked queue, 'si/so' chỉ nghẽn swap, và 'wa' chỉ nghẽn đĩa.",
+        "iostat -xz 1 xác định chính xác ổ đĩa quá tải (%util chạm 100%, await cao); kết hợp iotop -o để tìm tiến trình gây nghẽn.",
+        "CẢNH BÁO ĐỎ: strace làm chậm tiến trình từ 10x đến 100x; chỉ dùng strace -c trong vài giây trên production có kiểm soát.",
+        "Ansible áp dụng tính chất lũy thừa (Idempotency) giúp tự động hóa cấu hình hàng loạt máy chủ nhất quán và an toàn.",
+        "Nắm vững quy trình phản xạ cứu hộ sự cố: 502 Bad Gateway, cứu boot fstab Emergency Mode, và phân tích nghẽn I/O."
       ]
     },
     {
       "id": "lx-3-10",
       "number": "3.10",
       "title": "Bảng tra cứu Quản trị Thực chiến & Bảo mật Cấp 3 (Cheat Sheet & Glossary)",
-      "subtitle": "Sổ tay tra cứu nhanh toàn diện cú pháp systemd, tường lửa UFW/nftables, LVM, Nginx, rsync, SSH hardening và chẩn đoán hiệu năng",
-      "level": "Tra cứu",
+      "subtitle": "Sổ tay cứu nguy toàn diện của kỹ sư hệ thống: Ma trận lệnh quản trị có đánh giá mức độ rủi ro, quy trình hoàn tác và từ điển thuật ngữ chuyên sâu Cấp 3",
+      "level": "Nâng cao",
       "duration": "25 phút",
       "requiresRoot": false,
       "requiresVM": false,
       "objectives": [
-        "Tra cứu tức thì cú pháp các chỉ thị systemd Service Unit và Timer Unit.",
-        "Bảng tổng hợp lệnh LVM (pvcreate, vgextend, lvextend) và phân quyền SELinux (semanage, restorecon).",
-        "Bảng lệnh tường lửa UFW và các chỉ thị Reverse Proxy Nginx chuẩn mực.",
-        "Hệ thống hóa từ điển thuật ngữ cốt lõi Cấp 3: MAC vs DAC, SELinux Context, LVM, Reverse Proxy, Trailing Slash, USE Method, File Descriptor."
+        "Tra cứu tức thì các câu lệnh và chỉ thị cốt lõi của systemd Service/Timer, lưu trữ LVM, mạng Netplan và tường lửa UFW/nftables.",
+        "Đánh giá chính xác mức độ rủi ro của từng câu lệnh quản trị và nắm vững quy trình hoàn tác (Rollback Procedure) trước khi gõ lệnh trên Production.",
+        "Hệ thống hóa toàn diện các bảng tra cứu Nginx Reverse Proxy, cấu hình SSL Let's Encrypt và bộ công cụ chẩn đoán hiệu năng USE Method.",
+        "Làm chủ 16 thuật ngữ chuyên sâu chuẩn quốc tế: MAC vs DAC, SELinux Context, Booleans, LVM (PV/VG/LV/PE), Reverse Proxy, Epoll, Idempotency, Copy-on-Write, Inode Leak, Trailing Slash, USE Method, File Descriptor, ACME, AVC Denials, Rate Limiting, Auditd AUID.",
+        "Tự tin vượt qua bài tự đánh giá phản xạ lệnh và quy trình kiểm định trước khi bàn giao máy chủ vào vận hành sản xuất thực tế (Go-Live Checklist)."
       ],
       "intuition": {
-        "title": "Cẩm nang quy chuẩn vận hành của đội ngũ SysAdmin & SRE",
-        "metaphor": "Một kỹ sư trưởng (Lead SRE) không cần phải học vẹt từng thông số cấu hình; giá trị của bạn nằm ở việc nắm vững nguyên lý vận hành và có sẵn cuốn cẩm nang tra cứu chuẩn xác để chỉ đạo ứng cứu sự cố trong vài phút.",
-        "visualHtml": "\n              <div class=\"lx-vs-grid\">\n                <div class=\"lx-vs-card kernel-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>📑</span>\n                    <span>CHEAT SHEET CẤP 3</span>\n                    <span class=\"lx-vs-tag\">Tra cứu</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>systemctl daemon-reload</code>: Nạp lại cấu hình sau khi sửa service.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>lvextend -r -L +20G /dev/vg/lv</code>: Tăng dung lượng đĩa trực tuyến.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>ufw default deny incoming</code>: Chặn toàn bộ cổng vào mặc định.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <code>certbot --nginx -d domain</code>: Cấp SSL HTTPS tự động.</li>\n                  </ul>\n                </div>\n                <div class=\"lx-vs-card distro-card\">\n                  <div class=\"lx-vs-title\">\n                    <span>📚</span>\n                    <span>THUẬT NGỮ CẤP 3</span>\n                    <span class=\"lx-vs-tag\">Glossary</span>\n                  </div>\n                  <ul class=\"lx-vs-list\">\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>MAC:</strong> Kiểm soát truy cập bắt buộc cấp nhân, ngăn chặn cả root.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>Idempotency:</strong> Tính lũy đẳng — chạy nhiều lần không gây lỗi.</li>\n                    <li><span class=\"lx-vs-bullet\">•</span> <strong>SSL Termination:</strong> Giải mã HTTPS tại Nginx giảm tải cho backend.</li>\n                  </ul>\n                </div>\n              </div>\n            "
+        "title": "Cẩm nang Quy chuẩn Vận hành của Đội ngũ SysAdmin & SRE",
+        "metaphor": "Giống như danh mục kiểm tra an toàn bay (Flight Safety Checklist) của phi công trước khi cất cánh: Cho dù bạn là cơ trưởng bay 10.000 giờ, bạn vẫn phải cầm checklist đọc từng mục: kiểm tra cánh tà, áp suất buồng lái và hệ thống bánh đáp. Bảng tra cứu Cấp 3 này là cuốn Checklist an toàn sống còn của kỹ sư hệ thống: Mỗi dòng lệnh đều được gắn nhãn mức độ nguy hiểm và kèm theo 'chiếc dù cứu sinh' (quy trình hoàn tác) để máy chủ của bạn luôn vận hành an toàn và không bao giờ bị rơi vào trạng thái mất kết nối.",
+        "visualHtml": "<div class=\"lx-terminal\">\n  <div class=\"lx-term-header\">Quy trình Kiểm định Máy chủ trước khi Bàn giao Go-Live (Checklist 5 Bước)</div>\n  <div class=\"lx-term-body\">\n    <div style=\"display:flex;flex-direction:column;gap:8px;font-family:monospace;font-size:0.88rem;\">\n      <div style=\"padding:6px;border-left:3px solid #10b981;\">[✓] <strong>Bước 1: systemd Service &amp; Timer:</strong> Chạy <code>systemd-analyze verify</code> và kiểm tra <code>Restart=on-failure</code></div>\n      <div style=\"padding:6px;border-left:3px solid #10b981;\">[✓] <strong>Bước 2: Hệ thống File &amp; fstab:</strong> Đã dùng UUID, cờ <code>nofail</code> và xác minh bằng <code>sudo mount -a</code></div>\n      <div style=\"padding:6px;border-left:3px solid #10b981;\">[✓] <strong>Bước 3: Mạng &amp; Tường lửa UFW:</strong> Đã mở SSH (<code>ufw limit 22/tcp</code>), chính sách <code>default deny incoming</code></div>\n      <div style=\"padding:6px;border-left:3px solid #10b981;\">[✓] <strong>Bước 4: Gia cố SSH &amp; Fail2ban:</strong> Đã tắt <code>PasswordAuthentication</code>, xác minh <code>sudo sshd -t</code></div>\n      <div style=\"padding:6px;border-left:3px solid #10b981;\">[✓] <strong>Bước 5: Web Proxy &amp; SSL:</strong> Nginx kiểm tra <code>nginx -t</code>, đủ 4 header chuyển tiếp, Certbot dry-run đạt</div>\n    </div>\n  </div>\n</div>"
       },
       "sections": [
         {
           "id": "sec-3-10-cheatsheet-systemd-lvm",
-          "title": "1. Bảng tra cứu Lệnh systemd, LVM và Tường lửa",
-          "content": "\n                  <div class=\"table-container\">\n                    <table class=\"data-table\">\n                      <thead>\n                        <tr>\n                          <th>Lệnh &amp; Cú pháp</th>\n                          <th>Ý nghĩa &amp; Chức năng</th>\n                          <th>Ghi chú quan trọng</th>\n                        </tr>\n                      </thead>\n                      <tbody>\n                        <tr>\n                          <td><code>systemctl daemon-reload</code></td>\n                          <td>Quét lại toàn bộ các file .service và .timer trong /etc</td>\n                          <td>Bắt buộc chạy sau khi sửa bất kỳ unit file nào</td>\n                        </tr>\n                        <tr>\n                          <td><code>systemctl list-timers</code></td>\n                          <td>Xem danh sách các timer đang lập lịch và thời gian chạy kế tiếp</td>\n                          <td>Kiểm tra xem timer có đang active hay không</td>\n                        </tr>\n                        <tr>\n                          <td><code>lvextend -r -L +10G /dev/vg/lv</code></td>\n                          <td>Mở rộng dung lượng Logical Volume và tự co giãn filesystem</td>\n                          <td>Cờ -r tự nhận diện ext4 hay XFS</td>\n                        </tr>\n                        <tr>\n                          <td><code>mount -a</code></td>\n                          <td>Thử gắn kết toàn bộ các phân vùng trong /etc/fstab</td>\n                          <td>Bắt buộc chạy trước khi reboot sau khi sửa fstab</td>\n                        </tr>\n                        <tr>\n                          <td><code>ufw limit 22/tcp</code></td>\n                          <td>Mở cổng SSH kèm cơ chế tự chặn IP thử quá 6 lần/30s</td>\n                          <td>Bảo vệ cổng SSH khỏi brute-force tự động</td>\n                        </tr>\n                        <tr>\n                          <td><code>fail2ban-client status sshd</code></td>\n                          <td>Xem danh sách các IP đang bị khóa bởi Fail2ban</td>\n                          <td>Dùng unbanip để mở khóa thủ công</td>\n                        </tr>\n                      </tbody>\n                    </table>\n                  </div>\n                "
+          "title": "1. Bảng Tra cứu Lệnh systemd, LVM, Mạng Netplan & Tường lửa UFW",
+          "content": "\n        <h3 class=\"lx-h3\">Ma trận lệnh Quản trị Hạ tầng kèm Mức rủi ro &amp; Quy trình Hoàn tác</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Công cụ / Lệnh</th>\n              <th>Mục đích thực chiến</th>\n              <th>Mức rủi ro</th>\n              <th>Lưu ý an toàn &amp; Quy trình Hoàn tác (Rollback)</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>sudo systemctl daemon-reload</code></td>\n              <td>Tải lại định nghĩa unit files từ đĩa vào RAM</td>\n              <td>Thấp</td>\n              <td>Bắt buộc chạy sau mỗi lần sửa file <code>.service</code> hoặc <code>.timer</code>.</td>\n            </tr>\n            <tr>\n              <td><code>sudo systemctl edit &lt;unit&gt;</code></td>\n              <td>Tạo file drop-in override tùy biến dịch vụ</td>\n              <td>Thấp</td>\n              <td>An toàn tuyệt đối; để hoàn tác chỉ cần xóa thư mục trong <code>/etc/systemd/system/&lt;unit&gt;.d/</code>.</td>\n            </tr>\n            <tr>\n              <td><code>sudo lvextend -L +10G -r &lt;LV&gt;</code></td>\n              <td>Mở rộng nóng phân vùng Logical Volume và Filesystem</td>\n              <td>Trung bình</td>\n              <td>Cờ <code>-r</code> tự động mở rộng hệ thống file. <strong>Lưu ý: Nếu định dạng XFS thì không thể thu nhỏ ngược lại!</strong></td>\n            </tr>\n            <tr>\n              <td><code>sudo mount -a</code></td>\n              <td>Kiểm tra tính hợp lệ của toàn bộ tệp <code>/etc/fstab</code></td>\n              <td>An toàn</td>\n              <td><strong>BẮT BUỘC CHẠY sau khi sửa fstab trước khi reboot</strong> để phòng chống lỗi Emergency Mode.</td>\n            </tr>\n            <tr>\n              <td><code>sudo netplan try</code></td>\n              <td>Áp dụng cấu hình mạng có bộ đếm tự phục hồi 120s</td>\n              <td>Thấp</td>\n              <td>Nếu mất kết nối SSH, Netplan tự động hoàn tác cấu hình cũ sau 120 giây.</td>\n            </tr>\n            <tr>\n              <td><code>sudo ufw default deny incoming</code></td>\n              <td>Đặt chính sách mặc định chặn toàn bộ lưu lượng vào</td>\n              <td><strong>RẤT CAO</strong></td>\n              <td><strong>CẢNH BÁO: Phải mở cổng SSH trước (<code>ufw limit 22/tcp</code>)!</strong> Nên đặt hẹn giờ cứu sinh: <code>nohup sh -c 'sleep 300 &amp;&amp; ufw disable' &amp;</code>.</td>\n            </tr>\n            <tr>\n              <td><code>sudo ufw status numbered</code></td>\n              <td>Hiển thị danh sách quy tắc tường lửa có đánh số</td>\n              <td>An toàn</td>\n              <td>Dùng để tìm số thứ tự trước khi xóa quy tắc bằng <code>sudo ufw delete &lt;số&gt;</code>.</td>\n            </tr>\n          </tbody>\n        </table>\n      ",
+          "codeExamples": []
         },
         {
           "id": "sec-3-10-cheatsheet-nginx-perf",
-          "title": "2. Bảng tra cứu Nginx, SSL và Chẩn đoán Hiệu năng",
-          "content": "\n                  <div class=\"table-container\">\n                    <table class=\"data-table\">\n                      <thead>\n                        <tr>\n                          <th>Lệnh &amp; Cú pháp</th>\n                          <th>Mục đích sử dụng</th>\n                          <th>Ghi chú vận hành</th>\n                        </tr>\n                      </thead>\n                      <tbody>\n                        <tr>\n                          <td><code>nginx -t</code></td>\n                          <td>Kiểm tra cú pháp toàn bộ các file cấu hình Nginx</td>\n                          <td>Không bao giờ reload nếu lệnh này báo lỗi</td>\n                        </tr>\n                        <tr>\n                          <td><code>certbot renew --dry-run</code></td>\n                          <td>Chạy thử nghiệm quy trình gia hạn chứng chỉ SSL</td>\n                          <td>Đảm bảo chứng chỉ sẽ tự động gia hạn an toàn</td>\n                        </tr>\n                        <tr>\n                          <td><code>vmstat 1 5</code></td>\n                          <td>Giám sát CPU, RAM, IO, số tiến trình chờ thời gian thực</td>\n                          <td>Cột 'wa' cao phản ánh nghẽn ổ đĩa</td>\n                        </tr>\n                        <tr>\n                          <td><code>iostat -xz 1</code></td>\n                          <td>Đo lường chi tiết tải đọc ghi của từng ổ cứng vật lý</td>\n                          <td>Cột '%util' chạm 100% là ổ cứng bị quá tải</td>\n                        </tr>\n                        <tr>\n                          <td><code>strace -p [PID] -c</code></td>\n                          <td>Thống kê thời gian tiêu tốn vào các lời gọi hệ thống</td>\n                          <td>Tìm nguyên nhân tiến trình bị chậm hoặc treo</td>\n                        </tr>\n                        <tr>\n                          <td><code>rsync -avzPn --delete src/ dest/</code></td>\n                          <td>Mô phỏng đồng bộ dữ liệu kèm xóa file thừa (Dry-run)</td>\n                          <td>Luôn kiểm tra với -n trước khi chạy lệnh thật</td>\n                        </tr>\n                      </tbody>\n                    </table>\n                  </div>\n                "
+          "title": "2. Bảng Tra cứu Nginx, SSL Let's Encrypt, SELinux & Chẩn đoán Hiệu năng",
+          "content": "\n        <h3 class=\"lx-h3\">Ma trận lệnh Web Proxy, An ninh &amp; Chẩn đoán Hiệu năng</h3>\n        <table class=\"lx-table\">\n          <thead>\n            <tr>\n              <th>Công cụ / Lệnh</th>\n              <th>Mục đích thực chiến</th>\n              <th>Mức rủi ro</th>\n              <th>Lưu ý an toàn &amp; Quy trình Hoàn tác</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr>\n              <td><code>sudo nginx -t</code></td>\n              <td>Kiểm tra cú pháp toàn bộ cấu hình Nginx</td>\n              <td>An toàn</td>\n              <td>Bắt buộc chạy trước khi <code>systemctl reload nginx</code> để không làm sập các website đang chạy.</td>\n            </tr>\n            <tr>\n              <td><code>sudo certbot renew --dry-run</code></td>\n              <td>Mô phỏng quy trình tự động gia hạn chứng chỉ SSL</td>\n              <td>An toàn</td>\n              <td>Chạy thử nghiệm an toàn; không tác động vào chứng chỉ thực tế.</td>\n            </tr>\n            <tr>\n              <td><code>sudo setenforce 0 / 1</code></td>\n              <td>Chuyển đổi chế độ SELinux Permissive / Enforcing</td>\n              <td>Trung bình</td>\n              <td>Chỉ dùng Permissive (0) để gỡ lỗi trong RAM; sau khi sửa nhãn/boolean phải bật lại Enforcing (1) ngay.</td>\n            </tr>\n            <tr>\n              <td><code>sudo semanage fcontext ... &amp;&amp; restorecon</code></td>\n              <td>Đăng ký và áp đặt nhãn ngữ cảnh SELinux vĩnh viễn</td>\n              <td>Thấp</td>\n              <td>Chuẩn mực gán nhãn bền vững qua mọi lần reboot; không dùng <code>chcon</code>.</td>\n            </tr>\n            <tr>\n              <td><code>rsync -avzP -n --delete ...</code></td>\n              <td>Chạy thử nghiệm mô phỏng đồng bộ rsync có xóa file</td>\n              <td>An toàn</td>\n              <td>Cờ <code>-n</code> (dry-run) giúp kiểm tra danh sách <code>*deleting</code> trước khi bỏ cờ <code>-n</code> để chạy thật.</td>\n            </tr>\n            <tr>\n              <td><code>vmstat 1 5</code></td>\n              <td>Khảo sát chỉ số CPU queue (r), blocked (b), swap, iowait</td>\n              <td>An toàn</td>\n              <td>Công cụ chẩn đoán nhanh số 1; không gây suy hao tài nguyên hệ thống.</td>\n            </tr>\n            <tr>\n              <td><code>sudo iostat -xz 1 5</code></td>\n              <td>Khảo sát chi tiết hiệu năng và độ trễ ổ đĩa (%util, await)</td>\n              <td>An toàn</td>\n              <td>Ẩn các thiết bị nhàn rỗi (-z); xác định nhanh ổ đĩa bị thắt nút cổ chai I/O.</td>\n            </tr>\n            <tr>\n              <td><code>sudo timeout 5 strace -c -p &lt;PID&gt;</code></td>\n              <td>Thống kê tổng hợp thời gian tiêu tốn cho các syscall</td>\n              <td><strong>RỦI RO CAO</strong></td>\n              <td><strong>CẢNH BÁO: Làm chậm tiến trình 10x-100x!</strong> Chỉ gắn trong 5 giây bằng timeout và dùng cờ -c trên Production.</td>\n            </tr>\n          </tbody>\n        </table>\n      ",
+          "codeExamples": []
         },
         {
           "id": "sec-3-10-glossary",
-          "title": "3. Từ điển Thuật ngữ Quản trị & Bảo mật Cấp 3 (Glossary)",
-          "content": "\n                  <div class=\"lx-glossary-grid\">\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">MAC (Mandatory Access Control)</span>\n                        <span class=\"lx-glossary-cat\">Security</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Kiểm soát truy cập bắt buộc do hạt nhân hệ điều hành áp đặt. Mọi tiến trình và tài nguyên đều bị dán nhãn; ngay cả tài khoản root cũng không thể vượt qua chính sách MAC (ví dụ: SELinux, AppArmor).</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">LVM (Logical Volume Manager)</span>\n                        <span class=\"lx-glossary-cat\">Storage</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Hệ thống trừu tượng hóa lưu trữ cho phép gộp nhiều ổ đĩa vật lý thành nhóm và phân chia thành các phân vùng logic có thể co giãn kích thước trực tuyến mà không làm gián đoạn dịch vụ.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">Reverse Proxy</span>\n                        <span class=\"lx-glossary-cat\">Networking</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Máy chủ đứng trung gian giữa client và backend: tiếp nhận request từ Internet, giải mã SSL, nén dữ liệu, cache file tĩnh và chuyển tiếp request an toàn tới các ứng dụng backend nội bộ.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">USE Method</span>\n                        <span class=\"lx-glossary-cat\">Performance</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Phương pháp chẩn đoán hiệu năng hệ thống của Brendan Gregg: kiểm tra mọi tài nguyên phần cứng theo 3 tiêu chí: Mức độ sử dụng (Utilization), Độ bão hòa xếp hàng (Saturation), và Lỗi (Errors).</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">Trailing Slash</span>\n                        <span class=\"lx-glossary-cat\">rsync</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Dấu gạch chéo ở cuối đường dẫn thư mục trong rsync: 'dir/' biểu thị sao chép nội dung bên trong; 'dir' biểu thị sao chép toàn bộ thư mục kèm vỏ bọc bên ngoài.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">Idempotency (Lũy đẳng)</span>\n                        <span class=\"lx-glossary-cat\">Automation</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Thuộc tính trong tự động hóa hệ thống (Ansible): một tác vụ dù thực thi 1 lần hay 100 lần thì trạng thái cuối cùng của máy chủ vẫn hoàn toàn giống nhau, không sinh ra lỗi hay tạo bản sao trùng lặp.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">SSL Termination</span>\n                        <span class=\"lx-glossary-cat\">Security</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Quá trình giải mã lưu lượng HTTPS ngay tại lớp Nginx Reverse Proxy, giúp giảm tải gánh nặng tính toán mật mã cho các máy chủ backend phía sau.</p>\n                    </div>\n\n                    <div class=\"lx-glossary-card\">\n                      <div class=\"lx-glossary-header\">\n                        <span class=\"lx-glossary-term\">CoW (Copy-on-Write)</span>\n                        <span class=\"lx-glossary-cat\">Filesystem</span>\n                      </div>\n                      <p class=\"lx-glossary-def\">Cơ chế sao chép khi ghi: dữ liệu chỉ thực sự bị nhân bản khi có thao tác ghi đè lên block dữ liệu cũ. Là nền tảng của LVM Snapshot và các hệ thống file hiện đại Btrfs/ZFS.</p>\n                    </div>\n                  </div>\n                "
+          "title": "3. Từ điển Thuật ngữ Quản trị Hệ thống & An toàn Thông tin Cấp 3 (Glossary)",
+          "content": "\n        <div class=\"lx-glossary-grid\">\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">MAC vs DAC</div>\n            <div class=\"lx-term-def\"><strong>Discretionary Access Control (DAC):</strong> Kiểm soát tùy ý dựa trên chủ sở hữu file và quyền rwx truyền thống. <strong>Mandatory Access Control (MAC):</strong> Kiểm soát bắt buộc do nhân kernel thực thi dựa trên nhãn an ninh (SELinux / AppArmor), vượt trên cả đặc quyền của tài khoản root.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">SELinux Context</div>\n            <div class=\"lx-term-def\">Nhãn an ninh 4 thành phần <code>user:role:type:level</code> gắn vào mọi tiến trình và Inode trên hệ thống. Trọng tâm là <strong>Type Enforcement (TE)</strong> quy định loại tiến trình nào được phép tương tác với loại dữ liệu nào.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">SELinux Booleans</div>\n            <div class=\"lx-term-def\">Các công tắc bật/tắt (on/off) các chính sách an ninh được biên dịch sẵn trong nhân, cho phép quản trị viên thay đổi hành vi (ví dụ: cho phép web server kết nối mạng <code>httpd_can_network_connect</code>) mà không cần viết lại policy.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">LVM (PV, VG, LV, PE)</div>\n            <div class=\"lx-term-def\"><strong>Physical Volume (PV):</strong> Ổ đĩa thô. <strong>Volume Group (VG):</strong> Hồ chứa tài nguyên chung. <strong>Logical Volume (LV):</strong> Phân vùng logic linh hoạt. <strong>Physical Extent (PE):</strong> Khối đơn vị cấp phát nhỏ nhất trong LVM (mặc định 4MB).</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">Online Resizing</div>\n            <div class=\"lx-term-def\">Khả năng mở rộng kích thước phân vùng logic và hệ thống file trực tiếp khi dịch vụ vẫn đang hoạt động bình thường mà không cần unmount ổ đĩa hay tắt máy chủ (Zero-Downtime).</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">Reverse Proxy</div>\n            <div class=\"lx-term-def\">Máy chủ trung gian đứng trước các backend application servers để tiếp nhận yêu cầu từ client, xử lý SSL/TLS, cân bằng tải, nén dữ liệu và chuyển tiếp yêu cầu nội bộ an toàn.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">Epoll</div>\n            <div class=\"lx-term-def\">Cơ chế thông báo sự kiện I/O bất đồng bộ có khả năng mở rộng cao trong Linux kernel ($O(1)$), cho phép Nginx xử lý đồng thời hàng chục ngàn kết nối mạng mà không bị nghẽn CPU như hàm <code>select</code> hay <code>poll</code> cũ.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">Idempotency (Tính Lũy thừa)</div>\n            <div class=\"lx-term-def\">Nguyên lý cốt lõi của Tự động hóa hạ tầng (Ansible): Dù một tác vụ được thực thi lặp lại bao nhiêu lần, trạng thái cuối cùng của hệ thống vẫn không thay đổi và chỉ thực hiện can thiệp khi hệ thống chưa đạt trạng thái mong muốn.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">Copy-on-Write (CoW)</div>\n            <div class=\"lx-term-def\">Chiến lược tối ưu hóa lưu trữ: Khối dữ liệu chỉ được sao chép thực sự khi có yêu cầu ghi sửa đổi. Đây là nền tảng của LVM Snapshot và các hệ thống file hiện đại như Btrfs và ZFS.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">Inode / File Descriptor Leak</div>\n            <div class=\"lx-term-def\">Hiện tượng tệp tin đã bị xóa bằng lệnh <code>rm</code> nhưng dung lượng đĩa cứng vẫn không được giải phóng do tiến trình ứng dụng vẫn đang giữ mở kết nối File Descriptor tới Inode đó (phát hiện bằng <code>lsof +L1</code>).</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">Trailing Slash</div>\n            <div class=\"lx-term-def\">Dấu gạch chéo cuối cùng trong đường dẫn rsync: <code>/src/</code> (có dấu /) nghĩa là chỉ sao chép nội dung bên trong; <code>/src</code> (không có dấu /) nghĩa là sao chép cả thư mục vỏ bọc.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">USE Method</div>\n            <div class=\"lx-term-def\">Phương pháp luận chẩn đoán hiệu năng hệ thống của Brendan Gregg: Kiểm tra lần lượt <strong>Utilization</strong> (Mức sử dụng), <strong>Saturation</strong> (Độ bão hòa/Hàng đợi), và <strong>Errors</strong> (Lỗi) cho mọi tài nguyên phần cứng.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">File Descriptor (FD)</div>\n            <div class=\"lx-term-def\">Một số nguyên không âm do kernel cấp phát để đại diện cho một tệp tin, socket mạng hoặc đường ống I/O đang được mở bởi một tiến trình (quản lý trần bằng <code>LimitNOFILE</code>).</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">ACME Protocol</div>\n            <div class=\"lx-term-def\">Giao thức Quản lý Môi trường Chứng chỉ Tự động (Automated Certificate Management Environment), cho phép Certbot giao tiếp với Let's Encrypt để xin cấp và gia hạn SSL tự động.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">AVC Denials</div>\n            <div class=\"lx-term-def\">Nhật ký từ chối kiểm soát truy cập (Access Vector Cache) do kernel ghi nhận khi SELinux chặn một hành vi vi phạm chính sách, lưu trữ tại <code>/var/log/audit/audit.log</code> và giải mã bằng <code>audit2why</code>.</div>\n          </div>\n          <div class=\"lx-glossary-card\">\n            <div class=\"lx-term-name\">Auditd AUID (Audit UID)</div>\n            <div class=\"lx-term-def\">Định danh người dùng đăng nhập ban đầu được kernel lưu giữ bất biến suốt phiên làm việc. Dù người dùng có dùng <code>sudo su</code> để đổi sang root thì AUID vẫn phản ánh tài khoản cá nhân ban đầu.</div>\n          </div>\n        </div>\n      ",
+          "codeExamples": []
         }
       ],
-      "exercises": [],
+      "scenario": {
+        "title": "Kiểm tra và chuẩn hóa máy chủ Linux trước thềm bàn giao Go-Live Production",
+        "content": "\n      <p><strong>1. Bối cảnh & Yêu cầu:</strong> Bạn là Kỹ sư Trưởng hệ thống (Lead SysAdmin). Đội ngũ phát triển vừa hoàn thành cài đặt một máy chủ Cloud chạy dịch vụ lõi và yêu cầu bàn giao để Go-Live phục vụ khách hàng. Nhiệm vụ của bạn là thực hiện quy trình kiểm định độc lập theo Checklist 5 bước chuẩn quốc tế.</p>\n      \n      <p><strong>2. Quy trình Kiểm định Độc lập:</strong></p>\n      <pre><code># Kiểm tra 1: systemd Service & Timer Unit\n$ sudo systemd-analyze verify /etc/systemd/system/*.service\n$ systemctl list-timers --all\n\n# Kiểm tra 2: Hệ thống file và cấu hình tự động mount\n$ sudo mount -a\n$ grep -E \"defaults.*nofail\" /etc/fstab\n\n# Kiểm tra 3: Tường lửa và trạng thái mở cổng mạng\n$ sudo ufw status numbered\n$ ss -tulpn\n\n# Kiểm tra 4: Gia cố an ninh SSH Daemon\n$ sudo sshd -t\n$ grep -E \"^PasswordAuthentication no|^PermitRootLogin no\" /etc/ssh/sshd_config.d/*.conf\n\n# Kiểm tra 5: Cấu hình Web Proxy và SSL Auto-renewal\n$ sudo nginx -t\n$ sudo certbot renew --dry-run</code></pre>\n      \n      <p><strong>3. Phát hiện lỗi nghiêm trọng:</strong></p>\n      <ul>\n        <li>Trong <code>/etc/fstab</code>: Ổ đĩa phụ <code>/data</code> được gắn bằng tên thiết bị <code>/dev/sdb1</code> thay vì UUID và thiếu cờ <code>nofail</code>. Nếu nhà cung cấp Cloud đổi thứ tự đĩa, máy chủ sẽ bị kẹt tại Emergency Mode.</li>\n        <li>Tường lửa UFW chưa cấu hình giới hạn tốc độ (<code>ufw limit</code>) cho cổng SSH, khiến log ngập tràn các đợt rà quét brute-force.</li>\n        <li>Tệp cấu hình Nginx chưa khai báo chỉ thị <code>client_max_body_size</code>, khiến khách hàng tải file ảnh đại diện trên 1MB sẽ bị lỗi 413 Request Entity Too Large.</li>\n      </ul>\n      \n      <p><strong>4. Biện pháp chuẩn hóa dứt điểm:</strong></p>\n      <pre><code># Sửa fstab sang UUID và thêm cờ nofail:\n$ UUID_VAL=$(sudo blkid -s UUID -o value /dev/sdb1)\n# Sửa dòng cấu hình thành: UUID=$UUID_VAL /data ext4 defaults,nofail 0 2\n$ sudo mount -a\n\n# Bổ sung ufw limit:\n$ sudo ufw limit 22/tcp\n\n# Bổ sung client_max_body_size 25M vào Nginx:\n$ sudo nginx -t && sudo systemctl reload nginx</code></pre>\n      \n      <p><strong>5. Kết quả nghiệm thu:</strong> Máy chủ vượt qua 100% các tiêu chí an ninh, đạt chuẩn kiểm định quốc tế CIS Benchmark và sẵn sàng chịu tải hàng triệu lượt truy cập ổn định.</p>\n    "
+      },
+      "callouts": {
+        "pitfalls": [
+          {
+            "title": "Bảo trì Production mà không chuẩn bị sẵn Kế hoạch Hoàn tác (Rollback Plan)",
+            "content": "Nguyên tắc chuyên nghiệp số 1 của kỹ sư vận hành: Không có bất kỳ thay đổi nào là an toàn 100%. Trước khi chỉnh sửa bất kỳ dịch vụ nào (fstab, sshd, nginx, iptables), bạn phải luôn tự hỏi: 'Nếu lệnh này làm sập hệ thống, mình sẽ khôi phục lại trạng thái cũ bằng lệnh gì và mất bao nhiêu giây?'. Luôn sao lưu file cấu hình gốc có gắn dấu thời gian (ví dụ: <code>cp nginx.conf nginx.conf.bak.$(date +%F)</code>) trước khi gõ lệnh sửa."
+          },
+          {
+            "title": "Bỏ qua bước kiểm tra cú pháp (dry-run) trước khi nạp lại các daemon hệ thống",
+            "content": "Nhiều sự cố sập hệ thống nghiêm trọng xảy ra chỉ vì một lỗi chính tả nhỏ (thiếu dấu chấm phẩy, thừa một dấu cách trong YAML). Hãy biến việc chạy các lệnh kiểm tra cú pháp thành phản xạ vô điều kiện: <code>nginx -t</code> cho Nginx, <code>sshd -t</code> cho SSH, <code>mount -a</code> cho fstab, <code>netplan try</code> cho mạng, và <code>systemd-analyze verify</code> cho systemd."
+          }
+        ],
+        "tips": [
+          {
+            "title": "Tạo các Alias kiểm tra cú pháp nhanh trong ~/.bashrc",
+            "content": "Hãy thêm vào tệp <code>~/.bashrc</code> của bạn các alias tiện ích: <code>alias ngtest='sudo nginx -t && sudo systemctl reload nginx'</code> và <code>alias sshtest='sudo sshd -t && sudo systemctl reload ssh'</code>. Điều này giúp bạn vừa tiết kiệm thời gian gõ phím vừa đảm bảo quy trình kiểm tra cú pháp luôn được tự động thực thi trước khi tải lại dịch vụ."
+          },
+          {
+            "title": "Ghi nhật ký thay đổi cấu hình hệ thống kèm mã Ticket",
+            "content": "Trong môi trường doanh nghiệp, hãy duy trì thói quen tạo một dòng chú thích ở đầu mỗi tệp cấu hình bạn chỉnh sửa: <code># Modified by [Your Name] on [Date] - Ticket: SEC-1042 - Hardening SSH</code>. Điều này giúp đồng đội và các kỹ sư trực ca sau dễ dàng đối soát lịch sử thay đổi khi điều tra sự cố."
+          }
+        ]
+      },
+      "exercises": [
+        {
+          "question": "Mức 1 (Nhớ / Hiểu): Hãy liệt kê 4 câu lệnh kiểm tra cú pháp tương ứng cho 4 thành phần sau trước khi áp dụng thay đổi vào hệ thống: (1) Cấu hình OpenSSH Daemon; (2) Cấu hình Web Server Nginx; (3) Tệp gắn đĩa tự động /etc/fstab; và (4) Tệp systemd Service Unit.",
+          "command": "# 1. Kiểm tra cú pháp SSH daemon:\n$ sudo sshd -t\n\n# 2. Kiểm tra cú pháp Nginx:\n$ sudo nginx -t\n\n# 3. Kiểm tra tính hợp lệ của tệp /etc/fstab:\n$ sudo mount -a\n\n# 4. Kiểm tra cú pháp tệp systemd unit:\n$ sudo systemd-analyze verify /etc/systemd/system/myapp.service",
+          "explanation": "Đây là bộ tứ lệnh kiểm tra an toàn kinh điển của mọi kỹ sư Linux. Việc thực hiện 4 lệnh này trước khi reload dịch vụ đảm bảo loại bỏ hoàn toàn các lỗi cú pháp, sai đường dẫn hoặc sai định dạng tham số, ngăn ngừa triệt để nguy cơ làm sập dịch vụ đang chạy hoặc làm máy chủ không khởi động được."
+        },
+        {
+          "question": "Mức 2 (Áp dụng / Vận hành): Phân vùng root (/) trên máy chủ báo đầy 100%. Lập trình viên chạy lệnh 'rm /var/log/nginx/access.log' để giải phóng dung lượng nhưng lệnh 'df -h' vẫn báo ổ đĩa đầy 100%. Hãy viết lệnh tìm chính xác tiến trình nào đang giữ file descriptor của file đã xóa và lệnh an toàn để giải phóng dung lượng tức thì.",
+          "command": "# 1. Truy tìm tiến trình đang giữ file descriptor của file đã bị xóa:\n$ sudo lsof +L1 /var/log\n\n# 2. Giải phóng dung lượng tức thì bằng cách yêu cầu Nginx reload lại file descriptor:\n$ sudo systemctl reload nginx\n\n# 3. Kiểm tra lại dung lượng đã được trả về hệ thống:\n$ df -h /",
+          "explanation": "Hiện tượng này gọi là Inode / File Descriptor Leak. Khi file bị xóa bằng lệnh rm nhưng tiến trình Nginx vẫn đang mở kết nối ghi vào file descriptor, kernel sẽ không giải phóng dung lượng khối trên đĩa. Lệnh 'lsof +L1' liệt kê các file có link count bằng 0 nhưng vẫn mở. Bằng cách chạy 'sudo systemctl reload nginx', Nginx sẽ đóng file descriptor cũ và mở file mới, kernel sẽ lập tức thu hồi dung lượng vật lý trên đĩa mà không làm gián đoạn dịch vụ web."
+        },
+        {
+          "question": "Mức 3 (Phân tích / Khắc phục sự cố): Một kẻ tấn công đăng nhập bằng tài khoản cá nhân 'devops' (UID=1001), sau đó dùng lệnh 'sudo nano /etc/shadow' để chỉnh sửa mật khẩu root. Khi kỹ sư an ninh kiểm tra bằng auditd, làm sao để xác định chắc chắn kẻ can thiệp là tài khoản 'devops' mà không bị đánh lừa bởi UID=0 của root?",
+          "command": "# Truy vấn nhật ký auditd theo nhãn hoặc theo file /etc/shadow:\n$ sudo ausearch -f /etc/shadow --interpret | grep -E \"auid|uid|comm\"\n\n# Quan sát trường thông tin:\n# type=SYSCALL ... auid=1001 uid=0 euid=0 comm=nano exe=/bin/nano",
+          "explanation": "Hệ thống kiểm toán Auditd của nhân Linux được thiết kế theo chuẩn bảo mật an ninh quốc tế với trường AUID (Audit User ID / Login UID). Khi người dùng đăng nhập qua SSH, kernel ghi nhận và gắn cố định số định danh AUID (trong trường hợp này là 1001 của tài khoản 'devops'). Giá trị AUID này là bất biến trong suốt phiên làm việc; dù người dùng có sudo, su hay chiếm quyền root (uid=0, euid=0), kernel vẫn ghi nhận auid=1001 trong bản ghi auditd. Do đó kẻ tấn công hoàn toàn không thể chối cãi danh tính ban đầu."
+        }
+      ],
       "summary": [
-        "Bảng tra cứu nhanh Cấp 3 giúp quản trị viên phản xạ tức thì các cú pháp systemd, LVM, UFW, Nginx và chẩn đoán hiệu năng.",
-        "Nắm vững các thuật ngữ cốt lõi: MAC, LVM, Reverse Proxy, USE Method, Idempotency và Copy-on-Write.",
-        "Tích hợp toàn diện các kỹ năng Cấp 3 để vận hành cụm máy chủ Production chịu tải cao, bảo mật vững chắc và tự động hóa cao."
+        "Luôn duy trì thói quen kiểm tra cú pháp bằng bộ lệnh an toàn: sshd -t, nginx -t, mount -a, và systemd-analyze verify trước khi áp dụng.",
+        "Bảng tra cứu ma trận lệnh Cấp 3 giúp quản trị viên đánh giá đúng mức độ rủi ro và luôn chuẩn bị sẵn phương án hoàn tác (Rollback Plan).",
+        "Khắc phục sự cố Inode Leak bằng lsof +L1 và reload dịch vụ thay vì dùng lệnh kill đột ngột.",
+        "Làm chủ các cơ chế bảo mật tối cao: MAC (SELinux / AppArmor), Fail2ban phản ứng tự động, và Auditd AUID truy vết danh tính bất biến.",
+        "Áp dụng phương pháp luận USE Method để chẩn đoán hệ thống khoa học, phân biệt rạch ròi giữa CPU bottleneck và Disk I/O bottleneck.",
+        "Tuân thủ nghiêm ngặt Checklist 5 bước kiểm định độc lập trước khi bàn giao bất kỳ máy chủ nào vào vận hành sản xuất (Go-Live)."
       ]
     }
   ]
